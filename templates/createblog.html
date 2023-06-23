@@ -1,0 +1,115 @@
+{% extends 'structure.html' %}
+{% block main %}
+<head>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/createblog.css') }}">
+  <title>Create Blog</title>
+</head>
+<body>
+<div class="create-blog">
+  <form action="/create-blog" method="POST" name="forcreate" enctype="multipart/form-data">
+  <h3 class="title-blog">Enter Title:</h3>
+  <input type="text" id="title" name="title">
+  <h3 class="description-blog">Enter Description:</h3>
+  <input type="text" id="description" name="description">
+  <h3 class="content-blog">Enter Content:</h3>
+  <textarea id="content" name="content"></textarea>
+  <div class="upload-blog">
+    <button id="upload-button" formnovalidate="formnovalidate">Upload Image</button>
+    <button onclick="showPopup()" id="upload-link" formnovalidate="formnovalidate">Embed Link</button>
+  </div>
+  <h3 class="tags-blog">Enter Tags:</h3>
+  <input type="text" id="tags" name="tags">
+  <h3 class="image-blog">Upload Thumbnail:</h3>
+  <input type="file" id="image" name="thumbnail">
+  <div class="submit-blogdiv">
+    <button name="button" value="UPLOAD BLOG" id="submit-blog">UPLOAD BLOG</button>
+  </div>
+  </form>
+</div>
+<div class="poper"></div>
+
+<script>
+  const form = document.querySelector('form[name="forcreate"]');
+  form.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+    }
+      });
+  document.getElementById('upload-button').addEventListener('click', function() {
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+
+    input.onchange = function(e) {
+      var file = e.target.files[0];
+      var formData = new FormData();
+      formData.append('image', file);
+
+      fetch('/upload', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => {
+        if (response.ok) {
+          return response.json();  // Parse the JSON response
+        } else {
+          console.error('Error uploading image:', response.statusText);
+          return '';
+        }
+      })
+      .then(data => {
+        var textarea = document.getElementById('content');
+        var existingText = textarea.value;
+        var imageTag = `<img src="${data.path}" alt="Thumbnail">`;
+        textarea.value = existingText + '\n' + imageTag;
+      })
+      .catch(error => {
+        console.error('Error uploading image:', error);
+      });
+    };
+
+    input.click();
+  });
+</script>
+
+<script>
+  const popup = document.querySelector('.poper');
+
+  function showPopup() {
+    popup.innerHTML = `
+    <div class="popup_out">
+      <div class="popup">
+        <div onclick="closePopUp()" class="close">x</div>
+        <div class='popup-textdiv'>
+          <textarea id="popup-text"></textarea>
+          <button id='embedlink-add' onclick="addEmbedLink()">Add Embed Link</button>
+        </div>
+      </div>
+    </div>
+    `;
+  }
+
+  function closePopUp() {
+    popup.innerHTML = '';
+  }
+
+  function addEmbedLink() {
+    var textarea = document.getElementById('content');
+    var existingText = textarea.value;
+    var embedLink = document.getElementById('popup-text').value;
+    textarea.value = existingText + '\n' + embedLink;
+    closePopUp();
+  }
+</script>
+<script>
+  document.getElementById('upload-button').addEventListener('click', function(event) {
+    event.preventDefault();
+  });
+  </script>
+<script>
+  document.getElementById('upload-link').addEventListener('click', function(event) {
+    event.preventDefault();
+  });
+  </script>
+</body>
+{% endblock main %}

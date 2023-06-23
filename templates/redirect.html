@@ -1,0 +1,24 @@
+{% extends 'structure.html' %}
+{% block main %}
+<head>
+    <meta http-equiv="refresh" content="5;url=/home">
+    <script type="text/javascript">
+        window.onload = function() {
+            window.open('/redirect', '_blank');
+        }
+    </script>
+</head>
+<br>
+<br>
+<div class="home-heading">
+    <h1 class="home-header">
+      <span class="home-text05">Redirecting</span>
+      </h1>
+      <p class="home-paragraph">
+      <span>You Will Be Redirected in 5 Seconds.</span>
+        </p>
+    <br>
+    <br>
+    <br>
+  </div>
+{% endblock %}

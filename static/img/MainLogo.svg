@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 439 80">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #fff;
+        stroke-miterlimit: 10;
+      }
+
+      .cls-2 {
+        fill: #eb2127;
+      }
+
+      .cls-3 {
+        fill: #fff;
+        font-family: BentonSansComp-Black, 'BentonSans Comp Black';
+        font-size: 75px;
+        font-weight: 800;
+      }
+    </style>
+  </defs>
+  <rect class="cls-2" x=".5" width="131.11" height="80"/>
+  <text class="cls-3" transform="translate(3.32 68.75)"><tspan x="0" y="0">MCU</tspan></text>
+  <text class="cls-3" transform="translate(133.12 67.07)"><tspan x="0" y="0">REDEFINED</tspan></text>
+  <line class="cls-1" x1="136.04" y1="2.57" x2="434.54" y2="3.6"/>
+  <line class="cls-1" x1="135.79" y1="77.35" x2="434.29" y2="78.37"/>
+</svg>
