@@ -1,0 +1,99 @@
+@font-face{
+    font-family: 'BentonSansCompLight';
+    src:url('../fonts/BentonSans\ Comp\ Light.otf');
+  }
+@font-face {
+    font-family: 'BentonSansRegular';
+    src: url('../fonts/BentonSans\ Regular.otf');
+  }
+@font-face {
+    font-family: 'BentonSansBook';
+    src: url('../fonts/BentonSans\ Book.otf');
+  }
+@font-face {
+    font-family: 'BentonSansBold';
+    src: url('../fonts/BentonSans\ Bold.otf');
+  }
+@font-face {
+    font-family: 'BentonSansCompBlack';
+    src: url('../fonts/BentonSans\ Comp\ Black.otf');
+}
+
+.contents{
+    width:84%;
+    margin-bottom: 150px;
+    margin-top: 50px;
+    background-color: #9BABB8;
+    border-radius: 5px;
+}
+
+.title{
+    font-size: 70px;
+    /* margin-top: 15px; */
+    margin-left: 3%;
+    margin-top: 3%;
+    color: black;
+    font-family:'BentonSansBold';
+}
+
+.byline{
+    font-size: 20px;
+    margin-left: 3.3%;
+    margin-top: 0.5%;
+    color: #EC1D24;
+    font-family:'BentonSansRegular';
+}
+
+.datecreation{
+    font-size: 20px;
+    margin-left: 3.3%;
+    margin-top: 0.5%;
+    color: #EC1D24;
+    font-family:'BentonSansRegular';
+}
+
+.tagsspan{
+    margin-left: 3.3%;
+}
+
+.tags{
+    font-size: 20px;
+    margin-top: 0.5%;
+    margin-right: 3px;
+    color: #EC1D24;
+    font-family:'BentonSansRegular';
+    background-color:lightgray;
+    border-radius: 3px;
+    transition: 0.3s;
+}
+
+.tags:hover{
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+.maincontent{
+    white-space: pre-line;
+    margin-left: 3.3%;
+    margin-top: 2%;
+    margin-bottom: 5%;
+    font-size: 25px;
+    font-family: 'BentonSansBook';
+}
+
+.colorforby{
+    color: black;
+    font-family:'BentonSansRegular';
+}
+
+.contentimages{
+    margin-left: 3.3%;
+    margin-top: 2%;
+    margin-bottom: 5%;
+    width: 50%;
+    height: 50%;
+    object-fit: contain;
+    border-radius: 5px;
+    justify-content: center;
+    /* have to add image container and center */
+}

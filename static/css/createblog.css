@@ -43,6 +43,23 @@
     border-radius: 7px;
 }
 
+.author-blog {
+    color: #EC1D24;
+    margin-bottom: 10px;
+    font-family: "BentonSans Regular";
+}
+
+#author{
+    align-self: auto;
+    background-color:#9BABB8;
+    font-size: 25px;
+    width:50%;
+    height:80%;
+    left: 20%;
+    margin-bottom: 20px;
+    border-radius: 7px;
+}
+
 .description-blog{
     color: #EC1D24;
     margin-bottom: 10px;

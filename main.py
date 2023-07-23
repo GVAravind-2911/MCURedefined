@@ -1,5 +1,6 @@
 from flask import Flask, session, request, render_template, redirect, url_for
-import json
+import json, dmm
+from datetime import datetime
 
 app = Flask('mcuredefined')
 app.secret_key = 'secretkey'
@@ -19,7 +20,7 @@ def home():
             # Handle the "Instagram" button action
             return redirect(url_for('characterprofiles.html'))
         elif button_value == 'blog':
-            return 'Hello'
+            return redirect(url_for('blogsfetch'))
         elif button_value == 'release_slate':
             # Handle the "Release Slate" button action
             return redirect(url_for('release_slate'))
@@ -55,13 +56,28 @@ def return_home():
 def create_blog_post():
     if request.method=='POST':
         title = request.form['title']
+        author=request.form['author']
         description = request.form['description']
         content = request.form['content']
         tags = request.form['tags']
+        if author=='':
+            author="MCU Redefined"
         if 'thumbnail' in request.files:
             thumbnail = request.files['thumbnail']
-            thumbnaildata = thumbnail.read()
-        print(title, description, content, tags, thumbnaildata)
+            if thumbnail.filename:
+                thumbnaildata = thumbnail.read()
+                thumbnail_format = thumbnail.filename.rsplit('.', 1)[1].lower()
+                thumbnail_path = f'static/img/thumbnails/{title}.{thumbnail_format}'  # Adjust the path as needed
+                with open(thumbnail_path, 'wb') as file:
+                    file.write(thumbnaildata)
+            else:
+                thumbnail_path = 'static/img/BlogDefault.png'  # Default thumbnail path
+        now = datetime.now()
+        dt_string = now.strftime("%d %B %Y %H:%M:%S")
+        print(dt_string)
+        # print(title, description, content, tags, thumbnaildata)
+        dmm.BlogPost.create_database()
+        dmm.BlogPost.insert_blog_post(title, author, description, content, tags, thumbnail_path, dt_string)
         # Process the blog post data here (e.g., store in a database)
 
         return 'Blog post created successfully!'
@@ -81,6 +97,22 @@ def upload():
     file.save('static/img/blogimgs/' + file.filename)
     print('uploaded successfully')
     return json.dumps({'path': path})
+
+@app.route('/blogs',methods=["POST","GET"])
+def blogsfetch():
+    dmm.BlogPost.create_database()
+    blogs = dmm.BlogPost.query_all()
+    return render_template('blogposts.html', blogs=blogs)
+
+@app.route('/blogs/<int:id>')
+def blog(id):
+    post = dmm.BlogPost.query(id)
+    if post is None:
+        return "404"  # or redirect to a custom error page
+    else:
+        post.tags=post.tags.split(' ')
+        print(post.tags)
+        return render_template('blog.html', content=post, tags=post.tags)
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True, host='0.0.0.0')
