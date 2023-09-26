@@ -1,18 +1,18 @@
 {% extends 'structure.html' %}
 {% block main %}
 <head>
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/createblog.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/editblogpage.css') }}">
 	<title>Create Blog</title>
 </head>
 <body>
 <div class="create-blog">
-	<form action="/create-blog" method="POST" name="forcreate" enctype="multipart/form-data">
+	<form action="/edit-blog" method="POST" name="forcreate" enctype="multipart/form-data">
 	<h3 class="title-blog">Enter Title:</h3>
-	<input type="text" id="title" name="title">
+	<input type="text" id="title" name="title" value="{{  content.title  }}">
 	<h3 class="author-blog">Author</h3>
-	<input type="text" id="author" name="author">
+	<input type="text" id="author" name="author" value="{{  content.author  }}">
 	<h3 class="description-blog">Enter Description:</h3>
-	<input type="text" id="description" name="description">
+	<input type="text" id="description" name="description" value="{{  content.description  }}">
 	<h3 class="content-blog">Enter Content:</h3>
 	<div class="contentformat">
 		<div class="toolbar">
@@ -28,11 +28,13 @@
 		</div>
 	</div>
 	<h3 class="tags-blog">Enter Tags:</h3>
-	<input type="text" id="tags" name="tags">
+	<input type="text" id="tags" name="tags" value="{{  content.tags  }}">
 	<h3 class="image-blog">Upload Thumbnail:</h3>
-	<input type="file" id="image" name="thumbnail">
+	<input type="file" id="image" name="thumbnail" value="{{  content.thumbnail_path  }}">
+	<input type="hidden" name="old_thumbnail" value="{{  content.thumbnail_path  }}">
+	<input type="hidden" name="id" value="{{ content.id }}">
 	<div class="submit-blogdiv">
-		<button name="button" value="UPLOAD BLOG" id="submit-blog">UPLOAD BLOG</button>
+		<button name="button" value="UPLOAD BLOG" id="submit-blog">SAVE CHANGES</button>
 	</div>
 	</form>
 </div>
@@ -40,6 +42,10 @@
 <div class="hyperlinkpopup"></div>
 
 <script>
+	const textarea = document.getElementById('content');
+	const text = `{{  content.content|safe  }}`;
+	textarea.value = text;
+
 	const form = document.querySelector('form[name="forcreate"]');
 	form.addEventListener('keydown', function(event) {
 		if (event.key === 'Enter' && event.target.id !== 'content') {

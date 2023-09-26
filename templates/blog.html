@@ -9,6 +9,9 @@
     <h1 class="title">{{  content.title  }}</h1>
     <h3 class="byline"><span class='colorforby'>By: </span>{{  content.author  }}</h3>
     <h3 class="datecreation"><span class='colorforby'>Posted: </span>{{  content.created_at  }}</h3>
+    {% if content.updated_at!='' %}
+    <h3 class="dateupdate"><span class='colorforby'>Updated: </span>{{ content.updated_at }}</h3>
+    {% endif %}
     <span class="tagsspan">
     {% for tag in tags %}
     <button class="tags">{{ tag }}</button>
