@@ -1,5 +1,5 @@
 # MCURedefined
 
-Welcome To The Main Branch Of MCU Redefined Website.
-This is the latest running version.
-Refer to Dev branch to find all the dev changes.
+This is the dev branch of MCU Redefined.
+All working parts of the website and tested here and once
+they are functional are pushed to the main branch
