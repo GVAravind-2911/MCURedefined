@@ -1,5 +1,8 @@
 import sqlalchemy
 from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy import CheckConstraint
+from datetime import datetime
+import json
 
 Base = declarative_base()
 
@@ -17,12 +20,12 @@ class BlogPost(Base):
     updated_at = sqlalchemy.Column(sqlalchemy.String(75))
 
     @staticmethod
-    def create_database():
+    def createDatabase():
         engine = sqlalchemy.create_engine('sqlite:///blog.db')
         Base.metadata.create_all(engine)
 
     @staticmethod
-    def insert_blog_post(title, author, description, content, tags, thumbnail_path, time, update_time):
+    def insertBlogPost(title, author, description, content, tags, thumbnail_path, time, update_time):
         engine = sqlalchemy.create_engine('sqlite:///blog.db')
         session = sessionmaker(bind=engine)()
         post = BlogPost(title=title, author=author, description=description, content=content, tags=tags, thumbnail_path=thumbnail_path, created_at=time, updated_at = update_time)
@@ -31,7 +34,7 @@ class BlogPost(Base):
         session.close()
 
     @staticmethod
-    def query_all():
+    def queryAll():
         engine = sqlalchemy.create_engine('sqlite:///blog.db')
         session = sessionmaker(bind=engine)()
 
@@ -73,11 +76,112 @@ class BlogPost(Base):
         session.close()
 
 
-if __name__ == '__main__':
-    BlogPost.create_database()
-    BlogPost.insert_blog_post('My First Blog Post','Aravind', 'This is my first blog post.', 'This is the content of my first blog post.', 'tag1, tag2, tag3', 'thumbnaildata','12202004','')
+# if __name__ == '__main__':
+#     BlogPost.createDatabase()
+#     BlogPost.insertBlogPost('My First Blog Post','Aravind', 'This is my first blog post.', 'This is the content of my first blog post.', 'tag1, tag2, tag3', 'thumbnaildata','12202004','')
 
 # import sqlite3
 # mydb = sqlite3.connect('blog.db')
 # mycon = sqlite3.Cursor()
 # mycon.execute("CREATE TABLE blogposts IF NOT EXISTS (id integer PRIMARY KEY AUTOINCREMENT, title varchar(255) author varchar(30) description TEXT, content TEXT, tags VARCHAR(255),);")
+    
+class Timeline(Base):
+    __tablename__ = 'timeline'
+    id = sqlalchemy.Column(sqlalchemy.Integer,primary_key=True)
+    phase = sqlalchemy.Column(sqlalchemy.Integer)
+    name = sqlalchemy.Column(sqlalchemy.String(50))
+    release_date = sqlalchemy.Column(sqlalchemy.Date)
+    synopsis = sqlalchemy.Column(sqlalchemy.Text)
+    posterpath = sqlalchemy.Column(sqlalchemy.String(50))
+    castinfo = sqlalchemy.Column(sqlalchemy.Text)
+    director = sqlalchemy.Column(sqlalchemy.String(50))
+    musicartist = sqlalchemy.Column(sqlalchemy.String(30))
+    timelineid = sqlalchemy.Column(sqlalchemy.Integer)
+    __table_args__ = (
+        CheckConstraint('phase IN (1, 2, 3, 4, 5, 6, 7, 8, 9)', name='phase_check'),)
+
+    @staticmethod
+    def createDatabase():
+        engine = sqlalchemy.create_engine('sqlite:///blog.db')
+        Base.metadata.create_all(engine)
+
+    @staticmethod
+    def insert(phase,name,release_date,synopsis,img_path):
+        engine = sqlalchemy.create_engine("sqlite:///blog.db")
+        session = sessionmaker(bind = engine)()
+        project = Timeline(phase = phase,name = name, release_date=release_date,synopsis = synopsis, posterpath = img_path)
+        session.add(project)
+        session.commit()
+        session.close()
+
+
+    @staticmethod
+    def queryPhase(phaseno):
+        engine = sqlalchemy.create_engine("sqlite:///blog.db")
+        session = sessionmaker(bind=engine)()
+        posts = session.query(Timeline).filter(Timeline.phase == phaseno).all()
+        session.close()
+
+        if posts:
+            jsonoutput = []
+            for i in posts:
+                jsondict = {'id':i.id,'phase':i.phase,'name':i.name,'release_date':i.release_date,'synopsis':i.synopsis,'posterpath':i.posterpath,
+                        'castinfo':i.castinfo,'director':i.director,'musicartist':i.musicartist,'timelineid':i.timelineid}
+                jsonoutput.append(jsondict)
+            return jsonoutput
+                
+        else:
+            return 404
+
+    @staticmethod    
+    def queryId(id):
+        engine = sqlalchemy.create_engine('sqlite:///blog.db')
+        session = sessionmaker(bind = engine)()
+        project = session.query(Timeline).filter(Timeline.id==id).first()
+        session.close()
+        
+        if project:
+            return project
+        else:
+            return 404
+        
+    @staticmethod
+    def forPopulate():
+        engine = sqlalchemy.create_engine('sqlite:///blog.db')
+        session = sessionmaker(bind = engine)()
+        result = session.query(Timeline.name).all()
+        resl = []
+        for i in result:
+            for j in i:
+                resl.append(j)
+        session.close()
+        return resl
+    
+    @staticmethod
+    def updateViaTkinter(name,syn,cast,direc,musicd,timelinepos):
+        engine = sqlalchemy.create_engine('sqlite:///blog.db')
+        session = sessionmaker(bind = engine)()
+        timeline = session.query(Timeline).filter(Timeline.name == name).first()
+        if timeline:
+            timeline.synopsis = syn
+            timeline.castinfo = cast
+            timeline.director = direc
+            timeline.musicartist = musicd
+            timeline.timelineid = timelinepos
+            session.commit()
+        session.close()
+    
+    @staticmethod
+    def getTkinterContent(name):
+        engine = sqlalchemy.create_engine('sqlite:///blog.db')
+        session = sessionmaker(bind = engine)()
+        timeline = session.query(Timeline.synopsis,Timeline.musicartist,Timeline.director,Timeline.castinfo).filter(Timeline.name==name).first()
+        if timeline:
+            return timeline
+        session.close()
+
+        
+if __name__ == '__main__':
+    Timeline.createDatabase()
+    # Timeline.insert(3,'Spider-Man Far From Home',datetime(2019,7,2),'Mysterio and Edith',r'static/img/Posters/Phase3/Spiderman2.jpg')
+    Timeline.forPopulate()

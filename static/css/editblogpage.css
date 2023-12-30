@@ -23,7 +23,7 @@
 .create-blog{
     position: relative;
     margin-top: 40px;
-    display: flex;
+    display: block;
     flex-direction: column;
     margin-bottom: 20px;
     width: 80vw;

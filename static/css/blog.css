@@ -93,14 +93,16 @@
 
 .maincontent{
     font-size: 25px;
-    word-spacing: 0.4em;
+    word-spacing: 0.1em;
     font-family: 'BentonSansBook';
     white-space: pre-line;
     padding-bottom: 2%;
-    margin-left: 3%;
+    margin-left: 10%;
     margin-right: 3%;
     line-height: 2.5;
     margin-bottom: 5%;
+    width:80%;
+    align-items: center;
 }
 
 .colorforby{
@@ -122,7 +124,7 @@
 }
 
 .video-container{
-    margin-left: 27%;
+    margin-left: 23%;
     margin-top: 5%;
     margin-bottom: 0.1%;
     width: 50%;

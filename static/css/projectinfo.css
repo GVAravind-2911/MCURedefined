@@ -1,0 +1,31 @@
+.projectinfo-main{
+    display: flex;
+    flex-direction: row;
+    width:90%;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: fit-content;
+}
+
+.poster{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30%;
+    margin-right: 1%;
+    }
+
+.projectinfo-imgposter{
+    object-fit: contain;
+    width:85%;
+}
+
+.projectinfo-content{
+    justify-content: left;
+    background-color:#9BABB4;
+    width:65%;
+    padding-left: 2%;
+    padding-top: 1.5%;
+    padding-right: 2%;
+    padding-bottom: 1.5%;
+}

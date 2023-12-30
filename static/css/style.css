@@ -2,6 +2,19 @@
   font-family: 'BentonSansCompLight';
   src:url('../fonts/BentonSans Comp Light.otf');
 }
+@font-face {
+  font-family: 'BentonSansRegular';
+  src: url('../fonts/BentonSans\ Regular.otf');
+}
+@font-face {
+  font-family: 'BentonSansBook';
+  src: url('../fonts/BentonSans\ Book.otf');
+}
+@font-face {
+  font-family: 'BentonSansBold';
+  src: url('../fonts/BentonSans\ Bold.otf');
+}
+
 :root {
   --dl-color-gray-500: #595959;
   --dl-color-gray-700: #999999;
@@ -195,11 +208,27 @@
   text-transform: none;
   text-decoration: none;
 }
+.tagline{
+  text-align: center;
+  margin-top: 10%;
+}
+
+.lock-scroll{
+  overflow:hidden ;
+}
+
 
 @media(max-width: 767px) {
   .button-link {
     padding-top: var(--dl-space-space-oneandhalfunits);
     padding-bottom: var(--dl-space-space-oneandhalfunits);
+  }
+  .tagline{
+    text-align: center;
+    margin-top: -3%;
+  }
+  .lock-scroll{
+    overflow:hidden ;
   }
 }
 @media(max-width: 479px) {
@@ -207,4 +236,109 @@
     padding-top: var(--dl-space-space-oneandhalfunits);
     padding-bottom: var(--dl-space-space-oneandhalfunits);
   }
+  .tagline{
+    text-align: center;
+    margin-top: -3%;
+  }
+  .lock-scroll{
+    overflow:hidden ;
+  }
+}
+
+.imagetwitter{
+  width: 20px;
+  height: 20px;
+  margin-right: 1px;
+}
+
+.imagediscord{
+  width: 20px;
+  height: 20px;
+  margin-right: 1px;
+}
+
+.imageinsta{
+  width: 20px;
+  height: 20px;
+  margin-right: 1px;
+}
+
+.home-links-container{
+  justify-content: right;
+}
+
+.footercontainer{
+  width: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20%;
+  flex-direction: row;
+}
+
+.iop{
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: var(--dl-space-space-oneandhalfunits);
+    flex-direction: column;
+    justify-content: flex-start;
+    margin: 0;
+}
+.text31{
+  color: #EC1d24;
+  font-family: 'BentonSansBold';
+}
+
+.text32{
+  color: white;
+  font-family: 'BentonSansBook';
+  margin-top: 3%;
+}
+
+.text33{
+  color:#EC1d24;
+  font-family: 'BentonSansBold';
+}
+
+.footersocials{
+  margin-top: 10%;
+  gap: 10px;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.bottomlogo{
+  object-fit: cover;
+}
+
+.footerlogo{
+  width: 175px; 
+}
+
+.tagline{
+  font-family: "BentonSansRegular";
+  color: white;
+}
+
+.footercontainer{
+  width: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20%;
+  flex-direction: column;
+}
+.iop{
+  align-items: center;
+  margin-top: 3%;
+}
+.home-socials1{
+  align-items: center;
+  margin-top: 3%;
+}
+.tagline{
+  text-align: center;
+  margin-top: -1%;
 }

@@ -6,7 +6,7 @@
 <body>
 <div class="blogs">
     {% for blog in blogs %}
-    <a href="{{ url_for('editblogpage',id=blog.id) }}" class="cardblog">
+    <a href="{{ url_for('editBlogPage',id=blog.id) }}" class="cardblog">
         <!-- <div class="cardblog"> -->
             <div class="image-container">
                 <img src="{{ blog.thumbnail_path }}" alt="Thumbnail" class="thumbnailset">

@@ -1,0 +1,8 @@
+{% extends "structure.html" %}
+{% block main %}
+    <head>
+        <link rel="stylesheet" href = "{{ url_for('static', filename='css/timeline.css') }}">
+    </head>
+    <div class = 'container' id="datafromjson"></div>
+    <script src="../static/js/OutputProjects.js"></script>
+{% endblock main %}

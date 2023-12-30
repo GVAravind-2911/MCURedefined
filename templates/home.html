@@ -1,5 +1,6 @@
 {% extends "structure.html" %}
         {% block main %}
+        <form action="/" method="POST" name="forcreate" enctype="multipart/form-data">
         <section class="home-hero">
           <div class="home-heading">
             <h1 class="home-header">
@@ -41,7 +42,7 @@
             </p>
             <div class="home-description1">
               <div class="home-content"></div>
-              <div class="home-links">
+              <!-- <div class="home-links">
                 <a
                   href="https://www.instagram.com/mcu_redefined/"
                   target="_blank"
@@ -81,7 +82,7 @@
                     class="home-arrow2"
                   />
                 </a>
-              </div>
+              </div> -->
             </div>
           </div>
         </section>
@@ -97,7 +98,7 @@
                     Order are in production.
                   </p>
                 </div>
-                <button class="home-learn button">
+                <button class="home-learn button" value = 'cardblogredir' name="button">
                   <span class="home-text15">Learn more</span>
                   <img
                     alt="image"
@@ -121,7 +122,7 @@
               <h2 class="home-header2">Fav. Characters</h2>
               <p class="home-header3">
                 Check Out Your Favourite Characters and find all their
-                appearences in the MCU.
+                appearances in the MCU.
               </p>
             </div>
           </div>
@@ -249,7 +250,7 @@
                   Saga in Chronological Order"
                 </p>
               </div>
-              <button class="home-view1 button1">Unveil MCU Timeline</button>
+              <button class="home-view1 button1" value = 'cardtimelineredir' name="button">Unveil MCU Timeline</button>
             </div>
             <img
               alt="image"
@@ -291,8 +292,9 @@
                   vibrant community that celebrates theories and speculation.
                 </p>
               </div>
-              <button class="home-button6 button1">Make Your Voice Heard</button>
+              <button class="home-button6 button1" value = 'cardcollabredir' name="button">Make Your Voice Heard</button>
             </div>
           </div>
         </section>
+        </form>
         {% endblock main %}

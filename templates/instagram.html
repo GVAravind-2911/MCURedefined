@@ -38,12 +38,20 @@
 </head>
 <body>
     <h1>Instagram Posts</h1>
-    <div class="post-container">
-        {% for post_url in post_urls %}
-            <div class="post">
-                <img src="{{ url_for('proxy_image', filename=image_url) }}" alt="Instagram Post">
-            </div>
-        {% endfor %}
+    <div class="post-container" id="reacttrials">
     </div>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    
+    <script type="text/babel">
+        function HelloWorldComponent() {
+            return <p>Hello World1</p>;
+        }
+    
+        const domContainer = document.querySelector('#reacttrials');
+        const root = ReactDOM.createRoot(domContainer);
+        root.render(<HelloWorldComponent />);
+    </script>
 </body>
 </html>
