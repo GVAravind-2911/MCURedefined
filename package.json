@@ -8,10 +8,18 @@
   },
   "dependencies": {
     "axios": "^1.6.3",
+    "ldrs": "^1.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "scripts": {
     "build": "webpack --config webpack.config.js --watch"
-  }
+  },
+  "name": "mcuredefined",
+  "description": "This is the dev branch of MCU Redefined.\r All working parts of the website and tested here and once\r they are functional are pushed to the main branch",
+  "version": "1.0.0",
+  "main": "webpack.config.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

@@ -1,6 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import axios from "axios";
+import { trefoil } from 'ldrs'
+
+trefoil.register()
 
 function OrderComponent() {
     const [phase1, setPhase1] = React.useState([]);
@@ -8,18 +11,21 @@ function OrderComponent() {
     const [phase3, setPhase3] = React.useState([]);
     const [contentdict, setContentDict] = React.useState([]);
     const [sort, setSort] = React.useState([]);
+    const [isLoading, setIsLoading] = React.useState(false);
 
     React.useEffect(() => {
+        setIsLoading(true);
         axios.get("/send-data").then(response => {
+            setSort(response.data[3].sortID);
             setPhase1(response.data[0]);
             setPhase2(response.data[1]);
             setPhase3(response.data[2]);
             setContentDict(response.data);
             console.log(response.data[3]);
-            setSort(response.data[3].sortID);
             setContentDict((response.data[0].concat(response.data[1],response.data[2])).sort((a,b) => (a.timelineid > b.timelineid) ? 1 : -1));
             console.log(response.data[3].sortID);
             console.log(response.data);
+            setIsLoading(false);
         });
     }, []);
 
@@ -45,8 +51,20 @@ function OrderComponent() {
     if (sort=== 1) {
         console.log('Check At 1');
     return (
-        <div>
+        <>
             {/* Render phase1, phase2, and phase3 data as needed */}
+            {isLoading && <div className="loadingRelease">
+                <l-trefoil
+                    size="50"
+                    stroke="5"
+                    stroke-length="0.15"
+                    bg-opacity="0.1"
+                    speed="1.4" 
+                    color="#FFF" >
+                </l-trefoil>
+            </div>}
+            {!isLoading &&
+            <div className="contentFill">
             <div className="sort">
                 <div className="sort-release">
                     <button id="releasesort-active">
@@ -62,8 +80,7 @@ function OrderComponent() {
                     </svg>
                     </button>
                 </div>
-            </div>
-
+            </div> 
             <div className="mainphase-name">
                 <h1>Phase 1</h1>
             </div>
@@ -116,12 +133,25 @@ function OrderComponent() {
             ))}
             </div>
         </div>
+    }
+        </>
     );
     }
     else{
-        console.log('Check At 2');
         return (
-            <div>
+            <>
+            {isLoading && <div className="loading">
+                <l-trefoil
+                    size="50"
+                    stroke="5"
+                    stroke-length="0.15"
+                    bg-opacity="0.1"
+                    speed="1.4" 
+                    color="#FFF" >
+                </l-trefoil>
+            </div>}
+            {!isLoading && 
+                <div>
                 <div className="sort">
                     <div className="sort-release">
                         <button id="releasesort" onClick={Releasesort}>
@@ -139,8 +169,8 @@ function OrderComponent() {
                     </div>
                 </div>
                 <div className="mainphase-name">
-                <h1>Timeline Order</h1>
-            </div>
+                    <h1>Timeline Order</h1>
+                </div>
                 <div className="phase1">
                 {contentdict.map(project => (
                     <a href={`/release-slate/${project.id}`} className="anchorlink"  key={project.id}>
@@ -155,19 +185,14 @@ function OrderComponent() {
                     </a>
                 ))}
                 </div>
-            </div>
+                </div>
+    }
+            </>
         );
     }
 
 }
 
-// function TimelineOrderComponent() {
-//     return (
-//         <div>
-//             {/* Render phase1, phase2, and phase3 data as needed */}
-
-//     );
-// }
 const domContainer = document.querySelector('#datafromjson');
 const root = ReactDOM.createRoot(domContainer);
 root.render(<OrderComponent />);

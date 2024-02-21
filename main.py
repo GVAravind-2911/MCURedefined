@@ -6,7 +6,6 @@ import webbrowser
 
 app = Flask("mcuredefined")
 app.secret_key = "secretkey"
-orderID = 1
 # Use Global for ID release_slate
 
 @app.route("/", methods=['GET', 'POST'])
@@ -17,23 +16,20 @@ def homePage():
     else:
         buttonValue = request.form.get('button')
         if buttonValue == 'home':
-            # Handle the "Home" button action
             return redirect(url_for('homePage'))
         elif buttonValue == 'reviews':
             return redirect(url_for('editBlog'))
         elif buttonValue == 'blog':
             return redirect(url_for('blogsFetch'))
         elif buttonValue == 'release_slate':
-            orderID = 1
+            session['orderID'] = 1
             return redirect(url_for('releaseSlate'))
         elif buttonValue == 'collaborate':
-            # Handle the "Collaborate" button action
-            # return redirect(url_for('collaborate'))
-            return "Coming Soon"
+            return redirect(url_for('collaborate'))
         elif buttonValue == 'cardblogredir':
             return redirect(url_for('blogsFetch'))
         elif buttonValue == 'cardtimelineredir':
-            orderID = 0
+            session['orderID'] = 0
             return redirect(url_for('releaseSlate'))
         elif buttonValue == 'cardcollabredir':
             return "Collaboration Opening Soon"
@@ -54,7 +50,6 @@ def returnHome():
     return redirect(url_for('homePage'))
 
 
-# Route to handle form submission and create a new blog post
 @app.route('/create-blog', methods=['POST', 'GET'])
 def createBlogPost():
     if request.method == 'POST':
@@ -169,7 +164,7 @@ def editBlogPage(id):
 @app.route('/release-slate', methods=['POST', 'GET'])
 def releaseSlate():
     if request.method == 'GET':
-        print(orderID,'Method')
+        print(session['orderID'],'Method')
         return render_template('timeline.html')
 
 @app.route('/send-data/')    
@@ -178,14 +173,13 @@ def sendData():
         phase1Data = (Timeline.queryPhase(1))
         phase2Data = (Timeline.queryPhase(2))
         phase3Data = (Timeline.queryPhase(3))
-        return jsonify(phase1Data,phase2Data,phase3Data,{"sortID":orderID})
+        return jsonify(phase1Data,phase2Data,phase3Data,{"sortID":session['orderID']})
 
 @app.route('/receive-data',methods = ['POST'])
 def receiveData():
     data = request.get_json()
-    global orderID
-    orderID = data['sortID']
-    return jsonify(orderID)
+    session['orderID'] = data['sortID']
+    return jsonify(session['orderID'])
 
 @app.route('/release-slate/<int:id>',methods = ['GET','POST'])
 def releaseProject(id):
@@ -197,7 +191,16 @@ def releaseProject(id):
             project.posterpath = '/' + project.posterpath
             return render_template('projectinfo.html',project = project)
 
+@app.route('/collaborate',methods=['POST','GET'])
+def collaborate():
+    if request.method == 'GET':
+        return render_template('collaboratePage.html')
+    else:
+        data = request.get_json()
+        print(data)
+        return data
+
 
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True, host='0.0.0.0')
+    app.run(port=4000, debug=True, host='0.0.0.0')
