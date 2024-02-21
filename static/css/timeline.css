@@ -1,3 +1,28 @@
+@font-face{
+    font-family: 'BentonSansCompLight';
+    src:url('../fonts/BentonSans\ Comp\ Light.otf');
+  }
+@font-face {
+    font-family: 'BentonSansRegular';
+    src: url('../fonts/BentonSans\ Regular.otf');
+  }
+@font-face {
+    font-family: 'BentonSansBook';
+    src: url('../fonts/BentonSans\ Book.otf');
+  }
+@font-face {
+    font-family: 'BentonSansBold';
+    src: url('../fonts/BentonSans\ Bold.otf');
+  }
+@font-face {
+    font-family: 'BentonSansCompBlack';
+    src: url('../fonts/BentonSans\ Comp\ Black.otf');
+}
+
+.container{
+    width: 100%;
+}
+
 .sort{
     display: flex;
     justify-content: flex-end;
@@ -203,4 +228,22 @@
     width: 100%; /* Ensure the image fits within the card */
     border-radius: 5px; /* Optional: Rounded corners for the image */
 }
-  
+
+.loading{
+    display: flex;
+    color: antiquewhite;
+    margin-top: 150px;
+    margin-bottom: 100px;
+    justify-content: center;
+    align-items: center;
+}
+
+.loadingRelease{
+    display: flex;
+    color: antiquewhite;
+    margin-top: 90px;
+    margin-bottom: 175px;
+    justify-content: center;
+    align-items: center;
+
+}

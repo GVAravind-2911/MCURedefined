@@ -21,12 +21,12 @@ class BlogPost(Base):
 
     @staticmethod
     def createDatabase():
-        engine = sqlalchemy.create_engine('sqlite:///blog.db')
+        engine = sqlalchemy.create_engine('sqlite+libsql://mcu-redefined-database-gvaravind-2911.turso.io/?authToken=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOiIyMDI0LTAxLTA0VDE4OjE1OjE2LjAyOTU4Mjk2WiIsImlkIjoiZmVlNzM2ZjQtYWIwOC0xMWVlLTk2OTQtOWViYjJjNDgxYzJjIn0.zVTx9jKpOq5cLiBWuJtPGs8o_A36UWPepecgqKmfs9AelYGt2aTH4nZZmS4NFQ2-f5m8Tz8FJxIAL3y8g23sAA&secure=true')
         Base.metadata.create_all(engine)
 
     @staticmethod
     def insertBlogPost(title, author, description, content, tags, thumbnail_path, time, update_time):
-        engine = sqlalchemy.create_engine('sqlite:///blog.db')
+        engine = sqlalchemy.create_engine('sqlite+libsql://mcu-redefined-database-gvaravind-2911.turso.io/?authToken=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOiIyMDI0LTAxLTA0VDE4OjE1OjE2LjAyOTU4Mjk2WiIsImlkIjoiZmVlNzM2ZjQtYWIwOC0xMWVlLTk2OTQtOWViYjJjNDgxYzJjIn0.zVTx9jKpOq5cLiBWuJtPGs8o_A36UWPepecgqKmfs9AelYGt2aTH4nZZmS4NFQ2-f5m8Tz8FJxIAL3y8g23sAA&secure=true')
         session = sessionmaker(bind=engine)()
         post = BlogPost(title=title, author=author, description=description, content=content, tags=tags, thumbnail_path=thumbnail_path, created_at=time, updated_at = update_time)
         session.add(post)
@@ -35,7 +35,7 @@ class BlogPost(Base):
 
     @staticmethod
     def queryAll():
-        engine = sqlalchemy.create_engine('sqlite:///blog.db')
+        engine = sqlalchemy.create_engine('sqlite+libsql://mcu-redefined-database-gvaravind-2911.turso.io/?authToken=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOiIyMDI0LTAxLTA0VDE4OjE1OjE2LjAyOTU4Mjk2WiIsImlkIjoiZmVlNzM2ZjQtYWIwOC0xMWVlLTk2OTQtOWViYjJjNDgxYzJjIn0.zVTx9jKpOq5cLiBWuJtPGs8o_A36UWPepecgqKmfs9AelYGt2aTH4nZZmS4NFQ2-f5m8Tz8FJxIAL3y8g23sAA&secure=true')
         session = sessionmaker(bind=engine)()
 
         blog_posts = session.query(BlogPost).all()
@@ -44,7 +44,7 @@ class BlogPost(Base):
         return blog_posts
     
     def query(id):
-        engine = sqlalchemy.create_engine("sqlite:///blog.db")
+        engine = sqlalchemy.create_engine('sqlite+libsql://mcu-redefined-database-gvaravind-2911.turso.io/?authToken=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOiIyMDI0LTAxLTA0VDE4OjE1OjE2LjAyOTU4Mjk2WiIsImlkIjoiZmVlNzM2ZjQtYWIwOC0xMWVlLTk2OTQtOWViYjJjNDgxYzJjIn0.zVTx9jKpOq5cLiBWuJtPGs8o_A36UWPepecgqKmfs9AelYGt2aTH4nZZmS4NFQ2-f5m8Tz8FJxIAL3y8g23sAA&secure=true')
         session = sessionmaker(bind=engine)()
         post = session.query(BlogPost).filter(BlogPost.id == id).first()
         session.close()
@@ -56,7 +56,7 @@ class BlogPost(Base):
     
     @staticmethod
     def update(id, title, author, description, content, tags, thumbnail_path, time):
-        engine = sqlalchemy.create_engine("sqlite:///blog.db")
+        engine = sqlalchemy.create_engine('sqlite+libsql://mcu-redefined-database-gvaravind-2911.turso.io/?authToken=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOiIyMDI0LTAxLTA0VDE4OjE1OjE2LjAyOTU4Mjk2WiIsImlkIjoiZmVlNzM2ZjQtYWIwOC0xMWVlLTk2OTQtOWViYjJjNDgxYzJjIn0.zVTx9jKpOq5cLiBWuJtPGs8o_A36UWPepecgqKmfs9AelYGt2aTH4nZZmS4NFQ2-f5m8Tz8FJxIAL3y8g23sAA&secure=true')
         session = sessionmaker(bind=engine)()
 
         # Retrieve the blog post with the given id
@@ -102,12 +102,12 @@ class Timeline(Base):
 
     @staticmethod
     def createDatabase():
-        engine = sqlalchemy.create_engine('sqlite:///blog.db')
+        engine = sqlalchemy.create_engine('sqlite+libsql://mcu-redefined-database-gvaravind-2911.turso.io/?authToken=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOiIyMDI0LTAxLTA0VDE4OjE1OjE2LjAyOTU4Mjk2WiIsImlkIjoiZmVlNzM2ZjQtYWIwOC0xMWVlLTk2OTQtOWViYjJjNDgxYzJjIn0.zVTx9jKpOq5cLiBWuJtPGs8o_A36UWPepecgqKmfs9AelYGt2aTH4nZZmS4NFQ2-f5m8Tz8FJxIAL3y8g23sAA&secure=true')
         Base.metadata.create_all(engine)
 
     @staticmethod
     def insert(phase,name,release_date,synopsis,img_path):
-        engine = sqlalchemy.create_engine("sqlite:///blog.db")
+        engine = sqlalchemy.create_engine('sqlite+libsql://mcu-redefined-database-gvaravind-2911.turso.io/?authToken=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOiIyMDI0LTAxLTA0VDE4OjE1OjE2LjAyOTU4Mjk2WiIsImlkIjoiZmVlNzM2ZjQtYWIwOC0xMWVlLTk2OTQtOWViYjJjNDgxYzJjIn0.zVTx9jKpOq5cLiBWuJtPGs8o_A36UWPepecgqKmfs9AelYGt2aTH4nZZmS4NFQ2-f5m8Tz8FJxIAL3y8g23sAA&secure=true')
         session = sessionmaker(bind = engine)()
         project = Timeline(phase = phase,name = name, release_date=release_date,synopsis = synopsis, posterpath = img_path)
         session.add(project)
@@ -117,7 +117,7 @@ class Timeline(Base):
 
     @staticmethod
     def queryPhase(phaseno):
-        engine = sqlalchemy.create_engine("sqlite:///blog.db")
+        engine = sqlalchemy.create_engine('sqlite+libsql://mcu-redefined-database-gvaravind-2911.turso.io/?authToken=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOiIyMDI0LTAxLTA0VDE4OjE1OjE2LjAyOTU4Mjk2WiIsImlkIjoiZmVlNzM2ZjQtYWIwOC0xMWVlLTk2OTQtOWViYjJjNDgxYzJjIn0.zVTx9jKpOq5cLiBWuJtPGs8o_A36UWPepecgqKmfs9AelYGt2aTH4nZZmS4NFQ2-f5m8Tz8FJxIAL3y8g23sAA&secure=true')
         session = sessionmaker(bind=engine)()
         posts = session.query(Timeline).filter(Timeline.phase == phaseno).all()
         session.close()
@@ -135,7 +135,7 @@ class Timeline(Base):
 
     @staticmethod    
     def queryId(id):
-        engine = sqlalchemy.create_engine('sqlite:///blog.db')
+        engine = sqlalchemy.create_engine('sqlite+libsql://mcu-redefined-database-gvaravind-2911.turso.io/?authToken=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOiIyMDI0LTAxLTA0VDE4OjE1OjE2LjAyOTU4Mjk2WiIsImlkIjoiZmVlNzM2ZjQtYWIwOC0xMWVlLTk2OTQtOWViYjJjNDgxYzJjIn0.zVTx9jKpOq5cLiBWuJtPGs8o_A36UWPepecgqKmfs9AelYGt2aTH4nZZmS4NFQ2-f5m8Tz8FJxIAL3y8g23sAA&secure=true')
         session = sessionmaker(bind = engine)()
         project = session.query(Timeline).filter(Timeline.id==id).first()
         session.close()
@@ -146,8 +146,24 @@ class Timeline(Base):
             return 404
         
     @staticmethod
-    def forPopulate():
+    def queryAll():
         engine = sqlalchemy.create_engine('sqlite:///blog.db')
+        session = sessionmaker(bind=engine)()
+        oldposts = session.query(Timeline)
+        return oldposts
+    
+    @staticmethod
+    def populateNewDB(project):
+        engine = sqlalchemy.create_engine('sqlite+libsql://mcu-redefined-database-gvaravind-2911.turso.io/?authToken=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOiIyMDI0LTAxLTA0VDE4OjE1OjE2LjAyOTU4Mjk2WiIsImlkIjoiZmVlNzM2ZjQtYWIwOC0xMWVlLTk2OTQtOWViYjJjNDgxYzJjIn0.zVTx9jKpOq5cLiBWuJtPGs8o_A36UWPepecgqKmfs9AelYGt2aTH4nZZmS4NFQ2-f5m8Tz8FJxIAL3y8g23sAA&secure=true')
+        session = sessionmaker(bind = engine)()
+        newProject = Timeline(phase = project.phase,name = project.name,release_date = project.release_date,synopsis = project.synopsis,posterpath = project.posterpath,castinfo = project.castinfo,director = project.director,musicartist = project.musicartist,timelineid = project.timelineid)
+        session.add(newProject)
+        session.commit()
+        session.close()
+        
+    @staticmethod
+    def forPopulate():
+        engine = sqlalchemy.create_engine('sqlite+libsql://mcu-redefined-database-gvaravind-2911.turso.io/?authToken=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOiIyMDI0LTAxLTA0VDE4OjE1OjE2LjAyOTU4Mjk2WiIsImlkIjoiZmVlNzM2ZjQtYWIwOC0xMWVlLTk2OTQtOWViYjJjNDgxYzJjIn0.zVTx9jKpOq5cLiBWuJtPGs8o_A36UWPepecgqKmfs9AelYGt2aTH4nZZmS4NFQ2-f5m8Tz8FJxIAL3y8g23sAA&secure=true')
         session = sessionmaker(bind = engine)()
         result = session.query(Timeline.name).all()
         resl = []
@@ -159,7 +175,7 @@ class Timeline(Base):
     
     @staticmethod
     def updateViaTkinter(name,syn,cast,direc,musicd,timelinepos):
-        engine = sqlalchemy.create_engine('sqlite:///blog.db')
+        engine = sqlalchemy.create_engine('sqlite+libsql://mcu-redefined-database-gvaravind-2911.turso.io/?authToken=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOiIyMDI0LTAxLTA0VDE4OjE1OjE2LjAyOTU4Mjk2WiIsImlkIjoiZmVlNzM2ZjQtYWIwOC0xMWVlLTk2OTQtOWViYjJjNDgxYzJjIn0.zVTx9jKpOq5cLiBWuJtPGs8o_A36UWPepecgqKmfs9AelYGt2aTH4nZZmS4NFQ2-f5m8Tz8FJxIAL3y8g23sAA&secure=true')
         session = sessionmaker(bind = engine)()
         timeline = session.query(Timeline).filter(Timeline.name == name).first()
         if timeline:
@@ -173,15 +189,36 @@ class Timeline(Base):
     
     @staticmethod
     def getTkinterContent(name):
-        engine = sqlalchemy.create_engine('sqlite:///blog.db')
+        engine = sqlalchemy.create_engine('sqlite+libsql://mcu-redefined-database-gvaravind-2911.turso.io/?authToken=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOiIyMDI0LTAxLTA0VDE4OjE1OjE2LjAyOTU4Mjk2WiIsImlkIjoiZmVlNzM2ZjQtYWIwOC0xMWVlLTk2OTQtOWViYjJjNDgxYzJjIn0.zVTx9jKpOq5cLiBWuJtPGs8o_A36UWPepecgqKmfs9AelYGt2aTH4nZZmS4NFQ2-f5m8Tz8FJxIAL3y8g23sAA&secure=true')
         session = sessionmaker(bind = engine)()
         timeline = session.query(Timeline.synopsis,Timeline.musicartist,Timeline.director,Timeline.castinfo).filter(Timeline.name==name).first()
         if timeline:
             return timeline
         session.close()
 
-        
+    @staticmethod
+    def removeDuplicates():
+        engine = sqlalchemy.create_engine('sqlite+libsql://mcu-redefined-database-gvaravind-2911.turso.io/?authToken=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOiIyMDI0LTAxLTA0VDE4OjE1OjE2LjAyOTU4Mjk2WiIsImlkIjoiZmVlNzM2ZjQtYWIwOC0xMWVlLTk2OTQtOWViYjJjNDgxYzJjIn0.zVTx9jKpOq5cLiBWuJtPGs8o_A36UWPepecgqKmfs9AelYGt2aTH4nZZmS4NFQ2-f5m8Tz8FJxIAL3y8g23sAA&secure=true')
+        session = sessionmaker(bind = engine)()
+        duplicates = session.query(Timeline).filter(Timeline.id>23).all()
+        for i in duplicates:
+            session.delete(i)
+            session.commit()
+            session.close()
+
+class Users(Base):
+    __tablename__ = 'userdetails'
+    uniqueid = sqlalchemy.Column(sqlalchemy.String,primary_key=True)
+    username = sqlalchemy.Column(sqlalchemy.VARCHAR(10),unique=True)
+    password = sqlalchemy.Column(sqlalchemy.String)
+    likedPosts = sqlalchemy.Column(sqlalchemy.String)
+
 if __name__ == '__main__':
-    Timeline.createDatabase()
+    # BlogPost.createDatabase()
+    # BlogPost.insertBlogPost('MCURedefined','Aravind','Trying','Trying to use Turso','#try','','','')
     # Timeline.insert(3,'Spider-Man Far From Home',datetime(2019,7,2),'Mysterio and Edith',r'static/img/Posters/Phase3/Spiderman2.jpg')
-    Timeline.forPopulate()
+    # Timeline.forPopulate()
+    # print(Timeline.queryAll())
+    # for i in Timeline.queryAll():
+    #     Timeline.populateNewDB(i)
+    Timeline.removeDuplicates()

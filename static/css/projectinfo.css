@@ -1,3 +1,24 @@
+@font-face{
+    font-family: 'BentonSansCompLight';
+    src:url('../fonts/BentonSans\ Comp\ Light.otf');
+  }
+@font-face {
+    font-family: 'BentonSansRegular';
+    src: url('../fonts/BentonSans\ Regular.otf');
+  }
+@font-face {
+    font-family: 'BentonSansBook';
+    src: url('../fonts/BentonSans\ Book.otf');
+  }
+@font-face {
+    font-family: 'BentonSansBold';
+    src: url('../fonts/BentonSans\ Bold.otf');
+  }
+@font-face {
+    font-family: 'BentonSansCompBlack';
+    src: url('../fonts/BentonSans\ Comp\ Black.otf');
+}
+
 .projectinfo-main{
     display: flex;
     flex-direction: row;
