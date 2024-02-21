@@ -1,1 +1,4 @@
 MCURedefined/
+node_modules/
+.idea/
+__pycache__/
