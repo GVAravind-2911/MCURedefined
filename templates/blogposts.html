@@ -4,8 +4,8 @@
     <link rel = "stylesheet" href = "../static/css/blogposts.css">
 </head>
 <body>
-<div class="blogs">
-    {% for blog in blogs %}
+<div class="blogs" id="blogs">
+    <!-- {% for blog in blogs %}
     <a href="{{ url_for('blog',id=blog.id) }}" class="cardblog">
             <div class="image-container">
                 <img src="{{ blog.thumbnail_path }}" alt="Thumbnail" class="thumbnailset">
@@ -17,9 +17,14 @@
             <h3 class="descblog">{{ blog.description }}</h3>
             </div>
     </a>
-     {% endfor %}
+     {% endfor %} -->
 </div>
 </body>
 {% endblock main %}
+{% block footer %}
+<script src="../static/js/OutputHeader.js"></script>
+<script src="../static/js/OutputBlogComponent.js"></script>
+<script src="../static/js/OutputFooter.js"></script>
+{% endblock footer %}
 
     

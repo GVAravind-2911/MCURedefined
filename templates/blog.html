@@ -3,26 +3,10 @@
 <head>
     <link rel = "stylesheet" href = "../static/css/blog.css">
 </head>
-<body>
-    <div class="contents">
-    <div class="contentsinfo">
-    <h1 class="title">{{  content.title  }}</h1>
-    <h3 class="byline"><span class='colorforby'>By: </span>{{  content.author  }}</h3>
-    <h3 class="datecreation"><span class='colorforby'>Posted: </span>{{  content.created_at  }}</h3>
-    {% if content.updated_at!='' %}
-    <h3 class="dateupdate"><span class='colorforby'>Updated: </span>{{ content.updated_at }}</h3>
-    {% endif %}
-    <span class="tagsspan">
-    {% for tag in tags %}
-    <button class="tags">{{ tag }}</button>
-    {% endfor %}
-    </span>
-    </div>
-    <div class="contentsmain">
-    <p class="maincontent">
-        {{ content.content|safe }}
-    </p>
-    </div>
-    </div>
-</body>
+    <div id="maindiv"></div>
 {% endblock main %}
+{% block footer %}
+<script src="../static/js/OutputHeader.js"></script>
+<script src="../static/js/OutputIndividualBlog.js"></script>
+<script src="../static/js/OutputFooter.js"></script>
+{% endblock footer %}

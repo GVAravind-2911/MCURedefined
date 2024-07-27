@@ -3,23 +3,11 @@
     <head>
         <link rel="stylesheet" href = "{{ url_for('static', filename='css/projectinfo.css') }}">
     </head>
-        <div class="projectinfo-main">
-            <div class="poster">
-                <img src = "{{  project.posterpath  }}" alt="Poster" class="projectinfo-imgposter">
-            </div>
-            <div class="projectinfo-content">
-                <h1>{{  project.name  }}</h1>
-                <br>
-                <h3>Release Date : {{  project.release_date  }}</h3>
-                <br>
-                <h3>Director : {{  project.director  }}</h3>
-                <br>
-                <h3>Music By : {{  project.musicartist  }}</h3>
-                <br>
-                <h3>Cast :</h3><p>{{  project.castinfo  }}</p>
-                <br>
-                <h3>Synopsis : </h3>
-                <p>{{  project.synopsis|safe  }}</p>
-            </div>
+        <div class="projectinfo-main" id="projectinfo-main">
         </div>
 {% endblock main %}
+{% block footer %}
+<script src="../static/js/OutputHeader.js"></script>
+<script src = "../static/js/OutputIndividualProject.js"></script>
+<script src="../static/js/OutputFooter.js"></script>
+{% endblock footer %}

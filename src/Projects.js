@@ -1,9 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import axios from "axios";
-import { trefoil } from 'ldrs'
-
-trefoil.register()
+import LoadingOverlay from "./LoadingOverlay";
 
 function OrderComponent() {
     const [phase1, setPhase1] = React.useState([]);
@@ -32,11 +30,7 @@ function OrderComponent() {
 
     const Timelinesort = () => {
         setSort(0);
-        axios.post('/receive-data', {sortID: 0});
-        axios.get('/send-data').then(response =>{
-            console.log('Fetch Timeline Successful',response.data);
-        });
-        console.log(sort,contentdict);
+        console.log('Cookie',sort);
     };
     const Releasesort = () => {
         setSort(1);
@@ -53,18 +47,11 @@ function OrderComponent() {
     return (
         <>
             {/* Render phase1, phase2, and phase3 data as needed */}
-            {isLoading && <div className="loadingRelease">
-                <l-trefoil
-                    size="50"
-                    stroke="5"
-                    stroke-length="0.15"
-                    bg-opacity="0.1"
-                    speed="1.4" 
-                    color="#FFF" >
-                </l-trefoil>
-            </div>}
+            {isLoading &&
+                <LoadingOverlay/>
+            }
             {!isLoading &&
-            <div className="contentFill">
+            <div className="contentFill fade-in">
             <div className="sort">
                 <div className="sort-release">
                     <button id="releasesort-active">
@@ -140,18 +127,11 @@ function OrderComponent() {
     else{
         return (
             <>
-            {isLoading && <div className="loading">
-                <l-trefoil
-                    size="50"
-                    stroke="5"
-                    stroke-length="0.15"
-                    bg-opacity="0.1"
-                    speed="1.4" 
-                    color="#FFF" >
-                </l-trefoil>
-            </div>}
+            {isLoading && 
+                <LoadingOverlay/>
+            }
             {!isLoading && 
-                <div>
+                <div className="fade-in">
                 <div className="sort">
                     <div className="sort-release">
                         <button id="releasesort" onClick={Releasesort}>

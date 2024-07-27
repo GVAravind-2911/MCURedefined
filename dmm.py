@@ -19,6 +19,9 @@ class BlogPost(Base):
     created_at = sqlalchemy.Column(sqlalchemy.String(75))
     updated_at = sqlalchemy.Column(sqlalchemy.String(75))
 
+    def to_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
     @staticmethod
     def createDatabase():
         engine = sqlalchemy.create_engine('sqlite+libsql://mcu-redefined-database-gvaravind-2911.turso.io/?authToken=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOiIyMDI0LTAxLTA0VDE4OjE1OjE2LjAyOTU4Mjk2WiIsImlkIjoiZmVlNzM2ZjQtYWIwOC0xMWVlLTk2OTQtOWViYjJjNDgxYzJjIn0.zVTx9jKpOq5cLiBWuJtPGs8o_A36UWPepecgqKmfs9AelYGt2aTH4nZZmS4NFQ2-f5m8Tz8FJxIAL3y8g23sAA&secure=true')
@@ -39,18 +42,34 @@ class BlogPost(Base):
         session = sessionmaker(bind=engine)()
 
         blog_posts = session.query(BlogPost).all()
+        blog_posts_json = []
+        for post in blog_posts:
+            post_json = {
+                'id': post.id,
+                'title': post.title,
+                'author': post.author,
+                'description': post.description,
+                'content': post.content,
+                'tags': post.tags,
+                'thumbnail_path': post.thumbnail_path,
+                'created_at': post.created_at,
+                'updated_at': post.updated_at
+            }
+            blog_posts_json.append(post_json)
+
         session.close()
 
-        return blog_posts
+        return blog_posts_json
     
     def query(id):
         engine = sqlalchemy.create_engine('sqlite+libsql://mcu-redefined-database-gvaravind-2911.turso.io/?authToken=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOiIyMDI0LTAxLTA0VDE4OjE1OjE2LjAyOTU4Mjk2WiIsImlkIjoiZmVlNzM2ZjQtYWIwOC0xMWVlLTk2OTQtOWViYjJjNDgxYzJjIn0.zVTx9jKpOq5cLiBWuJtPGs8o_A36UWPepecgqKmfs9AelYGt2aTH4nZZmS4NFQ2-f5m8Tz8FJxIAL3y8g23sAA&secure=true')
         session = sessionmaker(bind=engine)()
         post = session.query(BlogPost).filter(BlogPost.id == id).first()
+
         session.close()
 
         if post:
-            return post
+            return post.to_dict()
         else:
             return 404
     
@@ -99,6 +118,9 @@ class Timeline(Base):
     timelineid = sqlalchemy.Column(sqlalchemy.Integer)
     __table_args__ = (
         CheckConstraint('phase IN (1, 2, 3, 4, 5, 6, 7, 8, 9)', name='phase_check'),)
+    
+    def to_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
     @staticmethod
     def createDatabase():
@@ -141,7 +163,7 @@ class Timeline(Base):
         session.close()
         
         if project:
-            return project
+            return project.to_dict()
         else:
             return 404
         

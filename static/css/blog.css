@@ -97,7 +97,7 @@
     font-family: 'BentonSansBook';
     white-space: pre-line;
     padding-bottom: 2%;
-    margin-left: 10%;
+    margin-left: 3%;
     margin-right: 3%;
     line-height: 2.5;
     margin-bottom: 5%;
@@ -130,4 +130,37 @@
     width: 50%;
     height: 50%;
     display: block;
+}
+
+.loading{
+    display: flex;
+    color: whitesmoke;
+    margin-top: 20%;
+    margin-bottom: 100px;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#maindiv{
+    display: contents;
+}
+
+.loadingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 1);  /* Semi-transparent black */
+    z-index: 9999;  /* Ensure it appears on top of other content */
+  }
+
+.fade-in {
+    animation: fadeIn ease 1s;
+}
+  
+@keyframes fadeIn {
+    0% {opacity:0;}
+    100% {opacity:1;}
 }

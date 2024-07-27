@@ -4,5 +4,9 @@
         <link rel="stylesheet" href = "{{ url_for('static', filename='css/timeline.css') }}">
     </head>
     <div class = 'container' id="datafromjson"></div>
-    <script src="../static/js/OutputProjects.js"></script>
 {% endblock main %}
+{% block footer %}
+<script src="../static/js/OutputHeader.js"></script>
+<script src="../static/js/OutputProjects.js"></script>
+<script src="../static/js/OutputFooter.js"></script>
+{% endblock footer %}

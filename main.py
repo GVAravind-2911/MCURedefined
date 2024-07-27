@@ -2,48 +2,19 @@ from flask import Flask, session, request, render_template, redirect, url_for, j
 import json
 from dmm import BlogPost, Timeline
 from datetime import datetime, date
-import webbrowser
+from flask_cors import CORS
+from flask_compress import Compress
 
 app = Flask("mcuredefined")
+cors = CORS(app)
+Compress(app)
 app.secret_key = "secretkey"
 # Use Global for ID release_slate
 
 @app.route("/", methods=['GET', 'POST'])
 def homePage():
-    global redirectSite, orderID
     if request.method == 'GET':
         return render_template('home.html')
-    else:
-        buttonValue = request.form.get('button')
-        if buttonValue == 'home':
-            return redirect(url_for('homePage'))
-        elif buttonValue == 'reviews':
-            return redirect(url_for('editBlog'))
-        elif buttonValue == 'blog':
-            return redirect(url_for('blogsFetch'))
-        elif buttonValue == 'release_slate':
-            session['orderID'] = 1
-            return redirect(url_for('releaseSlate'))
-        elif buttonValue == 'collaborate':
-            return redirect(url_for('collaborate'))
-        elif buttonValue == 'cardblogredir':
-            return redirect(url_for('blogsFetch'))
-        elif buttonValue == 'cardtimelineredir':
-            session['orderID'] = 0
-            return redirect(url_for('releaseSlate'))
-        elif buttonValue == 'cardcollabredir':
-            return "Collaboration Opening Soon"
-
-
-@app.route('/redirect')
-def redirectExternal():
-    if redirectSite == 'twitter':
-        return redirect('https://twitter.com/Mcu_Redefined')
-    elif redirectSite == 'discord':
-        return redirect('https://discord.gg/KwG9WBup')
-    elif redirectSite == 'insta':
-        return redirect('https://www.instagram.com/mcu_redefined/')
-
 
 @app.route('/home')
 def returnHome():
@@ -98,23 +69,26 @@ def upload():
     return json.dumps({'path': path})
 
 
-@app.route('/blogs', methods=["POST", "GET"])
-def blogsFetch():
+@app.route('/send-blogs')
+def sendBlogData():
     BlogPost.createDatabase()
     blogs = BlogPost.queryAll()
-    print(blogs)
-    return render_template('blogposts.html', blogs=blogs)
+    return jsonify(blogs)
 
+@app.route('/blogs', methods=["POST", "GET"])
+def blogsFetch():
+    if request.method == 'GET':
+        return render_template('blogposts.html')
 
 @app.route('/blogs/<int:id>')
 def blog(id):
+    return render_template('blog.html')
+
+@app.route('/send-individual-blog-data/<int:id>')    
+def sendIndividualBlogData(id):
     post = BlogPost.query(id)
-    if not post:
-        return "404"  # or redirect to a custom error page
-    else:
-        post.tags = post.tags.split(' ')
-        print(post.tags)
-        return render_template('blog.html', content=post, tags=post.tags)
+    post['tags'] = post['tags'].split(' ')
+    return jsonify(post)
 
 
 @app.route('/edit-blog', methods=['POST', 'GET'])
@@ -160,10 +134,11 @@ def editBlogPage(id):
         else:
             return render_template('editblogpage.html', content=post)
 
-
 @app.route('/release-slate', methods=['POST', 'GET'])
 def releaseSlate():
     if request.method == 'GET':
+        if not session.get('orderID'):
+            session['orderID'] = 1
         print(session['orderID'],'Method')
         return render_template('timeline.html')
 
@@ -184,12 +159,16 @@ def receiveData():
 @app.route('/release-slate/<int:id>',methods = ['GET','POST'])
 def releaseProject(id):
     if request.method == 'GET':
-        project = Timeline.queryId(id)
-        if project==404:
-            return 404
-        else:
-            project.posterpath = '/' + project.posterpath
-            return render_template('projectinfo.html',project = project)
+            return render_template('projectinfo.html')
+
+@app.route('/send-individual-project-data/<int:id>')    
+def sendIndividualProjectData(id):
+    project = Timeline.queryId(id)
+    if project==404:
+        return 404
+    else:
+        project['posterpath'] = '/' + project['posterpath']
+        return jsonify(project)
 
 @app.route('/collaborate',methods=['POST','GET'])
 def collaborate():
