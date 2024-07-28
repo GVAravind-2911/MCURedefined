@@ -25,7 +25,8 @@ function IndividualBlog(){
     return (
         <>
         {isLoading && (
-            <LoadingOverlay />
+            // <LoadingOverlay />
+            <div>Loading</div>
       )}
         {!isLoading && <div className='contents fade-in'>
             <div className="contentsinfo">

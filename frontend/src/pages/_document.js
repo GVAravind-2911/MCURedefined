@@ -118,7 +118,7 @@ class MyDocument extends Document {
               background-color: var(--dl-color-gray-white);
             }
           `}</style>
-          <script src="../static/js/accordion.js"></script>
+          <script src="../components/accordion.js"></script>
         </Head>
         <body>
           <Main />

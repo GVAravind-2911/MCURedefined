@@ -11,15 +11,6 @@ Compress(app)
 app.secret_key = "secretkey"
 # Use Global for ID release_slate
 
-@app.route("/", methods=['GET', 'POST'])
-def homePage():
-    if request.method == 'GET':
-        return render_template('home.html')
-
-@app.route('/home')
-def returnHome():
-    return redirect(url_for('homePage'))
-
 
 @app.route('/create-blog', methods=['POST', 'GET'])
 def createBlogPost():
@@ -82,13 +73,11 @@ def blogsFetch():
 
 @app.route('/blogs/<int:id>')
 def blog(id):
-    return render_template('blog.html')
-
-@app.route('/send-individual-blog-data/<int:id>')    
-def sendIndividualBlogData(id):
     post = BlogPost.query(id)
     post['tags'] = post['tags'].split(' ')
+    print(post)
     return jsonify(post)
+
 
 
 @app.route('/edit-blog', methods=['POST', 'GET'])

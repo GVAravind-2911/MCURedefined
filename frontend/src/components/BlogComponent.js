@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import ReactDOM from 'react-dom/client';
 import axios from 'axios';
-import LoadingOverlay from '../../../temp/templates/LoadingOverlay';
+// import LoadingOverlay from '../../../temp/templates/LoadingOverlay';
 
 function BlogsComponent() { 
     const [blogs, setBlogs] = useState([]);
@@ -9,7 +8,7 @@ function BlogsComponent() {
 
     useEffect(() => {
         setIsLoading(true);
-        axios.get('/send-blogs') // Fetch blog data from your Flask backend
+        axios.get('http://127.0.0.1:4000/send-blogs') // Fetch blog data from your Flask backend
             .then(response => {setBlogs(response.data);
             console.log(response.data);
             setIsLoading(false);})
@@ -19,7 +18,8 @@ function BlogsComponent() {
     return (
         <>
         {isLoading && 
-            <LoadingOverlay />
+            // <LoadingOverlay />
+            <div>Loading</div>
         }
         {!isLoading &&
         <div className="blogs fade-in">
@@ -42,6 +42,4 @@ function BlogsComponent() {
     );
 }
 
-const domContainer = document.querySelector('#blogs');
-const root = ReactDOM.createRoot(domContainer);
-root.render(<BlogsComponent />);
+export default BlogsComponent;
