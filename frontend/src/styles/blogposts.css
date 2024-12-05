@@ -1,133 +1,134 @@
-@font-face{
-    font-family: 'BentonSansCompLight';
-    src:url('../fonts/BentonSans\ Comp\ Light.otf');
-  }
 @font-face {
-    font-family: 'BentonSansRegular';
-    src: url('../fonts/BentonSans\ Regular.otf');
-  }
+	font-family: "BentonSansCompLight";
+	src: url("../fonts/BentonSans\ Comp\ Light.otf");
+}
 @font-face {
-    font-family: 'BentonSansBook';
-    src: url('../fonts/BentonSans\ Book.otf');
-  }
+	font-family: "BentonSansRegular";
+	src: url("../fonts/BentonSans\ Regular.otf");
+}
 @font-face {
-    font-family: 'BentonSansBold';
-    src: url('../fonts/BentonSans\ Bold.otf');
-  }
+	font-family: "BentonSansBook";
+	src: url("../fonts/BentonSans\ Book.otf");
+}
 @font-face {
-    font-family: 'BentonSansCompBlack';
-    src: url('../fonts/BentonSans\ Comp\ Black.otf');
+	font-family: "BentonSansBold";
+	src: url("../fonts/BentonSans\ Bold.otf");
+}
+@font-face {
+	font-family: "BentonSansCompBlack";
+	src: url("../fonts/BentonSans\ Comp\ Black.otf");
 }
 
 .blogs {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    width: 100%;
-    color: #9BABB8;
-    margin-top: 50px;
-    margin-bottom: 70px;
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	width: 100%;
+	color: #9babb8;
+	margin-top: 50px;
+	margin-bottom: 70px;
 }
 
 .cardblog {
-    display: flex;
-    align-items: center;
-    background-color: #9BABB8;
-    width: 85%;
-    height: 12em;
-    max-width: 1600px; /* Adjust the maximum width as desired */
-    margin: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: 0.3s;
+	display: flex;
+	align-items: center;
+	background-color: #9babb8;
+	width: 85%;
+	height: 12em;
+	max-width: 1600px; /* Adjust the maximum width as desired */
+	margin: 10px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	transition: 0.3s;
 }
 
 .cardblog:hover {
-    transform: scale(1.05);
-    cursor: pointer;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+	transform: scale(1.05);
+	cursor: pointer;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
 .thumbnailset {
-    max-width: 90%;
-    max-height: 100%;
-    object-fit: contain;
-    /* border-radius: 5px; */
-    }
+	max-width: 90%;
+	max-height: 100%;
+	object-fit: contain;
+	/* border-radius: 5px; */
+}
 
 .cardcontent {
-    /* padding: 10px; */
-    margin-left: 3%;
+	/* padding: 10px; */
+	margin-left: 3%;
 }
 
 .titleblog {
-    font-size: 40px;
-    margin-top: -15px;
-    color: black;
+	font-size: 40px;
+	margin-top: -15px;
+	color: black;
 }
 
 .authorblog {
-    font-size: 12px;
-    margin-top: 2px;
-    color: black;
+	font-size: 12px;
+	margin-top: 2px;
+	color: black;
 }
 
 .descblog {
-    margin-top: 14px;
-    font-size: 18px;
-    color: black;
+	margin-top: 14px;
+	font-size: 18px;
+	color: black;
 }
 
-.dateblog{
-    margin-top: 2px;
-    font-size: 12px;
-    color: black;
+.dateblog {
+	margin-top: 2px;
+	font-size: 12px;
+	color: black;
 }
 
 .image-container {
-    width: 20%;
-    height: 85%;
-    background-color: black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 5px;
-    margin-left: 11px;
+	width: 20%;
+	height: 85%;
+	background-color: black;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 5px;
+	margin-left: 11px;
 }
 
-.mainbtn{
-    position: absolute;
-    display: flex;
+.mainbtn {
+	position: absolute;
+	display: flex;
 }
 
-.loading{
-    display: flex;
-    color: whitesmoke;
-    margin-top: 20%;
-    margin-bottom: 100px;
-    justify-content: center;
-    align-items: center;
+.loading {
+	display: flex;
+	color: whitesmoke;
+	margin-top: 20%;
+	margin-bottom: 100px;
+	justify-content: center;
+	align-items: center;
 }
-
-
 
 .loadingOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 1);  /* Semi-transparent black */
-    z-index: 9999;  /* Ensure it appears on top of other content */
-  }
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 1); /* Semi-transparent black */
+	z-index: 9999; /* Ensure it appears on top of other content */
+}
 
 .fade-in {
-    animation: fadeIn ease 1s;
-}
-  
-@keyframes fadeIn {
-    0% {opacity:0;}
-    100% {opacity:1;}
+	animation: fadeIn ease 1s;
 }
 
+@keyframes fadeIn {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}

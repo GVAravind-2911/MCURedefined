@@ -1,13 +1,13 @@
-import React from "react";
+import BlogComponent from "@/components/BlogComponent";
 import Layout from "@/components/Layout";
-import BlogComponent from '@/components/BlogComponent'
+import React from "react";
 
-function Blogs(){
-    return(
-        <Layout>
-            <BlogComponent/>
-        </Layout>
-    )
+function Blogs() {
+	return (
+		<Layout>
+			<BlogComponent path="blogs" />
+		</Layout>
+	);
 }
 
 export default Blogs;

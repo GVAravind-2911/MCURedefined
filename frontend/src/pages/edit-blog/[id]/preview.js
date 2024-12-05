@@ -1,7 +1,49 @@
 import Layout from "@/components/Layout";
+import DOMPurify from "isomorphic-dompurify";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
-export default function page({ blog }) {
+
+export default function PreviewPage() {
+    const router = useRouter();
+    const { id } = router.query;
+    const [blog, setBlog] = useState(null);
+
+    useEffect(() => {
+        if (id) {
+            // Fetch blog data from local storage
+            const storedBlog = localStorage.getItem(`blog-${id}`);
+            if (storedBlog) {
+                setBlog(JSON.parse(storedBlog));
+            }
+        }
+    }, [id]);
+
+    const handleSave = () => {
+        if (blog) {
+            axios.post(`http://127.0.0.1:4000/blog-save/${id}`, blog)
+                .then((response) => {
+                    console.log(response.data);
+                })
+                .catch((error) => {
+                    console.error("Error saving blog:", error);
+                });
+            localStorage.removeItem(`blog-${id}`);
+            alert("Blog saved!");
+            router.push("/edit-blog");
+        }
+    };
+
+    const handleEdit = () => {
+        // Redirect to edit page with fromPreview query parameter set to true
+        router.push(`/edit-blog/${id}`);
+    };
+
+    if (!blog) {
+        return <p>Loading...</p>;
+    }
+
     const loadScript = (url) => {
         if (url.includes("script async")) {
             const script = document.createElement("script");
@@ -69,21 +111,10 @@ export default function page({ blog }) {
                     <div className="maincontent" dangerouslySetInnerHTML={{ __html: contentString }} />
                 </div>
             </div>
+            <div className="submit-blogdiv">
+                <button type="submit" onClick={handleSave} id="submit-blog" className="save-button">Save</button>
+                <button type="button" id="submit-blog" className="edit-button" onClick={handleEdit}>Edit</button>
+            </div>
         </Layout>
-)}
-
-
-export async function getServerSideProps(context) {
-	const { id } = context.params;
-
-	try {
-		const response = await axios.get(`http://127.0.0.1:4000/blogs/${id}`);
-		const blog = response.data;
-		console.log(blog);
-
-		return { props: { blog } };
-	} catch (error) {
-		console.error("Error fetching data:", error);
-		return { props: { blog: null } };
-	}
+    );
 }

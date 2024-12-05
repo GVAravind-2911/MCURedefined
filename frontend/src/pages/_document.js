@@ -1,26 +1,26 @@
 // src/pages/_document.js
 
-import Document, { Html, Head, Main, NextScript } from 'next/document';
+import Document, { Html, Head, Main, NextScript } from "next/document";
 
 class MyDocument extends Document {
-  static async getInitialProps(ctx) {
-    const initialProps = await Document.getInitialProps(ctx);
-    return { ...initialProps };
-  }
+	static async getInitialProps(ctx) {
+		const initialProps = await Document.getInitialProps(ctx);
+		return { ...initialProps };
+	}
 
-  render() {
-    return (
-      <Html lang="en">
-        <Head>
-          <meta charSet="UTF-8" />  
-          <meta property="og:title" content="Character NFT template" />
-          <meta property="twitter:card" content="summary_large_image" />
-          <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
-            data-tag="font"
-          />
-          <style data-tag="reset-style-sheet">{`
+	render() {
+		return (
+			<Html lang="en">
+				<Head>
+					<meta charSet="UTF-8" />
+					<meta property="og:title" content="Character NFT template" />
+					<meta property="twitter:card" content="summary_large_image" />
+					<link
+						rel="stylesheet"
+						href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+						data-tag="font"
+					/>
+					<style data-tag="reset-style-sheet">{`
             html {
               line-height: 1.15;
             }
@@ -102,7 +102,7 @@ class MyDocument extends Document {
               scroll-behavior: smooth;
             }
           `}</style>
-          <style data-tag="default-style-sheet">{`
+					<style data-tag="default-style-sheet">{`
             html {
               font-family: Inter;
               font-size: 16px;
@@ -118,18 +118,17 @@ class MyDocument extends Document {
               background-color: var(--dl-color-gray-white);
             }
           `}</style>
-          <script src="../components/accordion.js"></script>
-        </Head>
-        <body>
-          <Main />
-          <NextScript />
-        </body>
-      </Html>
-    );
-  }
+					{/* <script src="../components/accordion.js"></script> */}
+				</Head>
+				<body>
+					<Main />
+					<NextScript />
+				</body>
+			</Html>
+		);
+	}
 }
 
 export default MyDocument;
 
-
-//carry on from ldrs error and the 
+//carry on from ldrs error and the

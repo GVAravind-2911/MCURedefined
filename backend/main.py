@@ -4,61 +4,48 @@ from dmm import BlogPost, Timeline
 from datetime import datetime, date
 from flask_cors import CORS
 from flask_compress import Compress
+import base64
+import requests
+
+CLIENTID = "f7a420a28def437"
 
 app = Flask("mcuredefined")
 cors = CORS(app)
 Compress(app)
 app.secret_key = "secretkey"
-# Use Global for ID release_slate
+
+def saveImage(imgstring):
+    if imgstring["link"].startswith("data:image"):
+        imgstring = imgstring["link"].split(",")[1]
+
+        url = "https://api.imgur.com/3/upload"
+        headers = {
+            "Authorization": "Client-ID {}".format(CLIENTID)
+        }
+        payload = {
+            "image": imgstring,
+            "type": "base64"
+        }
+
+        response = requests.post(url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            deletehash = data['data']['deletehash']
+            link = data['data']['link']
+            return {"link": link, "deletehash": deletehash}
+        else:
+            raise Exception("Failed to upload image to Imgur")
+    else:
+        return imgstring
 
 
-@app.route('/create-blog', methods=['POST', 'GET'])
+@app.route('/create-blog', methods=['POST'])
 def createBlogPost():
     if request.method == 'POST':
-        title = request.form['title']
-        author = request.form['author']
-        description = request.form['description']
-        content = request.form['content']
-        tags = request.form['tags']
-        if author == '':
-            author = "MCU Redefined"
-        if 'thumbnail' in request.files:
-            thumbnail = request.files['thumbnail']
-            if thumbnail.filename:
-                thumbnaildata = thumbnail.read()
-                thumbnail_format = thumbnail.filename.rsplit('.', 1)[1].lower()
-                thumbnail_path = f'static/img/thumbnails/{title}.{thumbnail_format}'
-                with open(thumbnail_path, 'wb') as file:
-                    file.write(thumbnaildata)
-            else:
-                thumbnail_path = 'static/img/BlogDefault.png'  # Default thumbnail path
-        now = datetime.now()
-        dtString = now.strftime("%d %B %Y %H:%M:%S")
-        updateTime = ''
-        print(dtString)
-        # print(title, description, content, tags, thumbnaildata)
+        data = request.get_json()
         BlogPost.createDatabase()
-        BlogPost.insertBlogPost(title, author, description, content, tags, thumbnail_path, dtString, updateTime)
-        # Process the blog post data here (e.g., store in a database)
-        return redirect(url_for('blogsFetch'))
-    else:
-        return render_template('createblog.html')
-
-
-@app.route('/upload', methods=['POST'])
-def upload():
-    if 'image' not in request.files:
-        return 'No image file found', 400
-
-    file = request.files['image']
-    if file.filename == '':
-        return 'No image selected', 400
-
-    path = 'static/img/blogimgs/' + file.filename
-    file.save('static/img/blogimgs/' + file.filename)
-    print('uploaded successfully')
-    return json.dumps({'path': path})
-
+        BlogPost.insertBlogPost(data['title'], data['author'], data['description'], data['content'], data['tags'], 'path')
+        return "Saved"
 
 @app.route('/send-blogs')
 def sendBlogData():
@@ -66,62 +53,25 @@ def sendBlogData():
     blogs = BlogPost.queryAll()
     return jsonify(blogs)
 
-@app.route('/blogs', methods=["POST", "GET"])
-def blogsFetch():
-    if request.method == 'GET':
-        return render_template('blogposts.html')
+@app.route('/blog-save/<int:id>', methods=["POST"])
+def blogsSave(id):
+    data = request.get_json()
+    print(data)
+    imgurl = saveImage(data['thumbnail_path'])
+    data['thumbnail_path'] = imgurl
+    for i in data["content"]:
+        if i["type"] == "image":
+            imgurl = saveImage(i["content"])
+            i["content"] = imgurl
+    BlogPost.createDatabase()
+    BlogPost.update(id,data['title'], data['author'], data['description'], data['content'], data['tags'], data['thumbnail_path'])
+    return "Saved"
 
 @app.route('/blogs/<int:id>')
 def blog(id):
     post = BlogPost.query(id)
-    post['tags'] = post['tags'].split(' ')
     print(post)
     return jsonify(post)
-
-
-
-@app.route('/edit-blog', methods=['POST', 'GET'])
-def editBlog():
-    if request.method == 'GET':
-        BlogPost.createDatabase()
-        blogs = BlogPost.queryAll()
-        return render_template('blogedit.html', blogs=blogs)
-    else:
-        id = request.form['id']
-        title = request.form['title']
-        author = request.form['author']
-        description = request.form['description']
-        content = request.form['content']
-        tags = request.form['tags']
-        if author == '':
-            author = "MCU Redefined"
-        if 'thumbnail' in request.files:
-            thumbnail = request.files['thumbnail']
-            oldThumbnail = request.form['old_thumbnail']
-            if thumbnail.filename:
-                thumbnaildata = thumbnail.read()
-                thumbnail_format = thumbnail.filename.rsplit('.', 1)[1].lower()
-                thumbnail_path = f'static/img/thumbnails/{title}.{thumbnail_format}'
-                with open(thumbnail_path, 'wb') as file:
-                    file.write(thumbnaildata)
-            else:
-                thumbnail_path = oldThumbnail
-        now = datetime.now()
-        dtString = now.strftime("%d %B %Y %H:%M:%S")
-        print(dtString)
-        BlogPost.update(id, title, author, description, content, tags, thumbnail_path, dtString)
-        # Redirect to the blog page
-        return redirect(url_for('editBlog'))
-
-
-@app.route('/edit-blog/<int:id>', methods=['GET', 'POST'])
-def editBlogPage(id):
-    if request.method == 'GET':
-        post = BlogPost.query(id)
-        if post is None:
-            return "404"
-        else:
-            return render_template('editblogpage.html', content=post)
 
 @app.route('/release-slate', methods=['POST', 'GET'])
 def releaseSlate():

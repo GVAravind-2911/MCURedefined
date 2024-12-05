@@ -1,85 +1,88 @@
-@font-face{
-    font-family: 'BentonSansCompLight';
-    src:url('../fonts/BentonSans\ Comp\ Light.otf');
-  }
 @font-face {
-    font-family: 'BentonSansRegular';
-    src: url('../fonts/BentonSans\ Regular.otf');
-  }
+	font-family: "BentonSansCompLight";
+	src: url("../fonts/BentonSans\ Comp\ Light.otf");
+}
 @font-face {
-    font-family: 'BentonSansBook';
-    src: url('../fonts/BentonSans\ Book.otf');
-  }
+	font-family: "BentonSansRegular";
+	src: url("../fonts/BentonSans\ Regular.otf");
+}
 @font-face {
-    font-family: 'BentonSansBold';
-    src: url('../fonts/BentonSans\ Bold.otf');
-  }
+	font-family: "BentonSansBook";
+	src: url("../fonts/BentonSans\ Book.otf");
+}
 @font-face {
-    font-family: 'BentonSansCompBlack';
-    src: url('../fonts/BentonSans\ Comp\ Black.otf');
+	font-family: "BentonSansBold";
+	src: url("../fonts/BentonSans\ Bold.otf");
+}
+@font-face {
+	font-family: "BentonSansCompBlack";
+	src: url("../fonts/BentonSans\ Comp\ Black.otf");
 }
 
-.projectinfo-main{
-    display: flex;
-    flex-direction: row;
-    width:90%;
-    justify-content: center;
-    flex-wrap: wrap;
-    max-width: fit-content;
+.projectinfo-main {
+	display: flex;
+	flex-direction: row;
+	width: 90%;
+	justify-content: center;
+	flex-wrap: wrap;
+	max-width: fit-content;
 }
 
-.poster{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 30%;
-    margin-right: 1%;
-    }
-
-.projectinfo-imgposter{
-    object-fit: contain;
-    width:85%;
+.poster {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 30%;
+	margin-right: 1%;
 }
 
-.projectinfo-content{
-    justify-content: left;
-    background-color:#9BABB4;
-    width:65%;
-    padding-left: 2%;
-    padding-top: 1.5%;
-    padding-right: 2%;
-    padding-bottom: 1.5%;
+.projectinfo-imgposter {
+	object-fit: contain;
+	width: 85%;
 }
 
-.loading{
-  display: flex;
-  color: whitesmoke;
-  margin-top: 20%;
-  margin-bottom: 100px;
-  justify-content: center;
-  align-items: center;
+.projectinfo-content {
+	justify-content: left;
+	background-color: #9babb4;
+	width: 65%;
+	padding-left: 2%;
+	padding-top: 1.5%;
+	padding-right: 2%;
+	padding-bottom: 1.5%;
 }
 
+.loading {
+	display: flex;
+	color: whitesmoke;
+	margin-top: 20%;
+	margin-bottom: 100px;
+	justify-content: center;
+	align-items: center;
+}
 
-#maindiv{
-  display: contents;
+#maindiv {
+	display: contents;
 }
 
 .loadingOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 1);  /* Semi-transparent black */
-  z-index: 9999;  /* Ensure it appears on top of other content */
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 1); /* Semi-transparent black */
+	z-index: 9999; /* Ensure it appears on top of other content */
 }
 
 .fade-in {
-  animation: fadeIn ease 1s;
+	animation: fadeIn ease 1s;
 }
 
 @keyframes fadeIn {
-  0% {opacity:0;}
-  100% {opacity:1;}
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
 }
