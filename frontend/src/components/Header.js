@@ -1,5 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 function Header() {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
@@ -28,31 +29,31 @@ function Header() {
 					data-role="Nav"
 					className="home-nav"
 				>
-					<a href="/" onClick={(e)=>handleNavigation(e,'/')}>
+					<Link href="/">
 						<button type="button" name="button" value="home" className="home-button">
 							HOME
 						</button>
-					</a>
-					<a href="/edit-blog" onClick={(e)=>handleNavigation(e,'/edit-blog')}>
+					</Link>
+					<Link href="/edit-blog">
 						<button type="button" name="button" value="reviews" className="home-button">
 							REVIEWS
 						</button>
-					</a>
-					<a href="/blogs" onClick={(e)=>handleNavigation(e,'/blogs')}>
+					</Link>
+					<Link href="/blogs">
 						<button type="button" name="button" value="blog" className="home-button">
 							BLOG
 						</button>
-					</a>
-					<a href="/release-slate" onClick={(e)=>handleNavigation(e,'/releaseslate')}>
+					</Link>
+					<Link href="/release-slate">
 						<button type="button" name="button" value="release_slate" className="home-button">
 							RELEASE SLATE
 						</button>
-					</a>
-					<a href="/collaborate" onClick={(e)=>handleNavigation(e,'/collaborate')}>
+					</Link>
+					<Link href="/collaborate">
 						<button type="button" name="button" value="collaborate" className="home-button">
 							COLLABORATE
 						</button>
-					</a>
+					</Link>
 				</nav>
 			</div>
 
@@ -148,17 +149,22 @@ function Header() {
 							<a href="/" className="home-text" name="button" value="home">
 								Home
 							</a>
-							<a
-								href="/reviews"
+							<Link
+								href="/edit-blog"
 								className="home-text"
 								name="button"
 								value="reviews"
 							>
 								Reviews
-							</a>
-							<a href="/blogs" className="home-text" name="button" value="blog">
+							</Link>
+							<Link 
+								href="/blogs"
+								className="home-text" 
+								name="button" 
+								value="blog"
+							>
 								Blog
-							</a>
+							</Link>
 							<a
 								href="/release-slate"
 								className="home-text"

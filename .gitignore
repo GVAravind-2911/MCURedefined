@@ -36,3 +36,4 @@ frontend/*.tsbuildinfo
 frontend/next-env.d.ts
 
 backend/MCURedefined
+backend/.env

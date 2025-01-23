@@ -12,10 +12,16 @@ import "../styles/style.css";
 import "../styles/timeline.css";
 import "../styles/preview.css";
 import "../styles/LoadingSpinner.css"
+import Head from "next/head";
 
 function MyApp({ Component, pageProps }) {
 	return (
+	<>
+	<Head>
+		<title>MCU Redefined</title>
+	</Head>
 	<Component {...pageProps} />
+	</>
 );
 }
 

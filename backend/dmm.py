@@ -4,10 +4,14 @@ from sqlalchemy import CheckConstraint
 from datetime import datetime
 import json
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 DATETIMEFORMAT = "%Y/%m/%d %H:%M:%S"
 DATABASE_URL = os.getenv("TURSO_DATABASE_URL")
 AUTHTOKEN = os.getenv("TURSO_AUTHTOKEN")
+DBURL = f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}&secure=true'
 
 Base = declarative_base()
 

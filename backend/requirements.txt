@@ -1,0 +1,7 @@
+sqlalchemy
+dotenv
+flask
+flask_cors
+flask_compress
+requests
+sqlalchemy-libsql

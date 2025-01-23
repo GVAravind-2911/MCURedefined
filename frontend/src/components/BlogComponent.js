@@ -2,6 +2,8 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 import { useRouter } from "next/router";
+import Image from "next/image";
+import LoadingSpinner from "./LoadingSpinner";
 
 function BlogsComponent(props) {
     const [blogs, setBlogs] = useState([]);
@@ -28,7 +30,7 @@ function BlogsComponent(props) {
     return (
         <>
             {isLoading && (
-                <div>Loading</div>
+                <LoadingSpinner/>
             )}
             {!isLoading && (
                 <div className="blogs fade-in">
@@ -40,8 +42,10 @@ function BlogsComponent(props) {
                             onClick={(e) => handleNavigation(e, blog.id)}
                         >
                             <div className="image-container">
-                                <img
+                                <Image
                                     src={blog.thumbnail_path.link}
+                                    width={400}
+                                    height={200}
                                     alt="Thumbnail"
                                     className="thumbnailset"
                                 />
