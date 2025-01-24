@@ -1,5 +1,4 @@
 import Layout from "@/components/Layout";
-import DOMPurify from "isomorphic-dompurify";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import axios from "axios";

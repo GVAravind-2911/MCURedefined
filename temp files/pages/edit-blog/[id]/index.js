@@ -6,7 +6,7 @@ import TextBlock from "@/components/TextBlock";
 import ThumbnailBlock from "@/components/ThumbnailBlock";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";/
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function Page() {

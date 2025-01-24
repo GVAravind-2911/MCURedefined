@@ -100,14 +100,13 @@
     margin-left: 3%;
     margin-right: 3%;
     line-height: 2.5;
-    margin-bottom: 5%;
+    margin-bottom: 1%;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: left;
-    background-color: #f1fbff;
 }
 
 .textcontent{
@@ -147,10 +146,15 @@
 
 .youtube-preview{
     margin-top: 50px;
-	width: 70%;
-	height: 420px;
+	width: 75%;
+	height: 550px;
     margin-bottom: 50px;
-	position: relative;
+    margin-left: 12.5%;
+}
+
+.video{
+    width:90%;
+    height:90%;
 }
 
 .loading {
@@ -195,4 +199,5 @@
     align-items: center;
     justify-content: center;
     gap:40px;
+    margin-bottom: 40px;
 }

@@ -21,7 +21,7 @@
 
 .contents {
     width: 84%;
-    margin-bottom: 150px;
+    margin-bottom: 25px;
     margin-top: 50px;
     background-color: #9babb8;
     border-radius: 5px;
@@ -87,7 +87,10 @@
     background-color: #d1e7e3;
     width: 96%;
     border-radius: 5px;
-    display: block;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2%;
 }
 
 .maincontent {
@@ -96,11 +99,9 @@
     font-family: "BentonSansBook", sans-serif;
     white-space: pre-line;
     padding-bottom: 2%;
-    margin-left: 3%;
-    margin-right: 3%;
     line-height: 2.5;
-    margin-bottom: 5%;
-    width: 80%;
+    margin-bottom: 2%;
+    width: 100%;
     align-items: center;
 }
 
@@ -164,4 +165,30 @@
     100% {
         opacity: 1;
     }
+}
+
+.textcontent{
+    width: 100%;
+}
+
+.youtube-preview{
+    width: 75%;
+    height: 550px;
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    margin-left: 12.5%;
+}
+
+.video{
+    width: 90%;
+    height: 90%;
+}
+
+.submit-blogdiv{
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap:20px;
 }

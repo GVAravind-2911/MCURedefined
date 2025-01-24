@@ -1,4 +1,6 @@
-import {useState,useEffect} from "react";
+'use client'
+
+import {useEffect} from "react";
 import DOMPurify from "isomorphic-dompurify";
 
 const EmbedBlock = ({ url, onChange, onDelete }) => {

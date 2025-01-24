@@ -177,17 +177,54 @@
 	gap: 30px;
 }
 
+/* Update content-text class for contentEditable */
 .content-text {
-	width: 95%;
-	min-height: 50px;
-	resize: none;
-	overflow: hidden;
-	background-color: #9babb8;
-	font-size: 16px;
-	padding: 30px;
-	border-radius: 0px 0px 10px 10px;
-	font-family: "BentonSans Regular";
-	font-size: 20px;
+    width: 95%;
+    min-height: 50px;
+    background-color: #9babb8;
+    font-size: 20px;
+    padding: 30px;
+    border-radius: 0px 0px 10px 10px;
+    font-family: "BentonSans Regular";
+    outline: none;
+    cursor: text;
+    white-space: pre-wrap;
+}
+
+/* Add styles for formatted content */
+.content-text b {
+    font-weight: bold;
+}
+
+.content-text i {
+    font-style: italic;
+}
+
+.content-text a {
+    color: #ec1d24;
+    text-decoration: underline;
+}
+
+/* Add selection styles */
+.content-text::selection {
+    background: rgba(236, 29, 36, 0.2);
+}
+
+/* Add highlight styles */
+.content-text span[style*="color: #ec1d24"] {
+    background-color: rgba(236, 29, 36, 0.1);
+}
+
+/* Focus state */
+.content-text:focus {
+    box-shadow: 0 0 0 2px rgba(236, 29, 36, 0.2);
+}
+
+/* Empty state placeholder */
+.content-text:empty:before {
+    content: 'Enter your text here...';
+    color: #666;
+    font-style: italic;
 }
 
 .tags-blog {
@@ -226,6 +263,8 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	flex-direction: column;
+	gap:20px;
 }
 #submit-blog {
 	background-color: #ec1d24;
