@@ -84,24 +84,30 @@ export default function PreviewPage() {
         <>
         <div className="contents fade-in">
             <div className="contentsinfo">
-                <h1 className="title">{blog.title}</h1>
+                <h1 className="title">{blog?.title}</h1>
                 <h3 className="byline">
                     <span className="colorforby">By: </span>
-                    {blog.author}
+                    {blog?.author}
                 </h3>
                 <h3 className="datecreation">
                     <span className="colorforby">Posted: </span>
-                    {blog.created_at}
+                    {blog?.created_at}
                 </h3>
-                {blog.updated_at && (
+                {blog?.updated_at && (
                     <h3 className="dateupdate">
                         <span className="colorforby">Updated: </span>
-                        {blog.updated_at}
+                        {blog?.updated_at}
                     </h3>
                 )}
                 <span className="tagsspan">
-                    {blog.tags.map((tag) => (
-                        <button key={tag} type="button" className="tags">{tag}</button>
+                    {blog?.tags?.map((tag, index) => (
+                        <button 
+                            key={`${tag}-${index}`} 
+                            type="button" 
+                            className="tags"
+                        >
+                            {tag}
+                        </button>
                     ))}
                 </span>
             </div>

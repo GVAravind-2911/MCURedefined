@@ -231,12 +231,12 @@ export default function Page() {
                 />
                 <h3 className="content-blog">Enter Content:</h3>
                 <div className="contentformat">
-                    <div className="content">
-                        {contentBlocks.map((block, index) => (
-                            <BlockWrapper
-                                key={block.id}
-                                onAddBlock={(type) => addBlock(type, index)}
-                            >
+                <div className="content">
+                    {contentBlocks.map((block, index) => (
+                        <BlockWrapper
+                            key={block.id}
+                            onAddBlock={(type) => addBlock(type, index)}
+                        >
                                 {block.type === "text" && (
                                     <TextBlock
                                         content={block.content}
@@ -259,60 +259,55 @@ export default function Page() {
                                         onDelete={() => deleteBlock(index)}
                                     />
                                 )}
-                            </BlockWrapper>
-                        ))}
-                    </div>
-                </div>
-                <h3 className="tags-blog">Enter Tags:</h3>
-                <div className="tags-container">
-                    {tags.map((tag, index) => (
-                        <div key={index} className="tag-item">
-                            <input
-                                type="text"
-                                value={tag}
-                                onChange={(e) => updateTag(index, e.target.value)}
-                                className="tag-input"
-                            />
-                            <button 
-                                type="button" 
-                                onClick={() => removeTag(index)} 
-                                className="remove-tag-button"
-                            >
-                                x
-                            </button>
-                        </div>
+                  </BlockWrapper>
                     ))}
-                    <button 
-                        type="button" 
-                        onClick={addTag} 
-                        className="add-tag-button"
-                    >
-                        +
-                    </button>
-                </div>
-                <div className="thumbnail-upload">
-                    <h3 className="thumbnail-blog">Upload Thumbnail:</h3>
-                    <ThumbnailBlock
-                        src={thumbnail}
-                        onChange={handleThumbnailUpload}
-                    />
-                </div>
-                <div className="submit-blogdiv">
-                    <button 
-                        type="button" 
-                        id="submit-blog" 
-                        onClick={handlePreview}
-                    >
-                        Preview
-                    </button>
-                    <button 
-                        type="button" 
-                        id="submit-blog" 
-                        onClick={handleDiscard}
-                    >
-                        Discard Changes
-                    </button>
                 </div>
             </div>
+
+            <h3 className="tags-blog">Enter Tags:</h3>
+            <div className="tags-container">
+                {tags.map((tag, index) => (
+                    <div key={`tag-${index}-${tag}`} className="tag-item">
+                        <input
+                            type="text"
+                            value={tag}
+                            onChange={(e) => updateTag(index, e.target.value)}
+                            className="tag-input"
+                        />
+                        <button 
+                            type="button" 
+                            onClick={() => removeTag(index)} 
+                            className="remove-tag-button"
+                        >
+                            x
+                        </button>
+                    </div>
+                ))}
+                <button 
+                    type="button" 
+                    onClick={addTag} 
+                    className="add-tag-button"
+                >
+                    +
+                </button>
+            </div>
+
+            <div className="submit-blogdiv">
+                <button 
+                    type="button" 
+                    id="preview-blog" 
+                    onClick={handlePreview}
+                >
+                    Preview
+                </button>
+                <button 
+                    type="button" 
+                    id="discard-blog" 
+                    onClick={handleDiscard}
+                >
+                    Discard Changes
+                </button>
+            </div>
+        </div>
     );
 }

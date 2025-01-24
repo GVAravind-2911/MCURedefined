@@ -14,9 +14,10 @@ async function getBlogData(id) {
   }
 }
 
-export default async function BlogPage({ params }) {
+export default async function BlogPage(props) {
+  const params = await props.params;
   const blog = await getBlogData(params.id);
-  
+
   if (!blog) {
     notFound();
   }
