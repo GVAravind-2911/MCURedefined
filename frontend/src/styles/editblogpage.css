@@ -257,15 +257,7 @@
 	margin-bottom: 20px;
 	border-radius: 7px;
 }
-.submit-blogdiv {
-	margin-top: 30px;
-	width: 100%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
-	gap:20px;
-}
+
 #submit-blog {
 	background-color: #ec1d24;
 	color: white;
@@ -624,4 +616,12 @@
 	margin-top: 35px;
 	font-family: "BentonSans Regular";
 	margin-bottom: 15px;
+}
+
+.submit-blogdiv{
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap:20px;
 }

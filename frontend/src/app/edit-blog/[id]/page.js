@@ -235,6 +235,12 @@ export default function Page() {
                 onChange={(e) => setDescription(e.target.value)}
             />
 
+            <h3 className="thumbnail-blog">Upload Thumbnail:</h3>
+            <ThumbnailBlock
+                src={thumbnail}
+                onChange={handleThumbnailUpload}
+            />
+
             <h3 className="content-blog">Enter Content:</h3>
             <div className="contentformat">
                 <div className="content">
@@ -306,6 +312,7 @@ export default function Page() {
                     type="button"
                     onClick={handlePreview}
                     className="preview-button"
+                    id="submit-blog"
                 >
                     Preview
                 </button>
@@ -313,6 +320,7 @@ export default function Page() {
                     type="button"
                     onClick={handleDiscard}
                     className="discard-button"
+                    id="submit-blog"
                 >
                     Discard Changes
                 </button>

@@ -192,3 +192,20 @@
     flex-direction: column;
     gap:20px;
 }
+
+#submit-blog {
+	background-color: #ec1d24;
+	color: white;
+	align-self: center;
+	height: 50px;
+	width: 25%;
+	border-radius: 10px;
+	font-family: "BentonSansCompBlack";
+	font-size: 40px;
+	transition: opacity 0.3s, transform 0.3s;
+}
+#submit-blog:hover {
+	cursor: pointer;
+	opacity: 0.8;
+	transform: scale(1.1);
+}
