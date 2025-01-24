@@ -6,7 +6,7 @@ import ImageBlock from "@/components/ImageBlock";
 import TextBlock from "@/components/TextBlock";
 import ThumbnailBlock from "@/components/ThumbnailBlock";
 import axios from "axios";
-import { useRouter,useParams } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import '@/styles/editblogpage.css'
@@ -47,7 +47,11 @@ export default function Page() {
     }, [id]);
 
     const initializeBlogData = (blogData) => {
-        setContentBlocks(normalizeContentBlocks(blogData.content));
+        const normalizedBlocks = normalizeContentBlocks(blogData.content).map(block => ({
+            ...block,
+            id: generateBlockId()
+        }));
+        setContentBlocks(normalizedBlocks);
         setTags(blogData.tags || []);
         setTitle(blogData.title || "");
         setAuthor(blogData.author || "");
@@ -55,6 +59,9 @@ export default function Page() {
         setThumbnail(blogData.thumbnail_path?.link || "");
     };
 
+    const generateBlockId = () => {
+        return `block_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    };
     // Normalize content blocks to ensure consistent structure
     const normalizeContentBlocks = (blocks) => {
         return blocks.map(block => {
@@ -68,10 +75,6 @@ export default function Page() {
         });
     };
 
-    // Generate a unique ID for each block
-    const generateBlockId = () => {
-        return `block_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    };
 
     const addBlock = (type, index) => {
         const newBlock = {
@@ -204,62 +207,68 @@ export default function Page() {
     }
 
     return (
-            <div className="create-blog">
-                <h3 className="title-blog">Enter Title:</h3>
-                <input 
-                    type="text" 
-                    id="title" 
-                    name="title" 
-                    value={title} 
-                    onChange={(e) => setTitle(e.target.value)} 
-                />
-                <h3 className="author-blog">Author</h3>
-                <input
-                    type="text"
-                    id="author"
-                    name="author"
-                    value={author}
-                    onChange={(e) => setAuthor(e.target.value)}
-                />
-                <h3 className="description-blog">Enter Description:</h3>
-                <input
-                    type="text"
-                    id="description"
-                    name="description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                />
-                <h3 className="content-blog">Enter Content:</h3>
-                <div className="contentformat">
+        <div className="create-blog">
+            <h3 className="title-blog">Enter Title:</h3>
+            <input 
+                type="text" 
+                id="title" 
+                name="title" 
+                value={title} 
+                onChange={(e) => setTitle(e.target.value)} 
+            />
+            
+            <h3 className="author-blog">Author</h3>
+            <input
+                type="text"
+                id="author"
+                name="author"
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
+            />
+
+            <h3 className="description-blog">Enter Description:</h3>
+            <input
+                type="text"
+                id="description"
+                name="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+            />
+
+            <h3 className="content-blog">Enter Content:</h3>
+            <div className="contentformat">
                 <div className="content">
                     {contentBlocks.map((block, index) => (
                         <BlockWrapper
-                            key={block.id}
+                            key={`wrapper-${block.id}`}
                             onAddBlock={(type) => addBlock(type, index)}
                         >
-                                {block.type === "text" && (
-                                    <TextBlock
-                                        content={block.content}
-                                        onChange={(content) => updateBlock(index, content)}
-                                        onDelete={() => deleteBlock(index)}
-                                    />
-                                )}
-                                {block.type === "image" && (
-                                    <ImageBlock
-                                        index={index}
-                                        src={block.content}
-                                        onDelete={() => deleteBlock(index)}
-                                        onChange={(event) => handleImageUpload(index, event)}
-                                    />
-                                )}
-                                {block.type === "embed" && (
-                                    <EmbedBlock
-                                        url={block.content}
-                                        onChange={(content) => updateBlock(index, content)}
-                                        onDelete={() => deleteBlock(index)}
-                                    />
-                                )}
-                  </BlockWrapper>
+                            {block.type === "text" && (
+                                <TextBlock
+                                    key={`text-${block.id}`}
+                                    content={block.content}
+                                    onChange={(content) => updateBlock(index, content)}
+                                    onDelete={() => deleteBlock(index)}
+                                />
+                            )}
+                            {block.type === "image" && (
+                                <ImageBlock
+                                    key={`image-${block.id}`}
+                                    index={index}
+                                    src={block.content}
+                                    onDelete={() => deleteBlock(index)}
+                                    onChange={(event) => handleImageUpload(index, event)}
+                                />
+                            )}
+                            {block.type === "embed" && (
+                                <EmbedBlock
+                                    key={`embed-${block.id}`}
+                                    url={block.content}
+                                    onChange={(content) => updateBlock(index, content)}
+                                    onDelete={() => deleteBlock(index)}
+                                />
+                            )}
+                        </BlockWrapper>
                     ))}
                 </div>
             </div>
@@ -267,7 +276,7 @@ export default function Page() {
             <h3 className="tags-blog">Enter Tags:</h3>
             <div className="tags-container">
                 {tags.map((tag, index) => (
-                    <div key={`tag-${index}-${tag}`} className="tag-item">
+                    <div key={`tag-${index}-${generateBlockId()}`} className="tag-item">
                         <input
                             type="text"
                             value={tag}
@@ -275,8 +284,8 @@ export default function Page() {
                             className="tag-input"
                         />
                         <button 
-                            type="button" 
-                            onClick={() => removeTag(index)} 
+                            type="button"
+                            onClick={() => removeTag(index)}
                             className="remove-tag-button"
                         >
                             x
@@ -284,8 +293,8 @@ export default function Page() {
                     </div>
                 ))}
                 <button 
-                    type="button" 
-                    onClick={addTag} 
+                    type="button"
+                    onClick={addTag}
                     className="add-tag-button"
                 >
                     +
@@ -294,16 +303,16 @@ export default function Page() {
 
             <div className="submit-blogdiv">
                 <button 
-                    type="button" 
-                    id="preview-blog" 
+                    type="button"
                     onClick={handlePreview}
+                    className="preview-button"
                 >
                     Preview
                 </button>
                 <button 
-                    type="button" 
-                    id="discard-blog" 
+                    type="button"
                     onClick={handleDiscard}
+                    className="discard-button"
                 >
                     Discard Changes
                 </button>
