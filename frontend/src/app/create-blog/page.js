@@ -5,76 +5,63 @@ import EmbedBlock from "@/components/EmbedBlock";
 import ImageBlock from "@/components/ImageBlock";
 import TextBlock from "@/components/TextBlock";
 import ThumbnailBlock from "@/components/ThumbnailBlock";
-import axios from "axios";
-import { useRouter, useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import LoadingSpinner from "@/components/LoadingSpinner";
-import '@/styles/editblogpage.css'
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import "@/styles/editblogpage.css";
 
-export default function Page() {
-    const params = useParams();
+const useInitialState = () => {
+    const defaultState = {
+        contentBlocks: [],
+        title: "",
+        author: "",
+        description: "",
+        thumbnail: "",
+        tags: []
+    };
+    
+    return defaultState;
+};
+
+
+export default function CreateBlogPage() {
     const router = useRouter();
-    const id = params.id;
-    const [contentBlocks, setContentBlocks] = useState([]);
-    const [tags, setTags] = useState([]);
-    const [title, setTitle] = useState("");
-    const [author, setAuthor] = useState("");
-    const [description, setDescription] = useState("");
-    const [thumbnail, setThumbnail] = useState("");
-    const [loading, setLoading] = useState(true);
+    const initialState = useInitialState();
+    
+    const [contentBlocks, setContentBlocks] = useState(initialState.contentBlocks);
+    const [tags, setTags] = useState(initialState.tags);
+    const [title, setTitle] = useState(initialState.title);
+    const [author, setAuthor] = useState(initialState.author);
+    const [description, setDescription] = useState(initialState.description);
+    const [thumbnail, setThumbnail] = useState(initialState.thumbnail);
 
     useEffect(() => {
-        const fetchBlogData = async () => {
-            if (!id) return;
+        const draft = localStorage.getItem('create-blog-draft');
+        if (draft) {
+            const storedData = JSON.parse(draft);
+            setTitle(storedData?.title || "");
+            setAuthor(storedData?.author || "");
+            setDescription(storedData?.description || "");
+            setThumbnail(storedData?.thumbnail_path?.link || "");
+            setTags(storedData?.tags || []);
+            
+            // Transform content blocks properly
+            const transformedContent = storedData.content.map(block => ({
+                id: block.id || generateBlockId(),
+                type: block.type,
+                content: block.type === "image" && block.content?.link 
+                    ? block.content.link 
+                    : block.content || ""
+            }));
+            
+            setContentBlocks(transformedContent.length > 0 
+                ? transformedContent 
+                : initialState.contentBlocks
+            );
+        }
+    }, []);
 
-            try {
-                const storedBlog = localStorage.getItem(`blog-${id}`);
-                if (storedBlog) {
-                    const blogData = JSON.parse(storedBlog);
-                    initializeBlogData(blogData);
-                } else {
-                    const response = await axios.get(`http://127.0.0.1:4000/blogs/${id}`);
-                    initializeBlogData(response.data);
-                }
-            } catch (error) {
-                console.error("Error fetching blog data:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
 
-        fetchBlogData();
-    }, [id]);
-
-    const initializeBlogData = (blogData) => {
-        const normalizedBlocks = normalizeContentBlocks(blogData.content).map(block => ({
-            ...block,
-            id: generateBlockId()
-        }));
-        setContentBlocks(normalizedBlocks);
-        setTags(blogData.tags || []);
-        setTitle(blogData.title || "");
-        setAuthor(blogData.author || "");
-        setDescription(blogData.description || "");
-        setThumbnail(blogData.thumbnail_path?.link || "");
-    };
-
-    const generateBlockId = () => {
-        return `block_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    };
-    // Normalize content blocks to ensure consistent structure
-    const normalizeContentBlocks = (blocks) => {
-        return blocks.map(block => {
-            if (block.type === "image" && typeof block.content === "object") {
-                return {
-                    ...block,
-                    content: block.content.link
-                };
-            }
-            return block;
-        });
-    };
-
+    const generateBlockId = () => `block-${Math.random().toString(36).substring(2)}`;
 
     const addBlock = (type, index) => {
         const newBlock = {
@@ -148,42 +135,38 @@ export default function Page() {
         }
     };
 
-    const handleSubmit = async () => {
-        if (!id) return;
-
-        const filteredTags = [...new Set(tags.filter(tag => tag.trim() !== ""))];
-        
-        const processedBlocks = contentBlocks.map(block => ({
-            ...block,
-            content: block.type === "image" ? { link: block.content } : block.content
-        }));
-
+    const handlePreview = () => {
         const blogData = {
             title,
             author,
             description,
-            content: processedBlocks,
-            tags: filteredTags,
-            thumbnail_path: { link: thumbnail }
+            content: contentBlocks.map(block => (block.type === "image" ? 
+                { ...block, content: { link: block.content } } 
+                : block)),
+            tags: tags.filter(tag => tag.trim() !== ""),
+            thumbnail_path: { link: thumbnail },
+            created_at: new Date().toISOString()
         };
 
-        try {
-            localStorage.setItem(`blog-${id}`, JSON.stringify(blogData));
-            console.log("Blog data saved successfully");
-        } catch (error) {
-            console.error("Error saving blog data:", error);
-        }
+        localStorage.setItem('create-blog-draft', JSON.stringify(blogData));
+        router.push('/create-blog/preview');
     };
 
-    const handlePreview = async () => {
-        await handleSubmit();
-        router.push(`/edit-blog/${id}/preview`);
-    };
-
-    const handleDiscard = () => {
-        if (!id) return;
-        localStorage.removeItem(`blog-${id}`);
-        router.push("/edit-blog");
+    const handleSaveDraft = () => {
+        const blogData = {
+            title,
+            author,
+            description,
+            content: contentBlocks.map(block => (block.type === "image" ? 
+                { ...block, content: { link: block.content } } 
+                : block)),
+            tags: tags.filter(tag => tag.trim() !== ""),
+            thumbnail_path: { link: thumbnail },
+            created_at: new Date().toISOString()
+        };
+    
+        localStorage.setItem('create-blog-draft', JSON.stringify(blogData));
+        alert('Draft saved successfully!');
     };
 
     const addTag = () => {
@@ -201,10 +184,6 @@ export default function Page() {
     const removeTag = (index) => {
         setTags(prevTags => prevTags.filter((_, i) => i !== index));
     };
-
-    if (loading) {
-        return <LoadingSpinner />;
-    }
 
     return (
         <div className="create-blog">
@@ -241,14 +220,29 @@ export default function Page() {
                 onChange={handleThumbnailUpload}
             />
 
-            <h3 className="content-blog">Enter Content:</h3>
-            <div className="contentformat">
-                <div className="content">
-                    {contentBlocks.map((block, index) => (
-                        <BlockWrapper
-                            key={`wrapper-${block.id}`}
-                            onAddBlock={(type) => addBlock(type, index)}
-                        >
+<h3 className="content-blog">Enter Content:</h3>
+<div className="contentformat">
+    <div className="content">
+        {contentBlocks.length === 0 ? (
+            <div className="empty-content">
+                <div className="add-block-buttons">
+                    <button type="button" onClick={() => addBlock('text', -1)}>
+                        Add Text
+                    </button>
+                    <button type="button" onClick={() => addBlock('image', -1)}>
+                        Add Image
+                    </button>
+                    <button type="button" onClick={() => addBlock('embed', -1)}>
+                        Add Embed
+                    </button>
+                </div>
+            </div>
+        ) : (
+            contentBlocks.map((block, index) => (
+                <BlockWrapper
+                    key={`wrapper-${block.id}`}
+                    onAddBlock={(type) => addBlock(type, index)}
+                >
                             {block.type === "text" && (
                                 <TextBlock
                                     key={`text-${block.id}`}
@@ -275,21 +269,21 @@ export default function Page() {
                                 />
                             )}
                         </BlockWrapper>
-                    ))}
+                    )))}
                 </div>
             </div>
 
             <h3 className="tags-blog">Enter Tags:</h3>
             <div className="tags-container">
                 {tags.map((tag, index) => (
-                    <div key={`tag-${index}-${generateBlockId()}`} className="tag-item">
+                    <div key={'tag'} className="tag-item">
                         <input
                             type="text"
                             value={tag}
                             onChange={(e) => updateTag(index, e.target.value)}
                             className="tag-input"
                         />
-                        <button     
+                        <button 
                             type="button"
                             onClick={() => removeTag(index)}
                             className="remove-tag-button"
@@ -311,18 +305,16 @@ export default function Page() {
                 <button 
                     type="button"
                     onClick={handlePreview}
-                    className="preview-button"
                     id="submit-blog"
                 >
                     Preview
                 </button>
                 <button 
                     type="button"
-                    onClick={handleDiscard}
-                    className="discard-button"
+                    onClick={handleSaveDraft}
                     id="submit-blog"
                 >
-                    Discard Changes
+                    Save Draft
                 </button>
             </div>
         </div>

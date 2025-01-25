@@ -43,8 +43,18 @@ def saveImage(imgstring):
 def createBlogPost():
     if request.method == 'POST':
         data = request.get_json()
+        if data['thumbnail_path']["link"].startswith("data:image"):
+            imgUrl = saveImage(data['thumbnail_path'])
+            data['thumbnail_path'] = imgUrl
+        else:
+            data['thumbnail_path'] = {"link": "https://i.imgur.com/JloNMTG.png", "deletehash": ""}
+        for i in data["content"]:
+            if i["type"] == "image":
+                imgurl = saveImage(i["content"])
+                i["content"] = imgurl
+
         BlogPost.createDatabase()
-        BlogPost.insertBlogPost(data['title'], data['author'], data['description'], data['content'], data['tags'], 'path')
+        BlogPost.insertBlogPost(data['title'], data['author'], data['description'], data['content'], data['tags'], data['thumbnail_path'])
         return "Saved"
 
 @app.route('/send-blogs')

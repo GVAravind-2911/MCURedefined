@@ -31,7 +31,7 @@
 .title-blog {
 	color: #ec1d24;
 	margin-bottom: 10px;
-	font-family: "BentonSans Regular";
+	font-family: "BentonSans Regular", sans-serif;
 }
 
 #title {
@@ -48,7 +48,7 @@
 .author-blog {
 	color: #ec1d24;
 	margin-bottom: 10px;
-	font-family: "BentonSans Regular";
+	font-family: "BentonSans Regular", sans-serif;
 }
 
 #author {
@@ -65,7 +65,7 @@
 .description-blog {
 	color: #ec1d24;
 	margin-bottom: 10px;
-	font-family: "BentonSans Regular";
+	font-family: "BentonSans Regular", sans-serif;
 }
 
 #description {
@@ -80,7 +80,7 @@
 .content-blog {
 	color: #ec1d24;
 	margin-bottom: 35px;
-	font-family: "BentonSans Regular";
+	font-family: "BentonSans Regular", sans-serif;
 }
 
 .contentformat {
@@ -185,10 +185,11 @@
     font-size: 20px;
     padding: 30px;
     border-radius: 0px 0px 10px 10px;
-    font-family: "BentonSans Regular";
+    font-family: "BentonSans Regular", sans-serif;
     outline: none;
     cursor: text;
     white-space: pre-wrap;
+	resize: none;
 }
 
 /* Add styles for formatted content */
@@ -230,7 +231,7 @@
 .tags-blog {
 	color: #ec1d24;
 	margin-bottom: 10px;
-	font-family: "BentonSans Regular";
+	font-family: "BentonSans Regular", sans-serif;
 }
 #tags {
 	align-self: auto;
@@ -265,7 +266,7 @@
 	height: 50px;
 	width: 25%;
 	border-radius: 10px;
-	font-family: "BentonSansCompBlack";
+	font-family: "BentonSansCompBlack", sans-serif;
 	font-size: 40px;
 	transition: opacity 0.3s, transform 0.3s;
 }
@@ -324,7 +325,7 @@
 	padding-right: 20px;
 	border-radius: 10px 10px 0px 0px; /* Rounded corners */
 	z-index: 10; /* Ensure it appears above other elements */
-	font-family: "BentonSansRegular";
+	font-family: "BentonSansRegular", sans-serif;
 }
 
 .image-actions {
@@ -379,7 +380,7 @@
 .dropzone p {
 	text-align: center;
 	color: #333;
-	font-family: "BentonSans Regular";
+	font-family: "BentonSans Regular", sans-serif;
 }
 
 .uploaded-image {
@@ -475,7 +476,7 @@
 	padding: 15px;
 	background-color: whitesmoke;
 	margin-top: 30px;
-	font-family: "BentonSans Regular";
+	font-family: "BentonSans Regular", sans-serif;
 	font-size: 20px;
 }
 
@@ -500,7 +501,7 @@
 	border-radius: 10px;
 	padding: 60px;
 	background-color: #9babb8;
-	font-family: "BentonSans Regular";
+	font-family: "BentonSans Regular", sans-serif;
 }
 
 .embed-type {
@@ -563,7 +564,7 @@
 
 .tag-input{
 	background-color: #9babb8;
-	font-family: "BentonSans Regular";
+	font-family: "BentonSans Regular", sans-serif;
 	font-size: 20px;
 	overflow: hidden;
 	outline: none;
@@ -614,7 +615,7 @@
 .thumbnail-blog{
 	color: #ec1d24;
 	margin-top: 35px;
-	font-family: "BentonSans Regular";
+	font-family: "BentonSans Regular", sans-serif;
 	margin-bottom: 15px;
 }
 
@@ -625,3 +626,25 @@
     flex-direction: column;
     gap:20px;
 }
+
+.empty-content{
+	margin-bottom: 40px;
+}
+
+.add-block-buttons{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 20px;
+}
+
+.add-block-buttons button{
+	background-color: #9babb8;
+	color: black;
+	align-self: center;
+	width:20%;
+	height: 40px;
+	border-radius: 10px;
+	font-family: "BentonSansRegular", sans-serif;
+}
+

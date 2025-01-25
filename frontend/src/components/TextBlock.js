@@ -2,13 +2,19 @@
 
 import { useState, useRef, useEffect } from "react";
 
+
 const TextBlock = ({ content, onChange, onDelete }) => {
     const [showLinkPopup, setShowLinkPopup] = useState(false);
     const [linkUrl, setLinkUrl] = useState("");
     const [text, setText] = useState(content);
     const [isFocused, setIsFocused] = useState(false);
-    const textareaId = `textarea-${Math.random().toString(36).substr(2, 9)}`;
     const textareaRef = useRef(null);
+    const [textareaId, setTextareaId] = useState('initial-textarea');
+
+    useEffect(() => {
+        setTextareaId(`textarea-${Math.random().toString(36).substring(2)}`);
+    }, []);
+
 
     useEffect(() => {
         adjustTextareaHeight();
