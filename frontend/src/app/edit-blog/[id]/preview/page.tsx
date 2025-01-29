@@ -1,16 +1,34 @@
 'use client'
 
+import type { JSX } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import "@/styles/blog.css";
 
-export default function PreviewPage() {
+interface ContentBlock {
+    id: string;
+    type: 'text' | 'image' | 'embed';
+    content: string | { link: string };
+}
+
+interface BlogData {
+    title: string;
+    author: string;
+    description: string;
+    content: ContentBlock[];
+    tags: string[];
+    thumbnail_path: { link: string };
+    created_at: string;
+    updated_at?: string;
+}
+
+export default function PreviewPage(): JSX.Element {
     const router = useRouter();
     const params = useParams();
-    const id = params?.id;
-    const [blog, setBlog] = useState(null);
+    const id = params?.id as string;
+    const [blog, setBlog] = useState<BlogData | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -23,7 +41,7 @@ export default function PreviewPage() {
         }
     }, [id]);
 
-    const handleSave = async () => {
+    const handleSave = async (): Promise<void> => {
         if (blog) {
             try {
                 await axios.post(`http://127.0.0.1:4000/blog-save/${id}`, blog);
@@ -36,11 +54,11 @@ export default function PreviewPage() {
         }
     };
 
-    const handleEdit = () => {
+    const handleEdit = (): void => {
         router.push(`/edit-blog/${id}`);
     };
 
-    const loadScript = (url) => {
+    const loadScript = (url: string): string => {
         if (url.includes("script async")) {
             const script = document.createElement("script");
             const regex1 = /<script async.*?src="(https:\/\/.*?)"/;
@@ -70,12 +88,12 @@ export default function PreviewPage() {
         if (block.type === "text") {
             return `<p class="textcontent">${block.content}</p>`;
         } if (block.type === "image") {
-            return `<img src="${block.content.link}" alt="blog-image" class="contentimages"/>`;
+            return `<img src="${(block.content as { link: string }).link}" alt="blog-image" class="contentimages"/>`;
         } if (block.type === "embed") {
-            if (block.content.includes("www.youtube.com")) {
+            if (typeof block.content === 'string' && block.content.includes("www.youtube.com")) {
                 return `<div class="youtube-preview">${loadScript(block.content)}</div>`;
             }
-            return `<div class="embed-preview">${loadScript(block.content)}</div>`;
+            return `<div class="embed-preview">${loadScript(block.content as string)}</div>`;
         }
         return '';
     }).join('');

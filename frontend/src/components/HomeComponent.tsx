@@ -1,8 +1,10 @@
 'use client'
 
-import React, { useState, useEffect } from "react";
+import type { ReactNode } from 'react'
+import React from "react";
+import Link from 'next/link';
 
-function Home() {
+function Home() : ReactNode {
 
     return (
         <div>
@@ -60,7 +62,7 @@ function Home() {
                                         are in production.
                                     </p>
                                 </div>
-                                <a href="/blogs">
+                                <Link href="/blogs">
                                     <button
                                         type="button"
                                         className="home-learn button"
@@ -73,7 +75,7 @@ function Home() {
                                             className="home-image02"
                                         />
                                     </button>
-                                </a>
+                                </Link>
                             </div>
                             <img
                                 alt="dailybugleimage"
@@ -94,7 +96,7 @@ function Home() {
                                     Saga in Chronological Order
                                 </p>
                             </div>
-                            <a href="/release-slate">
+                            <Link href="/release-slate">
                                 <button
                                     type="button"
                                     className="home-view1 button1"
@@ -102,7 +104,7 @@ function Home() {
                                 >
                                     Unveil MCU Timeline
                                 </button>
-                            </a>
+                            </Link>
                         </div>
                         <img
                             alt="timelineimage"
@@ -145,7 +147,7 @@ function Home() {
                                     celebrates theories and speculation.
                                 </p>
                             </div>
-                            <a href="/collaborate">
+                            <Link href="/collaborate">
                                 <button
                                     type="button"
                                     className="home-button6 button1"
@@ -154,7 +156,7 @@ function Home() {
                                 >
                                     Make Your Voice Heard
                                 </button>
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </section>

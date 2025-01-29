@@ -1,12 +1,8 @@
 import '@/styles/globals.css'
-import '../styles/blogposts.css'
-import '../styles/collaboratePage.css'
-import '../styles/createblog.css'
-import '../styles/home.css'
-import '../styles/projectinfo.css'
-import '../styles/style.css'
-import '../styles/timeline.css'
-import '../styles/LoadingSpinner.css'
+import '@/styles/home.css'
+import '@/styles/style.css'
+import '@/styles/LoadingSpinner.css'
+import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Layout from '@/components/Layout'
 import { Suspense } from 'react'
@@ -14,10 +10,9 @@ import LoadingSpinner from '@/components/LoadingSpinner'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'MCU Redefined',
   description: 'MCU Fan Community',
-  charSet: 'UTF-8',
   openGraph: {
     title: 'Character NFT template',
   },
@@ -26,13 +21,17 @@ export const metadata = {
   }
 }
 
-export default function RootLayout({ children }) {
+interface RootLayoutProps {
+  children: React.ReactNode;
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={inter.className}>
       <body>
         <Layout>
-            <Suspense fallback={<LoadingSpinner/>}>{children}</Suspense>
-          </Layout>
+          <Suspense fallback={<LoadingSpinner/>}>{children}</Suspense>
+        </Layout>
       </body>
     </html>
   )

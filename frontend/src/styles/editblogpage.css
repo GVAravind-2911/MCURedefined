@@ -263,8 +263,8 @@
 	background-color: #ec1d24;
 	color: white;
 	align-self: center;
-	height: 50px;
-	width: 25%;
+	height: auto;
+	width: 22%;
 	border-radius: 10px;
 	font-family: "BentonSansCompBlack", sans-serif;
 	font-size: 40px;
@@ -625,7 +625,9 @@
     justify-content: center;
     flex-direction: column;
     gap:20px;
+    width:100%;
 }
+
 
 .empty-content{
 	margin-bottom: 40px;

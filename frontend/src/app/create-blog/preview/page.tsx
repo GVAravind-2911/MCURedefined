@@ -6,15 +6,42 @@ import axios from "axios";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import "@/styles/blog.css";
 
-const TextContent = ({ content }) => (
+interface TextContentProps {
+    content: string;
+}
+
+interface ImageContentProps {
+    src: { link: string };
+}
+
+interface EmbedContentProps {
+    url: string;
+}
+
+interface BlogContent {
+    id: string;
+    type: 'text' | 'image' | 'embed';
+    content: string | { link: string };
+}
+
+interface BlogData {
+    title: string;
+    author: string;
+    content: BlogContent[];
+    tags: string[];
+    created_at: string;
+    thumbnail_path: { link: string };
+}
+
+const TextContent: React.FC<TextContentProps> = ({ content }) => (
     <div className="textcontent" dangerouslySetInnerHTML={{ __html: content }} />
 );
 
-const ImageContent = ({ src }) => (
-    <img src={src} alt="blog-image" className="contentimages"/>
+const ImageContent: React.FC<ImageContentProps> = ({ src }) => (
+    <img src={src.link} alt="blog-image" className="contentimages"/>
 );
 
-const EmbedContent = ({ url }) => {
+const EmbedContent: React.FC<EmbedContentProps> = ({ url }) => {
     if (url.includes("www.youtube.com")) {
         const videoId = url.split('v=')[1];
         return (
@@ -22,7 +49,6 @@ const EmbedContent = ({ url }) => {
                 <iframe 
                     title="youtube-video"
                     src={`https://www.youtube.com/embed/${videoId}`}
-                    frameBorder="0"
                     allowFullScreen
                     className="video"
                 />
@@ -32,29 +58,30 @@ const EmbedContent = ({ url }) => {
     return <div className="embed-preview">{url}</div>;
 };
 
-export default function PreviewPage() {
+const PreviewPage: React.FC = () => {
     const router = useRouter();
-    const [blog, setBlog] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [blog, setBlog] = useState<BlogData | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         const storedBlog = localStorage.getItem('create-blog-draft');
         if (storedBlog) {
+            console.log("Stored blog:", storedBlog);
             setBlog(JSON.parse(storedBlog));
         }
         setLoading(false);
     }, []);
 
-    const handleEdit = () => {
+    const handleEdit = (): void => {
         router.push('/create-blog');
     };
 
-    const handlePublish = async () => {
+    const handlePublish = async (): Promise<void> => {
         if (!blog) return;
         
         try {
             await axios.post('http://127.0.0.1:4000/create-blog', blog);
-            localStorage.removeItem('create-blog-draft'); // Only remove after successful publish
+            localStorage.removeItem('create-blog-draft');
             router.push('/blogs');
         } catch (error) {
             console.error("Error publishing blog:", error);
@@ -95,11 +122,11 @@ export default function PreviewPage() {
                         {blog.content?.map((block, index) => {
                             switch(block.type) {
                                 case 'text':
-                                    return <TextContent key={`content-${index}`} content={block.content} />;
+                                    return <TextContent key={`content-${index}`} content={block.content as string} />;
                                 case 'image':
-                                    return <ImageContent key={`content-${index}`} src={block.content.link} />;
+                                    return <ImageContent key={`content-${index}`} src={block.content as { link: string }} />;
                                 case 'embed':
-                                    return <EmbedContent key={`content-${index}`} url={block.content} />;
+                                    return <EmbedContent key={`content-${index}`} url={block.content as string} />;
                                 default:
                                     return null;
                             }
@@ -125,4 +152,6 @@ export default function PreviewPage() {
             </div>
         </>
     );
-}
+};
+
+export default PreviewPage;

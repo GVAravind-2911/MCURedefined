@@ -191,16 +191,17 @@
     justify-content: center;
     flex-direction: column;
     gap:20px;
+    width:100%;
 }
 
 #submit-blog {
 	background-color: #ec1d24;
 	color: white;
 	align-self: center;
-	height: 50px;
-	width: 25%;
+	height: auto;
+	width: 20%;
 	border-radius: 10px;
-	font-family: "BentonSansCompBlack";
+	font-family: "BentonSansCompBlack", sans-serif;
 	font-size: 40px;
 	transition: opacity 0.3s, transform 0.3s;
 }

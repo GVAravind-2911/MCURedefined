@@ -1,10 +1,11 @@
-// app/blogs/page.jsx
+import type { BlogList } from "@/types/BlogTypes"
+import type React from "react";
 import BlogComponent from "@/components/BlogComponent";
 import axios from "axios";
 
-async function getData() {
+async function getData() :Promise<BlogList[]> {
     try {
-        const response = await axios.get("http://127.0.0.1:4000/send-blogs");
+        const response = await axios.get<BlogList[]>("http://127.0.0.1:4000/send-blogs");
         return response.data;
     } catch (error) {
         console.error('Failed to fetch blogs:', error);
@@ -12,7 +13,7 @@ async function getData() {
     }
 }
 
-export default async function Blogs() {
+export default async function Blogs(): Promise<React.ReactElement> {
     const blogs = await getData();
     return <BlogComponent path="blogs" initialBlogs={blogs} />;
 }

@@ -1,25 +1,25 @@
 'use client'
 
-import React, { useState } from "react";
+import type React from "react";
+import type { BlogsComponentProps } from "@/types/StructureTypes";
+import { useState } from "react";
 import moment from "moment";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import LoadingSpinner from "./LoadingSpinner";
+import type {BlogList} from "@/types/BlogTypes";
+import "@/styles/blogposts.css";
 
-function BlogsComponent({ path, initialBlogs }) {
-    const [blogs] = useState(initialBlogs);
-    const [isLoading, setIsLoading] = useState(false);
+const BlogsComponent : React.FC<BlogsComponentProps> = ({ path, initialBlogs }) => {
+    const [blogs] = useState<BlogList[]>(initialBlogs);
     const router = useRouter();
 
-    const handleNavigation = (e, id) => {
+    const handleNavigation = (e: React.MouseEvent<HTMLAnchorElement>, id: number) => {
         e.preventDefault();
         router.push(`/${path}/${id}`);
     };
 
     return (
         <>
-            {isLoading && <LoadingSpinner />}
-            {!isLoading && (
                 <div className="blogs fade-in">
                     {blogs.map((blog) => (
                         <a
@@ -53,7 +53,6 @@ function BlogsComponent({ path, initialBlogs }) {
                         </a>
                     ))}
                 </div>
-            )}
         </>
     );
 }

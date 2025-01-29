@@ -1,10 +1,11 @@
 'use client'
 
+import type { ReactNode } from "react";
 import { useState } from "react";
 import Link from "next/link";
 
-function Header() {
-	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+function Header(): ReactNode {
+	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
 	const toggleMobileMenu = () => {
 		setIsMobileMenuOpen(!isMobileMenuOpen);

@@ -1,38 +1,52 @@
 'use client'
 
+import { useState, useEffect, ChangeEvent } from "react";
+import { useRouter } from "next/navigation";
 import BlockWrapper from "@/components/BlockWrapper";
 import EmbedBlock from "@/components/EmbedBlock";
 import ImageBlock from "@/components/ImageBlock";
 import TextBlock from "@/components/TextBlock";
 import ThumbnailBlock from "@/components/ThumbnailBlock";
-import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
 import "@/styles/editblogpage.css";
 
-const useInitialState = () => {
-    const defaultState = {
-        contentBlocks: [],
-        title: "",
-        author: "",
-        description: "",
-        thumbnail: "",
-        tags: []
-    };
-    
-    return defaultState;
-};
+type ContentBlock = {
+    id: string;
+  } & (
+    | { type: 'text'; content: string }
+    | { type: 'image'; content: { link: string } }
+    | { type: 'embed'; content: string }
+  );
 
 
-export default function CreateBlogPage() {
-    const router = useRouter();
-    const initialState = useInitialState();
-    
-    const [contentBlocks, setContentBlocks] = useState(initialState.contentBlocks);
-    const [tags, setTags] = useState(initialState.tags);
-    const [title, setTitle] = useState(initialState.title);
-    const [author, setAuthor] = useState(initialState.author);
-    const [description, setDescription] = useState(initialState.description);
-    const [thumbnail, setThumbnail] = useState(initialState.thumbnail);
+interface InitialState {
+  contentBlocks: ContentBlock[];
+  title: string;
+  author: string;
+  description: string;
+  thumbnail: string;
+  tags: string[];
+}
+
+const useInitialState = (): InitialState => ({
+  contentBlocks: [],
+  title: "",
+  author: "",
+  description: "",
+  thumbnail: "",
+  tags: []
+});
+
+const CreateBlogPage: React.FC = () => {
+  const router = useRouter();
+  const initialState = useInitialState();
+  
+  const [contentBlocks, setContentBlocks] = useState<ContentBlock[]>(initialState.contentBlocks);
+  const [tags, setTags] = useState<string[]>(initialState.tags);
+  const [title, setTitle] = useState<string>(initialState.title);
+  const [author, setAuthor] = useState<string>(initialState.author);
+  const [description, setDescription] = useState<string>(initialState.description);
+  const [thumbnail, setThumbnail] = useState<string>(initialState.thumbnail);
+
 
     useEffect(() => {
         const draft = localStorage.getItem('create-blog-draft');
@@ -48,8 +62,8 @@ export default function CreateBlogPage() {
             const transformedContent = storedData.content.map(block => ({
                 id: block.id || generateBlockId(),
                 type: block.type,
-                content: block.type === "image" && block.content?.link 
-                    ? block.content.link 
+                content: block.type === "image" 
+                    ? { link: block.content?.link || block.content || "" }
                     : block.content || ""
             }));
             
@@ -63,13 +77,18 @@ export default function CreateBlogPage() {
 
     const generateBlockId = () => `block-${Math.random().toString(36).substring(2)}`;
 
-    const addBlock = (type, index) => {
-        const newBlock = {
-            id: generateBlockId(),
-            type,
-            content: ""
-        };
-
+    const addBlock = (type: 'text' | 'image' | 'embed', index: number) => {
+        const newBlock = (() => {
+            switch(type) {
+                case 'text':
+                    return { id: generateBlockId(), type, content: '' } as const;
+                case 'image':
+                    return { id: generateBlockId(), type, content: { link: '' } } as const;
+                case 'embed':
+                    return { id: generateBlockId(), type, content: '' } as const;
+            }
+        })();
+    
         setContentBlocks(prevBlocks => {
             const newBlocks = [...prevBlocks];
             newBlocks.splice(index + 1, 0, newBlock);
@@ -94,10 +113,13 @@ export default function CreateBlogPage() {
         );
     };
 
-    const handleImageUpload = async (index, event) => {
-        const file = event.target.files[0];
+    const handleImageUpload = async (
+        index: number,
+        event: React.ChangeEvent<HTMLInputElement>
+    ): Promise<void> => {
+        const file = event.target.files?.[0];
         if (!file) return;
-
+      
         try {
             const dataUrl = await readFileAsDataURL(file);
             setContentBlocks(prevBlocks => {
@@ -105,7 +127,7 @@ export default function CreateBlogPage() {
                 newBlocks[index] = {
                     id: newBlocks[index].id,
                     type: "image",
-                    content: dataUrl
+                    content: { link: dataUrl }
                 };
                 return newBlocks;
             });
@@ -114,10 +136,10 @@ export default function CreateBlogPage() {
         }
     };
 
-    const readFileAsDataURL = (file) => {
+    const readFileAsDataURL = (file: File):Promise<string> => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
-            reader.onload = (e) => resolve(e.target.result);
+            reader.onload = (e) => resolve(e.target.result as string);
             reader.onerror = (e) => reject(e);
             reader.readAsDataURL(file);
         });
@@ -129,7 +151,7 @@ export default function CreateBlogPage() {
 
         try {
             const dataUrl = await readFileAsDataURL(file);
-            setThumbnail(dataUrl);
+            setThumbnail(dataUrl as string);
         } catch (error) {
             console.error("Error uploading thumbnail:", error);
         }
@@ -140,9 +162,7 @@ export default function CreateBlogPage() {
             title,
             author,
             description,
-            content: contentBlocks.map(block => (block.type === "image" ? 
-                { ...block, content: { link: block.content } } 
-                : block)),
+            content: contentBlocks.map(block => block),
             tags: tags.filter(tag => tag.trim() !== ""),
             thumbnail_path: { link: thumbnail },
             created_at: new Date().toISOString()
@@ -157,9 +177,7 @@ export default function CreateBlogPage() {
             title,
             author,
             description,
-            content: contentBlocks.map(block => (block.type === "image" ? 
-                { ...block, content: { link: block.content } } 
-                : block)),
+            content: contentBlocks.map(block => block),
             tags: tags.filter(tag => tag.trim() !== ""),
             thumbnail_path: { link: thumbnail },
             created_at: new Date().toISOString()
@@ -220,24 +238,24 @@ export default function CreateBlogPage() {
                 onChange={handleThumbnailUpload}
             />
 
-<h3 className="content-blog">Enter Content:</h3>
-<div className="contentformat">
-    <div className="content">
-        {contentBlocks.length === 0 ? (
-            <div className="empty-content">
-                <div className="add-block-buttons">
-                    <button type="button" onClick={() => addBlock('text', -1)}>
-                        Add Text
-                    </button>
-                    <button type="button" onClick={() => addBlock('image', -1)}>
-                        Add Image
-                    </button>
-                    <button type="button" onClick={() => addBlock('embed', -1)}>
-                        Add Embed
-                    </button>
-                </div>
-            </div>
-        ) : (
+            <h3 className="content-blog">Enter Content:</h3>
+            <div className="contentformat">
+                <div className="content">
+                    {contentBlocks.length === 0 ? (
+                        <div className="empty-content">
+                            <div className="add-block-buttons">
+                                <button type="button" onClick={() => addBlock('text', -1)}>
+                                    Add Text
+                                </button>
+                                <button type="button" onClick={() => addBlock('image', -1)}>
+                                    Add Image
+                                </button>
+                                <button type="button" onClick={() => addBlock('embed', -1)}>
+                                    Add Embed
+                                </button>
+                            </div>
+                        </div>
+            ) : (
             contentBlocks.map((block, index) => (
                 <BlockWrapper
                     key={`wrapper-${block.id}`}
@@ -257,7 +275,7 @@ export default function CreateBlogPage() {
                                     index={index}
                                     src={block.content}
                                     onDelete={() => deleteBlock(index)}
-                                    onChange={(event) => handleImageUpload(index, event)}
+                                    onChange={handleImageUpload.bind(null, index)}
                                 />
                             )}
                             {block.type === "embed" && (
@@ -320,3 +338,5 @@ export default function CreateBlogPage() {
         </div>
     );
 }
+
+export default CreateBlogPage;

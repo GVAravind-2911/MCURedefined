@@ -61,6 +61,7 @@ def createBlogPost():
 def sendBlogData():
     BlogPost.createDatabase()
     blogs = BlogPost.queryAll()
+    print(blogs)
     return jsonify(blogs)
 
 @app.route('/blog-save/<int:id>', methods=["POST"])

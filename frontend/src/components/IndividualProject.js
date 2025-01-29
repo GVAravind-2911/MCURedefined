@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom/client";
-import LoadingOverlay from "../../../temp/templates/LoadingOverlay";
 
 function ProjectInfo() {
 	const [project, setProject] = useState([]);

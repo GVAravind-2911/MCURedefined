@@ -1,5 +1,7 @@
 'use client'
 
+import type { JSX } from "react";
+import type { AxiosError } from "axios";
 import BlockWrapper from "@/components/BlockWrapper";
 import EmbedBlock from "@/components/EmbedBlock";
 import ImageBlock from "@/components/ImageBlock";
@@ -11,33 +13,52 @@ import { useEffect, useState } from "react";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import '@/styles/editblogpage.css'
 
-export default function Page() {
+type ContentBlock = {
+    id: string;
+} & (
+    | { type: 'text'; content: string }
+    | { type: 'image'; content: { link: string } }
+    | { type: 'embed'; content: string }
+);
+
+interface BlogData {
+    title: string;
+    author: string;
+    description: string;
+    content: ContentBlock[];
+    tags: string[];
+    thumbnail_path: { link: string };
+}
+
+export default function Page(): JSX.Element {
     const params = useParams();
     const router = useRouter();
-    const id = params.id;
-    const [contentBlocks, setContentBlocks] = useState([]);
-    const [tags, setTags] = useState([]);
-    const [title, setTitle] = useState("");
-    const [author, setAuthor] = useState("");
-    const [description, setDescription] = useState("");
-    const [thumbnail, setThumbnail] = useState("");
-    const [loading, setLoading] = useState(true);
+    const id = params.id as string;
+    
+    const [contentBlocks, setContentBlocks] = useState<ContentBlock[]>([]);
+    const [tags, setTags] = useState<string[]>([]);
+    const [title, setTitle] = useState<string>("");
+    const [author, setAuthor] = useState<string>("");
+    const [description, setDescription] = useState<string>("");
+    const [thumbnail, setThumbnail] = useState<string>("");
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        const fetchBlogData = async () => {
+        const fetchBlogData = async (): Promise<void> => {
             if (!id) return;
 
             try {
                 const storedBlog = localStorage.getItem(`blog-${id}`);
                 if (storedBlog) {
-                    const blogData = JSON.parse(storedBlog);
+                    const blogData = JSON.parse(storedBlog) as BlogData;
+                    console.log(blogData)
                     initializeBlogData(blogData);
                 } else {
-                    const response = await axios.get(`http://127.0.0.1:4000/blogs/${id}`);
+                    const response = await axios.get<BlogData>(`http://127.0.0.1:4000/blogs/${id}`);
                     initializeBlogData(response.data);
                 }
             } catch (error) {
-                console.error("Error fetching blog data:", error);
+                console.error("Error fetching blog data:", error as AxiosError);
             } finally {
                 setLoading(false);
             }
@@ -46,11 +67,18 @@ export default function Page() {
         fetchBlogData();
     }, [id]);
 
-    const initializeBlogData = (blogData) => {
-        const normalizedBlocks = normalizeContentBlocks(blogData.content).map(block => ({
-            ...block,
-            id: generateBlockId()
-        }));
+    const initializeBlogData = (blogData: BlogData): void => {
+        const normalizedBlocks = blogData.content.map(block => {
+            const id = generateBlockId();
+            if (block.type === 'image') {
+                return {
+                    id,
+                    type: 'image' as const,
+                    content: { link: typeof block.content === 'string' ? block.content : block.content.link }
+                };
+            }
+            return { ...block, id } as ContentBlock;
+        });
         setContentBlocks(normalizedBlocks);
         setTags(blogData.tags || []);
         setTitle(blogData.title || "");
@@ -58,30 +86,23 @@ export default function Page() {
         setDescription(blogData.description || "");
         setThumbnail(blogData.thumbnail_path?.link || "");
     };
+    
 
-    const generateBlockId = () => {
-        return `block_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const generateBlockId = (): string => {
+        return `block_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
     };
-    // Normalize content blocks to ensure consistent structure
-    const normalizeContentBlocks = (blocks) => {
-        return blocks.map(block => {
-            if (block.type === "image" && typeof block.content === "object") {
-                return {
-                    ...block,
-                    content: block.content.link
-                };
+
+    const addBlock = (type: ContentBlock['type'], index: number): void => {
+        const newBlock: ContentBlock = (() => {
+            switch(type) {
+                case 'text':
+                    return { id: generateBlockId(), type, content: '' };
+                case 'image':
+                    return { id: generateBlockId(), type, content: { link: '' } };
+                case 'embed':
+                    return { id: generateBlockId(), type, content: '' };
             }
-            return block;
-        });
-    };
-
-
-    const addBlock = (type, index) => {
-        const newBlock = {
-            id: generateBlockId(),
-            type,
-            content: ""
-        };
+        })();
 
         setContentBlocks(prevBlocks => {
             const newBlocks = [...prevBlocks];
@@ -90,48 +111,45 @@ export default function Page() {
         });
     };
 
-    const updateBlock = (index, content) => {
+    const updateBlock = (index: number, content: string | { link: string }): void => {
         setContentBlocks(prevBlocks => {
             const newBlocks = [...prevBlocks];
             newBlocks[index] = {
                 ...newBlocks[index],
                 content
-            };
+            } as ContentBlock;
             return newBlocks;
         });
     };
 
-    const deleteBlock = (index) => {
+    const deleteBlock = (index: number): void => {
         setContentBlocks(prevBlocks => 
             prevBlocks.filter((_, i) => i !== index)
         );
     };
 
-    const handleImageUpload = async (index, event) => {
-        const file = event.target.files[0];
+    const handleImageUpload = async (
+        index: number,
+        event: React.ChangeEvent<HTMLInputElement>
+    ): Promise<void> => {
+        const file = event.target.files?.[0];
         if (!file) return;
-
+    
         try {
             const dataUrl = await readFileAsDataURL(file);
-            setContentBlocks(prevBlocks => {
-                const newBlocks = [...prevBlocks];
-                newBlocks[index] = {
-                    id: newBlocks[index].id,
-                    type: "image",
-                    content: dataUrl
-                };
-                return newBlocks;
-            });
+            updateBlock(index, { link: dataUrl });
+            console.log(contentBlocks)
         } catch (error) {
             console.error("Error uploading image:", error);
         }
     };
 
-    const readFileAsDataURL = (file) => {
+    const readFileAsDataURL = (file: File): Promise<string> => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
-            reader.onload = (e) => resolve(e.target.result);
-            reader.onerror = (e) => reject(e);
+            reader.onload = (e: ProgressEvent<FileReader>) => 
+                resolve((e.target?.result as string) || '');
+            reader.onerror = reject;
             reader.readAsDataURL(file);
         });
     };
@@ -150,14 +168,19 @@ export default function Page() {
 
     const handleSubmit = async () => {
         if (!id) return;
-
+    
         const filteredTags = [...new Set(tags.filter(tag => tag.trim() !== ""))];
         
-        const processedBlocks = contentBlocks.map(block => ({
-            ...block,
-            content: block.type === "image" ? { link: block.content } : block.content
-        }));
-
+        const processedBlocks = contentBlocks.map(block => {
+            if (block.type === 'image') {
+                return {
+                    ...block,
+                    content: { link: block.content.link }
+                };
+            }
+            return block;
+        });
+    
         const blogData = {
             title,
             author,
@@ -166,7 +189,7 @@ export default function Page() {
             tags: filteredTags,
             thumbnail_path: { link: thumbnail }
         };
-
+    
         try {
             localStorage.setItem(`blog-${id}`, JSON.stringify(blogData));
             console.log("Blog data saved successfully");

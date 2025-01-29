@@ -1,6 +1,7 @@
 import React from "react";
+import type { ReactNode } from "react";
 
-function Footer() {
+function Footer() : ReactNode{
 	return (
 		<footer className="home-footer">
 			<div className="home-separator" />

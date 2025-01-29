@@ -37,3 +37,10 @@ frontend/next-env.d.ts
 
 backend/MCURedefined
 backend/.env
+backend/__pycache__
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+.idea/

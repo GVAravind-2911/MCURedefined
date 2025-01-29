@@ -1,63 +1,68 @@
-'use client'
-
 import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
+import type { ImageBlockProps } from "@/types/BlockTypes";
+import type { DropzoneOptions } from "react-dropzone";
 
-const ImageBlock = ({ index, src, onChange, onDelete }) => {
-    const [image, setImage] = useState(src);
+const ImageBlock: React.FC<ImageBlockProps> = ({ index, src, onChange, onDelete }) => {
+    const [image, setImage] = useState<{link: string}>(src);
+
+    const createFileList = (files: File[]): FileList => {
+        const dataTransfer = new DataTransfer();
+        for (const file of files) {
+            dataTransfer.items.add(file);
+        }
+        return dataTransfer.files;
+    };
 
     const onDrop = useCallback(
-        (acceptedFiles) => {
+        (acceptedFiles: File[]) => {
             const file = acceptedFiles[0];
 
             if (file && file instanceof Blob) {
                 const reader = new FileReader();
 
-                reader.onload = (e) => {
-                    const dataUrl = e.target.result;
-
-                    // Update local state
-                    setImage(dataUrl);
-
-                    // Call onChange to update the parent's content blocks
+                reader.onload = (e: ProgressEvent<FileReader>) => {
+                    const dataUrl = e.target?.result as string;
+                    setImage({ link: dataUrl });
+                    const fileList = createFileList([file]);
                     onChange({
                         target: {
-                            files: [file]
+                            files: fileList
                         }
-                    });
+                    } as React.ChangeEvent<HTMLInputElement>);
                 };
 
                 reader.readAsDataURL(file);
-            } else {
-                console.error("Invalid file type. Expected a Blob or File.");
             }
         },
         [onChange]
     );
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    const dropzoneConfig: DropzoneOptions = {
         onDrop,
         accept: {
             "image/*": [".jpeg", ".jpg", ".png"],
         },
         multiple: false,
-    });
+    };
 
-    const handleReupload = () => {
-        setImage(null);
-        // Update parent state to clear the image
+    const { getRootProps, getInputProps, isDragActive } = useDropzone(dropzoneConfig);
+
+    const handleReupload = (): void => {
+        setImage({ link: '' });
+        const emptyFileList = createFileList([]);
         onChange({
             target: {
-                files: []
+                files: emptyFileList
             }
-        });
+        } as React.ChangeEvent<HTMLInputElement>);
     };
 
     return (
         <div className="content-block image-block">
             <div className="image-type block-type">Image</div>
             <div className="image-actions block-actions">
-                {image && (
+                {image.link && (
                     <button
                         type="button"
                         onClick={handleReupload}
@@ -73,14 +78,14 @@ const ImageBlock = ({ index, src, onChange, onDelete }) => {
             <div
                 {...getRootProps()}
                 className={`dropzone ${isDragActive ? "active" : ""} ${
-                    image ? "has-image" : ""
+                    image.link ? "has-image" : ""
                 }`}
             >
                 <input {...getInputProps()} />
-                {image ? (
+                {image.link ? (
                     <>
                         <img
-                            src={image}
+                            src={image.link}
                             alt="Uploaded content"
                             className="uploaded-image"
                         />

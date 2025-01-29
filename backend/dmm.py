@@ -66,7 +66,6 @@ class BlogPost(Base):
                 'title': post.title,
                 'author': post.author,
                 'description': post.description,
-                'content': post.content,
                 'tags': post.tags,
                 'thumbnail_path': post.thumbnail_path,
                 'created_at': post.created_at,

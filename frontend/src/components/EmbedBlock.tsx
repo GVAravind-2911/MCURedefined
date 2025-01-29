@@ -1,17 +1,19 @@
 'use client'
 
-import {useEffect} from "react";
+import { useEffect } from "react";
 import DOMPurify from "isomorphic-dompurify";
+import type { EmbedBlockProps } from "@/types/BlockTypes";
 
-const EmbedBlock = ({ url, onChange, onDelete }) => {
+
+const EmbedBlock: React.FC<EmbedBlockProps> = ({ url, onChange, onDelete }) => {
 	useEffect(() => {
 		if (url) {
-			if (url.includes("script async")){
+			if (url.includes("script async")) {
 				const script = document.createElement("script");
 				const regex1 = /<script async.*?src="(https:\/\/.*?)"/;
 				const match1 = url.match(regex1);
 				console.log(match1);
-				if (match1){
+				if (match1) {
 					script.src = match1[1];
 					script.async = true;
 					document.body.appendChild(script);
@@ -20,7 +22,7 @@ const EmbedBlock = ({ url, onChange, onDelete }) => {
 					};
 				}
 			}
-			if (url.includes("www.youtube.com")){
+			if (url.includes("www.youtube.com")) {
 				const regex = /^.*src="(https:\/\/www.youtube.com.+?)"/;
 				const match = url.match(regex);
 				console.log(match);
@@ -42,18 +44,18 @@ const EmbedBlock = ({ url, onChange, onDelete }) => {
 			</div>
 			<div className="embed-area">
 				{url.includes("www.youtube.com") && (
-					<div 
-						className="youtube-preview" 
+					<div
+						className="youtube-preview"
 						dangerouslySetInnerHTML={{ __html: url }}
 					/>
 				)}
 				{url.includes("www.instagram.com") && (
-					<div 
-						className="instagram-preview" 
+					<div
+						className="instagram-preview"
 						dangerouslySetInnerHTML={{ __html: url }}
 					/>
 				)}
-				{url && !url.includes("www.youtube.com") && !url.includes("www.instagram.com") &&(
+				{url && !url.includes("www.youtube.com") && !url.includes("www.instagram.com") && (
 					<div
 						className="embed-preview"
 						dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(url) }}

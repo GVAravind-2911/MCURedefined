@@ -1,37 +1,11 @@
 import axios from "axios";
 import DOMPurify from "dompurify";
 import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom/client";
-import LoadingOverlay from "../../../temp/templates/LoadingOverlay";
 
 function IndividualBlog() {
 	const [blog, setBlog] = useState([]);
 	const location = window.location.href;
 	const [isLoading, setIsLoading] = useState(true);
-
-	// useEffect(() => {
-	// 	let blogId;
-	// 	if (location.includes("blogs")) {
-	// 		blogId = location.split("/").pop();
-	// 	}
-	// 	axios
-	// 		.get(`/send-individual-blog-data/${blogId}`)
-	// 		.then((response) => {
-	// 			setBlog(response.data);
-	// 			console.log(response.data);
-	// 			setIsLoading(false);
-	// 		})
-	// 		.catch((error) => console.error(error));
-	// }, [location]);
-
-	// useEffect(() => {
-	// 	axios.post("http://127.0.0.1:3200/localindividualblogs", blog)
-	// 	.then((response) => {
-	// 		console.log(response.data);
-	// 	}
-	// 	)
-	// 	.catch((error) => console.error(error));
-	// },[blog]);
 
 	useEffect(() => {
 		axios

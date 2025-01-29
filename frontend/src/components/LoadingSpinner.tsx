@@ -1,16 +1,19 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { trefoil } from 'ldrs';
 
-const LoadingSpinner = () => {
+// Add type declaration for ldrs
+declare module 'ldrs' {
+  export const trefoil: {
+    register: () => void;
+  };
+}
 
-  useEffect(() => {
-    // Only import ldrs in browser
-    if (typeof window !== 'undefined') {
-      import('ldrs/trefoil');
-    }
-  }, []);
+// Register the custom element
+trefoil.register();
 
+const LoadingSpinner: React.FC = () => {
   return (
     <div className="loading-overlay">
       <l-trefoil
