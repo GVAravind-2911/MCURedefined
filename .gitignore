@@ -37,10 +37,26 @@ frontend/next-env.d.ts
 
 backend/MCURedefined
 backend/.env
-backend/__pycache__
+
 
 # Byte-compiled / optimized / DLL files
-__pycache__/
+**/__pycache__/
 *.py[cod]
 *$py.class
 .idea/
+
+/oldeditpage.js
+/.editorconfig
+/temp files/
+/temp.txt
+/test.ipynb
+/run.ps1
+
+backend/blog*.db
+backend/populate.py
+backend/tocheck.txt
+backend/try.py
+backend/try1.py
+backend/webscrape.py
+backend/imguploadtest.py
+backend/recommendation.py
