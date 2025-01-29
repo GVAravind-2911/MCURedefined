@@ -38,8 +38,20 @@ def saveImage(imgstring):
     else:
         return imgstring
 
+@app.route('/blogs')
+def sendBlogData():
+    BlogPost.createDatabase()
+    blogs = BlogPost.queryAll()
+    print(blogs)
+    return jsonify(blogs)
 
-@app.route('/create-blog', methods=['POST'])
+@app.route('/blogs/<int:id>')
+def blog(id):
+    post = BlogPost.query(id)
+    print(post)
+    return jsonify(post)
+
+@app.route('/blog/create', methods=['POST'])
 def createBlogPost():
     if request.method == 'POST':
         data = request.get_json()
@@ -57,14 +69,7 @@ def createBlogPost():
         BlogPost.insertBlogPost(data['title'], data['author'], data['description'], data['content'], data['tags'], data['thumbnail_path'])
         return "Saved"
 
-@app.route('/send-blogs')
-def sendBlogData():
-    BlogPost.createDatabase()
-    blogs = BlogPost.queryAll()
-    print(blogs)
-    return jsonify(blogs)
-
-@app.route('/blog-save/<int:id>', methods=["POST"])
+@app.route('/blog/update/<int:id>', methods=["PUT"])
 def blogsSave(id):
     data = request.get_json()
     print(data)
@@ -77,12 +82,6 @@ def blogsSave(id):
     BlogPost.createDatabase()
     BlogPost.update(id,data['title'], data['author'], data['description'], data['content'], data['tags'], data['thumbnail_path'])
     return "Saved"
-
-@app.route('/blogs/<int:id>')
-def blog(id):
-    post = BlogPost.query(id)
-    print(post)
-    return jsonify(post)
 
 @app.route('/release-slate', methods=['POST', 'GET'])
 def releaseSlate():

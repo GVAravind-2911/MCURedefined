@@ -6,7 +6,7 @@ import '@/styles/blogedit.css'
 
 async function getData():Promise<BlogList[]> {
     try {
-        const response = await axios.get<BlogList[]>("http://127.0.0.1:4000/send-blogs");
+        const response = await axios.get<BlogList[]>("http://127.0.0.1:4000/blogs");
         return response.data;
     } catch (error) {
         console.error('Failed to fetch blogs:', error);

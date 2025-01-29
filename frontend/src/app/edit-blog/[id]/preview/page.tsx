@@ -44,7 +44,7 @@ export default function PreviewPage(): JSX.Element {
     const handleSave = async (): Promise<void> => {
         if (blog) {
             try {
-                await axios.post(`http://127.0.0.1:4000/blog-save/${id}`, blog);
+                await axios.put(`http://127.0.0.1:4000/blog/update/${id}`, blog);
                 localStorage.removeItem(`blog-${id}`);
                 alert("Blog saved!");
                 router.push("/edit-blog");

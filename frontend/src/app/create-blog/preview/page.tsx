@@ -80,7 +80,7 @@ const PreviewPage: React.FC = () => {
         if (!blog) return;
         
         try {
-            await axios.post('http://127.0.0.1:4000/create-blog', blog);
+            await axios.post('http://127.0.0.1:4000/blog/create', blog);
             localStorage.removeItem('create-blog-draft');
             router.push('/blogs');
         } catch (error) {
