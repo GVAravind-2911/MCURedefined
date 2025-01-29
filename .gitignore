@@ -60,3 +60,6 @@ backend/try1.py
 backend/webscrape.py
 backend/imguploadtest.py
 backend/recommendation.py
+
+/package.json
+/package-lock.json
