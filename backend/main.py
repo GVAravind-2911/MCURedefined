@@ -1,6 +1,6 @@
 from flask import Flask, session, request, render_template, redirect, url_for, jsonify
 import json
-from dmm import BlogPost, Timeline
+from dmm import BlogPost, Timeline, Reviews
 from datetime import datetime, date
 from flask_cors import CORS
 from flask_compress import Compress
@@ -40,7 +40,6 @@ def saveImage(imgstring):
 
 @app.route('/blogs')
 def sendBlogData():
-    BlogPost.createDatabase()
     blogs = BlogPost.queryAll()
     print(blogs)
     return jsonify(blogs)
@@ -50,6 +49,12 @@ def blog(id):
     post = BlogPost.query(id)
     print(post)
     return jsonify(post)
+
+@app.route('/blogs/latest', methods=['GET'])
+def latest():
+    latest = BlogPost.queryLatest()
+    return jsonify(latest)
+
 
 @app.route('/blog/create', methods=['POST'])
 def createBlogPost():
@@ -83,32 +88,37 @@ def blogsSave(id):
     BlogPost.update(id,data['title'], data['author'], data['description'], data['content'], data['tags'], data['thumbnail_path'])
     return "Saved"
 
+@app.route('/reviews', methods=["GET"])
+def reviews():
+    reviews = Reviews.queryAll()
+    print(reviews)
+    return jsonify(reviews)
+
+@app.route('/reviews/<int:id>')
+def sendreview(id):
+    review = Reviews.query(id)
+    print(review)
+    return jsonify(review)
+
+@app.route("/reviews/latest")
+def sendlatestreviews():
+    latest = Reviews.queryLatest()
+    return jsonify(latest)
+
 @app.route('/release-slate', methods=['POST', 'GET'])
 def releaseSlate():
     if request.method == 'GET':
-        if not session.get('orderID'):
-            session['orderID'] = 1
-        print(session['orderID'],'Method')
-        return render_template('timeline.html')
-
-@app.route('/send-data/')    
-def sendData():
-        Timeline.createDatabase()
-        phase1Data = (Timeline.queryPhase(1))
-        phase2Data = (Timeline.queryPhase(2))
-        phase3Data = (Timeline.queryPhase(3))
-        return jsonify(phase1Data,phase2Data,phase3Data,{"sortID":session['orderID']})
-
-@app.route('/receive-data',methods = ['POST'])
-def receiveData():
-    data = request.get_json()
-    session['orderID'] = data['sortID']
-    return jsonify(session['orderID'])
+        projects = Timeline.queryAll()
+        print(projects)
+        return jsonify(projects)
+        
 
 @app.route('/release-slate/<int:id>',methods = ['GET','POST'])
 def releaseProject(id):
     if request.method == 'GET':
-            return render_template('projectinfo.html')
+        project = Timeline.queryId(id)
+        print(project)
+        return jsonify(project)
 
 @app.route('/send-individual-project-data/<int:id>')    
 def sendIndividualProjectData(id):

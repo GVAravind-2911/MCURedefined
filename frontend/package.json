@@ -16,6 +16,7 @@
     "cors": "^2.8.5",
     "dompurify": "^3.1.6",
     "express": "^4.21.1",
+    "html-react-parser": "^5.2.2",
     "isomorphic-dompurify": "^2.14.0",
     "ldrs": "^1.0.2",
     "moment": "^2.30.1",

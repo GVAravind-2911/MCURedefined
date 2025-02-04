@@ -1,6 +1,6 @@
 'use client'
 
-import type React from "react";
+import React from "react";
 import type { BlogsComponentProps } from "@/types/StructureTypes";
 import { useState } from "react";
 import moment from "moment";
@@ -21,10 +21,11 @@ const BlogsComponent : React.FC<BlogsComponentProps> = ({ path, initialBlogs }) 
     return (
         <>
                 <div className="blogs fade-in">
+                    <hr className="divider" />
                     {blogs.map((blog) => (
+                        <React.Fragment key={blog.id}>
                         <a
                             href={`/${path}/${blog.id}`}
-                            key={blog.id}
                             className="cardblog"
                             onClick={(e) => handleNavigation(e, blog.id)}
                         >
@@ -41,16 +42,18 @@ const BlogsComponent : React.FC<BlogsComponentProps> = ({ path, initialBlogs }) 
                                 <h1 className="titleblog">{blog.title}</h1>
                                 <h4 className="authorblog">By: {blog.author}</h4>
                                 <h4 className="dateblog">
-                                    Posted: {moment(blog.created_at, "YYYY/MM/DD HH:mm:ss").format("YYYY/MM/DD")}
+                                    Posted: {moment(blog.created_at, "YYYY/MM/DD HH:mm:ss").format("dddd, D MMMM, YYYY")}
                                 </h4>
                                 {blog.updated_at !== '' && (
                                     <h4 className="dateblog">
-                                        Updated: {moment(blog.updated_at, "YYYY/MM/DD HH:mm:ss").format("YYYY/MM/DD")}
+                                        Updated: {moment(blog.updated_at, "YYYY/MM/DD HH:mm:ss").format("dddd, D MMMM, YYYY")}
                                     </h4>
                                 )}
                                 <h3 className="descblog">{blog.description}</h3>
                             </div>
                         </a>
+                        <hr className="divider"/>
+                        </React.Fragment>
                     ))}
                 </div>
         </>

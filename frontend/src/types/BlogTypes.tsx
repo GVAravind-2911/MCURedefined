@@ -38,6 +38,14 @@ export interface ThumbnailPath {
     updated_at: string;
   }
 
+  export interface Article {
+    thumbnail_path: {link:string};
+    title: string;
+    author: string;
+    created_at: string;
+    id: number;
+  }
+
   export interface CreateBlogData extends Omit<BlogData,'created_at'> {}
   
   export interface BlogList extends Omit<BlogData, 'content'> {

@@ -2,7 +2,7 @@ import type { BlogList } from "@/types/BlogTypes"
 import type React from "react";
 import BlogsComponent from "@/components/BlogComponent";
 import axios from "axios";
-import '@/styles/blogedit.css'
+import '@/styles/blogposts.css'
 
 async function getData():Promise<BlogList[]> {
     try {

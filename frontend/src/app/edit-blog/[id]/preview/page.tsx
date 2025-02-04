@@ -1,17 +1,16 @@
 'use client'
 
 import type { JSX } from "react";
+import type { ContentBlock } from "@/types/BlogTypes";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import parse from "html-react-parser";
+import ScriptEmbed from "@/components/ScriptEmbed";
+import moment from "moment";
 import "@/styles/blog.css";
 
-interface ContentBlock {
-    id: string;
-    type: 'text' | 'image' | 'embed';
-    content: string | { link: string };
-}
 
 interface BlogData {
     title: string;
@@ -58,45 +57,42 @@ export default function PreviewPage(): JSX.Element {
         router.push(`/edit-blog/${id}`);
     };
 
-    const loadScript = (url: string): string => {
-        if (url.includes("script async")) {
-            const script = document.createElement("script");
-            const regex1 = /<script async.*?src="(https:\/\/.*?)"/;
-            const match1 = url.match(regex1);
-            if (match1) {
-                script.src = match1[1];
-                script.async = true;
-                document.body.appendChild(script);
-                return url;
-            }
-        }
+    const loadScript = (url: string): JSX.Element => {
         if (url.includes("www.youtube.com")) {
             const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|vi|e(?:mbed)?)\/|\S*?[?&]v=|(?:\S*\?list=))|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
             const match = url.match(regex);
             if (match) {
                 const videoId = match[1];
-                return `<iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen class="video"></iframe>`;
+                return <iframe src={`https://www.youtube.com/embed/${videoId}`} title="youtube-video" allowFullScreen className="video"/>;
             }
         }
-        return url;
+        return;
     };
 
     if (loading) return <LoadingSpinner />;
     if (!blog) return <div>No blog data found</div>;
 
-    const contentString = blog.content.map((block) => {
+    const contentElements = blog.content.map((block): JSX.Element => {
         if (block.type === "text") {
-            return `<p class="textcontent">${block.content}</p>`;
-        } if (block.type === "image") {
-            return `<img src="${(block.content as { link: string }).link}" alt="blog-image" class="contentimages"/>`;
-        } if (block.type === "embed") {
-            if (typeof block.content === 'string' && block.content.includes("www.youtube.com")) {
-                return `<div class="youtube-preview">${loadScript(block.content)}</div>`;
-            }
-            return `<div class="embed-preview">${loadScript(block.content as string)}</div>`;
+          return (
+            <div key={block.id} className="textcontent">
+              {parse(block.content)}
+            </div>
+          );
         }
-        return '';
-    }).join('');
+        if (block.type === "image") {
+          return <img key={block.id} src={block.content.link} alt="blog-image" className="contentimages"/>;
+        }
+        if (block.type === "embed") {
+          if (block.content.includes("www.youtube.com")) {
+            return <div key={block.id} className="youtube-preview">{loadScript(block.content)}</div>;
+          }
+          if (block.content.includes("script async")) {
+            return <ScriptEmbed key={block.id} content={block.content} />;
+          }
+        }
+        return <div key={block.id}/>;
+    });
 
     return (
         <>
@@ -109,7 +105,7 @@ export default function PreviewPage(): JSX.Element {
                 </h3>
                 <h3 className="datecreation">
                     <span className="colorforby">Posted: </span>
-                    {blog?.created_at}
+                    {moment(new Date()).format('dddd, D MMMM, YYYY')}
                 </h3>
                 {blog?.updated_at && (
                     <h3 className="dateupdate">
@@ -120,7 +116,7 @@ export default function PreviewPage(): JSX.Element {
                 <span className="tagsspan">
                     {blog?.tags?.map((tag, index) => (
                         <button 
-                            key={`${tag}-${index}`} 
+                            key={index} 
                             type="button" 
                             className="tags"
                         >
@@ -130,7 +126,9 @@ export default function PreviewPage(): JSX.Element {
                 </span>
             </div>
             <div className="contentsmain">
-                <div className="maincontent" dangerouslySetInnerHTML={{ __html: contentString }} />
+                <div className="maincontent">
+                    {contentElements}
+                </div>
             </div>
         </div>
         <div className="submit-blogdiv">

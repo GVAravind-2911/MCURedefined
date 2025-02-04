@@ -90,6 +90,27 @@ class BlogPost(Base):
         else:
             return 404
     
+    def queryLatest():
+        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        Session = sessionmaker(bind=engine)
+        session = Session()
+        
+        # Specify the columns you want to select
+        latest = session.query(BlogPost).with_entities(
+            BlogPost.id,
+            BlogPost.title,
+            BlogPost.author,
+            BlogPost.created_at,
+            BlogPost.thumbnail_path
+        ).order_by(BlogPost.created_at.desc()).limit(3).all()
+        
+        session.close()
+        
+        # Convert the result to a list of dictionaries
+        latest_dict = [dict(id=post.id, title=post.title, author=post.author, created_at=post.created_at, thumbnail_path=post.thumbnail_path) for post in latest]
+        
+        return latest_dict
+    
     @staticmethod
     def update(id, title, author, description, content, tags, thumbnail_path):
         engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
@@ -174,10 +195,17 @@ class Timeline(Base):
         
     @staticmethod
     def queryAll():
-        engine = sqlalchemy.create_engine(f'sqlite:///blog.db')
+        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
         session = sessionmaker(bind=engine)()
-        oldposts = session.query(Timeline)
-        return oldposts
+        
+        projects = session.query(Timeline).all()
+        projects_json = []
+        
+        for project in projects:
+            projects_json.append(project.to_dict())
+        
+        session.close()
+        return projects_json
     
     @staticmethod
     def populateNewDB(project):
@@ -240,8 +268,121 @@ class Users(Base):
     password = sqlalchemy.Column(sqlalchemy.String)
     likedPosts = sqlalchemy.Column(sqlalchemy.String)
 
+class Reviews(Base):
+    __tablename__ = 'reviews'
+
+    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
+    title = sqlalchemy.Column(sqlalchemy.String(255))
+    author = sqlalchemy.Column(sqlalchemy.String(30))
+    description = sqlalchemy.Column(sqlalchemy.Text)
+    content = sqlalchemy.Column(sqlalchemy.JSON)  # JSON array for content
+    tags = sqlalchemy.Column(sqlalchemy.JSON)  # JSON array for tags
+    thumbnail_path = sqlalchemy.Column(sqlalchemy.JSON)
+    created_at = sqlalchemy.Column(sqlalchemy.String(75))
+    updated_at = sqlalchemy.Column(sqlalchemy.String(75))
+
+    def to_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+    @staticmethod
+    def createDatabase():
+        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        Base.metadata.create_all(engine)
+
+    @staticmethod
+    def insertReview(title, author, description, content, tags, thumbnail_path):
+        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        session = sessionmaker(bind=engine)()
+        review = Reviews(
+            title=title,
+            author=author,
+            description=description,
+            content=content, 
+            tags=tags, 
+            thumbnail_path=thumbnail_path, 
+            created_at=datetime.strftime(datetime.now(), DATETIMEFORMAT),
+            updated_at='')
+        session.add(review)
+        session.commit()
+        session.close()
+
+    @staticmethod
+    def queryAll():
+        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        session = sessionmaker(bind=engine)()
+
+        reviews = session.query(Reviews).all()
+        reviews_json = []
+        for review in reviews:
+            review_json = {
+                'id': review.id,
+                'title': review.title,
+                'author': review.author,
+                'description': review.description,
+                'tags': review.tags,
+                'thumbnail_path': review.thumbnail_path,
+                'created_at': review.created_at,
+                'updated_at': review.updated_at
+            }
+            reviews_json.append(review_json)
+
+        session.close()
+
+        return reviews_json
+    
+    @staticmethod
+    def query(id):
+        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        session = sessionmaker(bind=engine)()
+        review = session.query(Reviews).filter(Reviews.id == id).first()
+
+        session.close()
+
+        if review:
+            return review.to_dict()
+        else:
+            return 404
+    
+    def queryLatest():
+        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        Session = sessionmaker(bind=engine)
+        session = Session()
+        
+        latest = session.query(Reviews).with_entities(
+            Reviews.id,
+            Reviews.title,
+            Reviews.author,
+            Reviews.created_at,
+            Reviews.thumbnail_path
+        ).order_by(Reviews.created_at.desc()).limit(3).all()
+        
+        session.close()
+        
+        latest_dict = [dict(id=review.id, title=review.title, author=review.author, created_at=review.created_at, thumbnail_path=review.thumbnail_path) for review in latest]
+        
+        return latest_dict
+    
+    @staticmethod
+    def update(id, title, author, description, content, tags, thumbnail_path):
+        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        session = sessionmaker(bind=engine)()
+
+        review = session.query(Reviews).filter_by(id=id).first()
+
+        review.title = title
+        review.author = author
+        review.description = description
+        review.content = content
+        review.tags = tags
+        review.thumbnail_path = thumbnail_path
+        review.updated_at = datetime.strftime(datetime.now(),DATETIMEFORMAT)
+
+        session.commit()
+        session.close()
+
+
 if __name__ == '__main__':
-    BlogPost.createDatabase()
+    Reviews.createDatabase()
     # BlogPost.insertBlogPost('MCURedefined', 'Aravind', 'Trying', 'Trying to use Turso', '#try', '', '', '')
     # Timeline.insert(3, 'Spider-Man Far From Home', datetime(2019, 7, 2), 'Mysterio and Edith', r'static/img/Posters/Phase3/Spiderman2.jpg')
     # Timeline.forPopulate()

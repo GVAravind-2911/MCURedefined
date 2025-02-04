@@ -24,27 +24,28 @@
 	justify-content: center;
 	flex-wrap: wrap;
 	width: 100%;
-	color: #9babb8;
 	margin-top: 50px;
 	margin-bottom: 70px;
+	gap:20px;
 }
 
 .cardblog {
 	display: flex;
 	align-items: center;
-	background-color: #9babb8;
-	width: 85%;
-	height: 12em;
+	width: 70%;
+	height: 9em;
 	max-width: 1600px; /* Adjust the maximum width as desired */
 	margin: 10px;
-	border: 1px solid #ccc;
 	border-radius: 5px;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-	transition: 0.3s;
+}
+
+.divider{
+	width: 70%;
+	height: 1px;
+	background-color: grey;
 }
 
 .cardblog:hover {
-	transform: scale(1.05);
 	cursor: pointer;
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
@@ -58,31 +59,34 @@
 
 .cardcontent {
 	/* padding: 10px; */
+	width: 77%;
 	margin-left: 3%;
+	display: flex;
+	flex-direction: column;
 }
 
 .titleblog {
-	font-size: 40px;
+	font-size: 30px;
 	margin-top: -15px;
-	color: black;
+	color: white;
 }
 
 .authorblog {
 	font-size: 12px;
 	margin-top: 2px;
-	color: black;
+	color: #EC1D24;
 }
 
 .descblog {
-	margin-top: 14px;
+	margin-top: 10px;
 	font-size: 18px;
-	color: black;
+	color: white;
 }
 
 .dateblog {
 	margin-top: 2px;
 	font-size: 12px;
-	color: black;
+	color: #EC1D24;
 }
 
 .image-container {

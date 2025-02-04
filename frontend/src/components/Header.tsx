@@ -30,7 +30,7 @@ function Header(): ReactNode {
 							HOME
 						</button>
 					</Link>
-					<Link href="/edit-blog">
+					<Link href="/reviews">
 						<button type="button" name="button" value="reviews" className="home-button">
 							REVIEWS
 						</button>
@@ -146,7 +146,7 @@ function Header(): ReactNode {
 								Home
 							</Link>
 							<Link
-								href="/edit-blog"
+								href="/reviews"
 								className="home-text"
 								name="button"
 								value="reviews"

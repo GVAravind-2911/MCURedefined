@@ -18,7 +18,7 @@ interface PageProps {
 
 async function getBlogData(id: number): Promise<BlogData | null> {
   try {
-    const response = await axios.get<BlogData>(`http://127.0.0.1:4000/blogs/${id}`);
+    const response = await axios.get<BlogData>(`http://127.0.0.1:4000/reviews/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching blog:", error as AxiosError);
@@ -28,7 +28,7 @@ async function getBlogData(id: number): Promise<BlogData | null> {
 
 async function getLatestBlogs(): Promise<Article[] | null> {
   try {
-    const response = await axios.get<Article[]>("http://127.0.0.1:4000/blogs/latest");
+    const response = await axios.get<Article[]>("http://127.0.0.1:4000/reviews/latest");
     return response.data;
   } catch (error) {
     console.error("Error fetching latest blogs:", error as AxiosError);
@@ -113,7 +113,7 @@ export default async function BlogPage(props: PageProps): Promise<JSX.Element> {
         </div>
       </div>
       <div className='otherblogs'>
-        <h2 className="latestblogs">Latest Blogs</h2>
+        <h2 className="latestblogs">Latest Reviews</h2>
         <hr className='separator' />
       {latestBlogs.map((article: Article, index: number) => (
           <React.Fragment key={article.title}>

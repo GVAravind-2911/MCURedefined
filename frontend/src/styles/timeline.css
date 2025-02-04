@@ -66,9 +66,10 @@
 	display: flex;
 	justify-content: center;
 	margin-bottom: 2.5%;
+	color: white;
 }
 
-.phase1 {
+.phase {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
@@ -79,14 +80,15 @@
 	margin-bottom: 5%;
 }
 
-.phase1-name {
+.phase-name {
 	text-align: center;
 	position: absolute;
 	font-size: 10px;
 	bottom: 0;
 	left: 0;
 	width: 100%;
-	background-color: rgba(155, 171, 184, 0.8); /* Adjust opacity here */
+	background-color: rgba(0, 0, 0, 0.8); /* Adjust opacity here */
+	color:#ec1d24;
 	transform: translateY(100%);
 	padding: 10px;
 	box-sizing: border-box;
@@ -97,7 +99,7 @@
 	display: contents;
 }
 
-.phase1-projectcard {
+.phase-projectcard {
 	position: relative;
 	display: flex;
 	flex-direction: column;
@@ -111,16 +113,12 @@
 	transition: transform 0.3s ease-in-out;
 }
 
-.phase1-projectcard:hover .phase1-name {
+.phase-projectcard:hover .phase-name {
 	transform: translateY(0);
 }
 
-.phase1-projectcard:hover {
-	transform: scale(1.05);
-	cursor: pointer;
-}
 
-.phase1-posters {
+.phase-posters {
 	width: 100%; /* Ensure the image fits within the card */
 	border-radius: 5px; /* Optional: Rounded corners for the image */
 }

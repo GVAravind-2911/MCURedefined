@@ -294,7 +294,7 @@ const CreateBlogPage: React.FC = () => {
             <h3 className="tags-blog">Enter Tags:</h3>
             <div className="tags-container">
                 {tags.map((tag, index) => (
-                    <div key={'tag'} className="tag-item">
+                    <div key={index} className="tag-item">
                         <input
                             type="text"
                             value={tag}

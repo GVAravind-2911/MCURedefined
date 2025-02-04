@@ -19,6 +19,12 @@
 	src: url("../fonts/BentonSans\ Comp\ Black.otf");
 }
 
+.projectinfo-container{
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+
 .projectinfo-main {
 	display: flex;
 	flex-direction: row;
@@ -32,7 +38,7 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	width: 30%;
+	width: 20%;
 	margin-right: 1%;
 }
 
@@ -43,12 +49,17 @@
 
 .projectinfo-content {
 	justify-content: left;
-	background-color: #9babb4;
+	/* background-color: #9babb4; */
+	color:white;
 	width: 65%;
 	padding-left: 2%;
 	padding-top: 1.5%;
 	padding-right: 2%;
 	padding-bottom: 1.5%;
+}
+
+.projectinfo-content h1,h3{
+	color:#ec1d24
 }
 
 .loading {

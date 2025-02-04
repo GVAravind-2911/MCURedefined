@@ -24,7 +24,6 @@
 	justify-content: center;
 	flex-wrap: wrap;
 	width: 100%;
-	color: #9babb8;
 	margin-top: 50px;
 	margin-bottom: 70px;
 }
@@ -32,7 +31,6 @@
 .cardblog {
 	display: flex;
 	align-items: center;
-	background-color: #9babb8;
 	width: 85%;
 	height: 12em;
 	max-width: 1600px; /* Adjust the maximum width as desired */
