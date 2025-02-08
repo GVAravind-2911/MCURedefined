@@ -6,13 +6,20 @@ from flask_cors import CORS
 from flask_compress import Compress
 import base64
 import requests
+from dotenv import load_dotenv, find_dotenv
+from os import environ as env
+
+ENV_FIlE = find_dotenv()
+if ENV_FIlE:
+    load_dotenv(ENV_FIlE)
 
 CLIENTID = "f7a420a28def437"
 
 app = Flask("mcuredefined")
 cors = CORS(app)
 Compress(app)
-app.secret_key = "secretkey"
+app.secret_key = env.get("APP_SECRET_KEY")
+
 
 def saveImage(imgstring):
     if imgstring["link"].startswith("data:image"):

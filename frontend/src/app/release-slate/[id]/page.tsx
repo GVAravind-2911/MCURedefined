@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import axios from 'axios';
 import IndividualProject from '@/components/IndividualProject';
 
-async function getProjectData(id: string): Promise<Project | null> {
+async function getProjectData(id: number): Promise<Project | null> {
   try {
     const response = await axios.get<Project>(`http://127.0.0.1:4000/release-slate/${id}`);
     return response.data;
@@ -17,7 +17,7 @@ async function getProjectData(id: string): Promise<Project | null> {
 export default async function ProjectPage({ 
   params 
 }: { 
-  params: { id: string } 
+  params: { id: number } 
 }): Promise<JSX.Element> {
   const project = await getProjectData(params.id);
 
