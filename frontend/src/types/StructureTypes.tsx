@@ -4,6 +4,7 @@ import type { BlogList } from "@/types/BlogTypes";
 
 export interface LayoutProps {
     children: ReactNode;
+    isAuthPage?: boolean;
   }
   
 export interface SVGProps extends React.SVGProps<SVGSVGElement> {

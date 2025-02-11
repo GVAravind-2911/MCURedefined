@@ -27,6 +27,7 @@ frontend/yarn-error.log*
 
 # local env files
 frontend/.env*.local
+frontend/.env
 
 # vercel
 frontend/.vercel
@@ -63,3 +64,8 @@ backend/recommendation.py
 
 /package.json
 /package-lock.json
+creds.txt
+postcss.config.mjs.txt
+server.js
+tempblog.json
+tempindividualblog.json

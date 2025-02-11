@@ -7,6 +7,7 @@ import { Inter } from 'next/font/google'
 import Layout from '@/components/Layout'
 import { Suspense } from 'react'
 import LoadingSpinner from '@/components/LoadingSpinner'
+import Providers from '@/components/SessionProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -29,9 +30,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={inter.className}>
       <body>
-        <Layout>
-          <Suspense fallback={<LoadingSpinner/>}>{children}</Suspense>
-        </Layout>
+        <Providers>
+          <Layout>
+            <Suspense fallback={<LoadingSpinner/>}>{children}</Suspense>
+          </Layout>
+        </Providers>
       </body>
     </html>
   )

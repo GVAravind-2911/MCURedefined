@@ -3,9 +3,16 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
 import Link from "next/link";
+import { useSession,signOut } from "next-auth/react";
 
 function Header(): ReactNode {
+	const { data: session } = useSession();
+	const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+
+	const toggleDropdown = () => {
+		setIsDropdownOpen(!isDropdownOpen)
+	  }
 
 	const toggleMobileMenu = () => {
 		setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -54,41 +61,46 @@ function Header(): ReactNode {
 			</div>
 
 			<div data-thq="thq-navbar-btn-group" className="home-btn-group">
-				<div className="home-socials">
-					<Link
-						href="https://twitter.com/Mcu_Redefined"
-						target="_blank"
-						rel="noreferrer noopener"
+				{session ? (
+				<div className="user-dropdown">
+					<button 
+					onClick={toggleDropdown}
+					className="user-dropdown-button"
+					type="button"
 					>
-						<img
-							alt="Twitter"
-							src="/images/Icons/twitter.svg"
-							className="imagetwitter"
-						/>
-					</Link>
-					<Link
-						href="https://discord.com/invite/KwG9WBup"
-						target="_blank"
-						rel="noreferrer noopener"
+					{session.user?.name}
+					<svg 
+						className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`}
+						width="12" 
+						height="12" 
+						viewBox="0 0 12 12"
 					>
-						<img
-							alt="Discord"
-							src="/images/Icons/discord.svg"
-							className="imagediscord"
-						/>
-					</Link>
-					<Link
-						href="https://www.instagram.com/mcu_redefined/"
-						target="_blank"
-						rel="noreferrer noopener"
-					>
-						<img
-							alt="Instagram"
-							src="/images/Icons/instagram.svg"
-							className="imageinsta"
-						/>
-					</Link>
+						<title>Dropdown Arrow</title>
+						<path d="M2 4L6 8L10 4" stroke="currentColor" strokeWidth="2"/>
+					</svg>
+					</button>
+					{isDropdownOpen && (
+					<div className="dropdown-menu">
+						<Link href="/profile" className="dropdown-item">
+						Profile
+						</Link>
+						<button 
+						onClick={() => signOut()} 
+						className="dropdown-item"
+						type="button"
+						>
+						Sign Out
+						</button>
+					</div>
+					)}
 				</div>
+				) : (
+				<Link href="/auth">
+					<button className="signin-button" type="button">
+					Sign In
+					</button>
+				</Link>
+				)}
 			</div>
 
 			<div data-thq="thq-burger-menu" className="home-burger-menu">
@@ -142,38 +154,30 @@ function Header(): ReactNode {
 						className="home-nav2"
 					>
 						<div className="home-navbuttons">
-							<Link href="/" className="home-text" name="button" value="home">
+							<Link href="/" className="home-text">
 								Home
 							</Link>
 							<Link
 								href="/reviews"
 								className="home-text"
-								name="button"
-								value="reviews"
 							>
 								Reviews
 							</Link>
 							<Link 
 								href="/blogs"
-								className="home-text" 
-								name="button" 
-								value="blog"
+								className="home-text"
 							>
 								Blog
 							</Link>
 							<Link
 								href="/release-slate"
 								className="home-text"
-								name="button"
-								value="release_slate"
 							>
 								Timeline
 							</Link>
 							<Link
 								href="/collaborate"
 								className="home-text"
-								name="button"
-								value="collaborate"
 							>
 								Collaborate
 							</Link>

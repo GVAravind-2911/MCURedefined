@@ -7,15 +7,21 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "serverstart": "nodemon server.js"
+    "serverstart": "nodemon server.js",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@libsql/client": "^0.14.0",
+    "@paralleldrive/cuid2": "^2.2.2",
     "axios": "^1.7.2",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "dompurify": "^3.1.6",
+    "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.39.2",
     "express": "^4.21.1",
     "html-react-parser": "^5.2.2",
     "isomorphic-dompurify": "^2.14.0",
@@ -33,11 +39,13 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.3",
+    "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/node": "^22.10.10",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
+    "drizzle-kit": "^0.30.4",
     "eslint": "^8",
     "eslint-config-next": "15.1.6",
     "typescript": "^5.7.3"
