@@ -5,4 +5,4 @@ Built using:
 
 1. NextJS
 2. Flask
-3. Turso LiqSQL Database
+3. Turso LibSQL Database
