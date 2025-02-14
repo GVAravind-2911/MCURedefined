@@ -262,11 +262,20 @@ class Timeline(Base):
             session.close()
 
 class Users(Base):
-    __tablename__ = 'userdetails'
-    uniqueid = sqlalchemy.Column(sqlalchemy.String, primary_key=True)
-    username = sqlalchemy.Column(sqlalchemy.VARCHAR(10), unique=True)
+    __tablename__ = 'users'
+    id = sqlalchemy.Column(sqlalchemy.String, primary_key=True)
+    username = sqlalchemy.Column(sqlalchemy.String, unique=True)
+    email = sqlalchemy.Column(sqlalchemy.String, unique=True)
     password = sqlalchemy.Column(sqlalchemy.String)
-    likedPosts = sqlalchemy.Column(sqlalchemy.String)
+    created_at = sqlalchemy.Column(sqlalchemy.String)
+    likedList = sqlalchemy.Column(sqlalchemy.JSON, default=[])
+    watchedList = sqlalchemy.Column(sqlalchemy.JSON, default = [])
+    watchList = sqlalchemy.Column(sqlalchemy.JSON, default = [])
+
+    @staticmethod
+    def createDatabase():
+        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        Base.metadata.create_all(engine)
 
 class Reviews(Base):
     __tablename__ = 'reviews'
@@ -382,7 +391,9 @@ class Reviews(Base):
 
 
 if __name__ == '__main__':
-    Reviews.createDatabase()
+    # Reviews.createDatabase()
+    Users.createDatabase()
+    print('created')
     # BlogPost.insertBlogPost('MCURedefined', 'Aravind', 'Trying', 'Trying to use Turso', '#try', '', '', '')
     # Timeline.insert(3, 'Spider-Man Far From Home', datetime(2019, 7, 2), 'Mysterio and Edith', r'static/img/Posters/Phase3/Spiderman2.jpg')
     # Timeline.forPopulate()

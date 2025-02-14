@@ -3,14 +3,7 @@
 import type React from 'react';
 import { trefoil } from 'ldrs';
 
-// Add type declaration for ldrs
-declare module 'ldrs' {
-  export const trefoil: {
-    register: () => void;
-  };
-}
 
-// Register the custom element
 trefoil.register();
 
 const LoadingSpinner: React.FC = () => {

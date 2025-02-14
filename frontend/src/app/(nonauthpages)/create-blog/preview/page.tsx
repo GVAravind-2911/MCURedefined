@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import "@/styles/blog.css";
+import Image from "next/image";
+import parse from "html-react-parser";
 
 interface TextContentProps {
     content: string;
@@ -34,11 +36,13 @@ interface BlogData {
 }
 
 const TextContent: React.FC<TextContentProps> = ({ content }) => (
-    <div className="textcontent" dangerouslySetInnerHTML={{ __html: content }} />
+    <div className="textcontent"> 
+        {parse(content)}
+    </div>
 );
 
 const ImageContent: React.FC<ImageContentProps> = ({ src }) => (
-    <img src={src.link} alt="blog-image" className="contentimages"/>
+    <Image src={src.link} alt="blog-image" className="contentimages" width={100} height={100}/>
 );
 
 const EmbedContent: React.FC<EmbedContentProps> = ({ url }) => {

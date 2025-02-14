@@ -69,3 +69,4 @@ postcss.config.mjs.txt
 server.js
 tempblog.json
 tempindividualblog.json
+/node_modules/

@@ -9,4 +9,7 @@ export interface Project {
     director: string;
     musicartist: string;
     timelineid: number;
+    isWatched?: boolean;
+    isLiked?: boolean;
+    inWatchlist?: boolean;
   }

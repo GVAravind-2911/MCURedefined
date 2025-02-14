@@ -1,6 +1,6 @@
 import React from "react";
-import Footer from "./Footer";
-import Header from "./Header";
+import Footer from "./frontend/src/components/Footer";
+import Header from "./frontend/src/components/Header";
 
 function MainStructure(props) {
 	return (
