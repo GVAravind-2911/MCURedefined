@@ -34,7 +34,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/components/BlogComponent.tsx", "src/components/Header.tsx", "src/components/LoadingSpinner.tsx", "src/app/(nonauthpages)/create-blog/page.tsx", "src/app/(nonauthpages)/create-blog/preview/page.tsx", "postcss.config.mjs"  ],
+, "src/components/BlogComponent.tsx", "src/components/Header.tsx", "src/components/LoadingSpinner.tsx", "src/app/(mainroutes)/create-blog/page.tsx", "src/app/(mainroutes)/create-blog/preview/page.tsx", "postcss.config.mjs"  ],
   "exclude": [
     "node_modules"
   ]

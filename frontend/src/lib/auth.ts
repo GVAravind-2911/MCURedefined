@@ -23,8 +23,20 @@ declare module "next-auth" {
       id: string;
       name?: string;
       email?: string;
-      image?: string;
+      type?: string;
     }
+  }
+
+  interface JWT{
+    id?: string;
+    type?: string;
+  }
+
+  interface User {
+    id: string;
+    name?: string;
+    email?: string;
+    type?: string;
   }
 }
 
@@ -64,7 +76,8 @@ export const authOptions: NextAuthOptions = {
           return {
             id: user.id,
             email: user.email,
-            name: user.name
+            name: user.name,
+            type: user.accountType
           }
         } catch (error) {
           console.error('Auth error:', error)
@@ -82,13 +95,15 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id
+        token.id = user.id;
+        token.type = user.type;
       }
       return token
     },
     async session({ session, token }) {
       if (session?.user) {
         session.user.id = token.id as string
+        session.user.type = token.type as string
       }
       return session
     }
