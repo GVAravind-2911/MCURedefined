@@ -17,9 +17,10 @@ async function getProjectData(id: number): Promise<Project | null> {
 export default async function ProjectPage({ 
   params 
 }: { 
-  params: { id: number } 
+  params: Promise<{ id: string } >
 }): Promise<JSX.Element> {
-  const project = await getProjectData(params.id);
+  const id = parseInt((await params).id, 10);
+  const project = await getProjectData(id);
 
   if (!project) {
     notFound();

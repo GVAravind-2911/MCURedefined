@@ -1,6 +1,7 @@
 import type { Project } from '@/types/ProjectTypes';
 import '@/styles/timeline.css';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const formatPosterPath = (path: string, phase: number): string => {
   // Extract filename from static/img/posters/name.extension
@@ -24,7 +25,6 @@ export default async function ProjectsPage({ projects }: ProjectsPageProps) {
   const phase2 = projects.filter(project => project.phase === 2);
   const phase3 = projects.filter(project => project.phase === 3);
 
-  // ...rest of component...
   return (
     <div className="contentFill fade-in">
       <div className="mainphase-name">
@@ -39,10 +39,13 @@ export default async function ProjectsPage({ projects }: ProjectsPageProps) {
           >
             <div className="phase-projectcard">
               <div className="img-container">
-              <img
+              <Image
                 src={formatPosterPath(project.posterpath, project.phase)}
                 alt={`Phase ${project.phase} Project Poster`}
-                className={`phase-posters`}
+                className='phase-posters'
+                width={200}
+                height={300}
+                style={{ objectFit: 'cover' }}
               />
               </div>
               <div className="phase-name">
@@ -65,10 +68,13 @@ export default async function ProjectsPage({ projects }: ProjectsPageProps) {
           >
             <div className="phase-projectcard">
               <div className="img-container">
-              <img
+              <Image
                 src={formatPosterPath(project.posterpath, project.phase)}
                 alt={`Phase ${project.phase} Project Poster`}
                 className={`phase${project.phase}-posters`}
+                width={200}
+                height={300}
+                style={{ objectFit: 'cover' }}
               />
               </div>
               <div className="phase-name">
@@ -91,10 +97,13 @@ export default async function ProjectsPage({ projects }: ProjectsPageProps) {
           >
             <div className="phase-projectcard">
               <div className="img-container">
-              <img
+              <Image
                 src={formatPosterPath(project.posterpath, project.phase)}
                 alt={`Phase ${project.phase} Project Poster`}
                 className={`phase${project.phase}-posters`}
+                width={200}
+                height={300}
+                style={{ objectFit: 'cover' }}
               />
               </div>
               <div className="phase-name">

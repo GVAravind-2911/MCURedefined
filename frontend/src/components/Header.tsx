@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { useState } from "react";
 import Link from "next/link";
 import { useSession,signOut } from "next-auth/react";
+import Image from "next/image";
 
 function Header(): ReactNode {
 	const { data: session } = useSession();
@@ -21,7 +22,14 @@ function Header(): ReactNode {
 
 	return (
 		<header data-thq="thq-navbar" className="home-navbar">
-			<img src="/images/MainLogo.png" className="home-logo" alt="Main Logo" />
+			<Image 
+				src="/images/MainLogo.svg" 
+				className="home-logo"
+				alt="Main Logo"  
+				width={200}
+				height={100}
+				style={{objectFit: 'contain'}}
+			 />
 			<div
 				data-thq="thq-navbar-nav"
 				data-role="Nav"

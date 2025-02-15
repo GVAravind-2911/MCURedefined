@@ -1,38 +1,12 @@
-@font-face {
-	font-family: "BentonSansCompLight";
-	src: url("../fonts/BentonSans\ Comp\ Light.otf");
-}
-@font-face {
-	font-family: "BentonSansRegular";
-	src: url("../fonts/BentonSans\ Regular.otf");
-}
-@font-face {
-	font-family: "BentonSansBook";
-	src: url("../fonts/BentonSans\ Book.otf");
-}
-@font-face {
-	font-family: "BentonSansBold";
-	src: url("../fonts/BentonSans\ Bold.otf");
-}
-@font-face {
-	font-family: "BentonSansCompBlack";
-	src: url("../fonts/BentonSans\ Comp\ Black.otf");
-}
-
-.collaborate-maindiv {
+.collaborate-container {
 	display: flex;
-	flex-direction: column;
-	justify-content: center;
 	align-items: center;
-}
-
-.jsdiv {
-	display: flex;
-	flex-direction: column;
 	justify-content: center;
-	align-items: center;
-}
-
-.mainHead {
-	font-family: "Courier New", Courier, monospace;
-}
+	height: 63vh;
+  }
+  
+  .collaborate-heading {
+	font-size: 2.5rem;
+	font-weight: bold;
+	color: white;
+  }

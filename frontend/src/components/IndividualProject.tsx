@@ -3,6 +3,7 @@ import type { Project } from '@/types/ProjectTypes';
 import { notFound } from 'next/navigation';
 import moment from 'moment';
 import '@/styles/projectinfo.css';
+import Image from 'next/image';
 
 interface IndividualProjectProps {
   project: Project;
@@ -22,10 +23,12 @@ export default function IndividualProject({ project }: IndividualProjectProps): 
   return (
     <div className="projectinfo-container fade-in">
       <div className="poster">
-        <img
+        <Image
           src={formatPosterPath(project.posterpath, project.phase)}
           alt={`${project.name} Poster`}
           className="projectinfo-imgposter"
+          width={300}
+          height={450}
         />
       </div>
       <div className="projectinfo-content">

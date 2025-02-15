@@ -18,6 +18,7 @@ interface PageProps {
 
 async function getBlogData(id: number): Promise<BlogData | null> {
   try {
+    'use server';
     const response = await axios.get<BlogData>(`http://127.0.0.1:4000/reviews/${id}`);
     return response.data;
   } catch (error) {

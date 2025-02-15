@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation';
 import moment from 'moment';
 import axios from 'axios';
 import SimilarBlog from '@/components/SimilarBlog';
-import parse from 'html-react-parser';
+import parse from '@/lib/htmlparser';
 import ScriptEmbed from '@/components/ScriptEmbed';
 import '@/styles/blog.css';
 
@@ -58,27 +58,41 @@ export default async function BlogPage(props: PageProps): Promise<JSX.Element> {
   }
 
   
-  const contentElements = blog.content.map((block: ContentBlock): JSX.Element => {
-    if (block.type === "text") {
-      return (
-        <div key={block.id} className="textcontent">
-          {parse(block.content)}
-        </div>
-      );
+  const contentElements = blog.content.map((block: ContentBlock, index: number): JSX.Element => {
+    const uniqueKey = `${block.id || index}-${block.type}`;
+
+    switch (block.type) {
+      case "text":
+        return (
+          <div key={uniqueKey} className="textcontent">
+            {parse(block.content)}
+          </div>
+        );
+      case "image":
+        return (
+          <img 
+            key={uniqueKey} 
+            src={block.content.link} 
+            alt={`blog-image-${index}`} 
+            className="contentimages"
+          />
+        );
+      case "embed":
+        if (block.content.includes("www.youtube.com")) {
+          return (
+            <div key={uniqueKey} className="youtube-preview">
+              {loadScript(block.content)}
+            </div>
+          );
+        }
+        if (block.content.includes("script async")) {
+          return <ScriptEmbed key={uniqueKey} content={block.content} />;
+        }
+        break;
+      default:
+        return <div key={uniqueKey} />;
     }
-    if (block.type === "image") {
-      return <img key={block.id} src={block.content.link} alt="blog-image" className="contentimages"/>;
-    }
-    if (block.type === "embed") {
-      if (block.content.includes("www.youtube.com")) {
-        return <div key={block.id} className="youtube-preview">{loadScript(block.content)}</div>;
-      }
-      if (block.content.includes("script async")) {
-        return <ScriptEmbed key={block.id} content={block.content} />;
-      }
-    }
-    return <div key={block.id}/>;
-});
+  });
 
   return (
     <>

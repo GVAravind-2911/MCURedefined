@@ -1,8 +1,7 @@
-'use client'
-
 import type { ReactNode } from 'react'
 import React from "react";
 import Link from 'next/link';
+import Image from 'next/image';
 
 function Home() : ReactNode {
 
@@ -15,7 +14,7 @@ function Home() : ReactNode {
                             <span className="home-text05">REDEFINE YOUR</span>
                             <br />
                             <span style={{ color: "#EC1D24" }}>MCU</span>
-                            <span className="home-text05">EXPERIENCE</span>
+                            <span className="home-text05"> EXPERIENCE</span>
                             <br />
                         </h1>
                         <p className="home-caption">
@@ -23,11 +22,14 @@ function Home() : ReactNode {
                             Trailers, and More
                         </p>
                     </div>
-                    <img
+                    <Image
                         alt="mcuanniversaryimage"
                         src="/images/marvel/marvel-class-photo-1920x1080-1500w.jpg"
                         className="home-divider-image"
-                    />
+                        width={1280}
+                        height={720}
+                        style={{objectFit: "contain"}}
+                    />  
                 </section>
 
                 <section className="home-description">
@@ -69,18 +71,22 @@ function Home() : ReactNode {
                                         name="button"
                                     >
                                         <span className="home-text15">Learn more</span>
-                                        <img
+                                        <Image
                                             alt="arrowsvg"
                                             src="/images/Icons/arrow-2.svg"
                                             className="home-image02"
+                                            width={30}
+                                            height={30}
                                         />
                                     </button>
                                 </Link>
                             </div>
-                            <img
+                            <Image
                                 alt="dailybugleimage"
                                 src="/images/DailyBugle.svg"
                                 className="home-image03"
+                                width={300}
+                                height={300}
                             />
                         </div>
                     </div>
@@ -106,10 +112,13 @@ function Home() : ReactNode {
                                 </button>
                             </Link>
                         </div>
-                        <img
+                        <Image
                             alt="timelineimage"
                             src="/images/Timeline.png"
                             className="home-image20"
+                            width={2300}
+                            height={238}
+                            style={{objectFit: "contain"}}
                         />
                     </div>
                 </section>
@@ -118,19 +127,25 @@ function Home() : ReactNode {
                     <div className="home-row1">
                         <div className="home-column">
                             <div className="home-card09">
-                                <img
+                                <Image
                                     alt="avengerslogo"
                                     src="/images/AvengersLogo.png"
                                     className="home-image21"
+                                    width={300}
+                                    height={300}
+                                    objectFit='contain'
                                 />
                             </div>
                         </div>
                         <div className="home-column1">
                             <div className="home-card10">
-                                <img
+                                <Image
                                     alt="guardianslogo"
                                     src="/images/GuardiansLogo.png"
                                     className="home-image22"
+                                    width={300}
+                                    height={320}
+                                    objectFit='contain'
                                 />
                             </div>
                         </div>

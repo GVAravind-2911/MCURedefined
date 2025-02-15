@@ -7,7 +7,7 @@
     },
     "jsx": "preserve",
     "esModuleInterop": true,
-    "target": "ES2017",
+    "target": "ES2018",
     "lib": [
       "dom",
       "dom.iterable",
@@ -26,7 +26,8 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "typeRoots": ["./types", "node_modules/@types"]
   },
   "include": [
     "next-env.d.ts",

@@ -5,6 +5,7 @@ import axios from "axios";
 
 async function getData() :Promise<BlogList[]> {
     try {
+        'use server';
         const response = await axios.get<BlogList[]>("http://127.0.0.1:4000/reviews");
         return response.data;
     } catch (error) {

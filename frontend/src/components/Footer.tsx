@@ -1,5 +1,6 @@
 import React from "react";
 import type { ReactNode } from "react";
+import Image from "next/image";
 
 function Footer() : ReactNode{
 	return (
@@ -7,10 +8,13 @@ function Footer() : ReactNode{
 			<div className="home-separator" />
 			<div className="footercontainer">
 				<div className="bottomlogo">
-					<img
+					<Image
 						src="/images/FooterLogo.png"
 						className="footerlogo"
 						alt="Footer Logo"
+						width={300}
+						height={80}
+						style={{objectFit: "contain"}}
 					/>
 				</div>
 				<div className="iop">
@@ -31,10 +35,12 @@ function Footer() : ReactNode{
 							target="_blank"
 							rel="noreferrer noopener"
 						>
-							<img
+							<Image
 								alt="Twitter Icon"
 								src="/images/Icons/twitter.svg"
 								className="imagetwitter"
+								width={30}
+								height={30}
 							/>
 						</a>
 						<a
@@ -42,10 +48,12 @@ function Footer() : ReactNode{
 							target="_blank"
 							rel="noreferrer noopener"
 						>
-							<img
+							<Image
 								alt="Discord Icon"
 								src="/images/Icons/discord.svg"
 								className="imagediscord"
+								width={30}
+								height={30}
 							/>
 						</a>
 						<a
@@ -53,10 +61,12 @@ function Footer() : ReactNode{
 							target="_blank"
 							rel="noreferrer noopener"
 						>
-							<img
+							<Image
 								alt="Instagram Icon"
 								src="/images/Icons/instagram.svg"
 								className="imageinsta"
+								width={30}
+								height={30}
 							/>
 						</a>
 					</div>
