@@ -133,7 +133,7 @@ function Home() : ReactNode {
                                     className="home-image21"
                                     width={300}
                                     height={300}
-                                    objectFit='contain'
+                                    style={{objectFit: "contain"}}
                                 />
                             </div>
                         </div>
@@ -145,7 +145,7 @@ function Home() : ReactNode {
                                     className="home-image22"
                                     width={300}
                                     height={320}
-                                    objectFit='contain'
+                                    style={{objectFit: "contain"}}
                                 />
                             </div>
                         </div>
