@@ -2,9 +2,8 @@
 
 import type { JSX } from 'react';
 import { useEffect, useRef } from 'react';
-import parse from 'html-react-parser';
+import parse from '@/lib/htmlparser';
 import type { Element } from 'html-react-parser';
-import DOMPurify from 'dompurify';
 
 interface ScriptEmbedProps {
   content: string;
@@ -60,11 +59,10 @@ const ScriptEmbed = ({ content }: ScriptEmbedProps): JSX.Element => {
     }
   };
 
-  const sanitizedContent = DOMPurify.sanitize(content);
   
   return (
     <div ref={containerRef} className="embed-preview" style={{ width: '50%', height: '100%' }}>
-      {parse(sanitizedContent, options)}
+      {parse(content)}
     </div>
   );
 };

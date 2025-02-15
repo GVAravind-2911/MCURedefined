@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect } from "react";
-import DOMPurify from "isomorphic-dompurify";
 import type { EmbedBlockProps } from "@/types/BlockTypes";
+import parse from "@/lib/htmlparser";
 
 
 const EmbedBlock: React.FC<EmbedBlockProps> = ({ url, onChange, onDelete }) => {
@@ -58,8 +58,9 @@ const EmbedBlock: React.FC<EmbedBlockProps> = ({ url, onChange, onDelete }) => {
 				{url && !url.includes("www.youtube.com") && !url.includes("www.instagram.com") && (
 					<div
 						className="embed-preview"
-						dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(url) }}
-					/>
+					>
+						{parse(url)}
+					</div>
 				)}
 				{!url && <p className="no-embed">Embed a URL to Preview</p>}
 				<input
