@@ -2,7 +2,7 @@
 
 import type { JSX } from 'react';
 import { useEffect, useRef } from 'react';
-import parse from '@/lib/htmlparser';
+import parse from 'html-react-parser';
 import type { Element } from 'html-react-parser';
 
 interface ScriptEmbedProps {

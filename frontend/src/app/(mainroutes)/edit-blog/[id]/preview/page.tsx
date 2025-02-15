@@ -6,7 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import parse from "@/lib/htmlparser";
+import parse from "html-react-parser";
 import ScriptEmbed from "@/components/ScriptEmbed";
 import moment from "moment";
 import "@/styles/blog.css";

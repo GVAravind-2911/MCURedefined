@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation';
 import moment from 'moment';
 import axios from 'axios';
 import SimilarBlog from '@/components/SimilarBlog';
-import parse from '@/lib/htmlparser';
+import parse from 'html-react-parser';
 import ScriptEmbed from '@/components/ScriptEmbed';
 import '@/styles/blog.css';
 

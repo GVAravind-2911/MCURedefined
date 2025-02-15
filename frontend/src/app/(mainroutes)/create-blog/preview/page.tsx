@@ -6,7 +6,7 @@ import axios from "axios";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import "@/styles/blog.css";
 import Image from "next/image";
-import parse from "@/lib/htmlparser";
+import parse from "html-react-parser";
 
 interface TextContentProps {
     content: string;

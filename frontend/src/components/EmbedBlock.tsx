@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import type { EmbedBlockProps } from "@/types/BlockTypes";
-import parse from "@/lib/htmlparser";
+import parse from "html-react-parser";
 
 
 const EmbedBlock: React.FC<EmbedBlockProps> = ({ url, onChange, onDelete }) => {
@@ -46,14 +46,16 @@ const EmbedBlock: React.FC<EmbedBlockProps> = ({ url, onChange, onDelete }) => {
 				{url.includes("www.youtube.com") && (
 					<div
 						className="youtube-preview"
-						dangerouslySetInnerHTML={{ __html: url }}
-					/>
+					>
+						{parse(url)}
+					</div>
 				)}
 				{url.includes("www.instagram.com") && (
 					<div
 						className="instagram-preview"
-						dangerouslySetInnerHTML={{ __html: url }}
-					/>
+					>
+						{parse(url)}
+					</div>
 				)}
 				{url && !url.includes("www.youtube.com") && !url.includes("www.instagram.com") && (
 					<div
