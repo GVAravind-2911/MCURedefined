@@ -19,7 +19,7 @@ export default async function ProjectPage({
 }: { 
   params: Promise<{ id: string } >
 }): Promise<JSX.Element> {
-  const id = parseInt((await params).id, 10);
+  const id = Number.parseInt((await params).id, 10);
   const project = await getProjectData(id);
 
   if (!project) {
