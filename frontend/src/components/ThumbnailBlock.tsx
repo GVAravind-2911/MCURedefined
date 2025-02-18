@@ -5,6 +5,7 @@ import type { DropzoneOptions } from 'react-dropzone';
 import type { ThumbnailBlockProps } from '@/types/BlockTypes';
 import { useState, useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
+import Image from 'next/image';
 
 
 const ThumbnailBlock: React.FC<ThumbnailBlockProps> = ({ src, onChange }) => {
@@ -60,10 +61,12 @@ const ThumbnailBlock: React.FC<ThumbnailBlockProps> = ({ src, onChange }) => {
                 <input {...getInputProps()} />
                 {image ? (
                     <>
-                        <img
+                        <Image
                             src={image}
                             alt="Uploaded thumbnail"
                             className="uploaded-image"
+                            width={1000}
+                            height={1000}
                         />
                         <div className="image-overlay">
                             <p>Click or drag to replace image</p>

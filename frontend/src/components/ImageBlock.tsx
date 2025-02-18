@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import type { ImageBlockProps } from "@/types/BlockTypes";
 import type { DropzoneOptions } from "react-dropzone";
+import Image from "next/image";
 
 const ImageBlock: React.FC<ImageBlockProps> = ({ index, src, onChange, onDelete }) => {
     const [image, setImage] = useState<{link: string}>(src);
@@ -84,10 +85,12 @@ const ImageBlock: React.FC<ImageBlockProps> = ({ index, src, onChange, onDelete 
                 <input {...getInputProps()} />
                 {image.link ? (
                     <>
-                        <img
+                        <Image
                             src={image.link}
                             alt="Uploaded content"
                             className="uploaded-image"
+                            width={1000}
+                            height={1000}
                         />
                         <div className="image-overlay">
                             <p>Click or drag to replace image</p>

@@ -9,6 +9,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import parse from "html-react-parser";
 import ScriptEmbed from "@/components/ScriptEmbed";
 import moment from "moment";
+import Image from "next/image";
 import "@/styles/blog.css";
 
 
@@ -81,7 +82,7 @@ export default function PreviewPage(): JSX.Element {
           );
         }
         if (block.type === "image") {
-          return <img key={block.id} src={block.content.link} alt="blog-image" className="contentimages"/>;
+          return <Image key={block.id} src={block.content.link} alt="blog-image" className="contentimages" width={1000} height={1000}/>;
         }
         if (block.type === "embed") {
           if (block.content.includes("www.youtube.com")) {

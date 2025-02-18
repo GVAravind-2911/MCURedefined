@@ -4,9 +4,18 @@ import BlogsComponent from "@/components/BlogComponent";
 import axios from "axios";
 import '@/styles/blogposts.css'
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 async function getData():Promise<BlogList[]> {
     try {
-        const response = await axios.get<BlogList[]>("http://127.0.0.1:4000/blogs");
+        const response = await axios.get<BlogList[]>("http://127.0.0.1:4000/blogs",{
+            headers: {
+                'Cache-Control': 'no-cache',
+                'Pragma': 'no-cache',
+                'Expires': '0'
+            }
+        });
         return response.data;
     } catch (error) {
         console.error('Failed to fetch blogs:', error);

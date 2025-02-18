@@ -8,6 +8,7 @@ import axios from 'axios';
 import SimilarBlog from '@/components/SimilarBlog';
 import parse from 'html-react-parser';
 import ScriptEmbed from '@/components/ScriptEmbed';
+import Image from 'next/image';
 import '@/styles/blog.css';
 
 interface PageProps {
@@ -70,11 +71,13 @@ export default async function BlogPage(props: PageProps): Promise<JSX.Element> {
         );
       case "image":
         return (
-          <img 
+          <Image
             key={uniqueKey} 
             src={block.content.link} 
             alt={`blog-image-${index}`} 
             className="contentimages"
+            width={1000}
+            height={1000}
           />
         );
       case "embed":
