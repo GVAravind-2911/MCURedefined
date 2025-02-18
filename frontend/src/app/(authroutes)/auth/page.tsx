@@ -1,7 +1,7 @@
 'use client'
 
 import { useState} from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter,useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import axios from 'axios'
 import Image from 'next/image'
@@ -9,6 +9,8 @@ import '@/styles/auth.css'
 
 export default function Auth() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const callbackURL = searchParams.get('callbackUrl')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isSignUp, setIsSignUp] = useState(false)
@@ -70,7 +72,7 @@ export default function Auth() {
         throw new Error('Invalid credentials')
       }
 
-      router.push('/')
+      router.push(signInResult?.url || callbackURL || '/')
       router.refresh()
     } catch (error) {
       setError(error instanceof Error ? error.message : 'An error occurred')

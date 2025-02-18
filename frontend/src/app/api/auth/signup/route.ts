@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@libsql/client"
 import { drizzle } from 'drizzle-orm/libsql'
-import bcrypt from "bcrypt"
+import bcrypt from "bcryptjs"
 import { users } from '@/db/schema'
 import { eq } from "drizzle-orm"
 
