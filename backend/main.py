@@ -1,10 +1,9 @@
 from flask import Flask, session, request, render_template, redirect, url_for, jsonify
-import json
 from dmm import BlogPost, Timeline, Reviews
 from datetime import datetime, date
 from flask_cors import CORS
 from flask_compress import Compress
-import base64
+from math import ceil
 import requests
 from dotenv import load_dotenv, find_dotenv
 from os import environ as env
@@ -47,9 +46,17 @@ def saveImage(imgstring):
 
 @app.route('/blogs')
 def sendBlogData():
-    blogs = BlogPost.queryAll()
-    print(blogs)
-    return jsonify(blogs)
+    page = request.args.get('page', 1, type=int)
+    limit = request.args.get('limit', 5, type=int)
+    
+    # Get total count and paginated blogs
+    total = BlogPost.count()
+    blogs = BlogPost.queryPaginated(page, limit)
+    
+    return jsonify({
+        "blogs": blogs,
+        "total": total
+    })
 
 @app.route('/blogs/<int:id>')
 def blog(id):
@@ -97,9 +104,17 @@ def blogsSave(id):
 
 @app.route('/reviews', methods=["GET"])
 def reviews():
-    reviews = Reviews.queryAll()
-    print(reviews)
-    return jsonify(reviews)
+    page = request.args.get('page', 1, type=int)
+    limit = request.args.get('limit', 5, type=int)
+    
+    # Get total count and paginated reviews
+    total = Reviews.count()
+    reviews_list = Reviews.queryPaginated(page, limit)
+    
+    return jsonify({
+        "reviews": reviews_list,
+        "total": total
+    })
 
 @app.route('/reviews/<int:id>')
 def sendreview(id):

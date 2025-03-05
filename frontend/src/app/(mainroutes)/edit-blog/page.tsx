@@ -7,15 +7,23 @@ import '@/styles/blogposts.css'
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-async function getData():Promise<BlogList[]> {
+interface BlogResponse {
+    blogs: BlogList[];
+    total: number;
+}
+
+async function getData(page = 1, limit = 5): Promise<BlogResponse> {
     try {
-        const response = await axios.get<BlogList[]>("http://127.0.0.1:4000/blogs",{
-            headers: {
-                'Cache-Control': 'no-cache',
-                'Pragma': 'no-cache',
-                'Expires': '0'
+        const response = await axios.get<BlogResponse>(
+            `http://127.0.0.1:4000/blogs?page=${page}&limit=${limit}`,
+            {
+                headers: {
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache',
+                    'Expires': '0'
+                }
             }
-        });
+        );
         return response.data;
     } catch (error) {
         console.error('Failed to fetch blogs:', error);
@@ -24,7 +32,17 @@ async function getData():Promise<BlogList[]> {
 }
 
 
-export default async function editBlog(): Promise<React.ReactElement> {
-    const blogs = await getData();
-	return <BlogsComponent path="edit-blog" initialBlogs={blogs}/>;
+export default async function Blogs(): Promise<React.ReactElement> {
+    // Always fetch page 1 initially from server
+    const { blogs, total } = await getData(1, 3);
+    const totalPages = Math.ceil(total / 3);
+
+    return (
+        <BlogsComponent 
+            path="edit-blog" 
+            initialBlogs={blogs}
+            totalPages={totalPages}
+            apiUrl="http://127.0.0.1:4000/blogs"
+        />
+    );
 }

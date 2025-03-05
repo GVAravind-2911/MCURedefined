@@ -54,6 +54,61 @@ class BlogPost(Base):
         session.close()
 
     @staticmethod
+    def count():
+        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        session = sessionmaker(bind=engine)()
+        total = session.query(BlogPost).count()
+        session.close()
+        return total
+
+    @staticmethod
+    def queryPaginated(page, limit=3):
+        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        Session = sessionmaker(bind=engine)
+        session = Session()
+        
+        try:
+            # Get total count of records
+            total_count = session.query(BlogPost).count()
+            
+            # Calculate offset
+            offset = (page - 1) * limit
+
+            # If offset is greater than available records, return empty list
+            if offset >= total_count:
+                return []
+
+            # Fetch paginated results
+            blog_posts = (
+                session.query(BlogPost)
+                .order_by(BlogPost.created_at.desc())  # Ensures consistent ordering
+                .offset(offset)
+                .limit(limit)
+                .all()
+            )
+
+            # Convert blog posts to JSON
+            blog_posts_json = []
+            for post in blog_posts:
+                post_dict = post.to_dict()
+                
+                # Ensure JSON fields are properly parsed
+                for field in ['content', 'tags', 'thumbnail_path']:
+                    if field in post_dict and isinstance(post_dict[field], str):
+                        try:
+                            post_dict[field] = json.loads(post_dict[field])
+                        except json.JSONDecodeError:
+                            pass  # Handle improperly formatted JSON
+
+                blog_posts_json.append(post_dict)
+
+            return blog_posts_json
+            
+        finally:
+            session.close()
+
+
+    @staticmethod
     def queryAll():
         engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
         session = sessionmaker(bind=engine)()
@@ -316,28 +371,58 @@ class Reviews(Base):
         session.close()
 
     @staticmethod
-    def queryAll():
+    def count():
         engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
         session = sessionmaker(bind=engine)()
-
-        reviews = session.query(Reviews).all()
-        reviews_json = []
-        for review in reviews:
-            review_json = {
-                'id': review.id,
-                'title': review.title,
-                'author': review.author,
-                'description': review.description,
-                'tags': review.tags,
-                'thumbnail_path': review.thumbnail_path,
-                'created_at': review.created_at,
-                'updated_at': review.updated_at
-            }
-            reviews_json.append(review_json)
-
+        total = session.query(Reviews).count()
         session.close()
+        return total
 
-        return reviews_json
+    @staticmethod
+    def queryPaginated(page, limit=3):
+        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        Session = sessionmaker(bind=engine)
+        session = Session()
+        
+        try:
+            # Get total count of records
+            total_count = session.query(Reviews).count()
+            
+            # Calculate offset
+            offset = (page - 1) * limit
+
+            # If offset is greater than available records, return empty list
+            if offset >= total_count:
+                return []
+
+            # Fetch paginated results
+            reviews = (
+                session.query(Reviews)
+                .order_by(Reviews.created_at.desc())  # Ensures consistent ordering
+                .offset(offset)
+                .limit(limit)
+                .all()
+            )
+
+            # Convert reviews to JSON
+            reviews_json = []
+            for review in reviews:
+                review_dict = review.to_dict()
+                
+                # Ensure JSON fields are properly parsed
+                for field in ['content', 'tags', 'thumbnail_path']:
+                    if field in review_dict and isinstance(review_dict[field], str):
+                        try:
+                            review_dict[field] = json.loads(review_dict[field])
+                        except json.JSONDecodeError:
+                            pass  # Handle improperly formatted JSON
+
+                reviews_json.append(review_dict)
+
+            return reviews_json
+            
+        finally:
+            session.close()
     
     @staticmethod
     def query(id):

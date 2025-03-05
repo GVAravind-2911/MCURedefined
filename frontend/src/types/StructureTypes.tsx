@@ -20,7 +20,9 @@ export interface TrefoilElement extends HTMLElement {
   color: string;
 }
 
-export interface BlogsComponentProps {
-    path:string;
-    initialBlogs:BlogList[];
+export interface BlogComponentProps {
+  path: string;
+  initialBlogs: BlogList[];
+  totalPages: number;
+  apiUrl: string;
 }
