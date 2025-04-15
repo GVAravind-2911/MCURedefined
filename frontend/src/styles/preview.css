@@ -1,203 +1,203 @@
 @font-face {
-    font-family: "BentonSansCompLight";
-    src: url("../fonts/BentonSans\ Comp\ Light.otf");
+	font-family: "BentonSansCompLight";
+	src: url("../fonts/BentonSans\ Comp\ Light.otf");
 }
 @font-face {
-    font-family: "BentonSansRegular";
-    src: url("../fonts/BentonSans\ Regular.otf");
+	font-family: "BentonSansRegular";
+	src: url("../fonts/BentonSans\ Regular.otf");
 }
 @font-face {
-    font-family: "BentonSansBook";
-    src: url("../fonts/BentonSans\ Book.otf");
+	font-family: "BentonSansBook";
+	src: url("../fonts/BentonSans\ Book.otf");
 }
 @font-face {
-    font-family: "BentonSansBold";
-    src: url("../fonts/BentonSans\ Bold.otf");
+	font-family: "BentonSansBold";
+	src: url("../fonts/BentonSans\ Bold.otf");
 }
 @font-face {
-    font-family: "BentonSansCompBlack";
-    src: url("../fonts/BentonSans\ Comp\ Black.otf");
+	font-family: "BentonSansCompBlack";
+	src: url("../fonts/BentonSans\ Comp\ Black.otf");
 }
 
 .contents {
-    width: 84%;
-    margin-bottom: 60px;
-    margin-top: 50px;
-    background-color: #9babb8;
-    border-radius: 5px;
+	width: 84%;
+	margin-bottom: 60px;
+	margin-top: 50px;
+	background-color: #9babb8;
+	border-radius: 5px;
 }
 
 .title {
-    font-size: 70px;
-    margin-left: 3%;
-    margin-top: 3%;
-    color: black;
-    font-family: "BentonSansBold", sans-serif;
+	font-size: 70px;
+	margin-left: 3%;
+	margin-top: 3%;
+	color: black;
+	font-family: "BentonSansBold", sans-serif;
 }
 
 .byline {
-    font-size: 20px;
-    margin-left: 3.3%;
-    margin-top: 0.5%;
-    color: #ec1d24;
-    font-family: "BentonSansRegular", sans-serif;
+	font-size: 20px;
+	margin-left: 3.3%;
+	margin-top: 0.5%;
+	color: #ec1d24;
+	font-family: "BentonSansRegular", sans-serif;
 }
 
 .datecreation {
-    font-size: 20px;
-    margin-left: 3.3%;
-    margin-top: 0.5%;
-    color: #ec1d24;
-    font-family: "BentonSansRegular", sans-serif;
+	font-size: 20px;
+	margin-left: 3.3%;
+	margin-top: 0.5%;
+	color: #ec1d24;
+	font-family: "BentonSansRegular", sans-serif;
 }
 
 .dateupdate {
-    font-size: 20px;
-    margin-left: 3.3%;
-    margin-top: 0.5%;
-    color: #ec1d24;
-    font-family: "BentonSansRegular", sans-serif;
+	font-size: 20px;
+	margin-left: 3.3%;
+	margin-top: 0.5%;
+	color: #ec1d24;
+	font-family: "BentonSansRegular", sans-serif;
 }
 
 .tagsspan {
-    margin-left: 3.3%;
+	margin-left: 3.3%;
 }
 
 .tags {
-    font-size: 20px;
-    margin-top: 0.5%;
-    margin-right: 3px;
-    color: #ec1d24;
-    font-family: "BentonSansRegular", sans-serif;
-    background-color: lightgray;
-    border-radius: 3px;
-    transition: 0.3s;
+	font-size: 20px;
+	margin-top: 0.5%;
+	margin-right: 3px;
+	color: #ec1d24;
+	font-family: "BentonSansRegular", sans-serif;
+	background-color: lightgray;
+	border-radius: 3px;
+	transition: 0.3s;
 }
 
 .tags:hover {
-    transform: scale(1.05);
-    cursor: pointer;
+	transform: scale(1.05);
+	cursor: pointer;
 }
 
 .contentsmain {
-    margin-left: 2%;
-    margin-right: 2%;
-    margin-top: 2%;
-    margin-bottom: 2%;
-    width: 96%;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    background-color: #f1fbff;
+	margin-left: 2%;
+	margin-right: 2%;
+	margin-top: 2%;
+	margin-bottom: 2%;
+	width: 96%;
+	border-radius: 5px;
+	display: flex;
+	align-items: center;
+	background-color: #f1fbff;
 }
 
 .maincontent {
-    font-size: 25px;
-    word-spacing: 0.1em;
-    font-family: "BentonSansBook", sans-serif;
-    white-space: pre-line;
-    padding-bottom: 2%;
-    margin-left: 3%;
-    margin-right: 3%;
-    line-height: 2.5;
-    margin-bottom: 1%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: left;
+	font-size: 25px;
+	word-spacing: 0.1em;
+	font-family: "BentonSansBook", sans-serif;
+	white-space: pre-line;
+	padding-bottom: 2%;
+	margin-left: 3%;
+	margin-right: 3%;
+	line-height: 2.5;
+	margin-bottom: 1%;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: left;
 }
 
-.textcontent{
-    text-align: left;
-    width: 100%;
+.textcontent {
+	text-align: left;
+	width: 100%;
 }
 
 .colorforby {
-    color: black;
-    font-family: "BentonSansRegular", sans-serif;
+	color: black;
+	font-family: "BentonSansRegular", sans-serif;
 }
 
 .contentimages {
-    margin-top: 2.5%;
-    margin-bottom: 2.5%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 50%;
-    height: 50%;
-    object-fit: contain;
-    border-radius: 5px;
-    justify-content: center;
-    align-self: center;
-    margin-left: 0px;
-    margin-right: 0px;
+	margin-top: 2.5%;
+	margin-bottom: 2.5%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 50%;
+	height: 50%;
+	object-fit: contain;
+	border-radius: 5px;
+	justify-content: center;
+	align-self: center;
+	margin-left: 0px;
+	margin-right: 0px;
 }
 
 .video-container {
-    margin-left: 23%;
-    margin-top: 5%;
-    margin-bottom: 0.1%;
-    width: 50%;
-    height: 50%;
-    display: block;
+	margin-left: 23%;
+	margin-top: 5%;
+	margin-bottom: 0.1%;
+	width: 50%;
+	height: 50%;
+	display: block;
 }
 
-.youtube-preview{
-    margin-top: 50px;
+.youtube-preview {
+	margin-top: 50px;
 	width: 75%;
 	height: 550px;
-    margin-bottom: 50px;
-    margin-left: 12.5%;
+	margin-bottom: 50px;
+	margin-left: 12.5%;
 }
 
-.video{
-    width:90%;
-    height:90%;
+.video {
+	width: 90%;
+	height: 90%;
 }
 
 .loading {
-    display: flex;
-    color: whitesmoke;
-    margin-top: 20%;
-    margin-bottom: 100px;
-    justify-content: center;
-    align-items: center;
+	display: flex;
+	color: whitesmoke;
+	margin-top: 20%;
+	margin-bottom: 100px;
+	justify-content: center;
+	align-items: center;
 }
 
 #maindiv {
-    display: contents;
+	display: contents;
 }
 
 .loadingOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 1); /* Semi-transparent black */
-    z-index: 9999; /* Ensure it appears on top of other content */
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 1); /* Semi-transparent black */
+	z-index: 9999; /* Ensure it appears on top of other content */
 }
 
 .fade-in {
-    animation: fadeIn ease 1s;
+	animation: fadeIn ease 1s;
 }
 
 @keyframes fadeIn {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
 }
 
-.submit-blogdiv{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap:40px;
-    margin-bottom: 40px;
+.submit-blogdiv {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 40px;
+	margin-bottom: 40px;
 }

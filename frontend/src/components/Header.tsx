@@ -1,19 +1,19 @@
-'use client'
+"use client";
 
 import type { ReactNode } from "react";
 import { useState } from "react";
 import Link from "next/link";
-import { useSession,signOut } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 
 function Header(): ReactNode {
-	const { data: session } = useSession();
-	const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+	const { data: session } = authClient.useSession();
+	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
 	const toggleDropdown = () => {
-		setIsDropdownOpen(!isDropdownOpen)
-	  }
+		setIsDropdownOpen(!isDropdownOpen);
+	};
 
 	const toggleMobileMenu = () => {
 		setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -22,14 +22,14 @@ function Header(): ReactNode {
 
 	return (
 		<header data-thq="thq-navbar" className="home-navbar">
-			<Image 
-				src="/images/MainLogo.svg" 
+			<Image
+				src="/images/MainLogo.svg"
 				className="home-logo"
-				alt="Main Logo"  
+				alt="Main Logo"
 				width={200}
 				height={100}
-				style={{objectFit: 'contain'}}
-			 />
+				style={{ objectFit: "contain" }}
+			/>
 			<div
 				data-thq="thq-navbar-nav"
 				data-role="Nav"
@@ -41,27 +41,52 @@ function Header(): ReactNode {
 					className="home-nav"
 				>
 					<Link href="/">
-						<button type="button" name="button" value="home" className="home-button">
+						<button
+							type="button"
+							name="button"
+							value="home"
+							className="home-button"
+						>
 							HOME
 						</button>
 					</Link>
 					<Link href="/reviews">
-						<button type="button" name="button" value="reviews" className="home-button">
+						<button
+							type="button"
+							name="button"
+							value="reviews"
+							className="home-button"
+						>
 							REVIEWS
 						</button>
 					</Link>
 					<Link href="/blogs">
-						<button type="button" name="button" value="blog" className="home-button">
+						<button
+							type="button"
+							name="button"
+							value="blog"
+							className="home-button"
+						>
 							BLOG
 						</button>
 					</Link>
 					<Link href="/release-slate">
-						<button type="button" name="button" value="release_slate" className="home-button">
+						<button
+							type="button"
+							name="button"
+							value="release_slate"
+							className="home-button"
+						>
 							RELEASE SLATE
 						</button>
 					</Link>
 					<Link href="/collaborate">
-						<button type="button" name="button" value="collaborate" className="home-button">
+						<button
+							type="button"
+							name="button"
+							value="collaborate"
+							className="home-button"
+						>
 							COLLABORATE
 						</button>
 					</Link>
@@ -70,49 +95,53 @@ function Header(): ReactNode {
 
 			<div data-thq="thq-navbar-btn-group" className="home-btn-group">
 				{session ? (
-				<div className="user-dropdown">
-					<button 
-					onClick={toggleDropdown}
-					className="user-dropdown-button"
-					type="button"
-					>
-					{session.user?.name}
-					<svg 
-						className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`}
-						width="12" 
-						height="12" 
-						viewBox="0 0 12 12"
-					>
-						<title>Dropdown Arrow</title>
-						<path d="M2 4L6 8L10 4" stroke="currentColor" strokeWidth="2"/>
-					</svg>
-					</button>
-					{isDropdownOpen && (
-					<div className="dropdown-menu">
-						<Link href="/profile" className="dropdown-item">
-						Profile
-						</Link>
-						<button 
-						onClick={() => signOut()} 
-						className="dropdown-item"
-						type="button"
+					<div className="user-dropdown">
+						<button
+							onClick={toggleDropdown}
+							className="user-dropdown-button"
+							type="button"
 						>
-						Sign Out
+							{session.user?.name}
+							<svg
+								className={`dropdown-arrow ${isDropdownOpen ? "open" : ""}`}
+								width="12"
+								height="12"
+								viewBox="0 0 12 12"
+							>
+								<title>Dropdown Arrow</title>
+								<path d="M2 4L6 8L10 4" stroke="currentColor" strokeWidth="2" />
+							</svg>
 						</button>
+						{isDropdownOpen && (
+							<div className="dropdown-menu">
+								<Link href="/profile" className="dropdown-item">
+									Profile
+								</Link>
+								<button
+									onClick={() => authClient.signOut()}
+									className="dropdown-item"
+									type="button"
+								>
+									Sign Out
+								</button>
+							</div>
+						)}
 					</div>
-					)}
-				</div>
 				) : (
-				<Link href="/auth">
-					<button className="signin-button" type="button">
-					Sign In
-					</button>
-				</Link>
+					<Link href="/auth">
+						<button className="signin-button" type="button">
+							Sign In
+						</button>
+					</Link>
 				)}
 			</div>
 
 			<div data-thq="thq-burger-menu" className="home-burger-menu">
-				<button type="button" className="home-button5" onClick={toggleMobileMenu}>
+				<button
+					type="button"
+					className="home-button5"
+					onClick={toggleMobileMenu}
+				>
 					<svg viewBox="0 0 100 100" width={20} height={20} className="svgmenu">
 						<title>Menu</title>
 						<rect width={100} height={20} rx={10} />
@@ -139,7 +168,9 @@ function Header(): ReactNode {
 							data-thq="thq-close-menu"
 							className="home-menu-close"
 							onClick={toggleMobileMenu}
-							onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') toggleMobileMenu(); }}
+							onKeyDown={(e) => {
+								if (e.key === "Enter" || e.key === " ") toggleMobileMenu();
+							}}
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -151,7 +182,7 @@ function Header(): ReactNode {
 								style={{ fill: "#ec1d24" }}
 							>
 								<title>Close</title>
-								<path d="M 7 4 C 6.744125 4 6.4879687 4.0974687 6.2929688 4.2929688 L 4.2929688 6.2929688 C 3.9019687 6.6839688 3.9019687 7.3170313 4.2929688 7.7070312 L 11.585938 15 L 4.2929688 22.292969 C 3.9019687 22.683969 3.9019687 23.317031 4.2929688 23.707031 L 6.2929688 25.707031 C 6.6839688 26.098031 7.3170313 26.098031 7.7070312 25.707031 L 15 18.414062 L 22.292969 25.707031 C 22.682969 26.098031 23.317031 26.098031 23.707031 25.707031 L 25.707031 23.707031 C 26.098031 23.316031 26.098031 22.682969 25.707031 22.292969 L 18.414062 15 L 25.707031 7.7070312 C 26.098031 7.3170312 26.098031 6.6829688 25.707031 6.2929688 L 23.707031 4.2929688 C 23.316031 3.9019687 22.682969 3.9019687 22.292969 4.2929688 L 15 11.585938 L 7.7070312 4.2929688 C 7.5115312 4.0974687 7.255875 4 7 4 z"/>
+								<path d="M 7 4 C 6.744125 4 6.4879687 4.0974687 6.2929688 4.2929688 L 4.2929688 6.2929688 C 3.9019687 6.6839688 3.9019687 7.3170313 4.2929688 7.7070312 L 11.585938 15 L 4.2929688 22.292969 C 3.9019687 22.683969 3.9019687 23.317031 4.2929688 23.707031 L 6.2929688 25.707031 C 6.6839688 26.098031 7.3170313 26.098031 7.7070312 25.707031 L 15 18.414062 L 22.292969 25.707031 C 22.682969 26.098031 23.317031 26.098031 23.707031 25.707031 L 25.707031 23.707031 C 26.098031 23.316031 26.098031 22.682969 25.707031 22.292969 L 18.414062 15 L 25.707031 7.7070312 C 26.098031 7.3170312 26.098031 6.6829688 25.707031 6.2929688 L 23.707031 4.2929688 C 23.316031 3.9019687 22.682969 3.9019687 22.292969 4.2929688 L 15 11.585938 L 7.7070312 4.2929688 C 7.5115312 4.0974687 7.255875 4 7 4 z" />
 							</svg>
 						</button>
 					</div>
@@ -165,28 +196,16 @@ function Header(): ReactNode {
 							<Link href="/" className="home-text">
 								Home
 							</Link>
-							<Link
-								href="/reviews"
-								className="home-text"
-							>
+							<Link href="/reviews" className="home-text">
 								Reviews
 							</Link>
-							<Link 
-								href="/blogs"
-								className="home-text"
-							>
+							<Link href="/blogs" className="home-text">
 								Blog
 							</Link>
-							<Link
-								href="/release-slate"
-								className="home-text"
-							>
+							<Link href="/release-slate" className="home-text">
 								Timeline
 							</Link>
-							<Link
-								href="/collaborate"
-								className="home-text"
-							>
+							<Link href="/collaborate" className="home-text">
 								Collaborate
 							</Link>
 						</div>

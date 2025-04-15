@@ -1,9 +1,8 @@
-'use client'
+"use client";
 
 import { useEffect } from "react";
 import type { EmbedBlockProps } from "@/types/BlockTypes";
 import parse from "html-react-parser";
-
 
 const EmbedBlock: React.FC<EmbedBlockProps> = ({ url, onChange, onDelete }) => {
 	useEffect(() => {
@@ -44,26 +43,16 @@ const EmbedBlock: React.FC<EmbedBlockProps> = ({ url, onChange, onDelete }) => {
 			</div>
 			<div className="embed-area">
 				{url.includes("www.youtube.com") && (
-					<div
-						className="youtube-preview"
-					>
-						{parse(url)}
-					</div>
+					<div className="youtube-preview">{parse(url)}</div>
 				)}
 				{url.includes("www.instagram.com") && (
-					<div
-						className="instagram-preview"
-					>
-						{parse(url)}
-					</div>
+					<div className="instagram-preview">{parse(url)}</div>
 				)}
-				{url && !url.includes("www.youtube.com") && !url.includes("www.instagram.com") && (
-					<div
-						className="embed-preview"
-					>
-						{parse(url)}
-					</div>
-				)}
+				{url &&
+					!url.includes("www.youtube.com") &&
+					!url.includes("www.instagram.com") && (
+						<div className="embed-preview">{parse(url)}</div>
+					)}
 				{!url && <p className="no-embed">Embed a URL to Preview</p>}
 				<input
 					type="text"

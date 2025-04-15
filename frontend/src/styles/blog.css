@@ -1,252 +1,251 @@
 @font-face {
-    font-family: "BentonSansCompLight";
-    src: url("../fonts/BentonSans\ Comp\ Light.otf");
+	font-family: "BentonSansCompLight";
+	src: url("../fonts/BentonSans\ Comp\ Light.otf");
 }
 @font-face {
-    font-family: "BentonSansRegular";
-    src: url("../fonts/BentonSans\ Regular.otf");
+	font-family: "BentonSansRegular";
+	src: url("../fonts/BentonSans\ Regular.otf");
 }
 @font-face {
-    font-family: "BentonSansBook";
-    src: url("../fonts/BentonSans\ Book.otf");
+	font-family: "BentonSansBook";
+	src: url("../fonts/BentonSans\ Book.otf");
 }
 @font-face {
-    font-family: "BentonSansBold";
-    src: url("../fonts/BentonSans\ Bold.otf");
+	font-family: "BentonSansBold";
+	src: url("../fonts/BentonSans\ Bold.otf");
 }
 @font-face {
-    font-family: "BentonSansCompBlack";
-    src: url("../fonts/BentonSans\ Comp\ Black.otf");
+	font-family: "BentonSansCompBlack";
+	src: url("../fonts/BentonSans\ Comp\ Black.otf");
 }
 
-.separator{
-    height:2px;
-    width: 100%;
-    background-color: rgb(72, 72, 72);
-    margin: 0px 0px 0px 0px;
+.separator {
+	height: 2px;
+	width: 100%;
+	background-color: rgb(72, 72, 72);
+	margin: 0px 0px 0px 0px;
 }
 
-.layout{
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    gap:2.5%;
+.layout {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	gap: 2.5%;
 }
 
-.otherblogs{
-    color: azure;
-    width: 25%;
-    margin-top: 4.5%;
-    margin-right: 1.5%;
-    display: flex;
-    flex-direction: column;
-    gap:1%;
+.otherblogs {
+	color: azure;
+	width: 25%;
+	margin-top: 4.5%;
+	margin-right: 1.5%;
+	display: flex;
+	flex-direction: column;
+	gap: 1%;
 }
 
 .contents {
-    width: 60%;
-    margin-bottom: 25px;
-    margin-top: 1%;
-    border-radius: 5px;
-    margin-left: 13.5%;
+	width: 60%;
+	margin-bottom: 25px;
+	margin-top: 1%;
+	border-radius: 5px;
+	margin-left: 13.5%;
 }
 
 .title {
-    font-size: 70px;
-    margin-left: 3%;
-    margin-top: 3%;
-    color: white;
-    font-family: "BentonSansBold", sans-serif;
-    text-align: center;
+	font-size: 70px;
+	margin-left: 3%;
+	margin-top: 3%;
+	color: white;
+	font-family: "BentonSansBold", sans-serif;
+	text-align: center;
 }
 
 .colorforby {
-    font-family: "BentonSansRegular", sans-serif;
+	font-family: "BentonSansRegular", sans-serif;
 }
 
 .byline {
-    font-size: 20px;
-    margin-left: 3.3%;
-    margin-top: 2.5%;
-    color: #ec1d24;
-    text-align: center;
-    font-family: "BentonSansRegular", sans-serif;
+	font-size: 20px;
+	margin-left: 3.3%;
+	margin-top: 2.5%;
+	color: #ec1d24;
+	text-align: center;
+	font-family: "BentonSansRegular", sans-serif;
 }
 
 .datecreation {
-    font-size: 20px;
-    margin-left: 3.3%;
-    margin-top: 0.5%;
-    color: #ec1d24;
-    text-align: center;
-    font-family: "BentonSansRegular", sans-serif;
+	font-size: 20px;
+	margin-left: 3.3%;
+	margin-top: 0.5%;
+	color: #ec1d24;
+	text-align: center;
+	font-family: "BentonSansRegular", sans-serif;
 }
 
 .dateupdate {
-    font-size: 20px;
-    margin-left: 3.3%;
-    margin-top: 0.5%;
-    color: #ec1d24;
-    text-align: center;
-    font-family: "BentonSansRegular", sans-serif;
+	font-size: 20px;
+	margin-left: 3.3%;
+	margin-top: 0.5%;
+	color: #ec1d24;
+	text-align: center;
+	font-family: "BentonSansRegular", sans-serif;
 }
 
 .tagsspan {
-    margin-left: 3.3%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+	margin-left: 3.3%;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
 }
 
 .tags {
-    font-size: 20px;
-    margin-top: 2.5%;
-    margin-right: 3px;
-    color: #ec1d24;
-    font-family: "BentonSansRegular", sans-serif;
-    background-color: lightgray;
-    border-radius: 3px;
-    transition: 0.3s;
+	font-size: 20px;
+	margin-top: 2.5%;
+	margin-right: 3px;
+	color: #ec1d24;
+	font-family: "BentonSansRegular", sans-serif;
+	background-color: lightgray;
+	border-radius: 3px;
+	transition: 0.3s;
 }
 
 .tags:hover {
-    transform: scale(1.05);
-    cursor: pointer;
+	transform: scale(1.05);
+	cursor: pointer;
 }
 
 .contentsmain {
-    margin-left: 2%;
-    margin-right: 2%;
-    margin-top: 2.5%;
-    margin-bottom: 5%;
-    width: 96%;
-    border-radius: 5px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 2%;
+	margin-left: 2%;
+	margin-right: 2%;
+	margin-top: 2.5%;
+	margin-bottom: 5%;
+	width: 96%;
+	border-radius: 5px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	padding: 2%;
 }
 
 .maincontent {
-    font-size: 18px;
-    word-spacing: 0.1em;
-    font-family: "BentonSansBook", sans-serif;
-    white-space: pre-line;
-    padding-bottom: 2%;
-    color:white;
-    line-height: 2.5;
-    margin-bottom: 2%;
-    width: 100%;
-    align-items: center;
+	font-size: 18px;
+	word-spacing: 0.1em;
+	font-family: "BentonSansBook", sans-serif;
+	white-space: pre-line;
+	padding-bottom: 2%;
+	color: white;
+	line-height: 2.5;
+	margin-bottom: 2%;
+	width: 100%;
+	align-items: center;
 }
 
-
 .contentimages {
-    margin-left: 25%;
-    margin-top: 5%;
-    margin-bottom: 5%;
-    width: 50%;
-    height: 50%;
-    object-fit: contain;
-    border-radius: 5px;
-    justify-content: center;
-    align-self: center;
+	margin-left: 25%;
+	margin-top: 5%;
+	margin-bottom: 5%;
+	width: 50%;
+	height: 50%;
+	object-fit: contain;
+	border-radius: 5px;
+	justify-content: center;
+	align-self: center;
 }
 
 .video-container {
-    margin-left: 23%;
-    margin-top: 5%;
-    margin-bottom: 0.1%;
-    width: 50%;
-    height: 50%;
-    display: block;
+	margin-left: 23%;
+	margin-top: 5%;
+	margin-bottom: 0.1%;
+	width: 50%;
+	height: 50%;
+	display: block;
 }
 
 .loading {
-    display: flex;
-    color: whitesmoke;
-    margin-top: 20%;
-    margin-bottom: 100px;
-    justify-content: center;
-    align-items: center;
+	display: flex;
+	color: whitesmoke;
+	margin-top: 20%;
+	margin-bottom: 100px;
+	justify-content: center;
+	align-items: center;
 }
 
 #maindiv {
-    display: contents;
+	display: contents;
 }
 
 .loadingOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 1); /* Semi-transparent black */
-    z-index: 9999; /* Ensure it appears on top of other content */
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 1); /* Semi-transparent black */
+	z-index: 9999; /* Ensure it appears on top of other content */
 }
 
 .fade-in {
-    animation: fadeIn ease 1s;
+	animation: fadeIn ease 1s;
 }
 
 @keyframes fadeIn {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
 }
 
-.textcontent{
-    width: 100%;
+.textcontent {
+	width: 100%;
 }
 
-.textcontent i{
-    color: #ec1d24;
+.textcontent i {
+	color: #ec1d24;
 }
 
-.textcontent b i{
-    color:#ec1d24
+.textcontent b i {
+	color: #ec1d24;
 }
 
-.youtube-preview{
-    width: 75%;
-    height: 350px;
-    margin-top: 40px;
-    display: flex;
-    justify-content: center;
-    margin-left: 12.5%;
+.youtube-preview {
+	width: 75%;
+	height: 350px;
+	margin-top: 40px;
+	display: flex;
+	justify-content: center;
+	margin-left: 12.5%;
 }
 
-.embed-preview{
-    width: 50%;
-    height: 50%;
-    display: flex;
-    justify-content: center;
-    margin-left: 25%;
-    margin-top: 5%;
-    margin-bottom: 5%;
+.embed-preview {
+	width: 50%;
+	height: 50%;
+	display: flex;
+	justify-content: center;
+	margin-left: 25%;
+	margin-top: 5%;
+	margin-bottom: 5%;
 }
 
-.embed-preview iframe{
-    width: 100%;
-    height: 100%;
+.embed-preview iframe {
+	width: 100%;
+	height: 100%;
 }
 
-.video{
-    width: 90%;
-    height: 90%;
+.video {
+	width: 90%;
+	height: 90%;
 }
 
-.submit-blogdiv{
-    margin-bottom: 40px;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    gap:20px;
-    width:100%;
+.submit-blogdiv {
+	margin-bottom: 40px;
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	gap: 20px;
+	width: 100%;
 }
 
 #submit-blog {
@@ -266,8 +265,8 @@
 	transform: scale(1.1);
 }
 
-@media (max-width:480px){
-    .contents{
-        width: 90%;
-    }
+@media (max-width: 480px) {
+	.contents {
+		width: 90%;
+	}
 }

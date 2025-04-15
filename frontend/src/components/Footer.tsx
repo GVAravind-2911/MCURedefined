@@ -2,7 +2,7 @@ import React from "react";
 import type { ReactNode } from "react";
 import Image from "next/image";
 
-function Footer() : ReactNode{
+function Footer(): ReactNode {
 	return (
 		<footer className="home-footer">
 			<div className="home-separator" />
@@ -14,7 +14,7 @@ function Footer() : ReactNode{
 						alt="Footer Logo"
 						width={300}
 						height={80}
-						style={{objectFit: "contain"}}
+						style={{ objectFit: "contain" }}
 					/>
 				</div>
 				<div className="iop">

@@ -1,67 +1,67 @@
 @font-face {
-    font-family: "BentonSansCompLight";
-    src: url("../fonts/BentonSans\ Comp\ Light.otf");
+	font-family: "BentonSansCompLight";
+	src: url("../fonts/BentonSans\ Comp\ Light.otf");
 }
 @font-face {
-    font-family: "BentonSansRegular";
-    src: url("../fonts/BentonSans\ Regular.otf");
+	font-family: "BentonSansRegular";
+	src: url("../fonts/BentonSans\ Regular.otf");
 }
 @font-face {
-    font-family: "BentonSansBook";
-    src: url("../fonts/BentonSans\ Book.otf");
+	font-family: "BentonSansBook";
+	src: url("../fonts/BentonSans\ Book.otf");
 }
 @font-face {
-    font-family: "BentonSansBold";
-    src: url("../fonts/BentonSans\ Bold.otf");
+	font-family: "BentonSansBold";
+	src: url("../fonts/BentonSans\ Bold.otf");
 }
 @font-face {
-    font-family: "BentonSansCompBlack";
-    src: url("../fonts/BentonSans\ Comp\ Black.otf");
+	font-family: "BentonSansCompBlack";
+	src: url("../fonts/BentonSans\ Comp\ Black.otf");
 }
 
-.similar-blogs{
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    gap:5%;
-    align-items: center;
-    margin:0px 0px 0px 0px;
+.similar-blogs {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	gap: 5%;
+	align-items: center;
+	margin: 0px 0px 0px 0px;
 }
 
-.similarimage{
-    object-fit: contain;
+.similarimage {
+	object-fit: contain;
 }
 
-.similartitle{
-    font-size: 18px;
-    margin-top: 3%;
-    color: white;
-    font-family: "BentonSansBold", sans-serif;
-    text-align: left;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: normal;
+.similartitle {
+	font-size: 18px;
+	margin-top: 3%;
+	color: white;
+	font-family: "BentonSansBold", sans-serif;
+	text-align: left;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: normal;
 }
 
-.similardesc{
-    display: flex;
-    flex-direction: column;
-    justify-content: left;
-    gap:8px;
+.similardesc {
+	display: flex;
+	flex-direction: column;
+	justify-content: left;
+	gap: 8px;
 }
 
-.similarauthor{
-    font-size: 13px;
-    color: white;
-    font-family: "BentonSansRegular", sans-serif;
+.similarauthor {
+	font-size: 13px;
+	color: white;
+	font-family: "BentonSansRegular", sans-serif;
 }
 
-.similardate{
-    font-size: 13px;
-    color: white;
-    font-family: "BentonSansRegular", sans-serif;
+.similardate {
+	font-size: 13px;
+	color: white;
+	font-family: "BentonSansRegular", sans-serif;
 }

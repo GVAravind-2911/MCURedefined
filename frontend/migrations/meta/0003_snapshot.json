@@ -1,6 +1,6 @@
 {
-  "id": "a9a43126-610c-4e64-bad3-b648fedbce9e",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "65a40ad1-090c-4dcf-aaa6-b2e92b1e74c6",
+  "prevId": "3dfaaa55-0fce-4e04-a068-bd53073d11c9",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -227,6 +227,19 @@
         },
         "image": {
           "name": "image",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "account_type": {
+          "name": "account_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'user'"
+        },
+        "password": {
+          "name": "password",
           "type": "text",
           "primaryKey": false,
           "notNull": false
