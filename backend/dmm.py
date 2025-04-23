@@ -12,6 +12,7 @@ DATETIMEFORMAT = "%Y/%m/%d %H:%M:%S"
 DATABASE_URL = os.getenv("TURSO_DATABASE_URL")
 AUTHTOKEN = os.getenv("TURSO_AUTHTOKEN")
 DBURL = f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}&secure=true'
+engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}', connect_args={'check_same_thread': False}, echo=True)
 
 Base = declarative_base()
 
@@ -33,12 +34,12 @@ class BlogPost(Base):
 
     @staticmethod
     def createDatabase():
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         Base.metadata.create_all(engine)
 
     @staticmethod
     def insertBlogPost(title, author, description, content, tags, thumbnail_path):
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         session = sessionmaker(bind=engine)()
         post = BlogPost(
             title=title,
@@ -55,7 +56,7 @@ class BlogPost(Base):
 
     @staticmethod
     def count():
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         session = sessionmaker(bind=engine)()
         total = session.query(BlogPost).count()
         session.close()
@@ -63,7 +64,7 @@ class BlogPost(Base):
 
     @staticmethod
     def queryPaginated(page, limit=3):
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         Session = sessionmaker(bind=engine)
         session = Session()
         
@@ -110,7 +111,7 @@ class BlogPost(Base):
 
     @staticmethod
     def queryAll():
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         session = sessionmaker(bind=engine)()
 
         blog_posts = session.query(BlogPost).all()
@@ -134,7 +135,7 @@ class BlogPost(Base):
     
     @staticmethod
     def query(id):
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         session = sessionmaker(bind=engine)()
         post = session.query(BlogPost).filter(BlogPost.id == id).first()
 
@@ -146,7 +147,7 @@ class BlogPost(Base):
             return 404
     
     def queryLatest():
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         Session = sessionmaker(bind=engine)
         session = Session()
         
@@ -168,7 +169,7 @@ class BlogPost(Base):
     
     @staticmethod
     def update(id, title, author, description, content, tags, thumbnail_path):
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         session = sessionmaker(bind=engine)()
 
         # Retrieve the blog post with the given id
@@ -207,12 +208,12 @@ class Timeline(Base):
 
     @staticmethod
     def createDatabase():
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         Base.metadata.create_all(engine)
 
     @staticmethod
     def insert(phase, name, release_date, synopsis, img_path):
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         session = sessionmaker(bind=engine)()
         project = Timeline(phase=phase, name=name, release_date=release_date, synopsis=synopsis, posterpath=img_path)
         session.add(project)
@@ -221,7 +222,7 @@ class Timeline(Base):
 
     @staticmethod
     def queryPhase(phaseno):
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         session = sessionmaker(bind=engine)()
         posts = session.query(Timeline).filter(Timeline.phase == phaseno).all()
         session.close()
@@ -238,7 +239,7 @@ class Timeline(Base):
 
     @staticmethod    
     def queryId(id):
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         session = sessionmaker(bind=engine)()
         project = session.query(Timeline).filter(Timeline.id == id).first()
         session.close()
@@ -250,7 +251,7 @@ class Timeline(Base):
         
     @staticmethod
     def queryAll():
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         session = sessionmaker(bind=engine)()
         
         projects = session.query(Timeline).all()
@@ -264,7 +265,7 @@ class Timeline(Base):
     
     @staticmethod
     def populateNewDB(project):
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         session = sessionmaker(bind=engine)()
         newProject = Timeline(phase=project.phase, name=project.name, release_date=project.release_date, synopsis=project.synopsis, posterpath=project.posterpath, castinfo=project.castinfo, director=project.director, musicartist=project.musicartist, timelineid=project.timelineid)
         session.add(newProject)
@@ -273,7 +274,7 @@ class Timeline(Base):
         
     @staticmethod
     def forPopulate():
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         session = sessionmaker(bind=engine)()
         result = session.query(Timeline.name).all()
         resl = []
@@ -285,7 +286,7 @@ class Timeline(Base):
     
     @staticmethod
     def updateViaTkinter(name, syn, cast, direc, musicd, timelinepos):
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         session = sessionmaker(bind=engine)()
         timeline = session.query(Timeline).filter(Timeline.name == name).first()
         if timeline:
@@ -299,7 +300,7 @@ class Timeline(Base):
     
     @staticmethod
     def getTkinterContent(name):
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         session = sessionmaker(bind=engine)()
         timeline = session.query(Timeline.synopsis, Timeline.musicartist, Timeline.director, Timeline.castinfo).filter(Timeline.name == name).first()
         if timeline:
@@ -308,7 +309,7 @@ class Timeline(Base):
 
     @staticmethod
     def removeDuplicates():
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         session = sessionmaker(bind=engine)()
         duplicates = session.query(Timeline).filter(Timeline.id > 23).all()
         for i in duplicates:
@@ -329,7 +330,7 @@ class Users(Base):
 
     @staticmethod
     def createDatabase():
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         Base.metadata.create_all(engine)
 
 class Reviews(Base):
@@ -350,12 +351,12 @@ class Reviews(Base):
 
     @staticmethod
     def createDatabase():
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         Base.metadata.create_all(engine)
 
     @staticmethod
     def insertReview(title, author, description, content, tags, thumbnail_path):
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         session = sessionmaker(bind=engine)()
         review = Reviews(
             title=title,
@@ -372,7 +373,7 @@ class Reviews(Base):
 
     @staticmethod
     def count():
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         session = sessionmaker(bind=engine)()
         total = session.query(Reviews).count()
         session.close()
@@ -380,7 +381,7 @@ class Reviews(Base):
 
     @staticmethod
     def queryPaginated(page, limit=3):
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         Session = sessionmaker(bind=engine)
         session = Session()
         
@@ -426,7 +427,7 @@ class Reviews(Base):
     
     @staticmethod
     def query(id):
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         session = sessionmaker(bind=engine)()
         review = session.query(Reviews).filter(Reviews.id == id).first()
 
@@ -438,7 +439,7 @@ class Reviews(Base):
             return 404
     
     def queryLatest():
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         Session = sessionmaker(bind=engine)
         session = Session()
         
@@ -458,7 +459,7 @@ class Reviews(Base):
     
     @staticmethod
     def update(id, title, author, description, content, tags, thumbnail_path):
-        engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}')
+        global engine
         session = sessionmaker(bind=engine)()
 
         review = session.query(Reviews).filter_by(id=id).first()
