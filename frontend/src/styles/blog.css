@@ -137,11 +137,11 @@
     cursor: pointer;
 }
 
-/* .tags::before {
-    content: "#";
-    margin-right: 4px;
-    opacity: 0.7;
-} */
+.tags::before {
+	content: "#";
+	margin-right: 4px;
+	opacity: 0.7;
+}
 
 .likeandshare {
     display: flex;

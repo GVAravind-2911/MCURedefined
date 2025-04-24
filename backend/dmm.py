@@ -24,7 +24,6 @@ class BlogPost(Base):
     author = sqlalchemy.Column(sqlalchemy.String(30))
     description = sqlalchemy.Column(sqlalchemy.Text)
     content = sqlalchemy.Column(sqlalchemy.JSON)  # JSON array for content
-    tags = sqlalchemy.Column(sqlalchemy.JSON)  # JSON array for tags
     thumbnail_path = sqlalchemy.Column(sqlalchemy.JSON)
     created_at = sqlalchemy.Column(sqlalchemy.String(75))
     updated_at = sqlalchemy.Column(sqlalchemy.String(75))
@@ -46,12 +45,15 @@ class BlogPost(Base):
             author=author,
             description=description,
             content=content, 
-            tags=tags, 
             thumbnail_path=thumbnail_path, 
-            created_at= datetime.strftime(datetime.now(), DATETIMEFORMAT),
+            created_at=datetime.strftime(datetime.now(), DATETIMEFORMAT),
             updated_at='')
         session.add(post)
         session.commit()
+        
+        # Add tags separately using the new BlogTag class
+        blog_id = post.id
+        BlogTag.add_tags(blog_id, tags)
         session.close()
 
     @staticmethod
@@ -82,7 +84,7 @@ class BlogPost(Base):
             # Fetch paginated results
             blog_posts = (
                 session.query(BlogPost)
-                .order_by(BlogPost.created_at.desc())  # Ensures consistent ordering
+                .order_by(BlogPost.created_at.desc())
                 .offset(offset)
                 .limit(limit)
                 .all()
@@ -93,13 +95,16 @@ class BlogPost(Base):
             for post in blog_posts:
                 post_dict = post.to_dict()
                 
+                # Get tags from BlogTag
+                post_dict['tags'] = BlogTag.get_tags(post.id)
+                
                 # Ensure JSON fields are properly parsed
-                for field in ['content', 'tags', 'thumbnail_path']:
+                for field in ['content', 'thumbnail_path']:
                     if field in post_dict and isinstance(post_dict[field], str):
                         try:
                             post_dict[field] = json.loads(post_dict[field])
                         except json.JSONDecodeError:
-                            pass  # Handle improperly formatted JSON
+                            pass
 
                 blog_posts_json.append(post_dict)
 
@@ -107,7 +112,6 @@ class BlogPost(Base):
             
         finally:
             session.close()
-
 
     @staticmethod
     def queryAll():
@@ -142,10 +146,13 @@ class BlogPost(Base):
         session.close()
 
         if post:
-            return post.to_dict()
+            post_dict = post.to_dict()
+            # Get tags from BlogTag
+            post_dict['tags'] = BlogTag.get_tags(post.id)
+            return post_dict
         else:
             return 404
-    
+        
     def queryLatest():
         global engine
         Session = sessionmaker(bind=engine)
@@ -180,13 +187,15 @@ class BlogPost(Base):
         blog_post.author = author
         blog_post.description = description
         blog_post.content = content
-        blog_post.tags = tags
         blog_post.thumbnail_path = thumbnail_path
         blog_post.updated_at = datetime.strftime(datetime.now(),DATETIMEFORMAT)
 
         # Commit the changes to the database
         session.commit()
         session.close()
+        
+        # Update tags separately
+        BlogTag.add_tags(id, tags)
 
 class Timeline(Base):
     __tablename__ = 'timeline'
@@ -317,21 +326,6 @@ class Timeline(Base):
             session.commit()
             session.close()
 
-class Users(Base):
-    __tablename__ = 'users'
-    id = sqlalchemy.Column(sqlalchemy.String, primary_key=True)
-    username = sqlalchemy.Column(sqlalchemy.String, unique=True)
-    email = sqlalchemy.Column(sqlalchemy.String, unique=True)
-    password = sqlalchemy.Column(sqlalchemy.String)
-    created_at = sqlalchemy.Column(sqlalchemy.String)
-    likedList = sqlalchemy.Column(sqlalchemy.JSON, default=[])
-    watchedList = sqlalchemy.Column(sqlalchemy.JSON, default = [])
-    watchList = sqlalchemy.Column(sqlalchemy.JSON, default = [])
-
-    @staticmethod
-    def createDatabase():
-        global engine
-        Base.metadata.create_all(engine)
 
 class Reviews(Base):
     __tablename__ = 'reviews'
@@ -341,7 +335,6 @@ class Reviews(Base):
     author = sqlalchemy.Column(sqlalchemy.String(30))
     description = sqlalchemy.Column(sqlalchemy.Text)
     content = sqlalchemy.Column(sqlalchemy.JSON)  # JSON array for content
-    tags = sqlalchemy.Column(sqlalchemy.JSON)  # JSON array for tags
     thumbnail_path = sqlalchemy.Column(sqlalchemy.JSON)
     created_at = sqlalchemy.Column(sqlalchemy.String(75))
     updated_at = sqlalchemy.Column(sqlalchemy.String(75))
@@ -362,13 +355,17 @@ class Reviews(Base):
             title=title,
             author=author,
             description=description,
-            content=content, 
-            tags=tags, 
+            content=content,
             thumbnail_path=thumbnail_path, 
             created_at=datetime.strftime(datetime.now(), DATETIMEFORMAT),
             updated_at='')
         session.add(review)
         session.commit()
+        
+        # Add tags separately
+        review_id = review.id
+        ReviewTag.add_tags(review_id, tags)
+        
         session.close()
 
     @staticmethod
@@ -399,7 +396,7 @@ class Reviews(Base):
             # Fetch paginated results
             reviews = (
                 session.query(Reviews)
-                .order_by(Reviews.created_at.desc())  # Ensures consistent ordering
+                .order_by(Reviews.created_at.desc())
                 .offset(offset)
                 .limit(limit)
                 .all()
@@ -410,13 +407,16 @@ class Reviews(Base):
             for review in reviews:
                 review_dict = review.to_dict()
                 
+                # Get tags from ReviewTag
+                review_dict['tags'] = ReviewTag.get_tags(review.id)
+                
                 # Ensure JSON fields are properly parsed
-                for field in ['content', 'tags', 'thumbnail_path']:
+                for field in ['content', 'thumbnail_path']:
                     if field in review_dict and isinstance(review_dict[field], str):
                         try:
                             review_dict[field] = json.loads(review_dict[field])
                         except json.JSONDecodeError:
-                            pass  # Handle improperly formatted JSON
+                            pass
 
                 reviews_json.append(review_dict)
 
@@ -424,7 +424,7 @@ class Reviews(Base):
             
         finally:
             session.close()
-    
+
     @staticmethod
     def query(id):
         global engine
@@ -434,10 +434,14 @@ class Reviews(Base):
         session.close()
 
         if review:
-            return review.to_dict()
+            review_dict = review.to_dict()
+            # Get tags from ReviewTag
+            review_dict['tags'] = ReviewTag.get_tags(review.id)
+            return review_dict
         else:
             return 404
     
+    @staticmethod
     def queryLatest():
         global engine
         Session = sessionmaker(bind=engine)
@@ -468,22 +472,155 @@ class Reviews(Base):
         review.author = author
         review.description = description
         review.content = content
-        review.tags = tags
         review.thumbnail_path = thumbnail_path
         review.updated_at = datetime.strftime(datetime.now(),DATETIMEFORMAT)
 
         session.commit()
         session.close()
+        
+        # Update tags separately
+        ReviewTag.add_tags(id, tags)
+
+
+# Add these new classes after your existing models:
+
+class BlogTag(Base):
+    __tablename__ = 'blog_tags'
+    
+    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
+    blog_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('blog_posts.id', ondelete='CASCADE'))
+    tag = sqlalchemy.Column(sqlalchemy.String(50))
+    
+    @staticmethod
+    def createDatabase():
+        global engine
+        Base.metadata.create_all(engine)
+    
+    @staticmethod
+    def add_tags(blog_id, tags):
+        global engine
+        session = sessionmaker(bind=engine)()
+        
+        # First remove any existing tags for this blog
+        session.query(BlogTag).filter(BlogTag.blog_id == blog_id).delete()
+        
+        # Add new tags
+        for tag in tags:
+            blog_tag = BlogTag(blog_id=blog_id, tag=tag)
+            session.add(blog_tag)
+            
+        session.commit()
+        session.close()
+    
+    @staticmethod
+    def get_tags(blog_id):
+        global engine
+        session = sessionmaker(bind=engine)()
+        
+        tags = session.query(BlogTag.tag).filter(BlogTag.blog_id == blog_id).all()
+        tags_list = [tag[0] for tag in tags]
+        
+        session.close()
+        return tags_list
+    
+    @staticmethod
+    def find_blogs_by_tag(tag):
+        global engine
+        session = sessionmaker(bind=engine)()
+        
+        blog_ids = session.query(BlogTag.blog_id).filter(BlogTag.tag == tag).all()
+        blog_ids_list = [blog_id[0] for blog_id in blog_ids]
+        
+        session.close()
+        return blog_ids_list
+
+
+class ReviewTag(Base):
+    __tablename__ = 'review_tags'
+    
+    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
+    review_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('reviews.id', ondelete='CASCADE'))
+    tag = sqlalchemy.Column(sqlalchemy.String(50))
+    
+    @staticmethod
+    def createDatabase():
+        global engine
+        Base.metadata.create_all(engine)
+    
+    @staticmethod
+    def add_tags(review_id, tags):
+        global engine
+        session = sessionmaker(bind=engine)()
+        
+        # First remove any existing tags for this review
+        session.query(ReviewTag).filter(ReviewTag.review_id == review_id).delete()
+        
+        # Add new tags
+        for tag in tags:
+            review_tag = ReviewTag(review_id=review_id, tag=tag)
+            session.add(review_tag)
+            
+        session.commit()
+        session.close()
+    
+    @staticmethod
+    def get_tags(review_id):
+        global engine
+        session = sessionmaker(bind=engine)()
+        
+        tags = session.query(ReviewTag.tag).filter(ReviewTag.review_id == review_id).all()
+        tags_list = [tag[0] for tag in tags]
+        
+        session.close()
+        return tags_list
+    
+    @staticmethod
+    def find_reviews_by_tag(tag):
+        global engine
+        session = sessionmaker(bind=engine)()
+        
+        review_ids = session.query(ReviewTag.review_id).filter(ReviewTag.tag == tag).all()
+        review_ids_list = [review_id[0] for review_id in review_ids]
+        
+        session.close()
+        return review_ids_list
 
 
 if __name__ == '__main__':
-    # Reviews.createDatabase()
-    Users.createDatabase()
-    print('created')
-    # BlogPost.insertBlogPost('MCURedefined', 'Aravind', 'Trying', 'Trying to use Turso', '#try', '', '', '')
-    # Timeline.insert(3, 'Spider-Man Far From Home', datetime(2019, 7, 2), 'Mysterio and Edith', r'static/img/Posters/Phase3/Spiderman2.jpg')
-    # Timeline.forPopulate()
-    # print(Timeline.queryAll())
-    # for i in Timeline.queryAll():
-    #     Timeline.populateNewDB(i)
-    # Timeline.removeDuplicates()
+    # Create new tables for tags
+    BlogTag.createDatabase()
+    ReviewTag.createDatabase()
+    
+    # Add migration code to move existing tags to new tables
+    session = sessionmaker(bind=engine)()
+    
+    # Migrate blog tags
+    blogs = session.query(BlogPost).all()
+    for blog in blogs:
+        if blog.tags:
+            tags = blog.tags
+            if isinstance(tags, str):
+                try:
+                    tags = json.loads(tags)
+                except json.JSONDecodeError:
+                    tags = []
+            BlogTag.add_tags(blog.id, tags)
+    
+    # Migrate review tags
+    reviews = session.query(Reviews).all()
+    for review in reviews:
+        if review.tags:
+            tags = review.tags
+            if isinstance(tags, str):
+                try:
+                    tags = json.loads(tags)
+                except json.JSONDecodeError:
+                    tags = []
+            ReviewTag.add_tags(review.id, tags)
+    
+    # Optionally, you could remove the tags column from the original tables
+    # after migration if you no longer need it
+    # This would require altering the table schema
+    
+    session.close()
+    print('Tag migration complete')
