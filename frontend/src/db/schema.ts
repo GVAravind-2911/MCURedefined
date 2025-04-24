@@ -4,6 +4,7 @@ import {
 	boolean,
 	timestamp,
 	primaryKey,
+	integer,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
@@ -70,3 +71,34 @@ export const verification = pgTable("verification", {
 
 export type Verification = typeof verification.$inferSelect;
 export type NewVerification = typeof verification.$inferInsert;
+
+export const like = pgTable("bloglikes", {
+    userId: text("user_id")
+        .notNull()
+        .references(() => user.id, { onDelete: "cascade" }),
+    blogId: integer("blog_id")
+        .notNull()
+        // .references(() => blog.id, { onDelete: "cascade" }), // Uncomment if you have a blog table
+    ,
+    createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+},
+    (like) => [
+        primaryKey({columns:[like.userId, like.blogId]}),
+	]
+);
+
+export type Like = typeof like.$inferSelect;
+export type NewLike = typeof like.$inferInsert;
+
+export const interaction = pgTable("interaction", {
+	id: text("id").primaryKey(),
+	blogId: integer("blog_id").notNull(),
+	views: integer("views").notNull().default(1),
+	likes: integer("likes").notNull().default(0), 
+	shares: integer("shares").notNull().default(0),
+	lastUpdated: timestamp("last_updated").notNull().default(sql`CURRENT_TIMESTAMP`),
+	createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+  
+export type Interaction = typeof interaction.$inferSelect;
+export type NewInteraction = typeof interaction.$inferInsert;

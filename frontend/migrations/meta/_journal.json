@@ -29,6 +29,41 @@
       "when": 1744719041718,
       "tag": "0003_odd_next_avengers",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1745397960475,
+      "tag": "0004_nebulous_sugar_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1745399999364,
+      "tag": "0005_clumsy_quasimodo",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1745400304381,
+      "tag": "0006_gray_millenium_guard",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1745400340872,
+      "tag": "0007_fair_imperial_guard",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1745402441766,
+      "tag": "0008_peaceful_iron_patriot",
+      "breakpoints": true
     }
   ]
 }

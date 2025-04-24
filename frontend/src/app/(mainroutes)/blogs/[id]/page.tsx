@@ -9,7 +9,13 @@ import SimilarBlog from "@/components/SimilarBlog";
 import parse from "html-react-parser";
 import ScriptEmbed from "@/components/ScriptEmbed";
 import Image from "next/image";
+import { auth } from "@/lib/auth/auth";
+import LikeButton from "@/components/LikeButton";
+import ShareButton from "@/components/ShareButton";
 import "@/styles/blog.css";
+import { headers } from "next/headers";
+import { getUserLikedBlog } from "@/db/blog-likes";
+import { getBlogInteractions, incrementBlogView } from "@/db/interactions";
 
 interface PageProps {
 	params: Promise<{
@@ -65,10 +71,18 @@ export default async function BlogPage(props: PageProps): Promise<JSX.Element> {
 	const params = await props.params;
 	const blog = await getBlogData(params.id);
 	const latestBlogs = await getLatestBlogs();
+	const session = await auth.api.getSession({headers: await headers()});
+	const userHasLiked = session?.user ? await getUserLikedBlog(session.user.id, blog.id) : null;
+	const totalInteractions = await getBlogInteractions(blog.id);
+
+	if (blog){
+		await incrementBlogView(blog.id);
+	}
 
 	if (!blog) {
 		notFound();
 	}
+
 
 	const contentElements = blog.content.map(
 		(block: ContentBlock, index: number): JSX.Element => {
@@ -117,26 +131,40 @@ export default async function BlogPage(props: PageProps): Promise<JSX.Element> {
 				<div className="contents fade-in">
 					<div className="contentsinfo">
 						<h1 className="title">{blog.title}</h1>
-						<h3 className="byline">
-							<span className="colorforby">By: </span>
-							{blog.author}
-						</h3>
-						<h3 className="datecreation">
-							{moment(blog.created_at).format("dddd, D MMMM, YYYY")}
-						</h3>
-						{blog.updated_at && (
-							<h3 className="dateupdate">
-								<span className="colorforby">Updated: </span>
-								{moment(blog.updated_at).format("dddd, D MMMM, YYYY")}
-							</h3>
-						)}
+						<div className="meta-info">
+                            <h3 className="byline">
+                                <span className="colorforby">By: </span>
+                                {blog.author}
+                            </h3>
+                            <h3 className="datecreation">
+                                {moment(blog.created_at).format("dddd, D MMMM, YYYY")}
+                            </h3>
+                            {blog.updated_at && (
+                                <h3 className="dateupdate">
+                                    <span className="colorforby">Updated: </span>
+                                    {moment(blog.updated_at).format("dddd, D MMMM, YYYY")}
+                                </h3>
+                            )}
+                        </div>
 						<span className="tagsspan">
-							{blog.tags.map((tag: string) => (
-								<button key={tag} type="button" className="tags">
-									{tag}
-								</button>
-							))}
-						</span>
+                            {blog.tags.map((tag: string) => (
+                                <button key={tag} type="button" className="tags">
+                                    {tag}
+                                </button>
+                            ))}
+                        </span>
+						<div className="likeandshare">
+							<LikeButton
+								blogId={blog.id}
+								initialCount={totalInteractions.likes}
+								userHasLiked={!!userHasLiked}
+								isLoggedIn={!!session?.user}
+							/>
+							<ShareButton
+								blogId={blog.id}
+								initialCount={totalInteractions.shares || 0}
+							/>
+						</div>
 					</div>
 					<div className="contentsmain">
 						<div className="maincontent">{contentElements}</div>

@@ -1,14 +1,14 @@
 import type { LayoutProps } from "@/types/StructureTypes";
 import type React from "react";
 import Footer from "./Footer";
-import Header from "./Header";
+import HeaderWrapper from "./HeaderWrapper";
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
 	return (
 		<div>
 			<div className="home-container">
 				<div id="main-home-header-container">
-					<Header />
+					<HeaderWrapper />
 				</div>
 				{children}
 				<a

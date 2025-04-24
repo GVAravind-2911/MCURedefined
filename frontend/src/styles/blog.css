@@ -64,13 +64,30 @@
 	font-family: "BentonSansRegular", sans-serif;
 }
 
+/* Improving author and date section */
+.byline, .datecreation, .dateupdate {
+    font-size: 18px;
+    margin: 0.5% 0;
+    letter-spacing: 0.03em;
+    font-family: "BentonSansRegular", sans-serif;
+}
+
 .byline {
-	font-size: 20px;
-	margin-left: 3.3%;
-	margin-top: 2.5%;
-	color: #ec1d24;
-	text-align: center;
-	font-family: "BentonSansRegular", sans-serif;
+    margin-top: -3%;
+}
+
+/* Group author and date info visually */
+.meta-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 20px;
+    margin: 15px 0;
+    border-radius: 8px;
+    background-color: rgba(40, 40, 40, 0.3);
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .datecreation {
@@ -91,28 +108,216 @@
 	font-family: "BentonSansRegular", sans-serif;
 }
 
+/* Improved tags styling */
 .tagsspan {
-	margin-left: 3.3%;
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
+    margin: 20px 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
 }
 
 .tags {
-	font-size: 20px;
-	margin-top: 2.5%;
-	margin-right: 3px;
-	color: #ec1d24;
-	font-family: "BentonSansRegular", sans-serif;
-	background-color: lightgray;
-	border-radius: 3px;
-	transition: 0.3s;
+    font-size: 16px;
+    color: #fff;
+    font-family: "BentonSansRegular", sans-serif;
+    background-color: rgba(236, 29, 36, 0.8);
+    border: none;
+    border-radius: 20px;
+    padding: 6px 16px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
 }
 
 .tags:hover {
-	transform: scale(1.05);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(236, 29, 36, 0.4);
+    background-color: #ec1d24;
+    cursor: pointer;
+}
+
+/* .tags::before {
+    content: "#";
+    margin-right: 4px;
+    opacity: 0.7;
+} */
+
+.likeandshare {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 18px;
+    justify-content: center;
+}
+
+.likes {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.like-button,
+.liked-button {
+    font-size: 18px;
+    padding: 8px 18px;
+    border-radius: 30px;
+    border: none;
+    font-family: "BentonSansRegular", sans-serif;
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.like-button {
+    background: #ec1d24;
+    color: #fff;
+}
+
+.like-button:hover:not(.disabled) {
+    background: #b71c1c;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(236, 29, 36, 0.3);
+}
+
+.liked-button {
+    background: #fff;
+    color: #ec1d24;
+    border: 2px solid #ec1d24;
+    font-weight: bold;
+}
+
+.liked-button:hover {
+    background: #ec1d24;
+    color: #fff;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(236, 29, 36, 0.3);
+}
+
+.like-button.disabled {
+    background: #888;
+    color: #ccc;
+    cursor: not-allowed;
+    pointer-events: auto; /* allow hover for tooltip */
+    opacity: 0.7;
+}
+
+.likes-count {
+    margin-left: 4px;
+    font-size: 20px;
+    color: #fff;
+    font-family: "BentonSansBold", sans-serif;
+    min-width: 24px;
+    text-align: center;
+}
+
+.heart-icon {
+    transition: fill 0.3s, transform 0.3s;
+}
+
+.liked-button .heart-icon {
+    fill: #ec1d24;
+    animation: pulse 0.4s ease-out;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.3);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Add these new styles */
+
+.share-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Add these styles */
+
+.share {
+	background: #333;
+	color: #fff;
+	padding: 8px 18px;
+	border-radius: 30px;
 	cursor: pointer;
+	transition: all 0.3s ease;
+	font-family: "BentonSansRegular", sans-serif;
+	font-size: 18px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	border: none;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .share:hover {
+	background: #444;
+	transform: scale(1.05);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .share:disabled {
+	opacity: 0.7;
+	cursor: not-allowed;
+  }
+  
+  /* Animation for "Copied!" state */
+  @keyframes pulse-green {
+	0% {
+	  background-color: #333;
+	}
+	50% {
+	  background-color: #2e7d32;
+	}
+	100% {
+	  background-color: #333;
+	}
+  }
+  
+  .share.copied {
+	animation: pulse-green 2s;
+  }
+
+/* Add a nice divider between header info and content */
+.contentsinfo::after {
+    content: '';
+    display: block;
+    width: 60%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(236, 29, 36, 0.7), transparent);
+    margin: 30px auto;
+}
+
+/* Improve responsiveness */
+@media (max-width: 768px) {
+    .title {
+        font-size: 48px;
+    }
+    
+    .meta-info {
+        width: 90%;
+    }
+    
+    .layout {
+        flex-direction: column;
+    }
+    
+    .otherblogs, .contents {
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
 }
 
 .contentsmain {

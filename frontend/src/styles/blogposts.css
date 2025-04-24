@@ -249,3 +249,64 @@
 		opacity: 1;
 	}
 }
+
+.error-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    padding: 20px;
+}
+
+.error-message {
+    background-color: #2d2d2d;
+    padding: 32px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+    text-align: center;
+    color: #fff;
+    border-left: 5px solid #ec1d24;
+}
+
+.error-message h2 {
+    font-family: "BentonSansBold", sans-serif;
+    font-size: 28px;
+    margin-bottom: 16px;
+    color: #ec1d24;
+}
+
+.error-message p {
+    font-family: "BentonSansRegular", sans-serif;
+    font-size: 18px;
+    margin-bottom: 16px;
+}
+
+.error-message ul {
+    text-align: left;
+    margin: 16px auto;
+    max-width: 80%;
+    font-family: "BentonSansRegular", sans-serif;
+}
+
+.error-message li {
+    margin-bottom: 8px;
+}
+
+.reload-button {
+    background-color: #ec1d24;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-family: "BentonSansBold", sans-serif;
+    transition: all 0.3s ease;
+}
+
+.reload-button:hover {
+    background-color: #d81921;
+    transform: scale(1.05);
+}
