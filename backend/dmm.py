@@ -1,3 +1,4 @@
+from math import ceil
 import sqlalchemy
 from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy import CheckConstraint
@@ -197,6 +198,125 @@ class BlogPost(Base):
         # Update tags separately
         BlogTag.add_tags(id, tags)
 
+    # Add to BlogPost class in dmm.py
+# Update your search endpoint in the BlogPost class in dmm.py
+
+    @staticmethod
+    def search(query="", tags=None, author="", page=1, limit=5):
+        global engine
+        blogs = []
+        total = 0
+        total_pages = 0
+        
+        # Convert single tag to list if needed
+        if isinstance(tags, str):
+            tags = [tags]
+        
+        if tags and len(tags) > 0:
+            # Get blog IDs that have ALL the selected tags
+            blog_ids = None
+            session = sessionmaker(bind=engine)()
+            
+            for tag in tags:
+                tag_blogs = set([row[0] for row in session.query(BlogTag.blog_id).filter(BlogTag.tag == tag).all()])
+                if blog_ids is None:
+                    blog_ids = tag_blogs
+                else:
+                    blog_ids = blog_ids.intersection(tag_blogs)
+            
+            if blog_ids:
+                blog_ids = list(blog_ids)
+                total = len(blog_ids)
+                
+                # Apply pagination
+                start_idx = (page - 1) * limit
+                end_idx = start_idx + limit
+                page_ids = blog_ids[start_idx:end_idx] if start_idx < total else []
+                
+                # Get blog details
+                for blog_id in page_ids:
+                    blog = session.query(BlogPost).filter(BlogPost.id == blog_id).first()
+                    if blog:
+                        blog_dict = blog.to_dict()
+                        blog_dict['tags'] = BlogTag.get_tags(blog.id)
+                        blogs.append(blog_dict)
+            session.close()
+        
+        elif author:
+            # Search by author
+            session = sessionmaker(bind=engine)()
+            total_query = session.query(BlogPost).filter(BlogPost.author.ilike(f'%{author}%'))
+            total = total_query.count()
+            
+            blogs_query = total_query.order_by(BlogPost.created_at.desc()).offset((page-1)*limit).limit(limit)
+            
+            for blog in blogs_query:
+                blog_dict = blog.to_dict()
+                blog_dict['tags'] = BlogTag.get_tags(blog.id)
+                blogs.append(blog_dict)
+            session.close()
+            
+        elif query:
+            # Search by title or description
+            session = sessionmaker(bind=engine)()
+            total_query = session.query(BlogPost).filter(
+                sqlalchemy.or_(
+                    BlogPost.title.ilike(f'%{query}%'),
+                    BlogPost.description.ilike(f'%{query}%')
+                )
+            )
+            total = total_query.count()
+            
+            blogs_query = total_query.order_by(BlogPost.created_at.desc()).offset((page-1)*limit).limit(limit)
+            
+            for blog in blogs_query:
+                blog_dict = blog.to_dict()
+                blog_dict['tags'] = BlogTag.get_tags(blog.id)
+                blogs.append(blog_dict)
+            session.close()
+        
+        # Calculate total pages
+        total_pages = ceil(total / limit) if total > 0 else 0
+        
+        return {
+            "blogs": blogs,
+            "total": total,
+            "total_pages": total_pages,
+            "page": page
+        }
+    
+    @staticmethod
+    def get_all_tags():
+        global engine
+        session = sessionmaker(bind=engine)()
+        tags = session.query(BlogTag.tag).distinct().all()
+        tags_list = [tag[0] for tag in tags]
+        session.close()
+        
+        return tags_list
+
+    @staticmethod
+    def get_all_authors():
+        global engine
+        session = sessionmaker(bind=engine)()
+        authors = session.query(BlogPost.author).distinct().all()
+        authors_list = [author[0] for author in authors]
+        session.close()
+        
+        return authors_list
+
+    @staticmethod
+    def delete(id):
+        global engine
+        session = sessionmaker(bind=engine)()
+        blog_post = session.query(BlogPost).filter_by(id=id).first()
+        
+        if blog_post:
+            session.delete(blog_post)
+            session.commit()
+        
+        session.close()
+
 class Timeline(Base):
     __tablename__ = 'timeline'
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
@@ -358,15 +478,15 @@ class Reviews(Base):
             content=content,
             thumbnail_path=thumbnail_path, 
             created_at=datetime.strftime(datetime.now(), DATETIMEFORMAT),
-            updated_at='')
+            updated_at=""
+        )
         session.add(review)
         session.commit()
-        
-        # Add tags separately
-        review_id = review.id
-        ReviewTag.add_tags(review_id, tags)
-        
+
+        # Add tags after creating review
+        ReviewTag.add_tags(review.id, tags)
         session.close()
+
 
     @staticmethod
     def count():
@@ -462,27 +582,137 @@ class Reviews(Base):
         return latest_dict
     
     @staticmethod
-    def update(id, title, author, description, content, tags, thumbnail_path):
+    def updateReview(id, title, author, description, content, tags, thumbnail_path):
         global engine
         session = sessionmaker(bind=engine)()
-
         review = session.query(Reviews).filter_by(id=id).first()
+
+        if not review:
+            session.close()
+            return 404
 
         review.title = title
         review.author = author
         review.description = description
         review.content = content
         review.thumbnail_path = thumbnail_path
-        review.updated_at = datetime.strftime(datetime.now(),DATETIMEFORMAT)
+        review.updated_at = datetime.strftime(datetime.now(), DATETIMEFORMAT)
 
         session.commit()
         session.close()
-        
-        # Update tags separately
+
+        # Update tags
         ReviewTag.add_tags(id, tags)
 
+    @staticmethod
+    def deleteReview(id):
+        global engine
+        session = sessionmaker(bind=engine)()
+        review = session.query(Reviews).filter_by(id=id).first()
 
-# Add these new classes after your existing models:
+        if review:
+            session.delete(review)
+            session.commit()
+
+        session.close()
+
+    
+    # Add to BlogPost class in dmm.py
+    @staticmethod
+    def search(query="", tags=None, author="", page=1, limit=5):
+        global engine
+        reviews = []
+        total = 0
+        total_pages = 0
+
+        # Normalize tags
+        if isinstance(tags, str):
+            tags = [tags]
+
+        session = sessionmaker(bind=engine)()
+
+        try:
+            # Search by tags (intersection logic like BlogPost)
+            if tags and len(tags) > 0:
+                review_ids = None
+                for tag in tags:
+                    tag_reviews = set([row[0] for row in session.query(ReviewTag.review_id).filter(ReviewTag.tag == tag).all()])
+                    if review_ids is None:
+                        review_ids = tag_reviews
+                    else:
+                        review_ids = review_ids.intersection(tag_reviews)
+
+                if review_ids:
+                    review_ids = list(review_ids)
+                    total = len(review_ids)
+
+                    start_idx = (page - 1) * limit
+                    end_idx = start_idx + limit
+                    page_ids = review_ids[start_idx:end_idx] if start_idx < total else []
+
+                    for review_id in page_ids:
+                        review = session.query(Reviews).filter(Reviews.id == review_id).first()
+                        if review:
+                            review_dict = review.to_dict()
+                            review_dict['tags'] = ReviewTag.get_tags(review.id)
+                            reviews.append(review_dict)
+
+            elif author:
+                total_query = session.query(Reviews).filter(Reviews.author.ilike(f'%{author}%'))
+                total = total_query.count()
+                results = total_query.order_by(Reviews.created_at.desc()).offset((page - 1) * limit).limit(limit)
+                for review in results:
+                    review_dict = review.to_dict()
+                    review_dict['tags'] = ReviewTag.get_tags(review.id)
+                    reviews.append(review_dict)
+
+            elif query:
+                total_query = session.query(Reviews).filter(
+                    sqlalchemy.or_(
+                        Reviews.title.ilike(f'%{query}%'),
+                        Reviews.description.ilike(f'%{query}%')
+                    )
+                )
+                total = total_query.count()
+                results = total_query.order_by(Reviews.created_at.desc()).offset((page - 1) * limit).limit(limit)
+                for review in results:
+                    review_dict = review.to_dict()
+                    review_dict['tags'] = ReviewTag.get_tags(review.id)
+                    reviews.append(review_dict)
+
+            # Pagination
+            total_pages = ceil(total / limit) if total > 0 else 0
+
+            return {
+                "blogs": reviews,  # ✅ Return under 'blogs' to match blog API
+                "total": total,
+                "total_pages": total_pages,
+                "page": page
+            }
+
+        finally:
+            session.close()
+
+    @staticmethod
+    def get_all_tags():
+        global engine
+        session = sessionmaker(bind=engine)()
+        tags = session.query(ReviewTag.tag).distinct().all()
+        tags_list = [tag[0] for tag in tags]
+        session.close()
+        
+        return tags_list
+
+    @staticmethod
+    def get_all_authors():
+        global engine
+        session = sessionmaker(bind=engine)()
+        authors = session.query(Reviews.author).distinct().all()
+        authors_list = [author[0] for author in authors]
+        session.close()
+        
+        return authors_list
+
 
 class BlogTag(Base):
     __tablename__ = 'blog_tags'

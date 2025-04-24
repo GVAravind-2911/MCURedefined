@@ -1,0 +1,256 @@
+/* Add these styles after your existing hero section */
+
+/* Blog hero section - enhanced version from blogposts.css */
+.blog-hero {
+    position: relative;
+    width: 100%;
+    height: 280px;
+    background-size: cover;
+    background-position: center;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 8px;
+  }
+  
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.9) 100%);
+    z-index: 1;
+  }
+  
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 0 1rem;
+    max-width: 800px;
+  }
+  
+  .hero-title {
+    font-family: "BentonSansBold", sans-serif;
+    font-size: clamp(28px, 5vw, 48px);
+    color: white;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  }
+  
+  .hero-title::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    background-color: #ec1d24;
+    margin: 0.8rem auto 0;
+  }
+  
+  .hero-description {
+    font-family: "BentonSansRegular", sans-serif;
+    font-size: clamp(16px, 2vw, 18px);
+    color: rgba(255, 255, 255, 0.8);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  
+  /* Blog page styles (converted from edit-blog-page) */
+  .blog-page {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    align-items: center;
+  }
+  
+  .blog-page .blog-hero {
+    width: 80%;
+    max-width: 1400px;
+    margin-bottom: 2rem;
+    background-image: linear-gradient(to right, rgba(236, 29, 36, 0.8), rgba(0, 0, 0, 0.8));
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .blog-page .hero-title::after {
+    width: 100px;
+  }
+  
+  .blog-page .blog-card {
+    position: relative;
+  }
+  
+  .blog-page .blog-card .blog-actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  
+  .blog-page .blog-card:hover .blog-actions {
+    opacity: 1;
+  }
+  
+  .blog-action-button {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .blog-action-button:hover {
+    transform: scale(1.1);
+  }
+  
+  .blog-action-button.edit:hover {
+    background-color: rgba(52, 152, 219, 0.8);
+    border-color: rgba(52, 152, 219, 0.6);
+  }
+  
+  .blog-action-button.delete:hover {
+    background-color: rgba(231, 76, 60, 0.8);
+    border-color: rgba(231, 76, 60, 0.6);
+  }
+  
+  /* Add New Blog Button */
+  .add-blog-button-container {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 0 1rem;
+  }
+  
+  .add-blog-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #ec1d24;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-family: "BentonSansBold", sans-serif;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .add-blog-button:hover {
+    background-color: #d81921;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .add-blog-button svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  /* Dialog for delete confirmation */
+  .delete-confirmation-dialog {
+    background-color: #121212;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 24px;
+    min-width: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    border-top: 4px solid #e74c3c;
+  }
+  
+  .delete-confirmation-dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .delete-confirmation-dialog h2 {
+    margin-top: 0;
+    color: #e74c3c;
+    font-family: "BentonSansBold", sans-serif;
+  }
+  
+  .delete-confirmation-dialog p {
+    margin-bottom: 24px;
+    font-family: "BentonSansRegular", sans-serif;
+  }
+  
+  .delete-blog-title {
+    font-weight: bold;
+    color: #ec1d24;
+  }
+  
+  .delete-dialog-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+  
+  .delete-dialog-button {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-family: "BentonSansRegular", sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .delete-dialog-button.cancel {
+    background-color: transparent;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  .delete-dialog-button.cancel:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+  
+  .delete-dialog-button.confirm {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+  }
+  
+  .delete-dialog-button.confirm:hover {
+    background-color: #c0392b;
+  }
+  
+  /* Mobile responsiveness for blog page */
+  @media (max-width: 768px) {
+    .blog-page .blog-hero {
+      height: auto;
+      padding: 40px 20px;
+    }
+    
+    .add-blog-button-container {
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .add-blog-button {
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .delete-confirmation-dialog {
+      min-width: calc(100vw - 40px);
+      max-width: calc(100vw - 40px);
+      padding: 16px;
+    }
+  }

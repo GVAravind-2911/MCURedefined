@@ -7,6 +7,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import "@/styles/blog.css";
 import Image from "next/image";
 import parse from "html-react-parser";
+import { authClient } from "@/lib/auth/auth-client";
 
 interface TextContentProps {
 	content: string;
@@ -70,6 +71,8 @@ const PreviewPage: React.FC = () => {
 	const router = useRouter();
 	const [blog, setBlog] = useState<BlogData | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
+	const session = authClient.useSession();
+	const token = session?.data?.session.token || null;
 
 	useEffect(() => {
 		const storedBlog = localStorage.getItem("create-blog-draft");
@@ -81,16 +84,21 @@ const PreviewPage: React.FC = () => {
 	}, []);
 
 	const handleEdit = (): void => {
-		router.push("/create-blog");
+		router.push("/manage/blogs/create");
 	};
 
 	const handlePublish = async (): Promise<void> => {
 		if (!blog) return;
 
 		try {
-			await axios.post("http://127.0.0.1:4000/blog/create", blog);
+			await axios.post("http://127.0.0.1:4000/blogs/create", blog, {
+				headers: {
+					Authorization: `Bearer ${token}` || "",
+				},
+			});
 			localStorage.removeItem("create-blog-draft");
-			router.push("/blogs");
+			router.push("/manage/blogs");
+            alert("Blog published successfully!");
 		} catch (error) {
 			console.error("Error publishing blog:", error);
 			alert("Failed to publish blog");

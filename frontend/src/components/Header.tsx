@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 interface HeaderProps {
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   session: any;
 }
 

@@ -207,13 +207,13 @@ export default function Page(): JSX.Element {
 
 	const handlePreview = async () => {
 		await handleSubmit();
-		router.push(`/edit-blog/${id}/preview`);
+		router.push(`${id}/preview`);
 	};
 
 	const handleDiscard = () => {
 		if (!id) return;
 		localStorage.removeItem(`blog-${id}`);
-		router.push("/edit-blog");
+		router.push("/manage/blogs");
 	};
 
 	const addTag = () => {
@@ -309,7 +309,7 @@ export default function Page(): JSX.Element {
 			<h3 className="tags-blog">Enter Tags:</h3>
 			<div className="tags-container">
 				{tags.map((tag, index) => (
-					<div key={index} className="tag-item">
+					<div key={`tag-${index}-${tag}`} className="tag-item">
 						<input
 							type="text"
 							value={tag}

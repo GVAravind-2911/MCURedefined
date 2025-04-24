@@ -30,6 +30,7 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
         <div className="error-details">
           <ul className="error-reasons">
             {reasons.map((reason, index) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
               <li key={index} className="reason-item">{reason}</li>
             ))}
           </ul>
