@@ -1,213 +1,263 @@
+/* Font declarations */
 @font-face {
 	font-family: "BentonSansCompLight";
-	src: url("../fonts/BentonSans\ Comp\ Light.otf");
-}
-@font-face {
+	src: url("../fonts/BentonSans Comp Light.otf");
+  }
+  @font-face {
 	font-family: "BentonSansRegular";
-	src: url("../fonts/BentonSans\ Regular.otf");
-}
-@font-face {
+	src: url("../fonts/BentonSans Regular.otf");
+  }
+  @font-face {
 	font-family: "BentonSansBook";
-	src: url("../fonts/BentonSans\ Book.otf");
-}
-@font-face {
+	src: url("../fonts/BentonSans Book.otf");
+  }
+  @font-face {
 	font-family: "BentonSansBold";
-	src: url("../fonts/BentonSans\ Bold.otf");
-}
-@font-face {
+	src: url("../fonts/BentonSans Bold.otf");
+  }
+  @font-face {
 	font-family: "BentonSansCompBlack";
-	src: url("../fonts/BentonSans\ Comp\ Black.otf");
-}
-
-html {
-	line-height: 1.15;
-}
-body {
-	margin: 0;
-}
-* {
+	src: url("../fonts/BentonSans Comp Black.otf");
+  }
+  
+  /* Reset and Base Styles */
+  :root {
+	--primary-color: #ec1d24;
+	--primary-dark: #d01c22;
+	--primary-light: rgba(236, 29, 36, 0.8);
+	--text-color: #ffffff;
+	--text-secondary: rgba(255, 255, 255, 0.8);
+	--background-color: #0c0c0c;
+	--background-card: rgba(255, 255, 255, 0.03);
+	--border-color: rgba(255, 255, 255, 0.1);
+	--border-hover: rgba(255, 255, 255, 0.2);
+	--max-width: 1200px;
+	--default-radius: 8px;
+	--box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+	--transition: all 0.3s ease;
+  }
+  
+  * {
 	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
 	border-width: 0;
 	border-style: solid;
-}
-p,
-li,
-ul,
-pre,
-div,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-figure,
-blockquote,
-figcaption {
-	margin: 0;
-	padding: 0;
-}
-button {
-	background-color: transparent;
-	appearance: button;
-	-moz-appearance: button;
-}
-button,
-input,
-optgroup,
-select,
-textarea {
-	font-family: inherit;
-	font-size: 100%;
-	line-height: 1.15;
-	margin: 0;
-}
-button,
-select {
-	text-transform: none;
-}
-button,
-[type="button"],
-[type="reset"],
-[type="submit"] {
-	appearance: button;
-	-moz-appearance: button;
-}
-button::-moz-focus-inner,
-[type="button"]::-moz-focus-inner,
-[type="reset"]::-moz-focus-inner,
-[type="submit"]::-moz-focus-inner {
-	border-style: none;
-	padding: 0;
-}
-button:-moz-focus,
-[type="button"]:-moz-focus,
-[type="reset"]:-moz-focus,
-[type="submit"]:-moz-focus {
-	outline: 1px dotted ButtonText;
-}
-a {
-	color: inherit;
-	text-decoration: inherit;
-}
-input {
-	padding: 2px 4px;
-}
-img {
-	display: block;
-}
-html {
+  }
+  
+  html {
+	font-size: 16px;
 	scroll-behavior: smooth;
-}
-body {
-	font-weight: 400;
-	font-style: normal;
+	line-height: 1.5;
+  }
+  
+  body {
+	font-family: "BentonSansRegular", sans-serif;
+	color: var(--text-color);
+	background-color: var(--background-color);
+	overflow-x: hidden;
+	margin: 0;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+	font-family: "BentonSansBold", sans-serif;
+	margin: 0;
+	line-height: 1.2;
+  }
+  
+  p {
+	margin: 0;
+  }
+  
+  a {
+	color: inherit;
 	text-decoration: none;
-	text-transform: none;
-	letter-spacing: normal;
-	line-height: 1.15;
-	color: var(--dl-color-gray-black);
-	background-color: var(--dl-color-gray-white);
-}
-
-/* Add this to your existing styles */
-.auth-page {
-	min-height: 100vh;
-	display: flex;
-	justify-content: center;
+  }
+  
+  button {
+	cursor: pointer;
+	font-family: inherit;
+  }
+  
+  img, svg {
+	max-width: 100%;
+	display: block;
+  }
+  
+  /* Common Utility Classes */
+  .container {
+	width: 100%;
+	max-width: var(--max-width);
+	margin: 0 auto;
+	padding: 0 1rem;
+  }
+  
+  .fade-in {
+	animation: fadeIn 1s ease;
+  }
+  
+  @keyframes fadeIn {
+	from { opacity: 0; transform: translateY(20px); }
+	to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .lock-scroll {
+	overflow: hidden;
+  }
+  
+  /* Button Styles */
+  .button-primary {
+	display: inline-flex;
 	align-items: center;
-	background-color: #f5f5f5;
-}
-
-.user-dropdown {
+	justify-content: center;
+	padding: 0.875rem 2rem;
+	background-color: var(--primary-color);
+	color: white;
+	font-family: "BentonSansRegular", sans-serif;
+	font-size: 1rem;
+	border: none;
+	border-radius: var(--default-radius);
+	cursor: pointer;
+	transition: var(--transition);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	box-shadow: 0 4px 10px rgba(236, 29, 36, 0.4);
+  }
+  
+  .button-primary:hover {
+	background-color: var(--primary-dark);
+	transform: translateY(-3px);
+	box-shadow: 0 6px 15px rgba(236, 29, 36, 0.5);
+  }
+  
+  .button-secondary {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.875rem 2rem;
+	background-color: transparent;
+	color: var(--text-color);
+	font-family: "BentonSansRegular", sans-serif;
+	font-size: 1rem;
+	border: 1px solid var(--border-color);
+	border-radius: var(--default-radius);
+	cursor: pointer;
+	transition: var(--transition);
+  }
+  
+  .button-secondary:hover {
+	background-color: rgba(255, 255, 255, 0.05);
+	border-color: var(--border-hover);
+  }
+  
+  /* Card Styles */
+  .card {
+	background-color: var(--background-card);
+	border-radius: var(--default-radius);
+	padding: 2rem;
+	box-shadow: var(--box-shadow);
+	transition: var(--transition);
+	border: 1px solid rgba(236, 29, 36, 0.05);
+  }
+  
+  .card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+	border-color: rgba(236, 29, 36, 0.1);
+  }
+  
+  /* User Dropdown */
+  .user-dropdown {
 	position: relative;
 	display: inline-block;
-}
-
-.user-dropdown-button {
+  }
+  
+  .user-dropdown-button {
 	display: flex;
 	align-items: center;
 	gap: 0.5rem;
 	padding: 0.5rem 1rem;
 	background: transparent;
-	border: 1px solid rgba(255, 255, 255, 0.1);
-	border-radius: 4px;
-	color: #ffffff;
+	border: 1px solid var(--border-color);
+	border-radius: var(--default-radius);
+	color: var(--text-color);
 	font-size: 1rem;
 	cursor: pointer;
-	transition: background-color 0.2s;
-	font-family: "BentonSansRegular", sans-serif;
-}
-
-.user-dropdown-button:hover {
-	background-color: rgba(255, 255, 255, 0.1);
-}
-
-.dropdown-arrow {
+	transition: var(--transition);
+  }
+  
+  .user-dropdown-button:hover {
+	background-color: rgba(255, 255, 255, 0.05);
+	border-color: var(--border-hover);
+  }
+  
+  .dropdown-arrow {
 	transition: transform 0.2s;
 	fill: none;
 	stroke: currentColor;
-}
-
-.dropdown-arrow.open {
+  }
+  
+  .dropdown-arrow.open {
 	transform: rotate(180deg);
-}
-
-.dropdown-menu {
+  }
+  
+  .dropdown-menu {
 	position: absolute;
 	top: 100%;
 	right: 0;
 	margin-top: 0.5rem;
-	min-width: 150px;
+	min-width: 180px;
 	background-color: #1a1a1a;
-	border: 1px solid rgba(255, 255, 255, 0.1);
-	border-radius: 4px;
-	padding: 0.5rem;
+	border: 1px solid var(--border-color);
+	border-radius: var(--default-radius);
+	box-shadow: var(--box-shadow);
+	overflow: hidden;
 	z-index: 1000;
 	animation: dropdownFade 0.2s ease-out;
-}
-
-.dropdown-item {
+  }
+  
+  .dropdown-item {
 	display: block;
 	width: 100%;
-	padding: 0.5rem 1rem;
+	padding: 0.8rem 1rem;
 	text-align: left;
 	background: none;
 	border: none;
-	color: #ffffff;
+	color: var(--text-color);
 	font-size: 0.9rem;
 	cursor: pointer;
 	transition: background-color 0.2s;
 	text-decoration: none;
-}
-
-.dropdown-item:hover {
-	background-color: rgba(255, 255, 255, 0.1);
-}
-
-@keyframes dropdownFade {
+	border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .dropdown-item:last-child {
+	border-bottom: none;
+  }
+  
+  .dropdown-item:hover {
+	background-color: rgba(255, 255, 255, 0.05);
+	color: var(--primary-color);
+  }
+  
+  @keyframes dropdownFade {
 	from {
-		opacity: 0;
-		transform: translateY(-10px);
+	  opacity: 0;
+	  transform: translateY(-10px);
 	}
 	to {
-		opacity: 1;
-		transform: translateY(0);
+	  opacity: 1;
+	  transform: translateY(0);
 	}
-}
-
-/* Update existing signin button styles */
-.signin-button {
-	padding: 0.5rem 1rem;
-	background-color: #ec1d24;
-	color: white;
-	border: none;
-	border-radius: 4px;
-	font-size: 1rem;
-	cursor: pointer;
-	transition: background-color 0.2s;
-}
-
-.signin-button:hover {
-	background-color: #d11419;
-}
+  }
+  
+  /* Fix padding for header */
+  .main-content {
+	padding-top: 90px;
+  }
+  
+  @media (max-width: 768px) {
+	.main-content {
+	  padding-top: 80px;
+	}
+  }

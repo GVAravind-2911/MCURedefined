@@ -1,12 +1,9 @@
 import "@/styles/globals.css";
-import "@/styles/home.css";
-import "@/styles/style.css";
 import "@/styles/LoadingSpinner.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Suspense } from "react";
 import LoadingSpinner from "@/components/LoadingSpinner";
-// import Providers from "@/components/SessionProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
