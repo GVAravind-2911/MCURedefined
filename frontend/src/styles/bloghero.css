@@ -1,29 +1,43 @@
 /* Add these styles after your existing hero section */
 
 /* Blog hero section - enhanced version from blogposts.css */
+/* Fix for blog hero overlay width issues */
 .blog-hero {
-    position: relative;
-    width: 100%;
-    height: 280px;
-    background-size: cover;
-    background-position: center;
-    margin-bottom: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border-radius: 8px;
-  }
-  
-  .hero-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.9) 100%);
-    z-index: 1;
-  }
+  position: relative;
+  width: 100%;
+  height: 280px;
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+  max-width: none; /* Remove any max-width constraints */
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%; /* Explicitly set width to 100% */
+  background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.9) 100%);
+  z-index: 1;
+}
+
+/* Override any conflicting settings in nested classes */
+.blog-page .blog-hero {
+  width: 100%;
+  max-width: 1400px; /* Keep your existing max-width setting */
+  margin-bottom: 2rem;
+  background-image: linear-gradient(to right, rgba(236, 29, 36, 0.8), rgba(0, 0, 0, 0.8));
+  background-size: cover;
+  background-position: center;
+  overflow: hidden; /* Ensure overflow is hidden */
+}
   
   .hero-content {
     position: relative;
@@ -71,7 +85,7 @@
   }
   
   .blog-page .blog-hero {
-    width: 80%;
+    width: 100%;
     max-width: 1400px;
     margin-bottom: 2rem;
     background-image: linear-gradient(to right, rgba(236, 29, 36, 0.8), rgba(0, 0, 0, 0.8));
