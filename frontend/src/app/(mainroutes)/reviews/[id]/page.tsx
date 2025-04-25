@@ -10,6 +10,7 @@ import parse from "html-react-parser";
 import ScriptEmbed from "@/components/ScriptEmbed";
 import Image from "next/image";
 import "@/styles/blog.css";
+import Link from "next/link";
 
 interface PageProps {
 	params: Promise<{
@@ -130,9 +131,14 @@ export default async function BlogPage(props: PageProps): Promise<JSX.Element> {
 						)}
 						<span className="tagsspan">
 							{blog.tags.map((tag: string) => (
-								<button key={tag} type="button" className="tags">
+								<Link
+									key={tag}
+									href={`/reviews?tags=${encodeURIComponent(tag)}`}
+									className="tags"
+									prefetch={false}
+								>
 									{tag}
-								</button>
+								</Link>
 							))}
 						</span>
 					</div>

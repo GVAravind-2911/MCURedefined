@@ -102,3 +102,34 @@ export const interaction = pgTable("interaction", {
   
 export type Interaction = typeof interaction.$inferSelect;
 export type NewInteraction = typeof interaction.$inferInsert;
+
+// Add these tables to your existing schema.ts file
+
+export const projectLike = pgTable("projectlikes", {
+    userId: text("user_id")
+        .notNull()
+        .references(() => user.id, { onDelete: "cascade" }),
+    projectId: integer("project_id")
+        .notNull(),
+    createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+},
+    (like) => [
+        primaryKey({columns:[like.userId, like.projectId]}),
+    ]
+);
+
+export type ProjectLike = typeof projectLike.$inferSelect;
+export type NewProjectLike = typeof projectLike.$inferInsert;
+
+export const projectInteraction = pgTable("project_interaction", {
+    id: text("id").primaryKey(),
+    projectId: integer("project_id").notNull(),
+    views: integer("views").notNull().default(1),
+    likes: integer("likes").notNull().default(0),
+    shares: integer("shares").notNull().default(0),
+    lastUpdated: timestamp("last_updated").notNull().default(sql`CURRENT_TIMESTAMP`),
+    createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+  
+export type ProjectInteraction = typeof projectInteraction.$inferSelect;
+export type NewProjectInteraction = typeof projectInteraction.$inferInsert;

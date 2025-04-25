@@ -25,5 +25,5 @@ export async function middleware(request: NextRequest) {
 }
  
 export const config = {
-	matcher: ["/create-blog","/edit-blog/:path*"], // Apply middleware to specific routes
+	matcher: ["/manage/:path*"], // Apply middleware to specific routes
 };

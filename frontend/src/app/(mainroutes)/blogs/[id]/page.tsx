@@ -16,6 +16,7 @@ import "@/styles/blog.css";
 import { headers } from "next/headers";
 import { getUserLikedBlog } from "@/db/blog-likes";
 import { getBlogInteractions, incrementBlogView } from "@/db/interactions";
+import Link from "next/link";
 
 interface PageProps {
 	params: Promise<{
@@ -125,13 +126,12 @@ export default async function BlogPage(props: PageProps): Promise<JSX.Element> {
 	);
 
 	return (
-		<>
-			{/* <hr className="line" /> */}
-			<div className="layout">
-				<div className="contents fade-in">
-					<div className="contentsinfo">
-						<h1 className="title">{blog.title}</h1>
-						<div className="meta-info">
+        <>
+            <div className="layout">
+                <div className="contents fade-in">
+                    <div className="contentsinfo">
+                        <h1 className="title">{blog.title}</h1>
+                        <div className="meta-info">
                             <h3 className="byline">
                                 <span className="colorforby">By: </span>
                                 {blog.author}
@@ -146,42 +146,47 @@ export default async function BlogPage(props: PageProps): Promise<JSX.Element> {
                                 </h3>
                             )}
                         </div>
-						<span className="tagsspan">
+                        <span className="tagsspan">
                             {blog.tags.map((tag: string) => (
-                                <button key={tag} type="button" className="tags">
+                                <Link
+                                    key={tag}
+                                    href={`/blogs?tags=${encodeURIComponent(tag)}`}
+                                    className="tags"
+                                    prefetch={false}
+                                >
                                     {tag}
-                                </button>
+                                </Link>
                             ))}
                         </span>
-						<div className="likeandshare">
-							<LikeButton
-								blogId={blog.id}
-								initialCount={totalInteractions.likes}
-								userHasLiked={!!userHasLiked}
-								isLoggedIn={!!session?.user}
-							/>
-							<ShareButton
-								blogId={blog.id}
-								initialCount={totalInteractions.shares || 0}
-							/>
-						</div>
-					</div>
-					<div className="contentsmain">
-						<div className="maincontent">{contentElements}</div>
-					</div>
-				</div>
-				<div className="otherblogs">
-					<h2 className="latestblogs">Latest Blogs</h2>
-					<hr className="separator" />
-					{latestBlogs.map((article: Article, index: number) => (
-						<React.Fragment key={article.title}>
-							<SimilarBlog articles={article} />
-							{index < latestBlogs.length - 1 && <hr className="separator" />}
-						</React.Fragment>
-					))}
-					<hr className="separator" />
-				</div>
-			</div>
-		</>
-	);
+                        <div className="likeandshare">
+                            <LikeButton
+                                blogId={blog.id}
+                                initialCount={totalInteractions.likes}
+                                userHasLiked={!!userHasLiked}
+                                isLoggedIn={!!session?.user}
+                            />
+                            <ShareButton
+                                blogId={blog.id}
+                                initialCount={totalInteractions.shares || 0}
+                            />
+                        </div>
+                    </div>
+                    <div className="contentsmain">
+                        <div className="maincontent">{contentElements}</div>
+                    </div>
+                </div>
+                <div className="otherblogs">
+                    <h2 className="latestblogs">Latest Blogs</h2>
+                    <hr className="separator" />
+                    {latestBlogs.map((article: Article, index: number) => (
+                        <React.Fragment key={article.title}>
+                            <SimilarBlog articles={article} />
+                            {index < latestBlogs.length - 1 && <hr className="separator" />}
+                        </React.Fragment>
+                    ))}
+                    <hr className="separator" />
+                </div>
+            </div>
+        </>
+    );
 }
