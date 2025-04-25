@@ -15,7 +15,7 @@ import ShareButton from "@/components/ShareButton";
 import "@/styles/blog.css";
 import { headers } from "next/headers";
 import { getUserLikedBlog } from "@/db/blog-likes";
-import { getBlogInteractions, incrementBlogView } from "@/db/interactions";
+import { getBlogInteractions, incrementBlogView } from "@/db/blog-interactions";
 import Link from "next/link";
 
 interface PageProps {

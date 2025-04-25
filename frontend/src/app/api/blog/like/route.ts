@@ -4,7 +4,7 @@ import { db } from "@/db"; // Adjust import to your db instance
 import { like } from "@/db/schema"; // Adjust import to your like table
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
-import { incrementBlogLikes } from "@/db/interactions";
+import { incrementBlogLikes } from "@/db/blog-interactions";
 
 export async function POST(request: NextRequest) {
     try {

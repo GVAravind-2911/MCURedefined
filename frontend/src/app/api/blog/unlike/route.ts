@@ -5,7 +5,7 @@ import { like } from "@/db/schema"; // Adjust import to your like table
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 import { and, eq } from "drizzle-orm";
-import { decrementBlogLikes } from "@/db/interactions";
+import { decrementBlogLikes } from "@/db/blog-interactions";
 
 export async function POST(request: NextRequest) {
     try {

@@ -90,7 +90,7 @@ export const like = pgTable("bloglikes", {
 export type Like = typeof like.$inferSelect;
 export type NewLike = typeof like.$inferInsert;
 
-export const interaction = pgTable("interaction", {
+export const interaction = pgTable("blog_interaction", {
 	id: text("id").primaryKey(),
 	blogId: integer("blog_id").notNull(),
 	views: integer("views").notNull().default(1),
@@ -133,3 +133,35 @@ export const projectInteraction = pgTable("project_interaction", {
   
 export type ProjectInteraction = typeof projectInteraction.$inferSelect;
 export type NewProjectInteraction = typeof projectInteraction.$inferInsert;
+
+
+// Add these tables to your existing schema.ts file
+
+export const reviewLike = pgTable("reviewlikes", {
+    userId: text("user_id")
+        .notNull()
+        .references(() => user.id, { onDelete: "cascade" }),
+    reviewId: integer("review_id")
+        .notNull(),
+    createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+},
+    (like) => [
+        primaryKey({columns:[like.userId, like.reviewId]}),
+    ]
+);
+
+export type ReviewLike = typeof reviewLike.$inferSelect;
+export type NewReviewLike = typeof reviewLike.$inferInsert;
+
+export const reviewInteraction = pgTable("review_interaction", {
+    id: text("id").primaryKey(),
+    reviewId: integer("review_id").notNull(),
+    views: integer("views").notNull().default(1),
+    likes: integer("likes").notNull().default(0),
+    shares: integer("shares").notNull().default(0),
+    lastUpdated: timestamp("last_updated").notNull().default(sql`CURRENT_TIMESTAMP`),
+    createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+  
+export type ReviewInteraction = typeof reviewInteraction.$inferSelect;
+export type NewReviewInteraction = typeof reviewInteraction.$inferInsert;

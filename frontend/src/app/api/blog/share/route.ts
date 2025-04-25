@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { incrementShareCount } from "@/db/interactions";
+import { incrementShareCount } from "@/db/blog-interactions";
 
 export async function POST(request: NextRequest) {
   try {

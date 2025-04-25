@@ -53,7 +53,6 @@ export async function incrementProjectView(projectId: number) {
       await db.insert(projectInteraction).values({
         id: nanoid(),
         projectId: projectId,
-        views: 1,
       });
     }
   } catch (error) {

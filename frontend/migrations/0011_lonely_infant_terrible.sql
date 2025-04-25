@@ -1,0 +1,1 @@
+ALTER TABLE "interaction" RENAME TO "blog_interaction";
