@@ -124,8 +124,8 @@ export type NewProjectLike = typeof projectLike.$inferInsert;
 export const projectInteraction = pgTable("project_interaction", {
     id: text("id").primaryKey(),
     projectId: integer("project_id").notNull(),
+	likes: integer("likes").notNull().default(0),
     views: integer("views").notNull().default(1),
-    likes: integer("likes").notNull().default(0),
     shares: integer("shares").notNull().default(0),
     lastUpdated: timestamp("last_updated").notNull().default(sql`CURRENT_TIMESTAMP`),
     createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),

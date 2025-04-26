@@ -28,6 +28,7 @@ export async function incrementBlogView(blogId: number): Promise<void> {
       await db
         .update(interaction)
         .set({
+          // @ts-ignore
           views: sql`views + 1`,
           lastUpdated: new Date()
         })
@@ -53,6 +54,7 @@ export async function incrementBlogLikes(blogId: number): Promise<void> {
       await db
         .update(interaction)
         .set({
+          // @ts-ignore
           likes: sql`likes + 1`,
           lastUpdated: new Date()
         })
@@ -78,6 +80,7 @@ export async function decrementBlogLikes(blogId: number): Promise<void> {
       await db
         .update(interaction)
         .set({
+          // @ts-ignore
           likes: sql`likes - 1`,
           lastUpdated: new Date()
         })
@@ -107,6 +110,7 @@ export async function incrementShareCount(blogId: number): Promise<void> {
       await db
         .update(interaction)
         .set({
+          // @ts-ignore
           shares: sql`shares + 1`,
           lastUpdated: new Date()
         })

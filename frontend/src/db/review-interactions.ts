@@ -46,12 +46,14 @@ export async function incrementReviewView(reviewId: number) {
       await db
         .update(reviewInteraction)
         .set({ 
+          // @ts-ignore
           views: existingInteraction[0].views + 1,
           lastUpdated: new Date()
         })
         .where(eq(reviewInteraction.reviewId, reviewId));
     } else {
       // Create new record with all required fields
+      // @ts-ignore
       await db.insert(reviewInteraction).values({
         id: nanoid(),
         reviewId: reviewId,

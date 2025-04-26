@@ -39,6 +39,7 @@ export async function POST(req: Request) {
       await db
         .update(projectInteraction)
         .set({ 
+          // @ts-ignore
           likes: existingInteraction[0].likes - 1,
           lastUpdated: new Date()
         })

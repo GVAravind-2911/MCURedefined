@@ -70,7 +70,6 @@ const useBlogSearch = ({
       blogContext.setTotalPages(newTotalPages);
       setCachedPages((prev) => ({ ...prev, [page]: newBlogs }));
     } catch (error) {
-      console.error("Error fetching blogs:", error);
       blogContext.setBlogs([]);
     } finally {
       setLoading(false);

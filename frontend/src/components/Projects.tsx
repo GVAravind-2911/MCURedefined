@@ -20,28 +20,30 @@ interface ProjectsPageProps {
 export default function ProjectsPage({ projects }: ProjectsPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPhase, setSelectedPhase] = useState<number | null>(null);
-
-  if (!Array.isArray(projects)) {
-    console.error("Projects is not an array:", projects);
-    return <div>Error loading projects</div>;
-  }
-
+  
+  // Data validation check - don't use conditional hooks
+  const isValidArray = Array.isArray(projects);
+  
+  // All useMemo hooks are now called unconditionally
   // Get all available phases
   const allPhases = useMemo(() => {
+    if (!isValidArray) return [];
     return [...new Set(projects.map(project => project.phase))].sort();
-  }, [projects]);
+  }, [projects, isValidArray]);
 
   // Filter projects based on search query and selected phase
   const filteredProjects = useMemo(() => {
+    if (!isValidArray) return [];
     return projects.filter(project => {
       const matchesSearch = project.name.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesPhase = selectedPhase === null || project.phase === selectedPhase;
       return matchesSearch && matchesPhase;
     });
-  }, [projects, searchQuery, selectedPhase]);
+  }, [projects, searchQuery, selectedPhase, isValidArray]);
 
   // Group filtered projects by phase
   const projectsByPhase = useMemo(() => {
+    if (!isValidArray) return {};
     return filteredProjects.reduce((acc, project) => {
       // Initialize the phase array if it doesn't exist
       if (!acc[project.phase]) {
@@ -51,14 +53,15 @@ export default function ProjectsPage({ projects }: ProjectsPageProps) {
       acc[project.phase].push(project);
       return acc;
     }, {} as Record<number, Project[]>);
-  }, [filteredProjects]);
+  }, [filteredProjects, isValidArray]);
 
   // Get all phases that have projects after filtering
   const visiblePhases = useMemo(() => {
+    if (!isValidArray) return [];
     return Object.keys(projectsByPhase)
       .map(Number)
       .sort((a, b) => a - b);
-  }, [projectsByPhase]);
+  }, [projectsByPhase, isValidArray]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -67,6 +70,12 @@ export default function ProjectsPage({ projects }: ProjectsPageProps) {
   const handlePhaseChange = (phase: number | null) => {
     setSelectedPhase(phase === selectedPhase ? null : phase);
   };
+  
+  // Error state display if projects is not an array
+  if (!isValidArray) {
+    console.error("Projects is not an array:", projects);
+    return <div>Error loading projects</div>;
+  }
 
   return (
     <div className="projects-page fade-in">
@@ -93,7 +102,7 @@ export default function ProjectsPage({ projects }: ProjectsPageProps) {
               aria-label="Search projects"
             />
             <svg className="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-			  <title>Search</title>
+              <title>Search</title>
               <path fill="currentColor" d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
             </svg>
           </div>
@@ -102,8 +111,8 @@ export default function ProjectsPage({ projects }: ProjectsPageProps) {
             <button 
               className={`phase-filter-button ${selectedPhase === null ? 'active' : ''}`}
               onClick={() => handlePhaseChange(null)}
-			  type="button"
-			  aria-label="All Phases"
+              type="button"
+              aria-label="All Phases"
             >
               All Phases
             </button>
@@ -112,8 +121,8 @@ export default function ProjectsPage({ projects }: ProjectsPageProps) {
                 key={`filter-phase-${phase}`}
                 className={`phase-filter-button ${selectedPhase === phase ? 'active' : ''}`}
                 onClick={() => handlePhaseChange(phase)}
-				type="button"
-				aria-label={`Phase ${phase}`}
+                type="button"
+                aria-label={`Phase ${phase}`}
               >
                 Phase {phase}
               </button>
@@ -123,12 +132,12 @@ export default function ProjectsPage({ projects }: ProjectsPageProps) {
         
         {searchQuery && filteredProjects.length === 0 && (
           <div className="no-results">
-            <p>No projects found matching "{searchQuery}"</p>
+            <p>No projects found matching &quot;{searchQuery}&quot;</p>
             {selectedPhase !== null && (
               <button 
                 className="clear-filter-button"
                 onClick={() => setSelectedPhase(null)}
-				type="button"
+                type="button"
               >
                 Clear phase filter
               </button>
@@ -183,8 +192,8 @@ export default function ProjectsPage({ projects }: ProjectsPageProps) {
                 setSearchQuery("");
                 setSelectedPhase(null);
               }}
-			  type="button"
-			  aria-label="Clear all filters"
+              type="button"
+              aria-label="Clear all filters"
             >
               Clear all filters
             </button>

@@ -2,7 +2,6 @@ import type { AxiosError } from "axios";
 import type { JSX } from "react";
 import type { BlogData, ContentBlock, Article } from "@/types/BlogTypes";
 import React from "react";
-import { notFound } from "next/navigation";
 import moment from "moment";
 import axios from "axios";
 import SimilarBlog from "@/components/SimilarBlog";
@@ -12,6 +11,7 @@ import Image from "next/image";
 import { auth } from "@/lib/auth/auth";
 import ReviewLikeButton from "@/components/review/ReviewLikeButton";
 import ReviewShareButton from "@/components/review/ReviewShareButton";
+import ErrorMessage from "@/components/ErrorMessage";
 import "@/styles/blog.css";
 import { headers } from "next/headers";
 import { getUserLikedReview } from "@/db/review-likes";
@@ -24,27 +24,93 @@ interface PageProps {
     }>;
 }
 
-async function getBlogData(id: number): Promise<BlogData | null> {
+interface ErrorState {
+    hasError: boolean;
+    title: string;
+    reasons: string[];
+}
+
+// Common error handling function
+const handleApiError = (error: unknown): ErrorState => {
+    const axiosError = error as AxiosError;
+    
+    if (axiosError.code === "ECONNREFUSED") {
+        return {
+            hasError: true,
+            title: "Connection Failed",
+            reasons: [
+                "The review server appears to be offline",
+                "Unable to establish connection to the API",
+                "Please try again later"
+            ]
+        };
+    // biome-ignore lint/style/noUselessElse: <explanation>
+    } else if (axiosError.code === "ETIMEDOUT" || axiosError.message?.includes("timeout")) {
+        return {
+            hasError: true,
+            title: "Connection Timeout",
+            reasons: [
+                "The server took too long to respond",
+                "This may be due to high traffic or server load",
+                "Please try refreshing the page"
+            ]
+        };
+    // biome-ignore lint/style/noUselessElse: <explanation>
+    } else if (axiosError.response?.status === 404) {
+        return {
+            hasError: true,
+            title: "Review Not Found",
+            reasons: [
+                "The requested review could not be found",
+                "It may have been deleted or moved",
+                "Please check the review ID and try again"
+            ]
+        };
+    // biome-ignore lint/style/noUselessElse: <explanation>
+    } else {
+        return {
+            hasError: true,
+            title: "Unable to Load Review",
+            reasons: [
+                "The review may have been removed",
+                "Temporary server error",
+                "Please try again later"
+            ]
+        };
+    }
+};
+
+async function getBlogData(id: number): Promise<BlogData | ErrorState> {
     try {
         const response = await axios.get<BlogData>(
             `http://127.0.0.1:4000/reviews/${id}`,
+            {
+                timeout: 10000, // 10 second timeout
+                headers: {
+                    "Cache-Control": "no-cache",
+                }
+            }
         );
         return response.data;
     } catch (error) {
-        console.error("Error fetching blog:", error as AxiosError);
-        return null;
+        return handleApiError(error);
     }
 }
 
-async function getLatestBlogs(): Promise<Article[] | null> {
+async function getLatestBlogs(): Promise<Article[] | ErrorState> {
     try {
         const response = await axios.get<Article[]>(
             "http://127.0.0.1:4000/reviews/latest",
+            {
+                timeout: 5000, // 5 second timeout
+                headers: {
+                    "Cache-Control": "no-cache",
+                }
+            }
         );
         return response.data;
     } catch (error) {
-        console.error("Error fetching latest blogs:", error as AxiosError);
-        return null;
+        return handleApiError(error);
     }
 }
 
@@ -65,23 +131,37 @@ const loadScript = (url: string): JSX.Element => {
             );
         }
     }
-    return;
+    return <div className="invalid-embed">Invalid embed URL</div>;
 };
 
-export default async function BlogPage(props: PageProps): Promise<JSX.Element> {
+export default async function ReviewPage(props: PageProps): Promise<JSX.Element> {
     const params = await props.params;
-    const blog = await getBlogData(params.id);
-    const latestBlogs = await getLatestBlogs();
+    const blogResult = await getBlogData(params.id);
+    
+    // Check if we received an error state instead of a review
+    if ('hasError' in blogResult) {
+        return (
+            <ErrorMessage 
+                title={blogResult.title}
+                reasons={blogResult.reasons}
+            />
+        );
+    }
+    
+    const blog = blogResult;
+    const latestBlogsResult = await getLatestBlogs();
+    
+    // Check if latest blogs request failed
+    const latestBlogs = 'hasError' in latestBlogsResult ? [] : latestBlogsResult;
+    
     const session = await auth.api.getSession({headers: await headers()});
+    
+    // Only attempt to get user interactions if blog exists
     const userHasLiked = session?.user ? await getUserLikedReview(session.user.id, blog.id) : null;
     const totalInteractions = await getReviewInteractions(blog.id);
-    
+
     if (blog) {
         await incrementReviewView(blog.id);
-    }
-
-    if (!blog) {
-        notFound();
     }
 
     const contentElements = blog.content.map(
@@ -177,12 +257,16 @@ export default async function BlogPage(props: PageProps): Promise<JSX.Element> {
                 <div className="otherblogs">
                     <h2 className="latestblogs">Latest Reviews</h2>
                     <hr className="separator" />
-                    {latestBlogs.map((article: Article, index: number) => (
-                        <React.Fragment key={article.title}>
-                            <SimilarBlog articles={article} />
-                            {index < latestBlogs.length - 1 && <hr className="separator" />}
-                        </React.Fragment>
-                    ))}
+                    {latestBlogs.length > 0 ? (
+                        latestBlogs.map((article: Article, index: number) => (
+                            <React.Fragment key={article.title}>
+                                <SimilarBlog articles={article} />
+                                {index < latestBlogs.length - 1 && <hr className="separator" />}
+                            </React.Fragment>
+                        ))
+                    ) : (
+                        <p className="no-reviews">No other reviews available at the moment</p>
+                    )}
                     <hr className="separator" />
                 </div>
             </div>

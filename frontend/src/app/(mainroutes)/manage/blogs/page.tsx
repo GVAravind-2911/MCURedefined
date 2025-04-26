@@ -1,7 +1,9 @@
 import type React from "react";
 import type { BlogList } from "@/types/BlogTypes";
+import type { AxiosError } from "axios";
 import AdminBlogComponent from "@/components/blog/AdminBlogComponent";
 import { BlogProvider } from "@/components/blog/BlogContext";
+import ErrorMessage from "@/components/ErrorMessage";
 import axios from "axios";
 import "@/styles/blogposts.css";
 
@@ -16,7 +18,52 @@ interface BlogResponse {
   authors?: string[];
 }
 
-async function getData(): Promise<BlogResponse> {
+interface ErrorState {
+  hasError: boolean;
+  title: string;
+  reasons: string[];
+}
+
+// Common error handling function
+const handleApiError = (error: unknown): ErrorState => {
+  const axiosError = error as AxiosError;
+  
+  if (axiosError.code === "ECONNREFUSED") {
+    return {
+      hasError: true,
+      title: "Connection Failed",
+      reasons: [
+        "The server appears to be offline",
+        "Unable to establish connection to the API",
+        "Please try again later"
+      ]
+    };
+  // biome-ignore lint/style/noUselessElse: <explanation>
+  } else if (axiosError.code === "ETIMEDOUT" || axiosError.message?.includes("timeout")) {
+    return {
+      hasError: true,
+      title: "Connection Timeout",
+      reasons: [
+        "The server took too long to respond",
+        "This may be due to high traffic or server load",
+        "Please try refreshing the page"
+      ]
+    };
+  // biome-ignore lint/style/noUselessElse: <explanation>
+  } else {
+    return {
+      hasError: true,
+      title: "Unable to Load Blog Management",
+      reasons: [
+        "The blog service may be temporarily unavailable",
+        "Server may be undergoing maintenance",
+        "Please try again later"
+      ]
+    };
+  }
+};
+
+async function getData(): Promise<BlogResponse | ErrorState> {
   try {
     // Make parallel requests to fetch all needed data at once
     const [blogsResponse, tagsResponse, authorsResponse] = await Promise.all([
@@ -28,6 +75,7 @@ async function getData(): Promise<BlogResponse> {
             Pragma: "no-cache",
             Expires: "0",
           },
+          timeout: 10000, // 10 second timeout
         }
       ),
       axios.get<{ tags: string[] }>(
@@ -38,6 +86,7 @@ async function getData(): Promise<BlogResponse> {
             Pragma: "no-cache",
             Expires: "0",
           },
+          timeout: 5000, // 5 second timeout
         }
       ),
       axios.get<{ authors: string[] }>(
@@ -48,6 +97,7 @@ async function getData(): Promise<BlogResponse> {
             Pragma: "no-cache",
             Expires: "0",
           },
+          timeout: 5000, // 5 second timeout
         }
       )
     ]);
@@ -61,22 +111,25 @@ async function getData(): Promise<BlogResponse> {
       authors: authorsResponse.data.authors
     };
   } catch (error) {
-    console.error("Failed to fetch blog data:", error);
-    
-    // Return empty data on error to allow graceful degradation
-    return {
-      blogs: [],
-      total: 0,
-      total_pages: 0,
-      tags: [],
-      authors: []
-    };
+    return handleApiError(error);
   }
 }
 
 export default async function EditBlogPage(): Promise<React.ReactElement> {
   // Fetch all required data at once
-  const { blogs, total_pages, tags, authors } = await getData();
+  const result = await getData();
+  
+  // Check if we got an error
+  if ('hasError' in result) {
+    return (
+      <ErrorMessage
+        title={result.title}
+        reasons={result.reasons}
+      />
+    );
+  }
+  
+  const { blogs, total_pages, tags, authors } = result;
 
   return (
     <div className="edit-blog-page">
@@ -91,20 +144,20 @@ export default async function EditBlogPage(): Promise<React.ReactElement> {
         </div>
       </div>
       <BlogProvider
-		initialBlogs={blogs}
-		initialTotalPages={total_pages}
-		initialTags={tags}
-		initialAuthors={authors}
-		>
-      <AdminBlogComponent
-        path="blogs"
         initialBlogs={blogs}
-        totalPages={total_pages || 1}
-        apiUrl="http://127.0.0.1:4000/blogs"
-        initialTags={tags || []}
-        initialAuthors={authors || []}
-      />
-	  </BlogProvider>
+        initialTotalPages={total_pages}
+        initialTags={tags}
+        initialAuthors={authors}
+      >
+        <AdminBlogComponent
+          path="blogs"
+          initialBlogs={blogs}
+          totalPages={total_pages || 1}
+          apiUrl="http://127.0.0.1:4000/blogs"
+          initialTags={tags || []}
+          initialAuthors={authors || []}
+        />
+      </BlogProvider>
     </div>
   );
 }

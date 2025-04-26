@@ -77,6 +77,11 @@ def latest():
     latest = BlogPost.queryLatest()
     return jsonify(latest)
 
+@app.route('/blogs/recent', methods=['GET'])
+def recent():
+    recent = BlogPost.queryRecent()
+    return jsonify(recent)
+
 
 @app.route('/blogs/create', methods=['POST'])
 @admin_required

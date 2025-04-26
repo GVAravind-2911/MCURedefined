@@ -17,6 +17,7 @@ export async function middleware(request: NextRequest) {
 		return NextResponse.redirect(new URL("/auth", request.url));
 	}
 
+	// @ts-ignore
 	if (session.user.accountType !== "admin") {
 		return NextResponse.redirect(new URL("/", request.url));
 	}

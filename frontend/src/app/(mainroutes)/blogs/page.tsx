@@ -2,7 +2,7 @@ import type { BlogList } from "@/types/BlogTypes";
 import type React from "react";
 import BlogComponent from "@/components/blog/BlogComponent";
 import ErrorMessage from "@/components/ErrorMessage";
-import axios from "axios";
+import axios, { type AxiosError } from "axios";
 import "@/styles/bloghero.css";
 import { BlogProvider } from "@/components/blog/BlogContext";
 
@@ -14,7 +14,52 @@ interface BlogResponse {
     total: number;
 }
 
-async function getData(page = 1, limit = 5): Promise<BlogResponse | null> {
+interface ErrorState {
+    hasError: boolean;
+    title: string;
+    reasons: string[];
+}
+
+// Common error handling function
+const handleApiError = (error: unknown): ErrorState => {
+    const axiosError = error as AxiosError;
+    
+    if (axiosError.code === "ECONNREFUSED") {
+        return {
+            hasError: true,
+            title: "Connection Failed",
+            reasons: [
+                "The blog server appears to be offline",
+                "Unable to establish connection to the API",
+                "Please try again later"
+            ]
+        };
+    // biome-ignore lint/style/noUselessElse: <explanation>
+    } else if (axiosError.code === "ETIMEDOUT" || axiosError.message?.includes("timeout")) {
+        return {
+            hasError: true,
+            title: "Connection Timeout",
+            reasons: [
+                "The server took too long to respond",
+                "This may be due to high traffic or server load",
+                "Please try refreshing the page"
+            ]
+        };
+    // biome-ignore lint/style/noUselessElse: <explanation>
+    } else {
+        return {
+            hasError: true,
+            title: "Unable to Load Page",
+            reasons: [
+                "Temporary network disruption",
+                "Server maintenance",
+                "Connection error"
+            ]
+        };
+    }
+};
+
+async function getData(page = 1, limit = 5): Promise<BlogResponse | ErrorState> {
     try {
         const response = await axios.get<BlogResponse>(
             `http://127.0.0.1:4000/blogs?page=${page}&limit=${limit}`,
@@ -29,12 +74,11 @@ async function getData(page = 1, limit = 5): Promise<BlogResponse | null> {
         );
         return response.data;
     } catch (error) {
-        console.error("Failed to fetch blogs:", error);
-        return null;
+        return handleApiError(error);
     }
 }
 
-async function getTags(): Promise<string[]> {
+async function getTags(): Promise<string[] | ErrorState> {
     try {
         const response = await axios.get(
             "http://127.0.0.1:4000/blogs/tags",
@@ -47,12 +91,11 @@ async function getTags(): Promise<string[]> {
         );
         return response.data.tags || [];
     } catch (error) {
-        console.error("Failed to fetch tags:", error);
-        return [];
+        return handleApiError(error);
     }
 }
 
-async function getAuthors(): Promise<string[]> {
+async function getAuthors(): Promise<string[] | ErrorState> {
     try {
         const response = await axios.get(
             "http://127.0.0.1:4000/blogs/authors",
@@ -65,8 +108,7 @@ async function getAuthors(): Promise<string[]> {
         );
         return response.data.authors || [];
     } catch (error) {
-        console.error("Failed to fetch authors:", error);
-        return [];
+        return handleApiError(error);
     }
 }
 
@@ -78,16 +120,30 @@ export default async function Blogs(): Promise<React.ReactElement> {
         getAuthors()
     ]);
     
-    // If null was returned, there was a network error
-    if (!blogData) {
+    // Check if any of the responses are error states
+    if ('hasError' in blogData) {
         return (
             <ErrorMessage 
-                title="Unable to Load Page"
-                reasons={[
-                    "Temporary network disruption",
-                    "Server maintenance",
-                    "Connection timeout"
-                ]}
+                title={blogData.title}
+                reasons={blogData.reasons}
+            />
+        );
+    }
+    
+    if ('hasError' in tags) {
+        return (
+            <ErrorMessage 
+                title={tags.title}
+                reasons={tags.reasons}
+            />
+        );
+    }
+    
+    if ('hasError' in authors) {
+        return (
+            <ErrorMessage 
+                title={authors.title}
+                reasons={authors.reasons}
             />
         );
     }

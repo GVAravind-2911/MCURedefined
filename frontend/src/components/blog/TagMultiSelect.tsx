@@ -41,7 +41,7 @@ const TagMultiSelect: React.FC<TagMultiSelectProps> = ({
         className={`filter-button ${selectedTags.length > 0 ? 'filter-active' : ''}`} 
         onClick={() => setShowTagFilter(!showTagFilter)}
         type="button"
-        aria-haspopup="true"
+        aria-haspopup="menu"
         aria-expanded={showTagFilter}
       >
         {selectedTags.length ? `${selectedTags.length} Tag${selectedTags.length > 1 ? 's' : ''} Selected` : "Filter by Tags"} 
@@ -78,7 +78,7 @@ const TagMultiSelect: React.FC<TagMultiSelectProps> = ({
                   }}
                   className={`dropdown-item multi-select-item ${selectedTags.includes(tag) ? 'selected' : ''}`}
                   type="button"
-                  role="menuitem"
+                  role="menuitemcheckbox"
                   aria-checked={selectedTags.includes(tag)}
                 >
                   <span className="checkbox">

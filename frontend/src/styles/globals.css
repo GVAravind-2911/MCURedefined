@@ -104,6 +104,13 @@
   .lock-scroll {
 	overflow: hidden;
   }
+
+  .main-content-wrapper {
+	min-height: calc(150vh - 80px - 250px); /* viewport height minus header and footer */
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+  }
   
   /* Button Styles */
   .button-primary {

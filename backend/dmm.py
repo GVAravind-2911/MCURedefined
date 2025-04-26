@@ -175,6 +175,33 @@ class BlogPost(Base):
         
         return latest_dict
     
+    def queryRecent():
+        global engine
+        Session = sessionmaker(bind=engine)
+        session = Session()
+        
+        # Specify the columns you want to select
+        latest = session.query(BlogPost).with_entities(
+            BlogPost.id,
+            BlogPost.title,
+            BlogPost.author,
+            BlogPost.created_at,
+            BlogPost.thumbnail_path
+        ).order_by(BlogPost.created_at.desc()).limit(1).first()
+        
+        session.close()
+        
+        # Return a single dictionary instead of a list
+        if latest:
+            return dict(
+                id=latest.id, 
+                title=latest.title, 
+                author=latest.author, 
+                created_at=latest.created_at, 
+                thumbnail_path=latest.thumbnail_path
+            )
+        return None
+    
     @staticmethod
     def update(id, title, author, description, content, tags, thumbnail_path):
         global engine

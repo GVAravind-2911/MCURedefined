@@ -10,7 +10,7 @@ interface BlogCardProps {
   handleTagClick: (e: React.MouseEvent<HTMLButtonElement>, tag: string) => void;
 }
 
-const BlogCard = React.memo<BlogCardProps>(({ blog, path, handleNavigation, handleTagClick }) => {
+const BlogCard = ({ blog, path, handleNavigation, handleTagClick }: BlogCardProps) => {
   return (
     <a
       href={`/${path}/${blog.id}`}
@@ -58,6 +58,6 @@ const BlogCard = React.memo<BlogCardProps>(({ blog, path, handleNavigation, hand
       </div>
     </a>
   );
-});
+};
 
 export default BlogCard;

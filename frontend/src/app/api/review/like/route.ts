@@ -36,11 +36,13 @@ export async function POST(req: Request) {
       await db
         .update(reviewInteraction)
         .set({ 
+          // @ts-ignore
           likes: existingInteraction[0].likes + 1,
           lastUpdated: new Date()
         })
         .where(eq(reviewInteraction.reviewId, reviewId));
     } else {
+      // @ts-ignore
       await db.insert(reviewInteraction).values({
         id: nanoid(),
         reviewId: reviewId,

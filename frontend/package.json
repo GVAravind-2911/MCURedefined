@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "next build --turbopack",
     "start": "next start",
     "lint": "next lint",
     "serverstart": "nodemon server.js",
@@ -32,6 +32,7 @@
     "next-auth": "^5.0.0-beta.25",
     "nodemon": "^3.1.7",
     "pg": "^8.14.0",
+    "postgres": "^3.4.5",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-dropzone": "^14.2.3",
