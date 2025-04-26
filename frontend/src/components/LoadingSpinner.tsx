@@ -9,11 +9,11 @@ const LoadingSpinner: React.FC = () => {
       <div className="marvel-spinner">
         {/* Perfect Captain America Shield */}
         <div className="cap-shield">
-          <div className="shield-ring outer-ring"></div>
-          <div className="shield-ring middle-ring"></div>
-          <div className="shield-ring inner-ring"></div>
+          <div className="shield-ring outer-ring"/>
+          <div className="shield-ring middle-ring"/>
+          <div className="shield-ring inner-ring"/>
           <div className="shield-center">
-            <div className="star"></div>
+            <div className="star"/> 
           </div>
         </div>
       </div>
