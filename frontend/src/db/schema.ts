@@ -15,9 +15,10 @@ export const user = pgTable("user", {
 	emailVerified: boolean("email_verified").notNull().default(false),
 	image: text("image"),
 	accountType:text("account_type").notNull().default("user"),
-	password: text("password"),
 	createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+	username: text("username").notNull().default(""),
+	displayUsername: text("display_name").notNull().default(""),
 });
 
 export type User = typeof user.$inferSelect;

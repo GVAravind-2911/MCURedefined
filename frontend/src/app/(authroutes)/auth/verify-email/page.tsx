@@ -6,13 +6,14 @@ import { authClient } from "@/lib/auth/auth-client";
 import Image from "next/image";
 import "@/styles/verify-email.css";
 import Link from "next/link";
-import axios from "axios";
+import { emailSchema } from "@/lib/auth/validation-schemas";
 
 export default function VerifyEmailPage() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [resendSuccess, setResendSuccess] = useState(false);
   const [resendError, setResendError] = useState("");
+  const [validationError, setValidationError] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -32,9 +33,19 @@ export default function VerifyEmailPage() {
           return;
         }
 
-        // User is logged in but not verified
-        setEmail(session.data.user.email);
-        setIsLoading(false);
+        // Validate the email from the session
+        try {
+          const userEmail = session.data.user.email;
+          // Validate email using the imported schema
+          emailSchema.parse(userEmail);
+          // Email is valid, set it in state
+          setEmail(userEmail);
+          setIsLoading(false);
+        } catch (validationError) {
+          console.error("Email validation error:", validationError);
+          setResendError("Invalid email format in your account. Please contact support.");
+          setIsLoading(false);
+        }
       } catch (error) {
         console.error("Error checking session:", error);
         router.replace("/auth");
@@ -47,9 +58,28 @@ export default function VerifyEmailPage() {
 
   const handleResendVerification = async () => {
     try {
-      const session = await authClient.getSession();
+      // Reset previous states
       setResendError("");
-      const resp = await authClient.sendVerificationEmail({email:session.data.user.email,callbackURL:"/"});
+      setValidationError("");
+      
+      // Get current session
+      const session = await authClient.getSession();
+      const userEmail = session.data.user.email;
+      
+      // Validate email before sending
+      try {
+        emailSchema.parse(userEmail);
+      } catch (error) {
+        setValidationError("Invalid email format. Please contact support.");
+        return;
+      }
+      
+      // Send verification email
+      const resp = await authClient.sendVerificationEmail({
+        email: userEmail,
+        callbackURL: "/"
+      });
+      
       setResendSuccess(true);
     } catch (error) {
       console.error("Failed to resend verification email:", error);
@@ -88,7 +118,7 @@ export default function VerifyEmailPage() {
     <div className="verify-page">
       <div className="verify-container">
         <div className="verify-card">
-          {/* You can add a logo here */}
+          {/* Logo */}
           <div className="text-center mb-4">
             <Image
               src="/images/MainLogo.svg"
@@ -115,12 +145,19 @@ export default function VerifyEmailPage() {
               </p>
             </div>
 
+            {validationError && (
+              <div className="error-message">
+                {validationError}
+              </div>
+            )}
+
             <div style={{ display: 'flex', gap: '10px' }}>
               <button
                 onClick={handleResendVerification}
                 className="resend-button"
                 type="button"
                 style={{ flex: '3' }}
+                disabled={!!validationError}
               >
                 Resend Verification Email
               </button>

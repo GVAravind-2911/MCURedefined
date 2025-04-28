@@ -123,13 +123,169 @@
     color: rgba(255, 255, 255, 0.3);
 }
 
-.form-group input:-webkit-autofill,
-.form-group input:-webkit-autofill:hover,
-.form-group input:-webkit-autofill:focus {
-    -webkit-text-fill-color: #ffffff;
-    -webkit-box-shadow: 0 0 0px 1000px #1a1a1a inset;
-    transition: background-color 5000s ease-in-out 0s;
+/* Enhanced Password Input Styling */
+.password-input-wrapper {
+  position: relative;
+  width: 100%;
 }
+
+.password-input {
+  width: 100%;
+  padding: 0.75rem;
+  padding-right: 5rem; /* Make room for toggle button and icon */
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  font-size: 1rem;
+  color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.password-input:focus {
+  outline: none;
+  border-color: #ec1d24;
+  box-shadow: 0 0 0 2px rgba(236, 29, 36, 0.25);
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 5px 8px;
+  color: #ec1d24;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.password-toggle-btn:hover {
+  background-color: rgba(236, 29, 36, 0.1);
+}
+
+.password-toggle-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(236, 29, 36, 0.25);
+}
+
+/* Password Strength Indicator */
+.password-strength {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.strength-bar {
+  height: 4px;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  margin-top: 0.25rem;
+  overflow: hidden;
+}
+
+.strength-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-weak .strength-bar-fill {
+  width: 25%;
+  background-color: #ef4444;
+}
+
+.strength-fair .strength-bar-fill {
+  width: 50%;
+  background-color: #f59e0b;
+}
+
+.strength-good .strength-bar-fill {
+  width: 75%;
+  background-color: #22c55e;
+}
+
+.strength-strong .strength-bar-fill {
+  width: 100%;
+  background-color: #10b981;
+}
+
+/* Requirements List */
+.password-requirements {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.requirement {
+  display: flex;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.requirement.met {
+  color: #22c55e;
+}
+
+.requirement.not-met {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.requirement-icon {
+  margin-right: 0.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Password Suggestions */
+.password-suggestion-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.suggest-password-btn {
+  position: absolute;
+  right: 65px; /* Position next to the show/hide button */
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 5px;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.suggest-password-btn:hover {
+  color: #ec1d24;
+}
+
+/* For autocomplete styling */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #ffffff;
+  caret-color: #ffffff;
+  -webkit-box-shadow: 0 0 0px 1000px #1a1a1a inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.form-group input:autofill {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
 
 .error-message {
     padding: 0.75rem;
@@ -260,7 +416,6 @@ button[type="submit"].loading::after {
     color: white;
     padding: 10px;
     border-radius: 6px;
-    margin-top: 15px;
     cursor: pointer;
     transition: all 0.3s ease;
 }
@@ -313,25 +468,139 @@ button[type="submit"].loading::after {
     font-weight: 500;
 }
 
+/* Multi-step signup flow styles */
+.signup-progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.progress-step {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.progress-step.active {
+    background: #ec1d24;
+    border-color: #ec1d24;
+    box-shadow: 0 0 15px rgba(236, 29, 36, 0.4);
+}
+
+.progress-line {
+    flex: 1;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 0 10px;
+}
+
+.step-title {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.form-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.form-buttons .back-button {
+    flex: 0.4;
+}
+
+.form-buttons button:not(.back-button) {
+    flex: 0.6;
+}
+
+.next-button {
+    padding: 0.75rem;
+    background-color: #ec1d24;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.next-button:hover {
+    background-color: #d81921;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Animation for the loading spinner */
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
 
+/* Animation for fade in effect */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-@media (max-width: 480px) {
-    .auth-box {
-        margin: 1rem;
-        padding: 1.5rem;
-    }
+/* Signin method toggle styles */
+.signin-method-toggle {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
 }
+
+.signin-method-toggle button {
+    flex: 1;
+    padding: 0.5rem;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.signin-method-toggle button.active {
+    background: rgba(236, 29, 36, 0.1);
+    border-color: #ec1d24;
+    color: #ec1d24;
+}
+
+.signin-method-toggle button:hover:not(.active) {
+    border-color: rgba(236, 29, 36, 0.5);
+    background: rgba(236, 29, 36, 0.05);
+}
+
+.fade-transition {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  .fade-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .fade-out {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  
