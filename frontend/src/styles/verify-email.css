@@ -1,0 +1,191 @@
+.verify-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  background-color: #121212;
+  background-image: linear-gradient(to right, rgba(236, 29, 36, 0.2), rgba(0, 0, 0, 0.9));
+}
+
+.verify-container {
+  max-width: 28rem;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.verify-card {
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+  padding: 32px;
+  margin-bottom: 32px;
+  border-top: 4px solid #ec1d24;
+}
+
+.verify-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.verify-title {
+  font-family: "BentonSansBold", sans-serif;
+  font-size: 1.875rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.verify-title::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 4px;
+  background-color: #ec1d24;
+  margin: 0.8rem auto 0;
+}
+
+.verify-subtitle {
+  font-family: "BentonSansRegular", sans-serif;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 8px;
+  line-height: 1.6;
+}
+
+.email-highlight {
+  font-weight: 500;
+  color: #ec1d24;
+}
+
+.verify-content {
+  margin-top: 32px;
+}
+
+.verify-info-box {
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.verify-info-text {
+  font-family: "BentonSansRegular", sans-serif;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 16px;
+}
+
+.verify-info-text:last-child {
+  margin-bottom: 0;
+}
+
+.resend-button {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 12px 20px;
+  background-color: #ec1d24;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: "BentonSansBold", sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.resend-button:hover {
+  background-color: #d81921;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.resend-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(236, 29, 36, 0.5);
+}
+
+.success-message {
+  font-family: "BentonSansRegular", sans-serif;
+  font-size: 0.875rem;
+  color: #10b981;
+  padding: 12px;
+  background-color: rgba(16, 185, 129, 0.1);
+  border-radius: 6px;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.error-message {
+  font-family: "BentonSansRegular", sans-serif;
+  font-size: 0.875rem;
+  color: #ef4444;
+  margin-top: 8px;
+  padding: 12px;
+  background-color: rgba(239, 68, 68, 0.1);
+  border-radius: 6px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Loading spinner */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #121212;
+}
+
+.loading-spinner {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: #ec1d24;
+  border-bottom-color: #ec1d24;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Back to login button */
+.back-link {
+  display: block;
+  text-align: center;
+  margin-top: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: "BentonSansRegular", sans-serif;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: #ec1d24;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .verify-card {
+    padding: 24px;
+  }
+  
+  .verify-title {
+    font-size: 1.5rem;
+  }
+}
+
