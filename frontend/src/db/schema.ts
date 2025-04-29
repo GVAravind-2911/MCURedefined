@@ -14,11 +14,15 @@ export const user = pgTable("user", {
 	email: text("email").notNull().unique(),
 	emailVerified: boolean("email_verified").notNull().default(false),
 	image: text("image"),
-	accountType:text("account_type").notNull().default("user"),
 	createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
-	username: text("username").notNull().default(""),
-	displayUsername: text("display_name").notNull().default(""),
+	username: text("username").notNull().unique(),
+	displayUsername: text("display_name").notNull().unique(),
+	role: text("role").notNull().default("user"),
+	banned: boolean("banned").notNull().default(false),
+	banReason: text("ban_reason"),
+	banExpires: integer("ban_expires"),
+
 });
 
 export type User = typeof user.$inferSelect;
@@ -35,6 +39,7 @@ export const session = pgTable("session", {
 	userAgent: text("user_agent"),
 	createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+	impersonatedBy: text("impersonated_by")
 });
 
 export type Session = typeof session.$inferSelect;

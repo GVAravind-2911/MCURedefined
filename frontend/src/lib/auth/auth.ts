@@ -4,7 +4,7 @@ import { customSession } from "better-auth/plugins";
 import { db } from "@/db";
 import { account, session, user, verification } from "@/db/schema";
 import { getUserById } from "@/db/user";
-import { username } from "better-auth/plugins";
+import { username, admin } from "better-auth/plugins";
 import transporter from "../mail/test";
 
 export const auth = betterAuth({
@@ -59,17 +59,8 @@ export const auth = betterAuth({
         },
     },
     plugins: [
-        customSession(async ({user,session}) => {
-            const userType = (await getUserById(user.id)).type;
-            return {
-                user:{
-                    ...user,
-                    accountType:userType
-                },
-                session
-            }
-        }),
-        username()
+        username(),
+        admin()
     ],
     emailVerification:{
         sendVerificationEmail: async ({user, url, token}) => {

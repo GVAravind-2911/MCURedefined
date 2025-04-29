@@ -43,8 +43,7 @@ export async function middleware(request: NextRequest) {
 			return NextResponse.redirect(new URL("/auth", request.url));
 		}
 
-		// @ts-ignore
-		if (session.user.accountType !== "admin"){
+		if (session.user.role !== "admin") {
 			console.log('User accessing user management');
 			return NextResponse.redirect(new URL("/", request.url));
 		}
