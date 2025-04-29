@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth/auth-client";
 import Image from "next/image";
 import "@/styles/reset-password.css";
-import { resetPasswordSchema, passwordSchema } from "@/lib/auth/validation-schemas"; // Update with the correct path
+import { resetPasswordSchema } from "@/lib/auth/validation-schemas"; // Update with the correct path
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState("");
@@ -105,13 +105,14 @@ export default function ResetPasswordPage() {
       if (error instanceof Error) {
         try {
           // Try to parse Zod validation errors
-          const formattedErrors = JSON.parse((error as any).message);
+          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                    const formattedErrors = JSON.parse((error as any).message);
           const newErrors: {[key: string]: string} = {};
           
-          formattedErrors.forEach((err: any) => {
+          for (const err of formattedErrors as { path: string[]; message: string }[]) {
             const path = err.path[0];
             newErrors[path] = err.message;
-          });
+          }
           
           setValidationErrors(newErrors);
         } catch {
@@ -156,7 +157,8 @@ export default function ResetPasswordPage() {
         router.push("/auth");
       }, 3000);
       
-    } catch (err: any) {
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+          } catch (err: any) {
       console.error("Reset password error:", err);
       setError(err.message || "An error occurred while resetting your password");
     } finally {
@@ -291,7 +293,7 @@ export default function ResetPasswordPage() {
                       <div 
                         className={`strength-bar-fill strength-${passwordStrength.score}`}
                         style={{ width: `${passwordStrength.score * 20}%` }}
-                      ></div>
+                      />
                     </div>
                     <div className="password-strength-text">
                       {passwordStrength.score === 0 && "No password"}
