@@ -5,7 +5,7 @@ import type { ContentBlock } from "@/types/BlogTypes";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from "@/components/main/LoadingSpinner";
 import parse from "html-react-parser";
 import ScriptEmbed from "@/components/edit/ScriptEmbed";
 import moment from "moment";

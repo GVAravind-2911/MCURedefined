@@ -3,7 +3,7 @@ import type { BlogList } from "@/types/BlogTypes";
 import type { AxiosError } from "axios";
 import AdminBlogComponent from "@/components/blog/AdminBlogComponent";
 import { BlogProvider } from "@/components/blog/BlogContext";
-import ErrorMessage from "@/components/ErrorMessage";
+import ErrorMessage from "@/components/main/ErrorMessage";
 import axios from "axios";
 import "@/styles/blogposts.css";
 

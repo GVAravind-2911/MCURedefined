@@ -4,7 +4,7 @@ import React, { useRef, useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import type { BlogList } from "@/types/BlogTypes";
 import "@/styles/blogposts.css";
-import LoadingSpinner from "../LoadingSpinner";
+import LoadingSpinner from "../main/LoadingSpinner";
 import BlogFilters from "./BlogFilters";
 import AdminBlogCard from "./AdminBlogCard";
 import BlogPagination from "./BlogPagination";

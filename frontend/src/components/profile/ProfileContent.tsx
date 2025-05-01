@@ -9,7 +9,7 @@ import BlogComponent from "./blogs/ProfileBlogComponent";
 import ProjectsGrid from "./ProjectsGrid";
 import ProfileInfo from "./ProfileInfo";
 import { BlogProvider } from "./blogs/ProfileBlogContext";
-import ErrorMessage from "@/components/ErrorMessage";
+import ErrorMessage from "@/components/main/ErrorMessage";
 
 interface LikedContentResponse {
 	blogs?: BlogList[];

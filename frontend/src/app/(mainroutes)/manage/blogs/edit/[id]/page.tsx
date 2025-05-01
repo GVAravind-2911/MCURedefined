@@ -10,8 +10,8 @@ import ThumbnailBlock from "@/components/edit/ThumbnailBlock";
 import axios from "axios";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import LoadingSpinner from "@/components/LoadingSpinner";
-import ErrorMessage from "@/components/ErrorMessage";
+import LoadingSpinner from "@/components/main/LoadingSpinner";
+import ErrorMessage from "@/components/main/ErrorMessage";
 import "@/styles/editblogpage.css";
 
 type ContentBlock = {

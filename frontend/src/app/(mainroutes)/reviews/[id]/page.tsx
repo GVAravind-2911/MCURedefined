@@ -11,7 +11,7 @@ import Image from "next/image";
 import { auth } from "@/lib/auth/auth";
 import ReviewLikeButton from "@/components/review/ReviewLikeButton";
 import ReviewShareButton from "@/components/review/ReviewShareButton";
-import ErrorMessage from "@/components/ErrorMessage";
+import ErrorMessage from "@/components/main/ErrorMessage";
 import "@/styles/blog.css";
 import { headers } from "next/headers";
 import { getUserLikedReview } from "@/db/review-likes";

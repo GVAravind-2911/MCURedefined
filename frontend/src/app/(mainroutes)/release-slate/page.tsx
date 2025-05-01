@@ -1,8 +1,8 @@
 import type { Project } from "@/types/ProjectTypes";
 import type { AxiosError } from "axios";
 import type { ReactElement } from "react";
-import ProjectsPage from "@/components/Projects";
-import ErrorMessage from "@/components/ErrorMessage";
+import ProjectsPage from "@/components/project/Projects";
+import ErrorMessage from "@/components/main/ErrorMessage";
 import axios from "axios";
 
 interface ErrorState {

@@ -3,7 +3,7 @@ import "@/styles/LoadingSpinner.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Suspense } from "react";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from "@/components/main/LoadingSpinner";
 
 const inter = Inter({ subsets: ["latin"] });
 

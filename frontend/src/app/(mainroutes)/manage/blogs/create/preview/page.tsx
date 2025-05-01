@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from "@/components/main/LoadingSpinner";
 import "@/styles/blog.css";
 import Image from "next/image";
 import parse from "html-react-parser";

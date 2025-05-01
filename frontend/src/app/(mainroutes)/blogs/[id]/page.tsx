@@ -10,14 +10,14 @@ import parse from "html-react-parser";
 import ScriptEmbed from "@/components/edit/ScriptEmbed";
 import Image from "next/image";
 import { auth } from "@/lib/auth/auth";
-import LikeButton from "@/components/LikeButton";
-import ShareButton from "@/components/ShareButton";
+import LikeButton from "@/components/blog/LikeButton";
+import ShareButton from "@/components/blog/ShareButton";
 import "@/styles/blog.css";
 import { headers } from "next/headers";
 import { getUserLikedBlog } from "@/db/blog-likes";
 import { getBlogInteractions, incrementBlogView } from "@/db/blog-interactions";
 import Link from "next/link";
-import ErrorMessage from "@/components/ErrorMessage";
+import ErrorMessage from "@/components/main/ErrorMessage";
 
 interface PageProps {
 	params: Promise<{

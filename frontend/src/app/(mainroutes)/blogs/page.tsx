@@ -1,7 +1,7 @@
 import type { BlogList } from "@/types/BlogTypes";
 import type React from "react";
 import BlogComponent from "@/components/blog/BlogComponent";
-import ErrorMessage from "@/components/ErrorMessage";
+import ErrorMessage from "@/components/main/ErrorMessage";
 import axios, { type AxiosError } from "axios";
 import "@/styles/bloghero.css";
 import { BlogProvider } from "@/components/blog/BlogContext";

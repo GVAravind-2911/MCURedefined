@@ -4,7 +4,7 @@ import type React from "react";
 import BlogsComponent from "@/components/blog/BlogComponent";
 import axios from "axios";
 import { BlogProvider } from "@/components/blog/BlogContext";
-import ErrorMessage from "@/components/ErrorMessage";
+import ErrorMessage from "@/components/main/ErrorMessage";
 import "@/styles/bloghero.css";
 import "@/styles/blogposts.css";
 

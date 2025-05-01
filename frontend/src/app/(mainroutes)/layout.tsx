@@ -5,9 +5,9 @@ import "@/styles/enhanced-home.css";
 import "@/styles/footer.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Layout from "@/components/Layout";
+import Layout from "@/components/main/Layout";
 import { Suspense } from "react";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from "@/components/main/LoadingSpinner";
 
 const inter = Inter({ subsets: ["latin"] });
 

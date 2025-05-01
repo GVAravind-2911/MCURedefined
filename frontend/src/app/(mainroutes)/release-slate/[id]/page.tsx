@@ -3,8 +3,8 @@ import type { AxiosError } from "axios";
 import type { JSX } from "react";
 import { notFound } from "next/navigation";
 import axios from "axios";
-import IndividualProject from "@/components/IndividualProject";
-import ErrorMessage from "@/components/ErrorMessage";
+import IndividualProject from "@/components/project/IndividualProject";
+import ErrorMessage from "@/components/main/ErrorMessage";
 
 interface ErrorState {
 	hasError: boolean;
