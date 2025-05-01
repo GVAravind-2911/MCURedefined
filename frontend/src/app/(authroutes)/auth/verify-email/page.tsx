@@ -136,7 +136,7 @@ export default function VerifyEmailPage() {
 					<div className="verify-header">
 						<h2 className="verify-title">Verify Your Email</h2>
 						<p className="verify-subtitle">
-							We've sent a verification link to{" "}
+							We&apos;ve sent a verification link to{" "}
 							<span className="email-highlight">{email}</span>
 						</p>
 					</div>
@@ -148,7 +148,7 @@ export default function VerifyEmailPage() {
 								complete your registration.
 							</p>
 							<p className="verify-info-text">
-								If you don't see the email, check your spam folder.
+								If you don&apos;t see the email, check your spam folder.
 							</p>
 						</div>
 

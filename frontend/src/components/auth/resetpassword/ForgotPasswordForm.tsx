@@ -48,7 +48,7 @@ export default function ForgotPasswordForm({ onBack, onSuccess }) {
 		<div className="fade-transition fade-in">
 			<h2 className="forgot-title">Reset Your Password</h2>
 			<p className="forgot-subtitle">
-				Enter your email address and we'll send you a reset link.
+				Enter your email address and we&apos;ll send you a reset link.
 			</p>
 
 			<form onSubmit={handleForgotPassword} className="auth-form">

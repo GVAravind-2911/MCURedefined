@@ -393,7 +393,7 @@ export default function ResetPasswordPage() {
 									</div>
 									{confirmPassword && password !== confirmPassword && (
 										<div className="validation-error match-error">
-											Passwords don't match
+											Passwords don&apos;t match
 										</div>
 									)}
 									{validationErrors.confirmPassword && (

@@ -352,14 +352,10 @@
 /* FIX: Improved responsive adjustments */
 @media (max-width: 768px) {
 	.comment-header {
-		flex-direction: column;
 		align-items: flex-start;
 		gap: 8px;
 	}
 
-	.comment-delete-button {
-		align-self: flex-start;
-	}
 
 	.comment-user {
 		width: 100%;
@@ -386,15 +382,11 @@
 		min-height: 32px;
 	}
 
+
 	.comment-actions {
 		gap: 6px;
 	}
 
-	.comment-date {
-		display: block;
-		width: 100%;
-		margin-top: 4px;
-	}
 
 	.comment {
 		padding: 12px 10px;
