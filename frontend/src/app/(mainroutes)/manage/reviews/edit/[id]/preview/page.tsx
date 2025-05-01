@@ -44,59 +44,65 @@ export default function PreviewPage(): JSX.Element {
 	}, [id]);
 
 	const handleSave = async (): Promise<void> => {
-  
 		if (!session || !session.token) {
 			alert("You must be logged in to save changes.");
 			router.push("/auth/login");
 			return;
 		}
 		if (blog) {
-		  try {
-			setIsSaving(true);
-			setLoading(true); // Show loading state while saving
-			const response = await axios.put(`http://127.0.0.1:4000/reviews/update/${id}`, blog, {
-			  headers: {
-				"Authorization": `Bearer ${session?.token || ''}`,
-			  },
-			});
-			
-			localStorage.removeItem(`review-${id}`);
-			alert("Blog saved successfully!");
-			router.push("/manage/reviews");
-		  } catch (error) {
-			setLoading(false); // Stop loading on error
-			
-			// Properly handle different types of errors
-			if (axios.isAxiosError(error)) {
-			  const statusCode = error.response?.status;
-			  
-			  if (statusCode === 403) {
-				alert("You don't have permission to update this blog. Please log in with an admin account.");
-			  } else if (statusCode === 401) {
-				alert("Your session has expired. Please log in again.");
-				router.push("/auth/login");
-			  } else if (statusCode === 404) {
-				alert("Blog post not found. It may have been deleted.");
-				router.push("/manage/reviews");
-			  } else if (statusCode === 413) {
-				alert("Content too large. Please reduce the size of images or content.");
-			  } else if (error.response?.data?.message) {
-				// Server provided an error message
-				alert(`Error: ${error.response.data.message}`);
-			  } else {
-				alert("Failed to save review. Please try again later.");
-			  }
-			  console.error("API error:", error.response?.data || error.message);
-			} else {
-			  alert("An unexpected error occurred. Please try again.");
-			  console.error("Unknown error:", error);
-			}
-		  } finally {
-			setIsSaving(false);
-		  }
-		}
-	  };
+			try {
+				setIsSaving(true);
+				setLoading(true); // Show loading state while saving
+				const response = await axios.put(
+					`http://127.0.0.1:4000/reviews/update/${id}`,
+					blog,
+					{
+						headers: {
+							Authorization: `Bearer ${session?.token || ""}`,
+						},
+					},
+				);
 
+				localStorage.removeItem(`review-${id}`);
+				alert("Blog saved successfully!");
+				router.push("/manage/reviews");
+			} catch (error) {
+				setLoading(false); // Stop loading on error
+
+				// Properly handle different types of errors
+				if (axios.isAxiosError(error)) {
+					const statusCode = error.response?.status;
+
+					if (statusCode === 403) {
+						alert(
+							"You don't have permission to update this blog. Please log in with an admin account.",
+						);
+					} else if (statusCode === 401) {
+						alert("Your session has expired. Please log in again.");
+						router.push("/auth/login");
+					} else if (statusCode === 404) {
+						alert("Blog post not found. It may have been deleted.");
+						router.push("/manage/reviews");
+					} else if (statusCode === 413) {
+						alert(
+							"Content too large. Please reduce the size of images or content.",
+						);
+					} else if (error.response?.data?.message) {
+						// Server provided an error message
+						alert(`Error: ${error.response.data.message}`);
+					} else {
+						alert("Failed to save review. Please try again later.");
+					}
+					console.error("API error:", error.response?.data || error.message);
+				} else {
+					alert("An unexpected error occurred. Please try again.");
+					console.error("Unknown error:", error);
+				}
+			} finally {
+				setIsSaving(false);
+			}
+		}
+	};
 
 	const handleEdit = (): void => {
 		router.push(`/manage/reviews/edit/${id}`);
@@ -192,14 +198,14 @@ export default function PreviewPage(): JSX.Element {
 				</div>
 			</div>
 			<div className="submit-blogdiv">
-			<button
-				type="submit"
-				onClick={handleSave}
-				id="submit-blog"
-				className="save-button"
-				disabled={isSaving}
+				<button
+					type="submit"
+					onClick={handleSave}
+					id="submit-blog"
+					className="save-button"
+					disabled={isSaving}
 				>
-				{isSaving ? "Saving..." : "Save"}
+					{isSaving ? "Saving..." : "Save"}
 				</button>
 				<button
 					type="button"

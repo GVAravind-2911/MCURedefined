@@ -72,9 +72,8 @@ const PreviewPage: React.FC = () => {
 	const router = useRouter();
 	const [blog, setBlog] = useState<BlogData | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
-    const session = authClient.useSession();
-    const token = session?.data?.session.token || null;
-
+	const session = authClient.useSession();
+	const token = session?.data?.session.token || null;
 
 	useEffect(() => {
 		const storedBlog = localStorage.getItem("create-review-draft");
@@ -94,13 +93,13 @@ const PreviewPage: React.FC = () => {
 
 		try {
 			await axios.post("http://127.0.0.1:4000/reviews/create", blog, {
-                headers: {
-                    "Authorization": `Bearer ${token}` || '',
-                }
-            });
+				headers: {
+					Authorization: `Bearer ${token}` || "",
+				},
+			});
 			localStorage.removeItem("create-review-draft");
 			router.push("/manage/reviews");
-            alert("Review published successfully!");
+			alert("Review published successfully!");
 		} catch (error) {
 			console.error("Error publishing review:", error);
 			alert("Failed to publish review");

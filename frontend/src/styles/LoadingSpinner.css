@@ -13,17 +13,17 @@
 	background-color: rgba(0, 0, 0, 0.7);
 	backdrop-filter: blur(5px);
 	z-index: 9999;
-  }
-  
-  .marvel-spinner {
+}
+
+.marvel-spinner {
 	position: relative;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-  }
-  
-  /* Captain America Shield - Reduced Size */
-  .cap-shield {
+}
+
+/* Captain America Shield - Reduced Size */
+.cap-shield {
 	position: relative;
 	width: 100px; /* Reduced to half size */
 	height: 100px;
@@ -32,66 +32,65 @@
 	justify-content: center;
 	align-items: center;
 	animation: shield-rotate 8s infinite linear;
-	box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
 	/* Create slightly convex appearance */
 	background: radial-gradient(
-	  circle at 40% 35%, 
-	  #e6e6e6 0%, 
-	  #bdbdbd 60%, 
-	  #888 100%
+		circle at 40% 35%,
+		#e6e6e6 0%,
+		#bdbdbd 60%,
+		#888 100%
 	);
-  }
-  
-  /* Shield Rings - Refined proportions */
-  .shield-ring {
+}
+
+/* Shield Rings - Refined proportions */
+.shield-ring {
 	position: absolute;
 	border-radius: 50%;
-  }
-  
-  .outer-ring {
+}
+
+.outer-ring {
 	width: 100%;
 	height: 100%;
-	border: 7px solid #EC1D24; /* Half the original border width */
+	border: 7px solid #ec1d24; /* Half the original border width */
 	background: radial-gradient(
-	  circle at 40% 40%, 
-	  #ff3b47 0%, 
-	  #ec1d24 60%, 
-	  #c70013 100%
+		circle at 40% 40%,
+		#ff3b47 0%,
+		#ec1d24 60%,
+		#c70013 100%
 	);
-	box-shadow: 
-	  0 0 10px rgba(236, 29, 36, 0.7), 
-	  0 2px 6px rgba(0,0,0,0.3) inset;
+	box-shadow: 0 0 10px rgba(236, 29, 36, 0.7), 0 2px 6px rgba(0, 0, 0, 0.3)
+		inset;
 	animation: pulse 2s infinite alternate ease-in-out;
-  }
-  
-  .middle-ring {
+}
+
+.middle-ring {
 	width: 78%;
 	height: 78%;
-	border: 7px solid #FFFFFF; /* Half the original border width */
+	border: 7px solid #ffffff; /* Half the original border width */
 	background: radial-gradient(
-	  circle at 40% 40%, 
-	  #ffffff 0%, 
-	  #f0f0f0 60%, 
-	  #d8d8d8 100%
+		circle at 40% 40%,
+		#ffffff 0%,
+		#f0f0f0 60%,
+		#d8d8d8 100%
 	);
-	box-shadow: 0 1px 4px rgba(0,0,0,0.15) inset;
-  }
-  
-  .inner-ring {
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15) inset;
+}
+
+.inner-ring {
 	width: 56%;
 	height: 56%;
-	border: 7px solid #EC1D24; /* Half the original border width */
+	border: 7px solid #ec1d24; /* Half the original border width */
 	background: radial-gradient(
-	  circle at 40% 40%, 
-	  #ff3b47 0%, 
-	  #ec1d24 60%, 
-	  #c70013 100%
+		circle at 40% 40%,
+		#ff3b47 0%,
+		#ec1d24 60%,
+		#c70013 100%
 	);
-	box-shadow: 0 1px 4px rgba(0,0,0,0.15) inset;
-  }
-  
-  /* Enhanced 3D Shield Center - Kept relatively larger */
-  .shield-center {
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15) inset;
+}
+
+/* Enhanced 3D Shield Center - Kept relatively larger */
+.shield-center {
 	position: relative;
 	width: 42%; /* Increased from 34% to keep star visible */
 	height: 42%; /* Increased from 34% to keep star visible */
@@ -101,23 +100,23 @@
 	align-items: center;
 	z-index: 2;
 	background: radial-gradient(
-	  circle at 35% 35%, 
-	  #1f88e5 0%, 
-	  #1976d2 50%, 
-	  #0d47a1 100%
+		circle at 35% 35%,
+		#1f88e5 0%,
+		#1976d2 50%,
+		#0d47a1 100%
 	);
 	box-shadow:
-	  0 3px 9px rgba(0,0,0,0.5),
-	  0 -2px 5px rgba(255,255,255,0.5) inset,
-	  0 2px 4px rgba(0,0,0,0.4) inset,
-	  0 0 0 3px rgba(255,255,255,0.2) inset;
+		0 3px 9px rgba(0, 0, 0, 0.5),
+		0 -2px 5px rgba(255, 255, 255, 0.5) inset,
+		0 2px 4px rgba(0, 0, 0, 0.4) inset,
+		0 0 0 3px rgba(255, 255, 255, 0.2) inset;
 	border: 2px solid #0d47a1; /* Half the original border width */
 	/* Simulate a domed elevation */
 	transform: translateZ(3px);
-  }
-  
-  /* Perfected Star - Kept relatively the same size */
-  .star {
+}
+
+/* Perfected Star - Kept relatively the same size */
+.star {
 	position: absolute;
 	z-index: 3;
 	width: 80%; /* Increased from 68% to maintain visibility */
@@ -128,11 +127,11 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
-  }
-  
-  .star::before {
-	content: '';
+	filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+.star::before {
+	content: "";
 	display: block;
 	width: 100%;
 	height: 100%;
@@ -140,50 +139,52 @@
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
-  }
-  
-  /* Animations */
-  @keyframes shield-rotate {
+}
+
+/* Animations */
+@keyframes shield-rotate {
 	0% {
-	  transform: rotate(0deg);
+		transform: rotate(0deg);
 	}
 	100% {
-	  transform: rotate(360deg);
+		transform: rotate(360deg);
 	}
-  }
-  
-  @keyframes pulse {
+}
+
+@keyframes pulse {
 	0% {
-	  box-shadow: 
-		0 0 8px rgba(236, 29, 36, 0.5), 
-		0 2px 6px rgba(0,0,0,0.3) inset;
+		box-shadow: 0 0 8px rgba(236, 29, 36, 0.5), 0 2px 6px rgba(0, 0, 0, 0.3)
+			inset;
 	}
 	100% {
-	  box-shadow: 
-		0 0 12px rgba(236, 29, 36, 0.8), 
-		0 2px 6px rgba(0,0,0,0.3) inset;
+		box-shadow: 0 0 12px rgba(236, 29, 36, 0.8), 0 2px 6px rgba(0, 0, 0, 0.3)
+			inset;
 	}
-  }
-  
-  /* Mobile responsiveness - maintain proportions */
-  @media (max-width: 768px) {
+}
+
+/* Mobile responsiveness - maintain proportions */
+@media (max-width: 768px) {
 	.cap-shield {
-	  width: 100px; /* Keep consistent with the new size */
-	  height: 100px;
+		width: 100px; /* Keep consistent with the new size */
+		height: 100px;
 	}
-	
-	.outer-ring, .middle-ring, .inner-ring {
-	  border-width: 7px;
+
+	.outer-ring,
+	.middle-ring,
+	.inner-ring {
+		border-width: 7px;
 	}
-  }
-  
-  @media (max-width: 480px) {
+}
+
+@media (max-width: 480px) {
 	.cap-shield {
-	  width: 90px;
-	  height: 90px;
+		width: 90px;
+		height: 90px;
 	}
-	
-	.outer-ring, .middle-ring, .inner-ring {
-	  border-width: 6px;
+
+	.outer-ring,
+	.middle-ring,
+	.inner-ring {
+		border-width: 6px;
 	}
-  }
+}

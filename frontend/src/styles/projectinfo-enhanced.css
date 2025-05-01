@@ -2,412 +2,433 @@
 
 /* Import your font faces */
 @font-face {
-    font-family: "BentonSansCompLight";
-    src: url("../fonts/BentonSans\ Comp\ Light.otf");
-  }
-  @font-face {
-    font-family: "BentonSansRegular";
-    src: url("../fonts/BentonSans\ Regular.otf");
-  }
-  @font-face {
-    font-family: "BentonSansBook";
-    src: url("../fonts/BentonSans\ Book.otf");
-  }
-  @font-face {
-    font-family: "BentonSansBold";
-    src: url("../fonts/BentonSans\ Bold.otf");
-  }
-  @font-face {
-    font-family: "BentonSansCompBlack";
-    src: url("../fonts/BentonSans\ Comp\ Black.otf");
-  }
-  
-  /* Main container */
-  .project-detail-page {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    align-items: center;
-  }
-  
-  /* Hero section */
-  .project-detail-hero {
-    position: relative;
-    width: 100%;
-    height: 320px;
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(236, 29, 36, 0.6));
-    background-size: cover;
-    background-position: center;
-    margin-bottom: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
-  
-  .hero-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%);
-    z-index: 1;
-  }
-  
-  .hero-content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    padding: 0 2rem;
-    max-width: 1000px;
-  }
-  
-  .hero-title {
-    font-family: "BentonSansBold", sans-serif;
-    font-size: clamp(32px, 6vw, 56px);
-    color: white;
-    margin: 0 0 1rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-  }
-  
-  .hero-title::after {
-    content: '';
-    display: block;
-    width: 100px;
-    height: 4px;
-    background-color: #ec1d24;
-    margin: 0.8rem auto 0;
-  }
-  
-  .hero-description {
-    font-family: "BentonSansRegular", sans-serif;
-    font-size: clamp(18px, 2.5vw, 22px);
-    color: rgba(255, 255, 255, 0.9);
-    margin: 0 auto;
-    line-height: 1.6;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-  }
-  
-  /* Content container */
-  .project-detail-container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto 3rem;
-  }
-  
-  .project-detail-content {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 3rem;
-    margin-top: 2rem;
-  }
-  
-  /* Poster section */
-  .poster-section {
-    width: 100%;
-    max-width: 300px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .poster-container {
-    position: relative;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s ease;
-  }
-  
-  .poster-container:hover {
-    transform: translateY(-5px);
-  }
-  
-  .project-detail-poster {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-  
-  .phase-badge {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background-color: #ec1d24;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-family: "BentonSansBold", sans-serif;
-    font-size: 14px;
-    z-index: 2;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  }
-  
-  /* Project info section */
-  .project-info-section {
-    flex: 1;
-    min-width: 300px;
-  }
-  
-  .info-block {
-    margin-bottom: 2.5rem;
-  }
-  
-  /* Section titles */
-  .section-title {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    font-family: "BentonSansBold", sans-serif;
-    color: white;
-  }
-  
-  .title-text {
-    font-size: 24px;
-    margin-right: 15px;
-    white-space: nowrap;
-    color: #ec1d24;
-  }
-  
-  .title-line {
-    flex-grow: 1;
-    height: 3px;
-    background: linear-gradient(90deg, #ec1d24, transparent);
-  }
-  
-  /* Info grid */
-  .info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1.5rem;
-  }
-  
-  .info-item h3 {
-    font-family: "BentonSansBold", sans-serif;
-    font-size: 18px;
-    color: #ec1d24;
-    margin: 0 0 0.8rem;
-  }
-  
-  .info-item p {
-    font-family: "BentonSansRegular", sans-serif;
-    font-size: 18px;
-    color: white;
-    margin: 0;
-    line-height: 1.5;
-  }
-  
-  /* Cast info */
-  .cast-info {
-    font-family: "BentonSansRegular", sans-serif;
-    font-size: 18px;
-    color: white;
-    line-height: 1.7;
-    margin: 0;
-    white-space: pre-line;
-  }
-  
-  /* Synopsis */
-  .synopsis {
-    font-family: "BentonSansRegular", sans-serif;
-    font-size: 18px;
-    color: white;
-    line-height: 1.8;
-    margin: 0;
-  }
-  
-  /* Animation */
-  .fade-in {
-    animation: fadeIn 0.5s ease-in;
-  }
-  
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  
-  /* Responsive design */
-  @media (max-width: 992px) {
-    .project-detail-content {
-      flex-direction: column;
-      align-items: center;
-      gap: 2rem;
-    }
-    
-    .poster-section {
-      max-width: 250px;
-    }
-    
-    .project-detail-hero {
-      height: 280px;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .project-detail-hero {
-      height: 240px;
-    }
-    
-    .hero-title {
-      font-size: 28px;
-    }
-    
-    .hero-description {
-      font-size: 16px;
-    }
-    
-    .info-grid {
-      grid-template-columns: 1fr;
-    }
-    
-    .section-title {
-      margin-bottom: 1rem;
-    }
-    
-    .title-text {
-      font-size: 20px;
-    }
-    
-    .info-item h3 {
-      font-size: 16px;
-    }
-    
-    .info-item p,
-    .cast-info,
-    .synopsis {
-      font-size: 16px;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .project-detail-hero {
-      height: 200px;
-      padding: 1rem;
-    }
-    
-    .project-detail-container {
-      width: 95%;
-    }
-    
-    .hero-title {
-      font-size: 24px;
-    }
-    
-    .hero-description {
-      font-size: 14px;
-    }
-  }
+	font-family: "BentonSansCompLight";
+	src: url("../fonts/BentonSans\ Comp\ Light.otf");
+}
+@font-face {
+	font-family: "BentonSansRegular";
+	src: url("../fonts/BentonSans\ Regular.otf");
+}
+@font-face {
+	font-family: "BentonSansBook";
+	src: url("../fonts/BentonSans\ Book.otf");
+}
+@font-face {
+	font-family: "BentonSansBold";
+	src: url("../fonts/BentonSans\ Bold.otf");
+}
+@font-face {
+	font-family: "BentonSansCompBlack";
+	src: url("../fonts/BentonSans\ Comp\ Black.otf");
+}
+
+/* Main container */
+.project-detail-page {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	align-items: center;
+}
+
+/* Hero section */
+.project-detail-hero {
+	position: relative;
+	width: 100%;
+	height: 320px;
+	background-image: linear-gradient(
+		to right,
+		rgba(0, 0, 0, 0.9),
+		rgba(236, 29, 36, 0.6)
+	);
+	background-size: cover;
+	background-position: center;
+	margin-bottom: 2rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+}
+
+.hero-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: linear-gradient(
+		to bottom,
+		rgba(0, 0, 0, 0.4) 0%,
+		rgba(0, 0, 0, 0.8) 100%
+	);
+	z-index: 1;
+}
+
+.hero-content {
+	position: relative;
+	z-index: 2;
+	text-align: center;
+	padding: 0 2rem;
+	max-width: 1000px;
+}
+
+.hero-title {
+	font-family: "BentonSansBold", sans-serif;
+	font-size: clamp(32px, 6vw, 56px);
+	color: white;
+	margin: 0 0 1rem;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.hero-title::after {
+	content: "";
+	display: block;
+	width: 100px;
+	height: 4px;
+	background-color: #ec1d24;
+	margin: 0.8rem auto 0;
+}
+
+.hero-description {
+	font-family: "BentonSansRegular", sans-serif;
+	font-size: clamp(18px, 2.5vw, 22px);
+	color: rgba(255, 255, 255, 0.9);
+	margin: 0 auto;
+	line-height: 1.6;
+	text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Content container */
+.project-detail-container {
+	width: 90%;
+	max-width: 1200px;
+	margin: 0 auto 3rem;
+}
+
+.project-detail-content {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 3rem;
+	margin-top: 2rem;
+}
+
+/* Poster section */
+.poster-section {
+	width: 100%;
+	max-width: 300px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.poster-container {
+	position: relative;
+	border-radius: 12px;
+	overflow: hidden;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+	transition: transform 0.3s ease;
+}
+
+.poster-container:hover {
+	transform: translateY(-5px);
+}
+
+.project-detail-poster {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+.phase-badge {
+	position: absolute;
+	top: 12px;
+	right: 12px;
+	background-color: #ec1d24;
+	color: white;
+	padding: 6px 12px;
+	border-radius: 6px;
+	font-family: "BentonSansBold", sans-serif;
+	font-size: 14px;
+	z-index: 2;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Project info section */
+.project-info-section {
+	flex: 1;
+	min-width: 300px;
+}
+
+.info-block {
+	margin-bottom: 2.5rem;
+}
+
+/* Section titles */
+.section-title {
+	display: flex;
+	align-items: center;
+	margin-bottom: 1.5rem;
+	font-family: "BentonSansBold", sans-serif;
+	color: white;
+}
+
+.title-text {
+	font-size: 24px;
+	margin-right: 15px;
+	white-space: nowrap;
+	color: #ec1d24;
+}
+
+.title-line {
+	flex-grow: 1;
+	height: 3px;
+	background: linear-gradient(90deg, #ec1d24, transparent);
+}
+
+/* Info grid */
+.info-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: 1.5rem;
+}
+
+.info-item h3 {
+	font-family: "BentonSansBold", sans-serif;
+	font-size: 18px;
+	color: #ec1d24;
+	margin: 0 0 0.8rem;
+}
+
+.info-item p {
+	font-family: "BentonSansRegular", sans-serif;
+	font-size: 18px;
+	color: white;
+	margin: 0;
+	line-height: 1.5;
+}
+
+/* Cast info */
+.cast-info {
+	font-family: "BentonSansRegular", sans-serif;
+	font-size: 18px;
+	color: white;
+	line-height: 1.7;
+	margin: 0;
+	white-space: pre-line;
+}
+
+/* Synopsis */
+.synopsis {
+	font-family: "BentonSansRegular", sans-serif;
+	font-size: 18px;
+	color: white;
+	line-height: 1.8;
+	margin: 0;
+}
+
+/* Animation */
+.fade-in {
+	animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+/* Responsive design */
+@media (max-width: 992px) {
+	.project-detail-content {
+		flex-direction: column;
+		align-items: center;
+		gap: 2rem;
+	}
+
+	.poster-section {
+		max-width: 250px;
+	}
+
+	.project-detail-hero {
+		height: 280px;
+	}
+}
+
+@media (max-width: 768px) {
+	.project-detail-hero {
+		height: 240px;
+	}
+
+	.hero-title {
+		font-size: 28px;
+	}
+
+	.hero-description {
+		font-size: 16px;
+	}
+
+	.info-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.section-title {
+		margin-bottom: 1rem;
+	}
+
+	.title-text {
+		font-size: 20px;
+	}
+
+	.info-item h3 {
+		font-size: 16px;
+	}
+
+	.info-item p,
+	.cast-info,
+	.synopsis {
+		font-size: 16px;
+	}
+}
+
+@media (max-width: 480px) {
+	.project-detail-hero {
+		height: 200px;
+		padding: 1rem;
+	}
+
+	.project-detail-container {
+		width: 95%;
+	}
+
+	.hero-title {
+		font-size: 24px;
+	}
+
+	.hero-description {
+		font-size: 14px;
+	}
+}
 
 /* Project interactions */
 .project-interactions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 1.5rem;
-    background-color: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    padding: 1rem;
-    width: 100%;
-    gap: 1rem;
-  }
-  
-  .project-likes, .project-share-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex: 1;
-  }
-  
-  .like-button, .liked-button, .share, .like-button.disabled {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 8px 15px;
-    border-radius: 20px;
-    border: none;
-    cursor: pointer;
-    font-family: "BentonSansRegular", sans-serif;
-    font-size: 14px;
-    transition: all 0.2s ease;
-    width: 100%;
-    min-width: 110px;
-    height: 38px;
-  }
+	display: flex;
+	justify-content: space-between;
+	margin-top: 1.5rem;
+	background-color: rgba(255, 255, 255, 0.05);
+	border-radius: 10px;
+	padding: 1rem;
+	width: 100%;
+	gap: 1rem;
+}
 
-  .like-button {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
-  }
-  
-  .liked-button {
-    background-color: white;
-    color: #ec1d24;
-  }
-  
-  .share {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
-  }
-  
-  .like-button:hover, .share:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-  }
-  
-  .liked-button:hover {
-    background-color: #d81921;
-  }
-  
-  .like-button.disabled {
-    cursor: not-allowed;
-    opacity: 0.7;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.8);
-  }
-  
-  .likes-count, .share-count {
-    margin-top: 8px;
-    font-family: "BentonSansRegular", sans-serif;
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.8);
-  }
-  
-  /* Make SVG icons consistent size */
-  .like-button svg, .liked-button svg, .share svg, .like-button.disabled svg {
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
-  }
-  
-  /* Responsive design for interactions */
-  @media (max-width: 992px) {
-    .project-interactions {
-      max-width: 250px;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .project-interactions {
-      margin-top: 1rem;
-      padding: 0.75rem;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-    
-    .like-button, .liked-button, .share, .like-button.disabled {
-      padding: 6px 12px;
-      font-size: 12px;
-      height: 34px;
-    }
-    
-    .likes-count, .share-count {
-      font-size: 12px;
-      margin-top: 5px;
-    }
-  }
+.project-likes,
+.project-share-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	flex: 1;
+}
+
+.like-button,
+.liked-button,
+.share,
+.like-button.disabled {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	padding: 8px 15px;
+	border-radius: 20px;
+	border: none;
+	cursor: pointer;
+	font-family: "BentonSansRegular", sans-serif;
+	font-size: 14px;
+	transition: all 0.2s ease;
+	width: 100%;
+	min-width: 110px;
+	height: 38px;
+}
+
+.like-button {
+	background-color: rgba(255, 255, 255, 0.1);
+	color: white;
+}
+
+.liked-button {
+	background-color: white;
+	color: #ec1d24;
+}
+
+.share {
+	background-color: rgba(255, 255, 255, 0.1);
+	color: white;
+}
+
+.like-button:hover,
+.share:hover {
+	background-color: rgba(255, 255, 255, 0.2);
+}
+
+.liked-button:hover {
+	background-color: #d81921;
+}
+
+.like-button.disabled {
+	cursor: not-allowed;
+	opacity: 0.7;
+	background-color: rgba(255, 255, 255, 0.1);
+	color: rgba(255, 255, 255, 0.8);
+}
+
+.likes-count,
+.share-count {
+	margin-top: 8px;
+	font-family: "BentonSansRegular", sans-serif;
+	font-size: 14px;
+	color: rgba(255, 255, 255, 0.8);
+}
+
+/* Make SVG icons consistent size */
+.like-button svg,
+.liked-button svg,
+.share svg,
+.like-button.disabled svg {
+	width: 18px;
+	height: 18px;
+	flex-shrink: 0;
+}
+
+/* Responsive design for interactions */
+@media (max-width: 992px) {
+	.project-interactions {
+		max-width: 250px;
+	}
+}
+
+@media (max-width: 480px) {
+	.project-interactions {
+		margin-top: 1rem;
+		padding: 0.75rem;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.like-button,
+	.liked-button,
+	.share,
+	.like-button.disabled {
+		padding: 6px 12px;
+		font-size: 12px;
+		height: 34px;
+	}
+
+	.likes-count,
+	.share-count {
+		font-size: 12px;
+		margin-top: 5px;
+	}
+}

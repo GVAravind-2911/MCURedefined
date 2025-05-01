@@ -98,7 +98,7 @@ const PreviewPage: React.FC = () => {
 			});
 			localStorage.removeItem("create-blog-draft");
 			router.push("/manage/blogs");
-            alert("Blog published successfully!");
+			alert("Blog published successfully!");
 		} catch (error) {
 			console.error("Error publishing blog:", error);
 			alert("Failed to publish blog");

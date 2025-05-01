@@ -4,95 +4,108 @@ import Image from "next/image";
 import HeroSection from "./home/HeroSection";
 
 interface HomeProps {
-    latestBlog: {
-        id: number;
-        title: string;
-        author: string;
-        created_at: string;
-        thumbnail_path: {
+	latestBlog: {
+		id: number;
+		title: string;
+		author: string;
+		created_at: string;
+		thumbnail_path: {
 			link: string;
 		};
-    }
+	};
 }
 
 function Home({ latestBlog }: HomeProps): ReactNode {
-    return (
-        <div>
-            <div className="fade-in">
-                <HeroSection />
+	return (
+		<div>
+			<div className="fade-in">
+				<HeroSection />
 
-                <section className="home-description">
-                    <div className="home-container4">
-                        <p className="home-paragraph">
-                            <span>Welcome to </span>
-                            <span className="home-text10">MCU REDEFINED</span>
-                            <span>
-                                , the fanpage dedicated to all Marvel enthusiasts! Immerse
-                                yourself in a world where heroes and villains collide, as we
-                                bring you the latest updates, news, and exclusive content
-                                straight from the Marvel Universe. From epic battles to
-                                heartwarming moments, we are committed to delivering a
-                                fan-centric experience like no other. Join us as we celebrate
-                                the iconic characters, unravel hidden secrets, and delve deep
-                                into the cinematic marvels that have redefined the superhero
-                                genre. Be part of our vibrant community and let the Marvel
-                                fandom thrive at MCU Redefined!
-                            </span>
-                        </p>
-                    </div>
-                </section>
-                
-                <section className="home-cards">
+				<section className="home-description">
+					<div className="home-container4">
+						<p className="home-paragraph">
+							<span>Welcome to </span>
+							<span className="home-text10">MCU REDEFINED</span>
+							<span>
+								, the fanpage dedicated to all Marvel enthusiasts! Immerse
+								yourself in a world where heroes and villains collide, as we
+								bring you the latest updates, news, and exclusive content
+								straight from the Marvel Universe. From epic battles to
+								heartwarming moments, we are committed to delivering a
+								fan-centric experience like no other. Join us as we celebrate
+								the iconic characters, unravel hidden secrets, and delve deep
+								into the cinematic marvels that have redefined the superhero
+								genre. Be part of our vibrant community and let the Marvel
+								fandom thrive at MCU Redefined!
+							</span>
+						</p>
+					</div>
+				</section>
+
+				<section className="home-cards">
 					<div className="home-card">
 						<div className="home-row">
-						<div className="home-main">
-							<div className="home-content01">
-							<h2 className="home-header1">Latest Blog Post</h2>
-							{latestBlog.id === 0 ? (
-								<p className="home-description2">
-								Stay up-to-date with the latest news from the Marvel Cinematic Universe. 
-								Explore our blog for insights on upcoming releases, production updates, 
-								and behind-the-scenes content from your favorite MCU projects.
-								</p>
-							) : (
-								<div>
-								<h3 className="home-blog-title">{latestBlog.title}</h3>
-								<p className="home-blog-meta">By {latestBlog.author} • {new Date(latestBlog.created_at).toLocaleDateString()}</p>
-								{/* Removed home-description2 when blog is received */}
+							<div className="home-main">
+								<div className="home-content01">
+									<h2 className="home-header1">Latest Blog Post</h2>
+									{latestBlog.id === 0 ? (
+										<p className="home-description2">
+											Stay up-to-date with the latest news from the Marvel
+											Cinematic Universe. Explore our blog for insights on
+											upcoming releases, production updates, and
+											behind-the-scenes content from your favorite MCU projects.
+										</p>
+									) : (
+										<div>
+											<h3 className="home-blog-title">{latestBlog.title}</h3>
+											<p className="home-blog-meta">
+												By {latestBlog.author} •{" "}
+												{new Date(latestBlog.created_at).toLocaleDateString()}
+											</p>
+											{/* Removed home-description2 when blog is received */}
+										</div>
+									)}
 								</div>
-							)}
+								<Link
+									href={
+										latestBlog.id === 0 ? "/blogs" : `/blogs/${latestBlog.id}`
+									}
+								>
+									<button
+										type="button"
+										className="home-learn button"
+										name="button"
+									>
+										<span className="home-text15">
+											{latestBlog.id === 0 ? "Browse Blogs" : "Read More"}
+										</span>
+										<Image
+											alt="arrowsvg"
+											src="/images/Icons/arrow-2.svg"
+											className="home-image02"
+											width={30}
+											height={30}
+										/>
+									</button>
+								</Link>
 							</div>
-							<Link href={latestBlog.id === 0 ? "/blogs" : `/blogs/${latestBlog.id}`}>
-							<button
-								type="button"
-								className="home-learn button"
-								name="button"
-							>
-								<span className="home-text15">
-								{latestBlog.id === 0 ? "Browse Blogs" : "Read More"}
-								</span>
+							<div className="home-image-container">
 								<Image
-								alt="arrowsvg"
-								src="/images/Icons/arrow-2.svg"
-								className="home-image02"
-								width={30}
-								height={30}
+									alt="blog thumbnail"
+									src={
+										latestBlog.id === 0
+											? "/images/DailyBugle.svg"
+											: latestBlog.thumbnail_path.link ||
+												"/images/DailyBugle.svg"
+									}
+									className="home-image03"
+									width={240}
+									height={180}
 								/>
-							</button>
-							</Link>
-						</div>
-						<div className="home-image-container">
-							<Image
-							alt="blog thumbnail"
-							src={latestBlog.id === 0 ? "/images/DailyBugle.svg" : latestBlog.thumbnail_path.link || "/images/DailyBugle.svg"}
-							className="home-image03"
-							width={240}
-							height={180}
-							/>
-						</div>
+							</div>
 						</div>
 					</div>
-					</section>
+				</section>
 				<section className="home-join-us">
 					<div className="home-content11">
 						<div className="home-main2">

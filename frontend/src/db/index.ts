@@ -5,7 +5,7 @@ import postgres from "postgres";
 // Create postgres connection
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
-  throw new Error("DATABASE_URL is not defined");
+	throw new Error("DATABASE_URL is not defined");
 }
 
 // For server-side usage (Node.js environment)

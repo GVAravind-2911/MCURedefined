@@ -7,31 +7,37 @@ import { headers } from "next/headers";
 import { incrementBlogLikes } from "@/db/blog-interactions";
 
 export async function POST(request: NextRequest) {
-    try {
-        const session = await auth.api.getSession({headers: await headers()});
-        if (!session) {
-            return NextResponse.json({ error: "No session id" }, { status: 401 });
-        }
+	try {
+		const session = await auth.api.getSession({ headers: await headers() });
+		if (!session) {
+			return NextResponse.json({ error: "No session id" }, { status: 401 });
+		}
 
-        if (!session?.user?.id) {
-            return NextResponse.json({ error: "Invalid session" }, { status: 401 });
-        }
+		if (!session?.user?.id) {
+			return NextResponse.json({ error: "Invalid session" }, { status: 401 });
+		}
 
-        const { blogId } = await request.json();
-        if (!blogId) {
-            return NextResponse.json({ error: "No blog id" }, { status: 400 });
-        }
+		const { blogId } = await request.json();
+		if (!blogId) {
+			return NextResponse.json({ error: "No blog id" }, { status: 400 });
+		}
 
-        // Insert like (ignore if already exists)
-        await db.insert(like).values({
-            userId: session.user.id,
-            blogId,
-        }).onConflictDoNothing();
+		// Insert like (ignore if already exists)
+		await db
+			.insert(like)
+			.values({
+				userId: session.user.id,
+				blogId,
+			})
+			.onConflictDoNothing();
 
-        await incrementBlogLikes(blogId);
+		await incrementBlogLikes(blogId);
 
-        return NextResponse.json({ success: true });
-    } catch (e) {
-        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-    }
+		return NextResponse.json({ success: true });
+	} catch (e) {
+		return NextResponse.json(
+			{ error: "Internal server error" },
+			{ status: 500 },
+		);
+	}
 }

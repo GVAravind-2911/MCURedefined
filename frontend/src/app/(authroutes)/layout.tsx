@@ -27,7 +27,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
 		<html lang="en" className={inter.className}>
 			<body>
 				{/* <Providers> */}
-					<Suspense fallback={<LoadingSpinner />}>{children}</Suspense>
+				<Suspense fallback={<LoadingSpinner />}>{children}</Suspense>
 				{/* </Providers> */}
 			</body>
 		</html>
