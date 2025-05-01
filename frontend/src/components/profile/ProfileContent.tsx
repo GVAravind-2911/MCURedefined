@@ -13,6 +13,7 @@ import ErrorMessage from "@/components/ErrorMessage";
 
 interface LikedContentResponse {
 	blogs?: BlogList[];
+	reviews?: BlogList[]; // Changed from 'blogs' to 'reviews'
 	projects?: Project[];
 	total: number;
 	total_pages?: number;
@@ -31,7 +32,7 @@ export default function ProfileContent({ session }) {
 		[key: string]: LikedContentResponse;
 	}>({
 		blogs: { blogs: [], total: 0 },
-		reviews: { blogs: [], total: 0 },
+		reviews: { reviews: [], total: 0 }, // Changed from blogs to reviews
 		projects: { projects: [], total: 0 },
 	});
 	const [tags, setTags] = useState<{ [key: string]: string[] }>({
@@ -201,16 +202,16 @@ export default function ProfileContent({ session }) {
 						))}
 
 					{activeTab === "reviews" &&
-						(content.reviews.blogs && content.reviews.blogs.length > 0 ? (
+						(content.reviews.reviews && content.reviews.reviews.length > 0 ? (
 							<BlogProvider
-								initialBlogs={content.reviews.blogs}
+								initialBlogs={content.reviews.reviews}
 								initialTags={tags.reviews}
 								initialAuthors={authors.reviews}
 								initialTotalPages={content.reviews.total_pages || 1}
 							>
 								<BlogComponent
 									path="reviews"
-									initialBlogs={content.reviews.blogs}
+									initialBlogs={content.reviews.reviews}
 									totalPages={content.reviews.total_pages || 1}
 									apiUrl="/api/user/liked?type=reviews"
 									initialTags={tags.reviews}

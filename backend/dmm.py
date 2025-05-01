@@ -1,88 +1,354 @@
-from math import ceil
 import sqlalchemy
-from sqlalchemy.orm import sessionmaker, declarative_base
-from sqlalchemy import CheckConstraint
-from datetime import datetime
+from sqlalchemy.orm import sessionmaker, declarative_base, scoped_session
+from sqlalchemy.pool import QueuePool
+from sqlalchemy import CheckConstraint, Index
+from datetime import datetime, date
 import json
 import os
+from math import ceil
+from contextlib import contextmanager
+from functools import wraps
 from dotenv import load_dotenv
+from typing import List, Dict, Any, Union, Optional, Set, TypeVar, Generic, Type
 
+# Load environment variables
 load_dotenv()
 
+# Constants
 DATETIMEFORMAT = "%Y/%m/%d %H:%M:%S"
 DATABASE_URL = os.getenv("TURSO_DATABASE_URL")
 AUTHTOKEN = os.getenv("TURSO_AUTHTOKEN")
-DBURL = f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}&secure=true'
-engine = sqlalchemy.create_engine(f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}', connect_args={'check_same_thread': False}, echo=True)
 
+# Create engine with connection pooling
+engine = sqlalchemy.create_engine(
+    f'sqlite+{DATABASE_URL}/?authToken={AUTHTOKEN}', 
+    connect_args={'check_same_thread': False}, 
+    echo=False,  # Set to False in production for better performance
+    poolclass=QueuePool,
+    pool_size=10,
+    max_overflow=20,
+    pool_recycle=3600,  # Recycle connections after 1 hour
+    pool_pre_ping=True  # Check connection validity before using
+)
+
+# Create thread-local session factory
+SessionFactory = scoped_session(sessionmaker(bind=engine))
 Base = declarative_base()
 
-class BlogPost(Base):
+# Simple in-memory cache
+class Cache:
+    def __init__(self, ttl=300):  # Default TTL: 5 minutes
+        self._cache = {}
+        self._ttl = ttl
+    
+    def get(self, key):
+        if key in self._cache:
+            value, expiry = self._cache[key]
+            if datetime.now().timestamp() < expiry:
+                return value
+            # Expired, remove from cache
+            self.delete(key)
+        return None
+    
+    def set(self, key, value, ttl=None):
+        ttl = ttl or self._ttl
+        self._cache[key] = (value, datetime.now().timestamp() + ttl)
+    
+    def delete(self, key):
+        if key in self._cache:
+            del self._cache[key]
+    
+    def clear(self):
+        self._cache.clear()
+
+# Create a global cache instance
+cache = Cache()
+
+# Cache decorator
+def cached(ttl=None, key_prefix=None):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            # Generate cache key
+            key_parts = [key_prefix or func.__name__]
+            for arg in args:
+                # Handle special cases like lists that aren't hashable
+                if isinstance(arg, (list, tuple, set)):
+                    key_parts.extend([str(a) for a in sorted(arg)])
+                else:
+                    key_parts.append(str(arg))
+            
+            for k, v in sorted(kwargs.items()):
+                if isinstance(v, (list, tuple, set)):
+                    key_parts.append(f"{k}={','.join(str(a) for a in sorted(v))}")
+                else:
+                    key_parts.append(f"{k}={v}")
+            
+            cache_key = ":".join(key_parts)
+            
+            # Try to get from cache
+            result = cache.get(cache_key)
+            if result is not None:
+                return result
+            
+            # Call original function and cache result
+            result = func(*args, **kwargs)
+            
+            # Ensure SQLAlchemy objects are converted to dictionaries
+            if hasattr(result, 'to_dict'):  # Single SQLAlchemy object
+                result = result.to_dict()
+            elif isinstance(result, list):  # List of SQLAlchemy objects
+                for i, item in enumerate(result):
+                    if hasattr(item, 'to_dict'):
+                        result[i] = item.to_dict()
+            elif isinstance(result, dict):  # Dict containing SQLAlchemy objects
+                for k, v in result.items():
+                    if hasattr(v, 'to_dict'):
+                        result[k] = v.to_dict()
+                    elif isinstance(v, list):
+                        for i, item in enumerate(v):
+                            if hasattr(item, 'to_dict'):
+                                v[i] = item.to_dict()
+            
+            cache.set(cache_key, result, ttl)
+            return result
+        return wrapper
+    return decorator
+
+#Session Manager
+@contextmanager
+def db_session(expire_on_commit=True):
+    """Context manager for database sessions.
+    
+    Args:
+        expire_on_commit: Whether to expire objects on commit (default: True)
+    """
+    session = SessionFactory()
+    session.expire_on_commit = expire_on_commit
+    try:
+        yield session
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
+    finally:
+        session.close()
+
+# Base repository for common operations
+class BaseRepository:
+    @staticmethod
+    def query_by_ids(model, ids, page=1, limit=5, include_tags=False, tag_getter=None):
+        """Generic method to query items by IDs with pagination."""
+        if not ids or len(ids) == 0:
+            return {
+                "items": [],
+                "total": 0,
+                "total_pages": 0,
+                "page": page
+            }
+        
+        total = len(ids)
+        start_idx = (page - 1) * limit
+        end_idx = min(start_idx + limit, total)
+        page_ids = ids[start_idx:end_idx]
+        
+        with db_session() as session:
+            items = []
+            for item_id in page_ids:
+                item = session.query(model).filter(model.id == item_id).first()
+                if item:
+                    item_dict = item.to_dict()
+                    if include_tags and tag_getter:
+                        item_dict['tags'] = tag_getter(item.id)
+                    items.append(item_dict)
+            
+            total_pages = ceil(total / limit)
+            
+            return {
+                "items": items,
+                "total": total,
+                "total_pages": total_pages,
+                "page": page
+            }
+    
+    @staticmethod
+    def query_authors_by_ids(model, ids):
+        """Generic method to query unique authors for given IDs."""
+        if not ids:
+            return []
+            
+        with db_session() as session:
+            authors_query = session.query(model.author).filter(
+                model.id.in_(ids)
+            ).distinct()
+            
+            authors = [author[0] for author in authors_query.all() if author[0]]
+            return sorted(authors)
+    
+    @staticmethod
+    def search(model, query="", tags=None, author="", page=1, limit=5, 
+               tag_model=None, item_id_field=None, tag_getter=None):
+        """Generic search method with filtering by tags, author, or keywords."""
+        items = []
+        total = 0
+        total_pages = 0
+        
+        # Normalize tags input
+        if isinstance(tags, str):
+            tags = [tags]
+        
+        with db_session() as session:
+            # Search by tags
+            if tags and len(tags) > 0:
+                item_ids = None
+                for tag in tags:
+                    tag_items = set([
+                        row[0] for row in session.query(getattr(tag_model, item_id_field))
+                        .filter(tag_model.tag == tag).all()
+                    ])
+                    if item_ids is None:
+                        item_ids = tag_items
+                    else:
+                        item_ids = item_ids.intersection(tag_items)
+                
+                if item_ids:
+                    total = len(item_ids)
+                    # Apply pagination
+                    start_idx = (page - 1) * limit
+                    end_idx = min(start_idx + limit, len(item_ids))
+                    page_ids = list(item_ids)[start_idx:end_idx] if start_idx < total else []
+                    
+                    for item_id in page_ids:
+                        item = session.query(model).filter(model.id == item_id).first()
+                        if item:
+                            item_dict = item.to_dict()
+                            if tag_getter:
+                                item_dict['tags'] = tag_getter(item.id)
+                            items.append(item_dict)
+            
+            # Search by author
+            elif author:
+                total_query = session.query(model).filter(model.author.ilike(f'%{author}%'))
+                total = total_query.count()
+                
+                results = total_query.order_by(model.created_at.desc()).offset((page-1)*limit).limit(limit)
+                for item in results:
+                    item_dict = item.to_dict()
+                    if tag_getter:
+                        item_dict['tags'] = tag_getter(item.id)
+                    items.append(item_dict)
+                    
+            # Search by title or description
+            elif query:
+                total_query = session.query(model).filter(
+                    sqlalchemy.or_(
+                        model.title.ilike(f'%{query}%'),
+                        model.description.ilike(f'%{query}%')
+                    )
+                )
+                total = total_query.count()
+                
+                results = total_query.order_by(model.created_at.desc()).offset((page-1)*limit).limit(limit)
+                for item in results:
+                    item_dict = item.to_dict()
+                    if tag_getter:
+                        item_dict['tags'] = tag_getter(item.id)
+                    items.append(item_dict)
+            
+            # Calculate total pages
+            total_pages = ceil(total / limit) if total > 0 else 0
+            
+            return {
+                "items": items,
+                "total": total,
+                "total_pages": total_pages,
+                "page": page
+            }
+
+class BaseModel:
+    def to_dict(self):
+        """Convert model to dictionary, safely handling detachment."""
+        result = {}
+        for c in self.__table__.columns:
+            try:
+                value = getattr(self, c.name)
+                # Convert date/datetime objects to strings
+                if isinstance(value, (date, datetime)):
+                    value = value.isoformat()
+                result[c.name] = value
+            except (sqlalchemy.orm.exc.DetachedInstanceError, 
+                   sqlalchemy.exc.InvalidRequestError):
+                # If we can't access the attribute due to detachment,
+                # skip it rather than crashing
+                pass
+        return result
+
+# Blog Posts
+class BlogPost(Base, BaseModel):
     __tablename__ = 'blog_posts'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
     title = sqlalchemy.Column(sqlalchemy.String(255))
     author = sqlalchemy.Column(sqlalchemy.String(30))
     description = sqlalchemy.Column(sqlalchemy.Text)
-    content = sqlalchemy.Column(sqlalchemy.JSON)  # JSON array for content
+    content = sqlalchemy.Column(sqlalchemy.JSON)
     thumbnail_path = sqlalchemy.Column(sqlalchemy.JSON)
     created_at = sqlalchemy.Column(sqlalchemy.String(75))
     updated_at = sqlalchemy.Column(sqlalchemy.String(75))
-
-    def to_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+    
+    # Add indexes for commonly queried columns
+    __table_args__ = (
+        Index('idx_blog_author', 'author'),
+        Index('idx_blog_title', 'title'),
+        Index('idx_blog_created_at', 'created_at'),
+    )
 
     @staticmethod
     def createDatabase():
-        global engine
         Base.metadata.create_all(engine)
 
     @staticmethod
     def insertBlogPost(title, author, description, content, tags, thumbnail_path):
-        global engine
-        session = sessionmaker(bind=engine)()
-        post = BlogPost(
-            title=title,
-            author=author,
-            description=description,
-            content=content, 
-            thumbnail_path=thumbnail_path, 
-            created_at=datetime.strftime(datetime.now(), DATETIMEFORMAT),
-            updated_at='')
-        session.add(post)
-        session.commit()
-        
-        # Add tags separately using the new BlogTag class
-        blog_id = post.id
-        BlogTag.add_tags(blog_id, tags)
-        session.close()
-
-    @staticmethod
-    def count():
-        global engine
-        session = sessionmaker(bind=engine)()
-        total = session.query(BlogPost).count()
-        session.close()
-        return total
-
-    @staticmethod
-    def queryPaginated(page, limit=3):
-        global engine
-        Session = sessionmaker(bind=engine)
-        session = Session()
-        
-        try:
-            # Get total count of records
-            total_count = session.query(BlogPost).count()
+        with db_session() as session:
+            post = BlogPost(
+                title=title,
+                author=author,
+                description=description,
+                content=content, 
+                thumbnail_path=thumbnail_path, 
+                created_at=datetime.strftime(datetime.now(), DATETIMEFORMAT),
+                updated_at=''
+            )
+            session.add(post)
+            session.flush()  # Get ID before committing
+            blog_id = post.id
             
-            # Calculate offset
+        # Add tags in a separate session to ensure blog exists
+        BlogTag.add_tags(blog_id, tags)
+        
+        # Clear relevant caches
+        cache_keys = ['blog_tags', 'blog_authors']
+        for key in cache_keys:
+            cache.delete(key)
+        
+        return blog_id
+
+    @staticmethod
+    @cached(ttl=60, key_prefix="blog_count")
+    def count():
+        with db_session() as session:
+            return session.query(BlogPost).count()
+
+    @staticmethod
+    @cached(ttl=30, key_prefix="blog_paginated")
+    def queryPaginated(page, limit=3):
+        with db_session(expire_on_commit=False) as session:
+            total_count = session.query(BlogPost).count()
             offset = (page - 1) * limit
 
-            # If offset is greater than available records, return empty list
             if offset >= total_count:
                 return []
 
-            # Fetch paginated results
             blog_posts = (
                 session.query(BlogPost)
                 .order_by(BlogPost.created_at.desc())
@@ -91,15 +357,13 @@ class BlogPost(Base):
                 .all()
             )
 
-            # Convert blog posts to JSON
+            # Process the blog posts INSIDE the session
             blog_posts_json = []
             for post in blog_posts:
-                post_dict = post.to_dict()
+                post_dict = post.to_dict()  # Convert to dict inside session
+                post_dict['tags'] = BlogTag.get_tags(post.id, session=session)
                 
-                # Get tags from BlogTag
-                post_dict['tags'] = BlogTag.get_tags(post.id)
-                
-                # Ensure JSON fields are properly parsed
+                # Parse JSON strings if needed
                 for field in ['content', 'thumbnail_path']:
                     if field in post_dict and isinstance(post_dict[field], str):
                         try:
@@ -110,337 +374,266 @@ class BlogPost(Base):
                 blog_posts_json.append(post_dict)
 
             return blog_posts_json
-            
-        finally:
-            session.close()
 
     @staticmethod
-    def queryAll():
-        global engine
-        session = sessionmaker(bind=engine)()
-
-        blog_posts = session.query(BlogPost).all()
-        blog_posts_json = []
-        for post in blog_posts:
-            post_json = {
-                'id': post.id,
-                'title': post.title,
-                'author': post.author,
-                'description': post.description,
-                'tags': post.tags,
-                'thumbnail_path': post.thumbnail_path,
-                'created_at': post.created_at,
-                'updated_at': post.updated_at
-            }
-            blog_posts_json.append(post_json)
-
-        session.close()
-
-        return blog_posts_json
-    
-    @staticmethod
+    @cached(ttl=10, key_prefix="blog_by_id")
     def query(id):
-        global engine
-        session = sessionmaker(bind=engine)()
-        post = session.query(BlogPost).filter(BlogPost.id == id).first()
-
-        session.close()
-
-        if post:
-            post_dict = post.to_dict()
-            # Get tags from BlogTag
-            post_dict['tags'] = BlogTag.get_tags(post.id)
-            return post_dict
-        else:
-            return 404
+        with db_session() as session:
+            post = session.query(BlogPost).filter(BlogPost.id == id).first()
+            
+            if post:
+                post_dict = post.to_dict()
+                # Get tags from BlogTag
+                post_dict['tags'] = BlogTag.get_tags(post.id,session=session)
+                
+                # Parse JSON strings if needed
+                for field in ['content', 'thumbnail_path']:
+                    if field in post_dict and isinstance(post_dict[field], str):
+                        try:
+                            post_dict[field] = json.loads(post_dict[field])
+                        except json.JSONDecodeError:
+                            pass
+                            
+                return post_dict
+            else:
+                return 404
     
     @staticmethod
     def query_by_ids(ids, page=1, limit=5):
-        """
-        Fetches blog posts by their IDs with pagination
+        """Fetches blog posts by their IDs with pagination"""
+        result = BaseRepository.query_by_ids(
+            model=BlogPost,
+            ids=ids,
+            page=page,
+            limit=limit,
+            include_tags=True,
+            tag_getter=BlogTag.get_tags
+        )
         
-        Args:
-            ids: List of blog post IDs
-            page: Page number (starting from 1)
-            limit: Number of items per page
-            
-        Returns:
-            dict: Contains blogs data, total count, and pagination info
-        """
-        global engine
-        session = sessionmaker(bind=engine)()
-        
-        try:
-            # If no IDs, return empty result
-            if not ids or len(ids) == 0:
-                return {
-                    "blogs": [],
-                    "total": 0,
-                    "total_pages": 0,
-                    "page": page
-                }
-            
-            total = len(ids)
-            
-            # Calculate pagination
-            start_idx = (page - 1) * limit
-            end_idx = min(start_idx + limit, total)
-            
-            # Get subset of IDs for this page
-            page_ids = ids[start_idx:end_idx]
-            
-            # Fetch the actual blog posts
-            blogs = []
-            for blog_id in page_ids:
-                blog = session.query(BlogPost).filter(BlogPost.id == blog_id).first()
-                if blog:
-                    blog_dict = blog.to_dict()
-                    blog_dict['tags'] = BlogTag.get_tags(blog.id)
-                    blogs.append(blog_dict)
-            
-            total_pages = ceil(total / limit)
-            
-            return {
-                "blogs": blogs,
-                "total": total,
-                "total_pages": total_pages,
-                "page": page
-            }
-        
-        finally:
-            session.close()
-        
-    def queryLatest():
-        global engine
-        Session = sessionmaker(bind=engine)
-        session = Session()
-        
-        # Specify the columns you want to select
-        latest = session.query(BlogPost).with_entities(
-            BlogPost.id,
-            BlogPost.title,
-            BlogPost.author,
-            BlogPost.created_at,
-            BlogPost.thumbnail_path
-        ).order_by(BlogPost.created_at.desc()).limit(3).all()
-        
-        session.close()
-        
-        # Convert the result to a list of dictionaries
-        latest_dict = [dict(id=post.id, title=post.title, author=post.author, created_at=post.created_at, thumbnail_path=post.thumbnail_path) for post in latest]
-        
-        return latest_dict
+        # Rename 'items' key to 'blogs' for API consistency
+        result['blogs'] = result.pop('items')
+        return result
     
+    @staticmethod
+    def queryLatest():
+        with db_session() as session:
+            latest = session.query(BlogPost).with_entities(
+                BlogPost.id,
+                BlogPost.title,
+                BlogPost.author,
+                BlogPost.created_at,
+                BlogPost.thumbnail_path
+            ).order_by(BlogPost.created_at.desc()).limit(3).all()
+            
+            latest_dict = []
+            for post in latest:
+                post_data = {
+                    'id': post.id,
+                    'title': post.title,
+                    'author': post.author,
+                    'created_at': post.created_at,
+                    'thumbnail_path': post.thumbnail_path
+                }
+                
+                # Parse JSON fields if needed
+                if isinstance(post_data['thumbnail_path'], str):
+                    try:
+                        post_data['thumbnail_path'] = json.loads(post_data['thumbnail_path'])
+                    except json.JSONDecodeError:
+                        pass
+                        
+                latest_dict.append(post_data)
+            
+            return latest_dict
+    
+    @staticmethod
     def queryRecent():
-        global engine
-        Session = sessionmaker(bind=engine)
-        session = Session()
-        
-        # Specify the columns you want to select
-        latest = session.query(BlogPost).with_entities(
-            BlogPost.id,
-            BlogPost.title,
-            BlogPost.author,
-            BlogPost.created_at,
-            BlogPost.thumbnail_path
-        ).order_by(BlogPost.created_at.desc()).limit(1).first()
-        
-        session.close()
-        
-        # Return a single dictionary instead of a list
-        if latest:
-            return dict(
-                id=latest.id, 
-                title=latest.title, 
-                author=latest.author, 
-                created_at=latest.created_at, 
-                thumbnail_path=latest.thumbnail_path
-            )
-        return None
+        with db_session() as session:
+            latest = session.query(BlogPost).with_entities(
+                BlogPost.id,
+                BlogPost.title,
+                BlogPost.author,
+                BlogPost.created_at,
+                BlogPost.thumbnail_path
+            ).order_by(BlogPost.created_at.desc()).limit(1).first()
+            
+            if latest:
+                result = {
+                    'id': latest.id,
+                    'title': latest.title,
+                    'author': latest.author,
+                    'created_at': latest.created_at,
+                    'thumbnail_path': latest.thumbnail_path
+                }
+                
+                # Parse JSON fields if needed
+                if isinstance(result['thumbnail_path'], str):
+                    try:
+                        result['thumbnail_path'] = json.loads(result['thumbnail_path'])
+                    except json.JSONDecodeError:
+                        pass
+                        
+                return result
+            return None
     
     @staticmethod
     def update(id, title, author, description, content, tags, thumbnail_path):
-        global engine
-        session = sessionmaker(bind=engine)()
-
-        # Retrieve the blog post with the given id
-        blog_post = session.query(BlogPost).filter_by(id=id).first()
-
-        # Update the blog post with the new values
-        blog_post.title = title
-        blog_post.author = author
-        blog_post.description = description
-        blog_post.content = content
-        blog_post.thumbnail_path = thumbnail_path
-        blog_post.updated_at = datetime.strftime(datetime.now(),DATETIMEFORMAT)
-
-        # Commit the changes to the database
-        session.commit()
-        session.close()
-        
+        with db_session() as session:
+            blog_post = session.query(BlogPost).filter_by(id=id).first()
+            
+            if not blog_post:
+                return 404
+                
+            blog_post.title = title
+            blog_post.author = author
+            blog_post.description = description
+            blog_post.content = content
+            blog_post.thumbnail_path = thumbnail_path
+            blog_post.updated_at = datetime.strftime(datetime.now(), DATETIMEFORMAT)
+            
         # Update tags separately
         BlogTag.add_tags(id, tags)
-
-    # Add to BlogPost class in dmm.py
-# Update your search endpoint in the BlogPost class in dmm.py
+        
+        # Clear caches
+        cache.delete(f"blog_by_id:{id}")
+        cache.delete("blog_tags")
+        cache.delete("blog_authors")
+        cache.delete("blog_paginated")
+        
+        return True
 
     @staticmethod
     def search(query="", tags=None, author="", page=1, limit=5):
-        global engine
-        blogs = []
-        total = 0
-        total_pages = 0
+        result = BaseRepository.search(
+            model=BlogPost,
+            query=query,
+            tags=tags,
+            author=author,
+            page=page,
+            limit=limit,
+            tag_model=BlogTag,
+            item_id_field="blog_id",
+            tag_getter=BlogTag.get_tags
+        )
         
-        # Convert single tag to list if needed
-        if isinstance(tags, str):
-            tags = [tags]
+        # Process JSON fields if needed
+        for item in result['items']:
+            for field in ['content', 'thumbnail_path']:
+                if field in item and isinstance(item[field], str):
+                    try:
+                        item[field] = json.loads(item[field])
+                    except json.JSONDecodeError:
+                        pass
         
-        if tags and len(tags) > 0:
-            # Get blog IDs that have ALL the selected tags
-            blog_ids = None
-            session = sessionmaker(bind=engine)()
-            
-            for tag in tags:
-                tag_blogs = set([row[0] for row in session.query(BlogTag.blog_id).filter(BlogTag.tag == tag).all()])
-                if blog_ids is None:
-                    blog_ids = tag_blogs
-                else:
-                    blog_ids = blog_ids.intersection(tag_blogs)
-            
-            if blog_ids:
-                blog_ids = list(blog_ids)
-                total = len(blog_ids)
-                
-                # Apply pagination
-                start_idx = (page - 1) * limit
-                end_idx = start_idx + limit
-                page_ids = blog_ids[start_idx:end_idx] if start_idx < total else []
-                
-                # Get blog details
-                for blog_id in page_ids:
-                    blog = session.query(BlogPost).filter(BlogPost.id == blog_id).first()
-                    if blog:
-                        blog_dict = blog.to_dict()
-                        blog_dict['tags'] = BlogTag.get_tags(blog.id)
-                        blogs.append(blog_dict)
-            session.close()
-        
-        elif author:
-            # Search by author
-            session = sessionmaker(bind=engine)()
-            total_query = session.query(BlogPost).filter(BlogPost.author.ilike(f'%{author}%'))
-            total = total_query.count()
-            
-            blogs_query = total_query.order_by(BlogPost.created_at.desc()).offset((page-1)*limit).limit(limit)
-            
-            for blog in blogs_query:
-                blog_dict = blog.to_dict()
-                blog_dict['tags'] = BlogTag.get_tags(blog.id)
-                blogs.append(blog_dict)
-            session.close()
-            
-        elif query:
-            # Search by title or description
-            session = sessionmaker(bind=engine)()
-            total_query = session.query(BlogPost).filter(
-                sqlalchemy.or_(
-                    BlogPost.title.ilike(f'%{query}%'),
-                    BlogPost.description.ilike(f'%{query}%')
-                )
-            )
-            total = total_query.count()
-            
-            blogs_query = total_query.order_by(BlogPost.created_at.desc()).offset((page-1)*limit).limit(limit)
-            
-            for blog in blogs_query:
-                blog_dict = blog.to_dict()
-                blog_dict['tags'] = BlogTag.get_tags(blog.id)
-                blogs.append(blog_dict)
-            session.close()
-        
-        # Calculate total pages
-        total_pages = ceil(total / limit) if total > 0 else 0
-        
-        return {
-            "blogs": blogs,
-            "total": total,
-            "total_pages": total_pages,
-            "page": page
-        }
+        # Rename 'items' key to 'blogs' for API consistency
+        result['blogs'] = result.pop('items')
+        return result
     
     @staticmethod
+    @cached(ttl=60, key_prefix="blog_tags")
     def get_all_tags():
-        global engine
-        session = sessionmaker(bind=engine)()
-        tags = session.query(BlogTag.tag).distinct().all()
-        tags_list = [tag[0] for tag in tags]
-        session.close()
-        
-        return tags_list
+        with db_session() as session:
+            tags = session.query(BlogTag.tag).distinct().all()
+            return sorted([tag[0] for tag in tags])
 
     @staticmethod
+    @cached(ttl=60, key_prefix="blog_authors")
     def get_all_authors():
-        global engine
-        session = sessionmaker(bind=engine)()
-        authors = session.query(BlogPost.author).distinct().all()
-        authors_list = [author[0] for author in authors]
-        session.close()
-        
-        return authors_list
+        with db_session() as session:
+            authors = session.query(BlogPost.author).distinct().all()
+            return sorted([author[0] for author in authors])
     
     @staticmethod
     def query_authors_by_ids(ids):
-        global engine
-        session = sessionmaker(bind=engine)()
-        
-        try:
-            if not ids:
-                return []
-                
-            # Get unique authors from the specified blog IDs
-            authors_query = session.query(BlogPost.author).filter(
-                BlogPost.id.in_(ids)
-            ).distinct()
-            
-            authors = [author[0] for author in authors_query.all() if author[0]]
-            return sorted(authors)
-        finally:
-            session.close()
+        return BaseRepository.query_authors_by_ids(BlogPost, ids)
 
     @staticmethod
     def query_tags_by_ids(ids):
-        global engine
-        session = sessionmaker(bind=engine)()
-        
-        try:
-            if not ids:
-                return []
+        if not ids:
+            return []
+            
+        tags = []
+        for blog_id in ids:
+            blog_tags = BlogTag.get_tags(blog_id)
+            tags.extend(blog_tags)
                 
-            # Get all tags for the specified blog IDs
-            tags = []
-            for blog_id in ids:
-                blog_tags = BlogTag.get_tags(blog_id)
-                tags.extend(blog_tags)
-                
-            # Remove duplicates and sort
-            return sorted(list(set(tags)))
-        finally:
-            session.close()
-
+        # Remove duplicates and sort
+        return sorted(list(set(tags)))
 
     @staticmethod
     def delete(id):
-        global engine
-        session = sessionmaker(bind=engine)()
-        blog_post = session.query(BlogPost).filter_by(id=id).first()
-        
-        if blog_post:
-            session.delete(blog_post)
-            session.commit()
-        
-        session.close()
+        with db_session() as session:
+            blog_post = session.query(BlogPost).filter_by(id=id).first()
+            
+            if blog_post:
+                session.delete(blog_post)
+                
+                # Clear caches
+                cache.delete(f"blog_by_id:{id}")
+                cache.delete("blog_tags")
+                cache.delete("blog_authors")
+                cache.delete("blog_paginated")
+                cache.delete("blog_count")
+                
+                return True
+            
+            return False
 
-class Timeline(Base):
+
+# Blog Tags
+class BlogTag(Base, BaseModel):
+    __tablename__ = 'blog_tags'
+    
+    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
+    blog_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('blog_posts.id', ondelete='CASCADE'))
+    tag = sqlalchemy.Column(sqlalchemy.String(50))
+    
+    # Add indexes for commonly queried columns
+    __table_args__ = (
+        Index('idx_blogtag_blogid', 'blog_id'),
+        Index('idx_blogtag_tag', 'tag'),
+    )
+    
+    @staticmethod
+    def createDatabase():
+        Base.metadata.create_all(engine)
+    
+    @staticmethod
+    def add_tags(blog_id, tags):
+        with db_session() as session:
+            # First remove any existing tags for this blog
+            session.query(BlogTag).filter(BlogTag.blog_id == blog_id).delete()
+            
+            # Add new tags
+            for tag in tags:
+                blog_tag = BlogTag(blog_id=blog_id, tag=tag)
+                session.add(blog_tag)
+                
+        # Clear tag cache
+        cache.delete("blog_tags")
+        cache.delete(f"blog_tags_by_id:{blog_id}")
+    
+    @staticmethod
+    @cached(ttl=30, key_prefix="blog_tags_by_id")
+    def get_tags(blog_id, session=None):
+        if session is None:
+            with db_session() as new_session:
+                tags = new_session.query(BlogTag.tag).filter(BlogTag.blog_id == blog_id).all()
+                return [tag[0] for tag in tags]
+        else:
+            tags = session.query(BlogTag.tag).filter(BlogTag.blog_id == blog_id).all()
+            return [tag[0] for tag in tags]
+    
+    @staticmethod
+    @cached(ttl=30, key_prefix="blogs_by_tag")
+    def find_blogs_by_tag(tag):
+        with db_session() as session:
+            blog_ids = session.query(BlogTag.blog_id).filter(BlogTag.tag == tag).all()
+            return [blog_id[0] for blog_id in blog_ids]
+
+
+# Timeline
+class Timeline(Base, BaseModel):
     __tablename__ = 'timeline'
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
     phase = sqlalchemy.Column(sqlalchemy.Integer)
@@ -453,233 +646,195 @@ class Timeline(Base):
     musicartist = sqlalchemy.Column(sqlalchemy.String(30))
     timelineid = sqlalchemy.Column(sqlalchemy.Integer)
     __table_args__ = (
-        CheckConstraint('phase IN (1, 2, 3, 4, 5, 6, 7, 8, 9)', name='phase_check'),)
+        CheckConstraint('phase IN (1, 2, 3, 4, 5, 6, 7, 8, 9)', name='phase_check'),
+        Index('idx_timeline_phase', 'phase'),
+        Index('idx_timeline_name', 'name'),
+    )
     
-    def to_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-
     @staticmethod
     def createDatabase():
-        global engine
         Base.metadata.create_all(engine)
 
     @staticmethod
     def insert(phase, name, release_date, synopsis, img_path):
-        global engine
-        session = sessionmaker(bind=engine)()
-        project = Timeline(phase=phase, name=name, release_date=release_date, synopsis=synopsis, posterpath=img_path)
-        session.add(project)
-        session.commit()
-        session.close()
+        with db_session() as session:
+            project = Timeline(
+                phase=phase, 
+                name=name, 
+                release_date=release_date, 
+                synopsis=synopsis, 
+                posterpath=img_path
+            )
+            session.add(project)
 
     @staticmethod
+    @cached(ttl=60, key_prefix="timeline_phase")
     def queryPhase(phaseno):
-        global engine
-        session = sessionmaker(bind=engine)()
-        posts = session.query(Timeline).filter(Timeline.phase == phaseno).all()
-        session.close()
+        with db_session() as session:
+            posts = session.query(Timeline).filter(Timeline.phase == phaseno).all()
+            
+            if posts:
+                # Create dict representations inside the session
+                result = [post.to_dict() for post in posts]
+                return result
+            else:
+                return 404
 
-        if posts:
-            jsonoutput = []
-            for i in posts:
-                jsondict = {'id': i.id, 'phase': i.phase, 'name': i.name, 'release_date': i.release_date, 'synopsis': i.synopsis, 'posterpath': i.posterpath,
-                            'castinfo': i.castinfo, 'director': i.director, 'musicartist': i.musicartist, 'timelineid': i.timelineid}
-                jsonoutput.append(jsondict)
-            return jsonoutput
-        else:
-            return 404
-
-    @staticmethod    
+    @staticmethod
+    @cached(ttl=60, key_prefix="timeline_id")  
     def queryId(id):
-        global engine
-        session = sessionmaker(bind=engine)()
-        project = session.query(Timeline).filter(Timeline.id == id).first()
-        session.close()
-        
-        if project:
-            return project.to_dict()
-        else:
-            return 404
+        with db_session() as session:
+            project = session.query(Timeline).filter(Timeline.id == id).first()
+            
+            if project:
+                return project.to_dict()
+            else:
+                return 404
         
     @staticmethod
+    @cached(ttl=300, key_prefix="timeline_all")  # Cache for 5 minutes
     def queryAll():
-        global engine
-        session = sessionmaker(bind=engine)()
-        
-        projects = session.query(Timeline).all()
-        projects_json = []
-        
-        for project in projects:
-            projects_json.append(project.to_dict())
-        
-        session.close()
-        return projects_json
+        with db_session() as session:
+            projects = session.query(Timeline).all()
+            # Create dict representations inside the session
+            return [project.to_dict() for project in projects]
     
     @staticmethod
     def query_by_ids(ids, page=1, limit=5):
-        """
-        Fetches projects by their IDs with pagination
+        result = BaseRepository.query_by_ids(
+            model=Timeline,
+            ids=ids,
+            page=page,
+            limit=limit
+        )
         
-        Args:
-            ids: List of project IDs
-            page: Page number (starting from 1)
-            limit: Number of items per page
-            
-        Returns:
-            dict: Contains projects data, total count, and pagination info
-        """
-        global engine
-        session = sessionmaker(bind=engine)()
-        
-        try:
-            # If no IDs, return empty result
-            if not ids or len(ids) == 0:
-                return {
-                    "projects": [],
-                    "total": 0,
-                    "total_pages": 0,
-                    "page": page
-                }
-            
-            total = len(ids)
-            
-            # Calculate pagination
-            start_idx = (page - 1) * limit
-            end_idx = min(start_idx + limit, total)
-            
-            # Get subset of IDs for this page
-            page_ids = ids[start_idx:end_idx]
-            
-            # Fetch the actual projects
-            projects = []
-            for project_id in page_ids:
-                project = session.query(Timeline).filter(Timeline.id == project_id).first()
-                if project:
-                    projects.append(project.to_dict())
-            
-            total_pages = ceil(total / limit)
-            
-            return {
-                "projects": projects,
-                "total": total,
-                "total_pages": total_pages,
-                "page": page
-            }
-        
-        finally:
-            session.close()
+        # Rename 'items' key to 'projects' for API consistency
+        result['projects'] = result.pop('items')
+        return result
     
     @staticmethod
     def populateNewDB(project):
-        global engine
-        session = sessionmaker(bind=engine)()
-        newProject = Timeline(phase=project.phase, name=project.name, release_date=project.release_date, synopsis=project.synopsis, posterpath=project.posterpath, castinfo=project.castinfo, director=project.director, musicartist=project.musicartist, timelineid=project.timelineid)
-        session.add(newProject)
-        session.commit()
-        session.close()
+        with db_session() as session:
+            newProject = Timeline(
+                phase=project.phase, 
+                name=project.name, 
+                release_date=project.release_date, 
+                synopsis=project.synopsis, 
+                posterpath=project.posterpath, 
+                castinfo=project.castinfo, 
+                director=project.director, 
+                musicartist=project.musicartist, 
+                timelineid=project.timelineid
+            )
+            session.add(newProject)
+            
+        # Clear cache
+        cache.delete("timeline_all")
+        cache.delete(f"timeline_phase:{project.phase}")
         
     @staticmethod
     def forPopulate():
-        global engine
-        session = sessionmaker(bind=engine)()
-        result = session.query(Timeline.name).all()
-        resl = []
-        for i in result:
-            for j in i:
-                resl.append(j)
-        session.close()
-        return resl
+        with db_session() as session:
+            result = session.query(Timeline.name).all()
+            return [j for i in result for j in i]
     
     @staticmethod
     def updateViaTkinter(name, syn, cast, direc, musicd, timelinepos):
-        global engine
-        session = sessionmaker(bind=engine)()
-        timeline = session.query(Timeline).filter(Timeline.name == name).first()
-        if timeline:
-            timeline.synopsis = syn
-            timeline.castinfo = cast
-            timeline.director = direc
-            timeline.musicartist = musicd
-            timeline.timelineid = timelinepos
-            session.commit()
-        session.close()
+        with db_session() as session:
+            timeline = session.query(Timeline).filter(Timeline.name == name).first()
+            if timeline:
+                timeline.synopsis = syn
+                timeline.castinfo = cast
+                timeline.director = direc
+                timeline.musicartist = musicd
+                timeline.timelineid = timelinepos
+                
+                # Cache specific timeline id for faster invalidation
+                timeline_id = timeline.id
+                
+        # Clear cache        
+        cache.delete("timeline_all")
+        cache.delete(f"timeline_id:{timeline_id}")
+        cache.delete(f"timeline_phase:{timeline.phase}")
     
     @staticmethod
     def getTkinterContent(name):
-        global engine
-        session = sessionmaker(bind=engine)()
-        timeline = session.query(Timeline.synopsis, Timeline.musicartist, Timeline.director, Timeline.castinfo).filter(Timeline.name == name).first()
-        if timeline:
-            return timeline
-        session.close()
+        with db_session() as session:
+            return session.query(Timeline.synopsis, Timeline.musicartist, 
+                               Timeline.director, Timeline.castinfo).filter(Timeline.name == name).first()
 
     @staticmethod
     def removeDuplicates():
-        global engine
-        session = sessionmaker(bind=engine)()
-        duplicates = session.query(Timeline).filter(Timeline.id > 23).all()
-        for i in duplicates:
-            session.delete(i)
-            session.commit()
-            session.close()
+        with db_session() as session:
+            duplicates = session.query(Timeline).filter(Timeline.id > 23).all()
+            for item in duplicates:
+                session.delete(item)
+            
+        # Clear cache
+        cache.delete("timeline_all")
+        for i in range(1, 10):  # Clear all phase caches
+            cache.delete(f"timeline_phase:{i}")
 
 
-class Reviews(Base):
+# Reviews
+class Reviews(Base, BaseModel):
     __tablename__ = 'reviews'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
     title = sqlalchemy.Column(sqlalchemy.String(255))
     author = sqlalchemy.Column(sqlalchemy.String(30))
     description = sqlalchemy.Column(sqlalchemy.Text)
-    content = sqlalchemy.Column(sqlalchemy.JSON)  # JSON array for content
+    content = sqlalchemy.Column(sqlalchemy.JSON)
     thumbnail_path = sqlalchemy.Column(sqlalchemy.JSON)
     created_at = sqlalchemy.Column(sqlalchemy.String(75))
     updated_at = sqlalchemy.Column(sqlalchemy.String(75))
-
-    def to_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+    
+    # Add indexes for commonly queried columns
+    __table_args__ = (
+        Index('idx_review_author', 'author'),
+        Index('idx_review_title', 'title'),
+        Index('idx_review_created_at', 'created_at'),
+    )
 
     @staticmethod
     def createDatabase():
-        global engine
         Base.metadata.create_all(engine)
 
     @staticmethod
     def insertReview(title, author, description, content, tags, thumbnail_path):
-        global engine
-        session = sessionmaker(bind=engine)()
-        review = Reviews(
-            title=title,
-            author=author,
-            description=description,
-            content=content,
-            thumbnail_path=thumbnail_path, 
-            created_at=datetime.strftime(datetime.now(), DATETIMEFORMAT),
-            updated_at=""
-        )
-        session.add(review)
-        session.commit()
+        with db_session() as session:
+            review = Reviews(
+                title=title,
+                author=author,
+                description=description,
+                content=content,
+                thumbnail_path=thumbnail_path, 
+                created_at=datetime.strftime(datetime.now(), DATETIMEFORMAT),
+                updated_at=""
+            )
+            session.add(review)
+            session.flush()  # Get ID before committing
+            review_id = review.id
 
         # Add tags after creating review
-        ReviewTag.add_tags(review.id, tags)
-        session.close()
-
-
-    @staticmethod
-    def count():
-        global engine
-        session = sessionmaker(bind=engine)()
-        total = session.query(Reviews).count()
-        session.close()
-        return total
-
-    @staticmethod
-    def queryPaginated(page, limit=3):
-        global engine
-        Session = sessionmaker(bind=engine)
-        session = Session()
+        ReviewTag.add_tags(review_id, tags)
         
-        try:
+        # Clear caches
+        cache.delete("review_tags")
+        cache.delete("review_authors")
+        
+        return review_id
+
+    @staticmethod
+    @cached(ttl=60, key_prefix="review_count")
+    def count():
+        with db_session() as session:
+            return session.query(Reviews).count()
+
+    @staticmethod
+    @cached(ttl=30, key_prefix="review_paginated")
+    def queryPaginated(page, limit=3):
+        with db_session(expire_on_commit=False) as session:
             # Get total count of records
             total_count = session.query(Reviews).count()
             
@@ -699,13 +854,13 @@ class Reviews(Base):
                 .all()
             )
 
-            # Convert reviews to JSON
+            # Process reviews INSIDE the session
             reviews_json = []
             for review in reviews:
-                review_dict = review.to_dict()
+                review_dict = review.to_dict()  # Convert to dict inside session
                 
                 # Get tags from ReviewTag
-                review_dict['tags'] = ReviewTag.get_tags(review.id)
+                review_dict['tags'] = ReviewTag.get_tags(review.id, session=session)
                 
                 # Ensure JSON fields are properly parsed
                 for field in ['content', 'thumbnail_path']:
@@ -718,412 +873,268 @@ class Reviews(Base):
                 reviews_json.append(review_dict)
 
             return reviews_json
-            
-        finally:
-            session.close()
 
     @staticmethod
+    @cached(ttl=10, key_prefix="review_by_id")
     def query(id):
-        global engine
-        session = sessionmaker(bind=engine)()
-        review = session.query(Reviews).filter(Reviews.id == id).first()
-
-        session.close()
-
-        if review:
-            review_dict = review.to_dict()
-            # Get tags from ReviewTag
-            review_dict['tags'] = ReviewTag.get_tags(review.id)
-            return review_dict
-        else:
-            return 404
+        with db_session() as session:
+            review = session.query(Reviews).filter(Reviews.id == id).first()
+            
+            if review:
+                review_dict = review.to_dict()
+                # Get tags from ReviewTag
+                review_dict['tags'] = ReviewTag.get_tags(review.id, session=session)
+                
+                # Parse JSON fields if needed
+                for field in ['content', 'thumbnail_path']:
+                    if field in review_dict and isinstance(review_dict[field], str):
+                        try:
+                            review_dict[field] = json.loads(review_dict[field])
+                        except json.JSONDecodeError:
+                            pass
+                            
+                return review_dict
+            else:
+                return 404
     
     @staticmethod
+    @cached(ttl=30, key_prefix="review_latest")
     def queryLatest():
-        global engine
-        Session = sessionmaker(bind=engine)
-        session = Session()
-        
-        latest = session.query(Reviews).with_entities(
-            Reviews.id,
-            Reviews.title,
-            Reviews.author,
-            Reviews.created_at,
-            Reviews.thumbnail_path
-        ).order_by(Reviews.created_at.desc()).limit(3).all()
-        
-        session.close()
-        
-        latest_dict = [dict(id=review.id, title=review.title, author=review.author, created_at=review.created_at, thumbnail_path=review.thumbnail_path) for review in latest]
-        
-        return latest_dict
+        with db_session() as session:
+            latest = session.query(Reviews).with_entities(
+                Reviews.id,
+                Reviews.title,
+                Reviews.author,
+                Reviews.created_at,
+                Reviews.thumbnail_path
+            ).order_by(Reviews.created_at.desc()).limit(3).all()
+            
+            latest_dict = []
+            for review in latest:
+                review_data = {
+                    'id': review.id,
+                    'title': review.title,
+                    'author': review.author,
+                    'created_at': review.created_at,
+                    'thumbnail_path': review.thumbnail_path
+                }
+                
+                # Parse JSON fields if needed
+                if isinstance(review_data['thumbnail_path'], str):
+                    try:
+                        review_data['thumbnail_path'] = json.loads(review_data['thumbnail_path'])
+                    except json.JSONDecodeError:
+                        pass
+                        
+                latest_dict.append(review_data)
+            
+            return latest_dict
     
     @staticmethod
     def query_by_ids(ids, page=1, limit=5):
-        """
-        Fetches reviews by their IDs with pagination
+        result = BaseRepository.query_by_ids(
+            model=Reviews,
+            ids=ids,
+            page=page,
+            limit=limit,
+            include_tags=True,
+            tag_getter=ReviewTag.get_tags
+        )
         
-        Args:
-            ids: List of review IDs
-            page: Page number (starting from 1)
-            limit: Number of items per page
-            
-        Returns:
-            dict: Contains reviews data, total count, and pagination info
-        """
-        global engine
-        session = sessionmaker(bind=engine)()
-        
-        try:
-            # If no IDs, return empty result
-            if not ids or len(ids) == 0:
-                return {
-                    "blogs": [],  # Using "blogs" key for consistency with API
-                    "total": 0,
-                    "total_pages": 0,
-                    "page": page
-                }
-            
-            total = len(ids)
-            
-            # Calculate pagination
-            start_idx = (page - 1) * limit
-            end_idx = min(start_idx + limit, total)
-            
-            # Get subset of IDs for this page
-            page_ids = ids[start_idx:end_idx]
-            
-            # Fetch the actual reviews
-            reviews = []
-            for review_id in page_ids:
-                review = session.query(Reviews).filter(Reviews.id == review_id).first()
-                if review:
-                    review_dict = review.to_dict()
-                    review_dict['tags'] = ReviewTag.get_tags(review.id)
-                    reviews.append(review_dict)
-            
-            total_pages = ceil(total / limit)
-            
-            return {
-                "blogs": reviews,  # Using "blogs" key for consistency with API
-                "total": total,
-                "total_pages": total_pages,
-                "page": page
-            }
-        
-        finally:
-            session.close()
+        # Rename 'items' key to 'blogs' for API consistency
+        result['reviews'] = result.pop('items')
+        return result
 
     @staticmethod
     def query_authors_by_ids(ids):
-        global engine
-        session = sessionmaker(bind=engine)()
-        
-        try:
-            if not ids:
-                return []
-                
-            # Get unique authors from the specified review IDs
-            authors_query = session.query(Reviews.author).filter(
-                Reviews.id.in_(ids)
-            ).distinct()
-            
-            authors = [author[0] for author in authors_query.all() if author[0]]
-            return sorted(authors)
-        finally:
-            session.close()
+        return BaseRepository.query_authors_by_ids(Reviews, ids)
 
     @staticmethod
     def query_tags_by_ids(ids):
-        global engine
-        session = sessionmaker(bind=engine)()
-        
-        try:
-            if not ids:
-                return []
+        if not ids:
+            return []
                 
-            # Get all tags for the specified review IDs
-            tags = []
-            for review_id in ids:
-                review_tags = ReviewTag.get_tags(review_id)
-                tags.extend(review_tags)
+        # Get all tags for the specified review IDs
+        tags = []
+        for review_id in ids:
+            review_tags = ReviewTag.get_tags(review_id)
+            tags.extend(review_tags)
                 
-            # Remove duplicates and sort
-            return sorted(list(set(tags)))
-        finally:
-            session.close()
+        # Remove duplicates and sort
+        return sorted(list(set(tags)))
 
-    
     @staticmethod
-    def updateReview(id, title, author, description, content, tags, thumbnail_path):
-        global engine
-        session = sessionmaker(bind=engine)()
-        review = session.query(Reviews).filter_by(id=id).first()
+    def update(id, title, author, description, content, tags, thumbnail_path):
+        with db_session() as session:
+            review = session.query(Reviews).filter_by(id=id).first()
 
-        if not review:
-            session.close()
-            return 404
+            if not review:
+                return 404
 
-        review.title = title
-        review.author = author
-        review.description = description
-        review.content = content
-        review.thumbnail_path = thumbnail_path
-        review.updated_at = datetime.strftime(datetime.now(), DATETIMEFORMAT)
-
-        session.commit()
-        session.close()
+            review.title = title
+            review.author = author
+            review.description = description
+            review.content = content
+            review.thumbnail_path = thumbnail_path
+            review.updated_at = datetime.strftime(datetime.now(), DATETIMEFORMAT)
 
         # Update tags
         ReviewTag.add_tags(id, tags)
+        
+        # Clear caches
+        cache.delete(f"review_by_id:{id}")
+        cache.delete("review_tags")
+        cache.delete("review_authors")
+        cache.delete("review_paginated")
+        
+        return True
 
     @staticmethod
-    def deleteReview(id):
-        global engine
-        session = sessionmaker(bind=engine)()
-        review = session.query(Reviews).filter_by(id=id).first()
+    def delete(id):
+        with db_session() as session:
+            review = session.query(Reviews).filter_by(id=id).first()
 
-        if review:
-            session.delete(review)
-            session.commit()
+            if review:
+                session.delete(review)
+                
+                # Clear caches
+                cache.delete(f"review_by_id:{id}")
+                cache.delete("review_tags")
+                cache.delete("review_authors")
+                cache.delete("review_paginated")
+                cache.delete("review_count")
+                cache.delete("review_latest")
+                
+                return True
+            
+            return False
 
-        session.close()
-
-    
-    # Add to BlogPost class in dmm.py
     @staticmethod
     def search(query="", tags=None, author="", page=1, limit=5):
-        global engine
-        reviews = []
-        total = 0
-        total_pages = 0
-
-        # Normalize tags
-        if isinstance(tags, str):
-            tags = [tags]
-
-        session = sessionmaker(bind=engine)()
-
-        try:
-            # Search by tags (intersection logic like BlogPost)
-            if tags and len(tags) > 0:
-                review_ids = None
-                for tag in tags:
-                    tag_reviews = set([row[0] for row in session.query(ReviewTag.review_id).filter(ReviewTag.tag == tag).all()])
-                    if review_ids is None:
-                        review_ids = tag_reviews
-                    else:
-                        review_ids = review_ids.intersection(tag_reviews)
-
-                if review_ids:
-                    review_ids = list(review_ids)
-                    total = len(review_ids)
-
-                    start_idx = (page - 1) * limit
-                    end_idx = start_idx + limit
-                    page_ids = review_ids[start_idx:end_idx] if start_idx < total else []
-
-                    for review_id in page_ids:
-                        review = session.query(Reviews).filter(Reviews.id == review_id).first()
-                        if review:
-                            review_dict = review.to_dict()
-                            review_dict['tags'] = ReviewTag.get_tags(review.id)
-                            reviews.append(review_dict)
-
-            elif author:
-                total_query = session.query(Reviews).filter(Reviews.author.ilike(f'%{author}%'))
-                total = total_query.count()
-                results = total_query.order_by(Reviews.created_at.desc()).offset((page - 1) * limit).limit(limit)
-                for review in results:
-                    review_dict = review.to_dict()
-                    review_dict['tags'] = ReviewTag.get_tags(review.id)
-                    reviews.append(review_dict)
-
-            elif query:
-                total_query = session.query(Reviews).filter(
-                    sqlalchemy.or_(
-                        Reviews.title.ilike(f'%{query}%'),
-                        Reviews.description.ilike(f'%{query}%')
-                    )
-                )
-                total = total_query.count()
-                results = total_query.order_by(Reviews.created_at.desc()).offset((page - 1) * limit).limit(limit)
-                for review in results:
-                    review_dict = review.to_dict()
-                    review_dict['tags'] = ReviewTag.get_tags(review.id)
-                    reviews.append(review_dict)
-
-            # Pagination
-            total_pages = ceil(total / limit) if total > 0 else 0
-
-            return {
-                "blogs": reviews,  # ✅ Return under 'blogs' to match blog API
-                "total": total,
-                "total_pages": total_pages,
-                "page": page
-            }
-
-        finally:
-            session.close()
+        result = BaseRepository.search(
+            model=Reviews,
+            query=query,
+            tags=tags,
+            author=author,
+            page=page,
+            limit=limit,
+            tag_model=ReviewTag,
+            item_id_field="review_id",
+            tag_getter=ReviewTag.get_tags
+        )
+        
+        # Process JSON fields if needed
+        for item in result['items']:
+            for field in ['content', 'thumbnail_path']:
+                if field in item and isinstance(item[field], str):
+                    try:
+                        item[field] = json.loads(item[field])
+                    except json.JSONDecodeError:
+                        pass
+        
+        # Rename 'items' key to 'reviews' for API consistency
+        result['reviews'] = result.pop('items')
+        return result
 
     @staticmethod
+    @cached(ttl=60, key_prefix="review_tags")
     def get_all_tags():
-        global engine
-        session = sessionmaker(bind=engine)()
-        tags = session.query(ReviewTag.tag).distinct().all()
-        tags_list = [tag[0] for tag in tags]
-        session.close()
-        
-        return tags_list
+        with db_session() as session:
+            tags = session.query(ReviewTag.tag).distinct().all()
+            return sorted([tag[0] for tag in tags])
 
     @staticmethod
+    @cached(ttl=60, key_prefix="review_authors")
     def get_all_authors():
-        global engine
-        session = sessionmaker(bind=engine)()
-        authors = session.query(Reviews.author).distinct().all()
-        authors_list = [author[0] for author in authors]
-        session.close()
-        
-        return authors_list
+        with db_session() as session:
+            authors = session.query(Reviews.author).distinct().all()
+            return sorted([author[0] for author in authors])
 
 
-class BlogTag(Base):
-    __tablename__ = 'blog_tags'
-    
-    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
-    blog_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('blog_posts.id', ondelete='CASCADE'))
-    tag = sqlalchemy.Column(sqlalchemy.String(50))
-    
-    @staticmethod
-    def createDatabase():
-        global engine
-        Base.metadata.create_all(engine)
-    
-    @staticmethod
-    def add_tags(blog_id, tags):
-        global engine
-        session = sessionmaker(bind=engine)()
-        
-        # First remove any existing tags for this blog
-        session.query(BlogTag).filter(BlogTag.blog_id == blog_id).delete()
-        
-        # Add new tags
-        for tag in tags:
-            blog_tag = BlogTag(blog_id=blog_id, tag=tag)
-            session.add(blog_tag)
-            
-        session.commit()
-        session.close()
-    
-    @staticmethod
-    def get_tags(blog_id):
-        global engine
-        session = sessionmaker(bind=engine)()
-        
-        tags = session.query(BlogTag.tag).filter(BlogTag.blog_id == blog_id).all()
-        tags_list = [tag[0] for tag in tags]
-        
-        session.close()
-        return tags_list
-    
-    @staticmethod
-    def find_blogs_by_tag(tag):
-        global engine
-        session = sessionmaker(bind=engine)()
-        
-        blog_ids = session.query(BlogTag.blog_id).filter(BlogTag.tag == tag).all()
-        blog_ids_list = [blog_id[0] for blog_id in blog_ids]
-        
-        session.close()
-        return blog_ids_list
-
-
-class ReviewTag(Base):
+class ReviewTag(Base, BaseModel):
     __tablename__ = 'review_tags'
     
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
     review_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('reviews.id', ondelete='CASCADE'))
     tag = sqlalchemy.Column(sqlalchemy.String(50))
     
+    # Add indexes for commonly queried columns
+    __table_args__ = (
+        Index('idx_reviewtag_reviewid', 'review_id'),
+        Index('idx_reviewtag_tag', 'tag'),
+    )
+    
     @staticmethod
     def createDatabase():
-        global engine
         Base.metadata.create_all(engine)
     
     @staticmethod
     def add_tags(review_id, tags):
-        global engine
-        session = sessionmaker(bind=engine)()
-        
-        # First remove any existing tags for this review
-        session.query(ReviewTag).filter(ReviewTag.review_id == review_id).delete()
-        
-        # Add new tags
-        for tag in tags:
-            review_tag = ReviewTag(review_id=review_id, tag=tag)
-            session.add(review_tag)
+        with db_session() as session:
+            # First remove any existing tags for this review
+            session.query(ReviewTag).filter(ReviewTag.review_id == review_id).delete()
             
-        session.commit()
-        session.close()
+            # Add new tags
+            for tag in tags:
+                review_tag = ReviewTag(review_id=review_id, tag=tag)
+                session.add(review_tag)
+                
+        # Clear tag cache with more specific key pattern
+        cache.delete("review_tags")
+        cache.delete(f"review_tags_by_id:{review_id}")
     
     @staticmethod
-    def get_tags(review_id):
-        global engine
-        session = sessionmaker(bind=engine)()
-        
-        tags = session.query(ReviewTag.tag).filter(ReviewTag.review_id == review_id).all()
-        tags_list = [tag[0] for tag in tags]
-        
-        session.close()
-        return tags_list
+    @cached(ttl=30, key_prefix="review_tags_by_id")
+    def get_tags(review_id, session=None):
+        if session is None:
+            with db_session() as new_session:
+                tags = new_session.query(ReviewTag.tag).filter(ReviewTag.review_id == review_id).all()
+                return [tag[0] for tag in tags]
+        else:
+            tags = session.query(ReviewTag.tag).filter(ReviewTag.review_id == review_id).all()
+            return [tag[0] for tag in tags]
     
     @staticmethod
+    @cached(ttl=30, key_prefix="reviews_by_tag")
     def find_reviews_by_tag(tag):
-        global engine
-        session = sessionmaker(bind=engine)()
+        with db_session() as session:
+            review_ids = session.query(ReviewTag.review_id).filter(ReviewTag.tag == tag).all()
+            return [review_id[0] for review_id in review_ids]
+
+# Migration code (only run when needed)
+def migrate_tags():
+    with db_session() as session:
+        # Migrate blog tags
+        blogs = session.query(BlogPost).all()
+        for blog in blogs:
+            if hasattr(blog, 'tags') and blog.tags:
+                tags = blog.tags
+                if isinstance(tags, str):
+                    try:
+                        tags = json.loads(tags)
+                    except json.JSONDecodeError:
+                        tags = []
+                BlogTag.add_tags(blog.id, tags)
         
-        review_ids = session.query(ReviewTag.review_id).filter(ReviewTag.tag == tag).all()
-        review_ids_list = [review_id[0] for review_id in review_ids]
-        
-        session.close()
-        return review_ids_list
+        # Migrate review tags
+        reviews = session.query(Reviews).all()
+        for review in reviews:
+            if hasattr(review, 'tags') and review.tags:
+                tags = review.tags
+                if isinstance(tags, str):
+                    try:
+                        tags = json.loads(tags)
+                    except json.JSONDecodeError:
+                        tags = []
+                ReviewTag.add_tags(review.id, tags)
+    
+    print('Tag migration complete')
 
 
 if __name__ == '__main__':
-    # Create new tables for tags
-    BlogTag.createDatabase()
-    ReviewTag.createDatabase()
+    # Create tables if they don't exist
+    Base.metadata.create_all(engine)
     
-    # Add migration code to move existing tags to new tables
-    session = sessionmaker(bind=engine)()
-    
-    # Migrate blog tags
-    blogs = session.query(BlogPost).all()
-    for blog in blogs:
-        if blog.tags:
-            tags = blog.tags
-            if isinstance(tags, str):
-                try:
-                    tags = json.loads(tags)
-                except json.JSONDecodeError:
-                    tags = []
-            BlogTag.add_tags(blog.id, tags)
-    
-    # Migrate review tags
-    reviews = session.query(Reviews).all()
-    for review in reviews:
-        if review.tags:
-            tags = review.tags
-            if isinstance(tags, str):
-                try:
-                    tags = json.loads(tags)
-                except json.JSONDecodeError:
-                    tags = []
-            ReviewTag.add_tags(review.id, tags)
-    
-    # Optionally, you could remove the tags column from the original tables
-    # after migration if you no longer need it
-    # This would require altering the table schema
-    
-    session.close()
-    print('Tag migration complete')
+    # Add any required maintenance or migration steps
+    # Uncomment if needed:
+    # migrate_tags()

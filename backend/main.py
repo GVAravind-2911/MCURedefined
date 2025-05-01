@@ -301,9 +301,11 @@ def liked():
     # Return data based on requested content type
     if content_type == 'blogs':
         liked_blogs = BlogPost.query_by_ids(user_liked['blogs'], page, limit)
+        print(liked_blogs)
         return jsonify(liked_blogs)
     elif content_type == 'reviews':
         liked_reviews = Reviews.query_by_ids(user_liked['reviews'], page, limit)
+        print(liked_reviews)
         return jsonify(liked_reviews)
     elif content_type == 'projects':
         liked_projects = Timeline.query_by_ids(user_liked['projects'], page, limit)
