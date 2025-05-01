@@ -177,3 +177,81 @@ export const reviewInteraction = pgTable("review_interaction", {
 
 export type ReviewInteraction = typeof reviewInteraction.$inferSelect;
 export type NewReviewInteraction = typeof reviewInteraction.$inferInsert;
+
+// Add these after your existing review interaction tables
+
+// Blog Comment Table
+export const blogComment = pgTable("blog_comment", {
+	id: text("id").primaryKey(),
+	blogId: integer("blog_id").notNull(),
+	userId: text("user_id")
+		.notNull()
+		.references(() => user.id, { onDelete: "cascade" }),
+	parentId: text("parent_id").references(() => blogComment.id, {
+		onDelete: "cascade",
+	}),
+	content: text("content").notNull(),
+	createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+	updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+	deleted: boolean("deleted").notNull().default(false),
+});
+
+export type BlogComment = typeof blogComment.$inferSelect;
+export type NewBlogComment = typeof blogComment.$inferInsert;
+
+export const blogCommentLike = pgTable(
+	"blog_comment_like",
+	{
+		commentId: text("comment_id")
+			.notNull()
+			.references(() => blogComment.id, { onDelete: "cascade" }),
+		userId: text("user_id")
+			.notNull()
+			.references(() => user.id, { onDelete: "cascade" }),
+		createdAt: timestamp("created_at")
+			.notNull()
+			.default(sql`CURRENT_TIMESTAMP`),
+	},
+	(table) => [primaryKey({ columns: [table.commentId, table.userId] })],
+);
+
+export type BlogCommentLike = typeof blogCommentLike.$inferSelect;
+export type NewBlogCommentLike = typeof blogCommentLike.$inferInsert;
+
+// Review Comment Table
+export const reviewComment = pgTable("review_comment", {
+	id: text("id").primaryKey(),
+	reviewId: integer("review_id").notNull(),
+	userId: text("user_id")
+		.notNull()
+		.references(() => user.id, { onDelete: "cascade" }),
+	parentId: text("parent_id").references(() => reviewComment.id, {
+		onDelete: "cascade",
+	}),
+	content: text("content").notNull(),
+	createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+	updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+	deleted: boolean("deleted").notNull().default(false),
+});
+
+export type ReviewComment = typeof reviewComment.$inferSelect;
+export type NewReviewComment = typeof reviewComment.$inferInsert;
+
+export const reviewCommentLike = pgTable(
+	"review_comment_like",
+	{
+		commentId: text("comment_id")
+			.notNull()
+			.references(() => reviewComment.id, { onDelete: "cascade" }),
+		userId: text("user_id")
+			.notNull()
+			.references(() => user.id, { onDelete: "cascade" }),
+		createdAt: timestamp("created_at")
+			.notNull()
+			.default(sql`CURRENT_TIMESTAMP`),
+	},
+	(table) => [primaryKey({ columns: [table.commentId, table.userId] })],
+);
+
+export type ReviewCommentLike = typeof reviewCommentLike.$inferSelect;
+export type NewReviewCommentLike = typeof reviewCommentLike.$inferInsert;

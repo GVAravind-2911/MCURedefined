@@ -5,7 +5,6 @@ import React from "react";
 import { notFound } from "next/navigation";
 import moment from "moment";
 import axios from "axios";
-import SimilarBlog from "@/components/edit/SimilarBlog";
 import parse from "html-react-parser";
 import ScriptEmbed from "@/components/edit/ScriptEmbed";
 import Image from "next/image";
@@ -18,6 +17,8 @@ import { getUserLikedBlog } from "@/db/blog-likes";
 import { getBlogInteractions, incrementBlogView } from "@/db/blog-interactions";
 import Link from "next/link";
 import ErrorMessage from "@/components/main/ErrorMessage";
+import CommentSection from "@/components/comments/DynamicComment";
+import FixedSidebar from "@/components/blog/FixedSidebar";
 
 interface PageProps {
 	params: Promise<{
@@ -245,18 +246,9 @@ export default async function BlogPage(props: PageProps): Promise<JSX.Element> {
 					<div className="contentsmain">
 						<div className="maincontent">{contentElements}</div>
 					</div>
+					<CommentSection contentId={blog.id} contentType="blog" />
 				</div>
-				<div className="otherblogs">
-					<h2 className="latestblogs">Latest Blogs</h2>
-					<hr className="separator" />
-					{latestBlogs.map((article: Article, index: number) => (
-						<React.Fragment key={article.title}>
-							<SimilarBlog articles={article} />
-							{index < latestBlogs.length - 1 && <hr className="separator" />}
-						</React.Fragment>
-					))}
-					<hr className="separator" />
-				</div>
+				<FixedSidebar latestBlogs={latestBlogs} isReview={false} />
 			</div>
 		</>
 	);

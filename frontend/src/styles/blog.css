@@ -20,12 +20,19 @@
 	src: url("../fonts/BentonSans\ Comp\ Black.otf");
 }
 
+body,
+html {
+	background-color: #121212;
+}
+
 /* Layout */
 .layout {
 	display: flex;
 	flex-direction: row;
 	width: 100%;
 	gap: 2.5%;
+	position: relative;
+	overflow-x: hidden;
 }
 
 .separator {
@@ -37,20 +44,57 @@
 
 .otherblogs {
 	color: azure;
-	width: 25%;
-	margin-top: 4.5%;
-	margin-right: 1.5%;
+	width: 22%;
+	margin-right: 3%;
 	display: flex;
 	flex-direction: column;
 	gap: 1%;
+	position: fixed;
+	right: 3%;
+	top: 120px;
+	max-height: calc(100vh - 120px);
+	overflow-y: auto;
+	scrollbar-width: thin;
+	scrollbar-color: #ec1d24 rgba(40, 40, 40, 0.3);
+	padding-right: 10px;
+	z-index: 100;
+}
+
+.otherblogs::-webkit-scrollbar {
+	width: 6px;
+}
+
+.otherblogs::-webkit-scrollbar-track {
+	background: rgba(40, 40, 40, 0.3);
+	border-radius: 10px;
+}
+
+.otherblogs::-webkit-scrollbar-thumb {
+	background-color: rgba(236, 29, 36, 0.7);
+	border-radius: 10px;
+}
+
+.latestblogs {
+	font-family: "BentonSansBold", sans-serif;
+	color: #ec1d24;
+	text-align: center;
+	margin: 15px 0 20px;
+	position: sticky;
+	top: 0;
+	background-color: #121212;
+	padding: 5px 0;
+	z-index: 2;
 }
 
 .contents {
 	width: 60%;
+	margin-left: 5%;
+	margin-right: 25%;
 	margin-bottom: 25px;
 	margin-top: 1%;
 	border-radius: 5px;
-	margin-left: 13.5%;
+	margin-left: 5%;
+	padding-right: 0; /* Remove excessive padding */
 }
 
 /* Blog header section */
@@ -459,11 +503,19 @@
 		flex-direction: column;
 	}
 
-	.otherblogs,
+	.otherblogs {
+		position: static !important;
+		transform: none !important;
+		width: 90% !important;
+		max-height: none !important;
+		margin: 40px auto !important;
+		padding-right: 0;
+		z-index: auto !important;
+	}
 	.contents {
+		order: -1; /* Make main content appear first */
 		width: 90%;
-		margin-left: auto;
-		margin-right: auto;
+		margin: 0 auto;
 	}
 }
 

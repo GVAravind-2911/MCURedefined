@@ -38,6 +38,9 @@ export async function middleware(request: NextRequest) {
 		pathname.includes("release-slate") ||
 		pathname.includes("reviews")
 	) {
+		if (!session) {
+			return NextResponse.next();
+		}
 		if (!session.user.emailVerified) {
 			return NextResponse.redirect(new URL("/auth/verify-email", request.url));
 		}

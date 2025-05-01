@@ -157,21 +157,21 @@
 }
 
 .search-button {
-    background-color: transparent;
-    color: rgba(255, 255, 255, 0.7);
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-    border-left: 1px solid rgba(255, 255, 255, 0.2);
+	background-color: transparent;
+	color: rgba(255, 255, 255, 0.7);
+	border: none;
+	padding: 10px 20px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s ease;
+	border-left: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .search-button:hover {
-    background-color: rgba(236, 29, 36, 0.2);
-    color: white;
+	background-color: rgba(236, 29, 36, 0.2);
+	color: white;
 }
 
 .search-clear-button {

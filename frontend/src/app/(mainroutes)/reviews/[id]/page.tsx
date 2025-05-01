@@ -4,13 +4,14 @@ import type { BlogData, ContentBlock, Article } from "@/types/BlogTypes";
 import React from "react";
 import moment from "moment";
 import axios from "axios";
-import SimilarBlog from "@/components/edit/SimilarBlog";
+import FixedSidebar from "@/components/blog/FixedSidebar";
 import parse from "html-react-parser";
 import ScriptEmbed from "@/components/edit/ScriptEmbed";
 import Image from "next/image";
 import { auth } from "@/lib/auth/auth";
 import ReviewLikeButton from "@/components/review/ReviewLikeButton";
 import ReviewShareButton from "@/components/review/ReviewShareButton";
+import CommentSection from "@/components/comments/DynamicComment";
 import ErrorMessage from "@/components/main/ErrorMessage";
 import "@/styles/blog.css";
 import { headers } from "next/headers";
@@ -260,24 +261,9 @@ export default async function ReviewPage(
 					<div className="contentsmain">
 						<div className="maincontent">{contentElements}</div>
 					</div>
+					<CommentSection contentId={blog.id} contentType="review" />
 				</div>
-				<div className="otherblogs">
-					<h2 className="latestblogs">Latest Reviews</h2>
-					<hr className="separator" />
-					{latestBlogs.length > 0 ? (
-						latestBlogs.map((article: Article, index: number) => (
-							<React.Fragment key={article.title}>
-								<SimilarBlog articles={article} />
-								{index < latestBlogs.length - 1 && <hr className="separator" />}
-							</React.Fragment>
-						))
-					) : (
-						<p className="no-reviews">
-							No other reviews available at the moment
-						</p>
-					)}
-					<hr className="separator" />
-				</div>
+				<FixedSidebar latestBlogs={latestBlogs} isReview={true} />
 			</div>
 		</>
 	);
