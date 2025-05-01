@@ -1,5 +1,5 @@
 import type React from "react";
-import HomeComponent from "@/components/HomeComponent";
+import HomeComponent from "@/components/main/HomeComponent";
 import "@/styles/enhanced-home.css";
 import axios from "axios";
 

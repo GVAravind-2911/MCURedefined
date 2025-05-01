@@ -2,11 +2,11 @@
 
 import type { JSX } from "react";
 import type { AxiosError } from "axios";
-import BlockWrapper from "@/components/BlockWrapper";
-import EmbedBlock from "@/components/EmbedBlock";
-import ImageBlock from "@/components/ImageBlock";
-import TextBlock from "@/components/TextBlock";
-import ThumbnailBlock from "@/components/ThumbnailBlock";
+import BlockWrapper from "@/components/edit/BlockWrapper";
+import EmbedBlock from "@/components/edit/EmbedBlock";
+import ImageBlock from "@/components/edit/ImageBlock";
+import TextBlock from "@/components/edit/TextBlock";
+import ThumbnailBlock from "@/components/edit/ThumbnailBlock";
 import axios from "axios";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";

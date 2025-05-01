@@ -2,11 +2,11 @@
 
 import { useState, useEffect, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
-import BlockWrapper from "@/components/BlockWrapper";
-import EmbedBlock from "@/components/EmbedBlock";
-import ImageBlock from "@/components/ImageBlock";
-import TextBlock from "@/components/TextBlock";
-import ThumbnailBlock from "@/components/ThumbnailBlock";
+import BlockWrapper from "@/components/edit/BlockWrapper";
+import EmbedBlock from "@/components/edit/EmbedBlock";
+import ImageBlock from "@/components/edit/ImageBlock";
+import TextBlock from "@/components/edit/TextBlock";
+import ThumbnailBlock from "@/components/edit/ThumbnailBlock";
 import "@/styles/editblogpage.css";
 
 type ContentBlock = {

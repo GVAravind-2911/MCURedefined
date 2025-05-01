@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import parse from "html-react-parser";
-import ScriptEmbed from "@/components/ScriptEmbed";
+import ScriptEmbed from "@/components/edit/ScriptEmbed";
 import moment from "moment";
 import Image from "next/image";
 import "@/styles/blog.css";

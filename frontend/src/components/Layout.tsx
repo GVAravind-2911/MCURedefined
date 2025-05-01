@@ -1,7 +1,7 @@
 import type { LayoutProps } from "@/types/StructureTypes";
 import type React from "react";
-import Footer from "./Footer";
-import HeaderWrapper from "./HeaderWrapper";
+import Footer from "./main/Footer";
+import HeaderWrapper from "./main/HeaderWrapper";
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
 	return (
