@@ -153,6 +153,62 @@ class BlogPost(Base):
             return post_dict
         else:
             return 404
+    
+    @staticmethod
+    def query_by_ids(ids, page=1, limit=5):
+        """
+        Fetches blog posts by their IDs with pagination
+        
+        Args:
+            ids: List of blog post IDs
+            page: Page number (starting from 1)
+            limit: Number of items per page
+            
+        Returns:
+            dict: Contains blogs data, total count, and pagination info
+        """
+        global engine
+        session = sessionmaker(bind=engine)()
+        
+        try:
+            # If no IDs, return empty result
+            if not ids or len(ids) == 0:
+                return {
+                    "blogs": [],
+                    "total": 0,
+                    "total_pages": 0,
+                    "page": page
+                }
+            
+            total = len(ids)
+            
+            # Calculate pagination
+            start_idx = (page - 1) * limit
+            end_idx = min(start_idx + limit, total)
+            
+            # Get subset of IDs for this page
+            page_ids = ids[start_idx:end_idx]
+            
+            # Fetch the actual blog posts
+            blogs = []
+            for blog_id in page_ids:
+                blog = session.query(BlogPost).filter(BlogPost.id == blog_id).first()
+                if blog:
+                    blog_dict = blog.to_dict()
+                    blog_dict['tags'] = BlogTag.get_tags(blog.id)
+                    blogs.append(blog_dict)
+            
+            total_pages = ceil(total / limit)
+            
+            return {
+                "blogs": blogs,
+                "total": total,
+                "total_pages": total_pages,
+                "page": page
+            }
+        
+        finally:
+            session.close()
         
     def queryLatest():
         global engine
@@ -331,6 +387,46 @@ class BlogPost(Base):
         session.close()
         
         return authors_list
+    
+    @staticmethod
+    def query_authors_by_ids(ids):
+        global engine
+        session = sessionmaker(bind=engine)()
+        
+        try:
+            if not ids:
+                return []
+                
+            # Get unique authors from the specified blog IDs
+            authors_query = session.query(BlogPost.author).filter(
+                BlogPost.id.in_(ids)
+            ).distinct()
+            
+            authors = [author[0] for author in authors_query.all() if author[0]]
+            return sorted(authors)
+        finally:
+            session.close()
+
+    @staticmethod
+    def query_tags_by_ids(ids):
+        global engine
+        session = sessionmaker(bind=engine)()
+        
+        try:
+            if not ids:
+                return []
+                
+            # Get all tags for the specified blog IDs
+            tags = []
+            for blog_id in ids:
+                blog_tags = BlogTag.get_tags(blog_id)
+                tags.extend(blog_tags)
+                
+            # Remove duplicates and sort
+            return sorted(list(set(tags)))
+        finally:
+            session.close()
+
 
     @staticmethod
     def delete(id):
@@ -418,6 +514,60 @@ class Timeline(Base):
         
         session.close()
         return projects_json
+    
+    @staticmethod
+    def query_by_ids(ids, page=1, limit=5):
+        """
+        Fetches projects by their IDs with pagination
+        
+        Args:
+            ids: List of project IDs
+            page: Page number (starting from 1)
+            limit: Number of items per page
+            
+        Returns:
+            dict: Contains projects data, total count, and pagination info
+        """
+        global engine
+        session = sessionmaker(bind=engine)()
+        
+        try:
+            # If no IDs, return empty result
+            if not ids or len(ids) == 0:
+                return {
+                    "projects": [],
+                    "total": 0,
+                    "total_pages": 0,
+                    "page": page
+                }
+            
+            total = len(ids)
+            
+            # Calculate pagination
+            start_idx = (page - 1) * limit
+            end_idx = min(start_idx + limit, total)
+            
+            # Get subset of IDs for this page
+            page_ids = ids[start_idx:end_idx]
+            
+            # Fetch the actual projects
+            projects = []
+            for project_id in page_ids:
+                project = session.query(Timeline).filter(Timeline.id == project_id).first()
+                if project:
+                    projects.append(project.to_dict())
+            
+            total_pages = ceil(total / limit)
+            
+            return {
+                "projects": projects,
+                "total": total,
+                "total_pages": total_pages,
+                "page": page
+            }
+        
+        finally:
+            session.close()
     
     @staticmethod
     def populateNewDB(project):
@@ -607,6 +757,102 @@ class Reviews(Base):
         latest_dict = [dict(id=review.id, title=review.title, author=review.author, created_at=review.created_at, thumbnail_path=review.thumbnail_path) for review in latest]
         
         return latest_dict
+    
+    @staticmethod
+    def query_by_ids(ids, page=1, limit=5):
+        """
+        Fetches reviews by their IDs with pagination
+        
+        Args:
+            ids: List of review IDs
+            page: Page number (starting from 1)
+            limit: Number of items per page
+            
+        Returns:
+            dict: Contains reviews data, total count, and pagination info
+        """
+        global engine
+        session = sessionmaker(bind=engine)()
+        
+        try:
+            # If no IDs, return empty result
+            if not ids or len(ids) == 0:
+                return {
+                    "blogs": [],  # Using "blogs" key for consistency with API
+                    "total": 0,
+                    "total_pages": 0,
+                    "page": page
+                }
+            
+            total = len(ids)
+            
+            # Calculate pagination
+            start_idx = (page - 1) * limit
+            end_idx = min(start_idx + limit, total)
+            
+            # Get subset of IDs for this page
+            page_ids = ids[start_idx:end_idx]
+            
+            # Fetch the actual reviews
+            reviews = []
+            for review_id in page_ids:
+                review = session.query(Reviews).filter(Reviews.id == review_id).first()
+                if review:
+                    review_dict = review.to_dict()
+                    review_dict['tags'] = ReviewTag.get_tags(review.id)
+                    reviews.append(review_dict)
+            
+            total_pages = ceil(total / limit)
+            
+            return {
+                "blogs": reviews,  # Using "blogs" key for consistency with API
+                "total": total,
+                "total_pages": total_pages,
+                "page": page
+            }
+        
+        finally:
+            session.close()
+
+    @staticmethod
+    def query_authors_by_ids(ids):
+        global engine
+        session = sessionmaker(bind=engine)()
+        
+        try:
+            if not ids:
+                return []
+                
+            # Get unique authors from the specified review IDs
+            authors_query = session.query(Reviews.author).filter(
+                Reviews.id.in_(ids)
+            ).distinct()
+            
+            authors = [author[0] for author in authors_query.all() if author[0]]
+            return sorted(authors)
+        finally:
+            session.close()
+
+    @staticmethod
+    def query_tags_by_ids(ids):
+        global engine
+        session = sessionmaker(bind=engine)()
+        
+        try:
+            if not ids:
+                return []
+                
+            # Get all tags for the specified review IDs
+            tags = []
+            for review_id in ids:
+                review_tags = ReviewTag.get_tags(review_id)
+                tags.extend(review_tags)
+                
+            # Remove duplicates and sort
+            return sorted(list(set(tags)))
+        finally:
+            session.close()
+
     
     @staticmethod
     def updateReview(id, title, author, description, content, tags, thumbnail_path):

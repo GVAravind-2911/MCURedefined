@@ -12,7 +12,7 @@
 /* Hero section, matching blog hero style */
 .project-hero {
   position: relative;
-  width: 100%;
+  width: 80%;
   height: 280px;
   background-image: linear-gradient(to right, rgba(236, 29, 36, 0.8), rgba(0, 0, 0, 0.8));
   background-size: cover;
