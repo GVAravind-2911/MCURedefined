@@ -255,3 +255,16 @@ export const reviewCommentLike = pgTable(
 
 export type ReviewCommentLike = typeof reviewCommentLike.$inferSelect;
 export type NewReviewCommentLike = typeof reviewCommentLike.$inferInsert;
+
+export const userProfile = pgTable("user_profile", {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+        .notNull()
+        .references(() => user.id, { onDelete: "cascade" }),
+    description: text("description"),
+    createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export type UserProfile = typeof userProfile.$inferSelect;
+export type NewUserProfile = typeof userProfile.$inferInsert;

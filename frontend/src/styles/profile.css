@@ -745,3 +745,177 @@
 		gap: 10px;
 	}
 }
+
+
+/* ...existing styles... */
+
+/* Profile editing and description styles */
+.profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.edit-profile-button {
+    background: none;
+    border: none;
+    color: var(--white-50);
+    cursor: pointer;
+    padding: 5px;
+    margin-left: 10px;
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-profile-button:hover {
+    color: var(--primary);
+    transform: scale(1.1);
+}
+
+.profile-description {
+    margin-top: 15px;
+    color: var(--white-80);
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.no-description {
+    color: var(--white-50);
+    font-style: italic;
+}
+
+/* Profile edit form */
+.profile-edit-form {
+    flex: 1;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--white-80);
+    font-family: var(--font-regular);
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    background: var(--white-05);
+    border: 1px solid var(--white-20);
+    border-radius: var(--radius-md);
+    padding: 10px 12px;
+    color: var(--white);
+    font-family: var(--font-regular);
+    font-size: 0.95rem;
+    transition: var(--transition-fast);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    background: var(--white-10);
+    border-color: var(--primary);
+    outline: none;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.cancel-button, 
+.save-button {
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    font-family: var(--font-regular);
+    cursor: pointer;
+    transition: var(--transition-normal);
+    border: none;
+}
+
+.cancel-button {
+    background: var(--white-10);
+    color: var(--white-80);
+}
+
+.save-button {
+    background: var(--primary);
+    color: var(--white);
+    font-weight: bold;
+}
+
+.cancel-button:hover {
+    background: var(--white-20);
+}
+
+.save-button:hover {
+    background: #ff2c33;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .profile-edit-form {
+        width: 100%;
+    }
+}
+
+/* Add these styles to your profile.css file */
+
+/* Loading animations */
+.loading-animation {
+    background: linear-gradient(90deg, var(--white-05) 25%, var(--white-10) 50%, var(--white-05) 75%);
+    background-size: 200% 100%;
+    animation: loading-shine 1.5s infinite;
+}
+
+.loading-text-block {
+    height: 28px;
+    width: 70%;
+    border-radius: var(--radius-sm);
+    margin-bottom: 15px;
+}
+
+.loading-text-line {
+    height: 16px;
+    width: 90%;
+    border-radius: var(--radius-sm);
+    margin-bottom: 10px;
+}
+
+.loading-text-line:last-child {
+    width: 50%;
+}
+
+@keyframes loading-shine {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.character-count {
+    text-align: right;
+    font-size: 0.8rem;
+    color: var(--white-70);
+    margin-top: 4px;
+}
+
+.form-error {
+    color: #ff4d4d;
+    font-size: 0.85rem;
+    margin-top: 4px;
+}
