@@ -278,7 +278,7 @@
 .comment-like-button.liked .heart-icon {
 	fill: #ec1d24;
 	stroke: #ec1d24;
-	animation: pulse 0.4s;
+	animation: pulsecomments 0.4s;
 }
 
 .comment-delete-button {
@@ -337,7 +337,7 @@
 	color: #ff6666;
 }
 
-@keyframes pulse {
+@keyframes pulsecomments {
 	0% {
 		transform: scale(1);
 	}

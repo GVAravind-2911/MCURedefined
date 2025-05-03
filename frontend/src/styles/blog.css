@@ -285,10 +285,10 @@ html {
 
 .liked-button .heart-icon {
 	fill: #ec1d24;
-	animation: pulse 0.4s ease-out;
+	animation: pulseblog 0.4s ease-out;
 }
 
-@keyframes pulse {
+@keyframes pulseblog {
 	0% {
 		transform: scale(1);
 	}

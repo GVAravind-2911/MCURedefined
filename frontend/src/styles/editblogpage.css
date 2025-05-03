@@ -429,7 +429,7 @@
 	background-color: #e0e0e0;
 }
 
-@keyframes pulse {
+@keyframes pulseedit {
 	0% {
 		transform: scale(1);
 	}
@@ -443,7 +443,7 @@
 
 .dropzone:hover,
 .dropzone.active {
-	animation: pulse 1s infinite;
+	animation: pulseedit 1s infinite;
 }
 
 @media (max-width: 768px) {

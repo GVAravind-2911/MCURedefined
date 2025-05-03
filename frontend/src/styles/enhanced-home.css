@@ -34,7 +34,7 @@
 	margin-bottom: 1.5rem;
 	text-transform: uppercase;
 	text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-	animation: pulse 4s infinite alternate;
+	animation: pulsehome 4s infinite alternate;
 }
 
 .home-text05 {
@@ -185,7 +185,7 @@
 }
 
 /* New animations */
-@keyframes pulse {
+@keyframes pulsehome {
 	0%,
 	100% {
 		text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
