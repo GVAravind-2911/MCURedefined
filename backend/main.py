@@ -251,8 +251,6 @@ def search_reviews():
     
     # Use the search method from the Reviews class
     result = Reviews.search(query=query, tags=tags, author=author, page=page, limit=limit)
-    print(result)
-    
     return jsonify(result)
 
 @app.route('/reviews/tags', methods=['GET'])

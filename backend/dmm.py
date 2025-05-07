@@ -1033,7 +1033,7 @@ class Reviews(Base, BaseModel):
                         pass
         
         # Rename 'items' key to 'reviews' for API consistency
-        result['reviews'] = result.pop('items')
+        result['blogs'] = result.pop('items')
         return result
 
     @staticmethod

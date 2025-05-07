@@ -82,7 +82,7 @@ const BlogsComponent: React.FC<BlogComponentProps> = ({
 				} else if (e.key === "End") {
 					e.preventDefault();
 					if (currentPage !== totalPages) handlePageChange(totalPages);
-				} else if (e.key === "/" || e.key === "s") {
+				} else if (e.key === "/") {
 					e.preventDefault();
 					const searchInput = document.querySelector(
 						".search-input",
