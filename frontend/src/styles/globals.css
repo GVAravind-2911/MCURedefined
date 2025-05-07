@@ -27,8 +27,9 @@
 	--primary-light: rgba(236, 29, 36, 0.8);
 	--text-color: #ffffff;
 	--text-secondary: rgba(255, 255, 255, 0.8);
-	--background-color: #0c0c0c;
-	--background-card: rgba(255, 255, 255, 0.03);
+	--background-color: #000000;
+	--background-card: rgba(18, 18, 18, 0.8);
+	--dark-bg: #0a0a0a;
 	--border-color: rgba(255, 255, 255, 0.1);
 	--border-hover: rgba(255, 255, 255, 0.2);
 	--max-width: 1200px;
@@ -54,7 +55,7 @@ html {
 body {
 	font-family: "BentonSansRegular", sans-serif;
 	color: var(--text-color);
-	background-color: var(--background-color);
+	background-color: #000000; /* Set explicit black background */
 	overflow-x: hidden;
 	margin: 0;
 }
@@ -279,4 +280,44 @@ svg {
 	.main-content {
 		padding-top: 80px;
 	}
+}
+
+::selection {
+	background-color: #333333; /* Darkish gray for general text selection */
+	color: white; /* Maintain white text for better contrast */
+}
+
+/* Red text specific selection */
+.text-primary::selection,
+[style*="color:#ec1d24"]::selection,
+[style*="color: #ec1d24"]::selection,
+[class*="primary"]::selection {
+	background-color: #ec1d24; /* Primary red color for selection */
+	color: white; /* White text on red background */
+}
+
+/* For Firefox */
+::-moz-selection {
+	background-color: #333333;
+	color: white;
+}
+
+.text-primary::-moz-selection,
+[style*="color:#ec1d24"]::-moz-selection,
+[style*="color: #ec1d24"]::-moz-selection,
+[class*="primary"]::-moz-selection {
+	background-color: #ec1d24;
+	color: white;
+}
+
+[style*="var(--primary-color)"]::selection,
+[style*="var(--primary)"]::selection {
+	background-color: #ec1d24;
+	color: white;
+}
+
+[style*="var(--primary-color)"]::-moz-selection,
+[style*="var(--primary)"]::-moz-selection {
+	background-color: #ec1d24;
+	color: white;
 }

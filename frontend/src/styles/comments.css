@@ -356,7 +356,6 @@
 		gap: 8px;
 	}
 
-
 	.comment-user {
 		width: 100%;
 	}
@@ -382,11 +381,9 @@
 		min-height: 32px;
 	}
 
-
 	.comment-actions {
 		gap: 6px;
 	}
-
 
 	.comment {
 		padding: 12px 10px;

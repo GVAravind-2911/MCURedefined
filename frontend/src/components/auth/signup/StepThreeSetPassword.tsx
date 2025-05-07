@@ -121,7 +121,7 @@ export default function StepThreeSetPassword({
 
 	// Initialize password strength check on component mount
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-		useEffect(() => {
+	useEffect(() => {
 		if (data.password) {
 			checkPasswordStrength(data.password);
 		}
@@ -168,11 +168,11 @@ export default function StepThreeSetPassword({
 							strokeWidth="2"
 							strokeLinecap="round"
 							strokeLinejoin="round"
-						>	
+						>
 							<title>Generate Password</title>
-							<path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/>
-							<line x1="16" y1="8" x2="2" y2="22"/>
-							<line x1="17.5" y1="15" x2="9" y2="15"/>
+							<path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z" />
+							<line x1="16" y1="8" x2="2" y2="22" />
+							<line x1="17.5" y1="15" x2="9" y2="15" />
 						</svg>
 					</button>
 					<button
@@ -219,7 +219,7 @@ export default function StepThreeSetPassword({
 							)}
 						</div>
 						<div className="strength-bar" style={{ margin: "8px 0" }}>
-							<div className="strength-bar-fill"/>
+							<div className="strength-bar-fill" />
 						</div>
 						<div
 							className="password-requirements"
@@ -324,9 +324,9 @@ export default function StepThreeSetPassword({
 								style={{ marginRight: "4px", verticalAlign: "middle" }}
 							>
 								<title>Password Mismatch</title>
-								<circle cx="12" cy="12" r="10"/>
-								<line x1="12" y1="8" x2="12" y2="12"/>
-								<line x1="12" y1="16" x2="12.01" y2="16"/>
+								<circle cx="12" cy="12" r="10" />
+								<line x1="12" y1="8" x2="12" y2="12" />
+								<line x1="12" y1="16" x2="12.01" y2="16" />
 							</svg>
 							Passwords don&apos;t match
 						</div>

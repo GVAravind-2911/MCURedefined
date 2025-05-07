@@ -24,12 +24,12 @@ interface BlogComponentProps {
 }
 
 const BlogComponent = ({
-    path,
-    initialBlogs,
-    totalPages: initialTotalPages,
-    apiUrl,
-    initialTags,
-    initialAuthors,
+	path,
+	initialBlogs,
+	totalPages: initialTotalPages,
+	apiUrl,
+	initialTags,
+	initialAuthors,
 }: BlogComponentProps) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const blogContext = useBlogContext();
@@ -75,44 +75,45 @@ const BlogComponent = ({
 	};
 
 	useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            // Check if we're in editing mode or if a text field is focused
-            const activeElement = document.activeElement;
-            const isEditingText = activeElement instanceof HTMLInputElement || 
-                                  activeElement instanceof HTMLTextAreaElement || 
-                                  activeElement instanceof HTMLSelectElement ||
-                                  activeElement?.getAttribute('contenteditable') === 'true';
-            
-            // Don't process keyboard shortcuts if editing profile or if text input is focused
-            if (isEditing || isEditingText || isSearchFocused) {
-                return;
-            }
-            
-            // Only handle navigation keys when not in editing mode
-            if (e.key === "ArrowRight" || e.key === "ArrowDown") {
-                e.preventDefault();
-                if (currentPage < totalPages) handlePageChange(currentPage + 1);
-            } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
-                e.preventDefault();
-                if (currentPage > 1) handlePageChange(currentPage - 1);
-            } else if (e.key === "Home") {
-                e.preventDefault();
-                if (currentPage !== 1) handlePageChange(1);
-            } else if (e.key === "End") {
-                e.preventDefault();
-                if (currentPage !== totalPages) handlePageChange(totalPages);
-            } else if (e.key === "/") {
-                e.preventDefault();
-                const searchInput = document.querySelector(
-                    ".search-input",
-                ) as HTMLInputElement;
-                if (searchInput) searchInput.focus();
-            }
-        };
-    
-        window.addEventListener("keydown", handleKeyDown);
-        return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [currentPage, totalPages, isSearchFocused, handlePageChange, isEditing]);
+		const handleKeyDown = (e: KeyboardEvent) => {
+			// Check if we're in editing mode or if a text field is focused
+			const activeElement = document.activeElement;
+			const isEditingText =
+				activeElement instanceof HTMLInputElement ||
+				activeElement instanceof HTMLTextAreaElement ||
+				activeElement instanceof HTMLSelectElement ||
+				activeElement?.getAttribute("contenteditable") === "true";
+
+			// Don't process keyboard shortcuts if editing profile or if text input is focused
+			if (isEditing || isEditingText || isSearchFocused) {
+				return;
+			}
+
+			// Only handle navigation keys when not in editing mode
+			if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+				e.preventDefault();
+				if (currentPage < totalPages) handlePageChange(currentPage + 1);
+			} else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+				e.preventDefault();
+				if (currentPage > 1) handlePageChange(currentPage - 1);
+			} else if (e.key === "Home") {
+				e.preventDefault();
+				if (currentPage !== 1) handlePageChange(1);
+			} else if (e.key === "End") {
+				e.preventDefault();
+				if (currentPage !== totalPages) handlePageChange(totalPages);
+			} else if (e.key === "/") {
+				e.preventDefault();
+				const searchInput = document.querySelector(
+					".search-input",
+				) as HTMLInputElement;
+				if (searchInput) searchInput.focus();
+			}
+		};
+
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [currentPage, totalPages, isSearchFocused, handlePageChange, isEditing]);
 
 	return (
 		<div ref={containerRef} className="blog-component">
