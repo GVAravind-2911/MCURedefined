@@ -192,6 +192,7 @@
 	cursor: text;
 	white-space: pre-wrap;
 	resize: none;
+	field-sizing: content;
 }
 
 /* Add styles for formatted content */
