@@ -12,7 +12,6 @@ import BlogPagination from "./ProfileBlogPagination";
 import EmptyState from "./ProfileEmptyState";
 import useBlogSearch from "./hooks/ProfileUseBlogSearch";
 import { useBlogContext } from "./ProfileBlogContext";
-import { useEditingContext } from "@/contexts/EditingContext";
 
 interface BlogComponentProps {
 	path: string;
@@ -34,8 +33,6 @@ const BlogComponent = ({
 	const containerRef = useRef<HTMLDivElement>(null);
 	const blogContext = useBlogContext();
 	const router = useRouter();
-
-	const { isEditing } = useEditingContext();
 
 	const {
 		blogs,
@@ -84,8 +81,8 @@ const BlogComponent = ({
 				activeElement instanceof HTMLSelectElement ||
 				activeElement?.getAttribute("contenteditable") === "true";
 
-			// Don't process keyboard shortcuts if editing profile or if text input is focused
-			if (isEditing || isEditingText || isSearchFocused) {
+			// Don't process keyboard shortcuts if text input is focused
+			if (isEditingText || isSearchFocused) {
 				return;
 			}
 
@@ -113,7 +110,7 @@ const BlogComponent = ({
 
 		window.addEventListener("keydown", handleKeyDown);
 		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [currentPage, totalPages, isSearchFocused, handlePageChange, isEditing]);
+	}, [currentPage, totalPages, isSearchFocused, handlePageChange]);
 
 	return (
 		<div ref={containerRef} className="blog-component">

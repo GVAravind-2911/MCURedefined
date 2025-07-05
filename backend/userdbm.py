@@ -412,7 +412,7 @@ class UserDBManager:
             print(f"Error getting user liked blogs: {e}")
             return []
     
-    def get_user_liked_reviews(self, user_id: str) -> List[int]:
+    def get_user_liked_reviews(self, user_id: str) -> List[Column[int]]:
         """
         Get all review IDs liked by a user
         

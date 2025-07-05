@@ -156,30 +156,29 @@ def get_all_blog_authors():
 @app.route('/reviews/create', methods=['POST'])
 @admin_required
 def createReview():
-    if request.method == 'POST':
-        data = request.get_json()
+    data = request.get_json()
 
-        if data['thumbnail_path']["link"].startswith("data:image"):
-            imgUrl = saveImage(data['thumbnail_path'])
-            data['thumbnail_path'] = imgUrl
-        else:
-            data['thumbnail_path'] = {"link": "https://i.imgur.com/JloNMTG.png", "deletehash": ""}
+    if data['thumbnail_path']["link"].startswith("data:image"):
+        imgUrl = saveImage(data['thumbnail_path'])
+        data['thumbnail_path'] = imgUrl
+    else:
+        data['thumbnail_path'] = {"link": "https://i.imgur.com/JloNMTG.png", "deletehash": ""}
 
-        for i in data["content"]:
-            if i["type"] == "image":
-                imgurl = saveImage(i["content"])
-                i["content"] = imgurl
+    for i in data["content"]:
+        if i["type"] == "image":
+            imgurl = saveImage(i["content"])
+            i["content"] = imgurl
 
-        Reviews.createDatabase()
-        Reviews.insertReview(
-            title=data['title'],
-            author=data['author'],
-            description=data['description'],
-            content=data['content'],
-            tags=data['tags'],
-            thumbnail_path=data['thumbnail_path']
-        )
-        return jsonify({"message": "Review created successfully"})
+    Reviews.createDatabase()
+    Reviews.insertReview(
+        title=data['title'],
+        author=data['author'],
+        description=data['description'],
+        content=data['content'],
+        tags=data['tags'],
+        thumbnail_path=data['thumbnail_path']
+    )
+    return jsonify({"message": "Review created successfully"})
 
 @app.route('/reviews/update/<int:id>', methods=["PUT"])
 @admin_required
@@ -273,14 +272,22 @@ def releaseSlate():
         projects = Timeline.queryAll()
         print(projects)
         return jsonify(projects)
+    elif request.method == 'POST':
+        # Return a valid response for POST (adjust as needed)
+        return jsonify({"message": "POST method not implemented for this endpoint."}), 405
+    # Ensure a response is always returned
+    return jsonify({"error": "Method not allowed"}), 405
         
 
-@app.route('/release-slate/<int:id>',methods = ['GET','POST'])
+@app.route('/release-slate/<int:id>', methods=['GET', 'POST'])
 def releaseProject(id):
     if request.method == 'GET':
         project = Timeline.queryId(id)
         print(project)
         return jsonify(project)
+    else:
+        # Return a valid response for POST (adjust as needed)
+        return jsonify({"message": "POST method not implemented for this endpoint."}), 405
 
 @app.route("/user/liked", methods=["POST"])
 def liked():

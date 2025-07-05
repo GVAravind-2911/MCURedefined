@@ -7,7 +7,6 @@ import type { Project } from "@/types/ProjectTypes";
 import ProfileTabs from "./ProfileTabs";
 import BlogComponent from "./blogs/ProfileBlogComponent";
 import ProjectsGrid from "./ProjectsGrid";
-import ProfileInfo from "./ProfileInfo";
 import { BlogProvider } from "./blogs/ProfileBlogContext";
 import ErrorMessage from "@/components/main/ErrorMessage";
 
@@ -19,212 +18,187 @@ interface LikedContentResponse {
 	total_pages?: number;
 }
 
-interface UserProfileData {
-	id: string;
-	userId: string;
-	description: string;
-	createdAt: string;
-	updatedAt: string;
+interface LikedContentOverview {
+	blogs: { items: any[]; total: number };
+	reviews: { items: any[]; total: number };
+	projects: { items: any[]; total: number };
 }
 
-export default function ProfileContent({ session }) {
-	const [activeTab, setActiveTab] = useState<"blogs" | "reviews" | "projects">(
-		"blogs",
-	);
+interface ProfileMetadata {
+	blogs: { tags: string[]; authors: string[] };
+	reviews: { tags: string[]; authors: string[] };
+}
+
+interface ProfileContentProps {
+	session: {
+		user: {
+			id: string;
+			name: string;
+			email: string;
+			image?: string;
+		};
+		session: {
+			id: string;
+			userId: string;
+			expiresAt: Date;
+			token: string;
+			createdAt: Date;
+			updatedAt: Date;
+		};
+	};
+	likedContent?: LikedContentOverview | null;
+	metadata?: ProfileMetadata | null;
+	isLoading?: boolean;
+	onRefresh?: () => Promise<void>;
+}
+
+export default function ProfileContent({ 
+	session, 
+	likedContent: initialLikedContent,
+	metadata: initialMetadata,
+	isLoading: contextLoading = false,
+	onRefresh
+}: ProfileContentProps) {
+	const [activeTab, setActiveTab] = useState<"blogs" | "reviews" | "projects">("blogs");
 	const [loading, setLoading] = useState<{ [key: string]: boolean }>({
-		blogs: true,
-		reviews: true,
-		projects: true,
-		profile: true,
+		blogs: false,
+		reviews: false,
+		projects: false,
 	});
 	const [content, setContent] = useState<{
 		[key: string]: LikedContentResponse;
 	}>({
-		blogs: { blogs: [], total: 0 },
-		reviews: { reviews: [], total: 0 },
-		projects: { projects: [], total: 0 },
+		blogs: { blogs: initialLikedContent?.blogs.items || [], total: initialLikedContent?.blogs.total || 0 },
+		reviews: { reviews: initialLikedContent?.reviews.items || [], total: initialLikedContent?.reviews.total || 0 },
+		projects: { projects: initialLikedContent?.projects.items || [], total: initialLikedContent?.projects.total || 0 },
 	});
 	const [tags, setTags] = useState<{ [key: string]: string[] }>({
-		blogs: [],
-		reviews: [],
+		blogs: initialMetadata?.blogs.tags || [],
+		reviews: initialMetadata?.reviews.tags || [],
 	});
 	const [authors, setAuthors] = useState<{ [key: string]: string[] }>({
-		blogs: [],
-		reviews: [],
+		blogs: initialMetadata?.blogs.authors || [],
+		reviews: initialMetadata?.reviews.authors || [],
 	});
-	// Add error state for each content type
 	const [errors, setErrors] = useState<{ [key: string]: boolean }>({
 		blogs: false,
 		reviews: false,
 		projects: false,
-		profile: false,
 	});
-	// Add state for user profile data
-	const [userProfile, setUserProfile] = useState<UserProfileData | null>(null);
 
 	// Function to reload data for the current tab
 	const handleReload = () => {
-		setLoading((prev) => ({
-			...prev,
-			[activeTab]: true,
-		}));
-		setErrors((prev) => ({
-			...prev,
-			[activeTab]: false,
-		}));
+		if (onRefresh) {
+			onRefresh();
+		} else {
+			// Fallback to individual tab reload
+			setLoading((prev) => ({
+				...prev,
+				[activeTab]: true,
+			}));
+			setErrors((prev) => ({
+				...prev,
+				[activeTab]: false,
+			}));
+			// Fetch fresh data
+			fetchTabData(activeTab);
+		}
 	};
 
-	// Fetch user profile data
-	useEffect(() => {
-		const fetchUserProfile = async () => {
-			if (!session?.user?.id) return;
-
-			try {
-				const response = await fetch("/api/user/profile");
-
-				if (!response.ok) {
-					throw new Error(
-						`Failed to fetch user profile. Status: ${response.status}`,
-					);
-				}
-
-				const data = await response.json();
-				setUserProfile(data.profile);
-			} catch (error) {
-				console.error("Error fetching user profile:", error);
-				setErrors((prev) => ({
-					...prev,
-					profile: true,
-				}));
-			} finally {
-				setLoading((prev) => ({
-					...prev,
-					profile: false,
-				}));
-			}
-		};
-
-		fetchUserProfile();
-	}, [session]);
-
-	// Only fetch data for a tab if it hasn't been loaded yet
-	useEffect(() => {
-		const fetchData = async () => {
-			if (!loading[activeTab]) return;
-
-			try {
-				// Fetch liked content
-				const res = await fetch(
-					`/api/user/liked?type=${activeTab}&page=1&limit=5`,
-				);
-
-				if (!res.ok) {
-					throw new Error(
-						`Failed to fetch ${activeTab} content. Status: ${res.status}`,
-					);
-				}
-
-				const data = await res.json();
-				setContent((prev) => ({
-					...prev,
-					[activeTab]: data,
-				}));
-
-				// For blogs and reviews, fetch tags and authors from the liked content
-				if (
-					(activeTab === "blogs" || activeTab === "reviews") &&
-					loading[activeTab]
-				) {
-					try {
-						// Use the new endpoints for liked tags and authors
-						const tagsRes = await fetch(
-							`/api/user/liked/tags?type=${activeTab}`,
-						);
-
-						if (!tagsRes.ok) {
-							throw new Error(
-								`Failed to fetch ${activeTab} tags. Status: ${tagsRes.status}`,
-							);
-						}
-
-						const tagsData = await tagsRes.json();
-						setTags((prev) => ({
-							...prev,
-							[activeTab]: tagsData.tags || [],
-						}));
-
-						const authorsRes = await fetch(
-							`/api/user/liked/authors?type=${activeTab}`,
-						);
-
-						if (!authorsRes.ok) {
-							throw new Error(
-								`Failed to fetch ${activeTab} authors. Status: ${authorsRes.status}`,
-							);
-						}
-
-						const authorsData = await authorsRes.json();
-						setAuthors((prev) => ({
-							...prev,
-							[activeTab]: authorsData.authors || [],
-						}));
-					} catch (error) {
-						console.error(`Error fetching ${activeTab} metadata:`, error);
-						setErrors((prev) => ({
-							...prev,
-							[activeTab]: true,
-						}));
-					}
-				}
-			} catch (error) {
-				console.error(`Error fetching liked ${activeTab}:`, error);
-				setErrors((prev) => ({
-					...prev,
-					[activeTab]: true,
-				}));
-			} finally {
-				setLoading((prev) => ({
-					...prev,
-					[activeTab]: false,
-				}));
-			}
-		};
-
-		fetchData();
-	}, [activeTab, loading]);
-
-	// Handler for profile updates
-	const handleProfileUpdate = async () => {
-		setLoading((prev) => ({
-			...prev,
-			profile: true,
-		}));
-
+	// Function to fetch data for a specific tab
+	const fetchTabData = async (tabType: "blogs" | "reviews" | "projects") => {
 		try {
-			const response = await fetch("/api/user/profile");
-			if (response.ok) {
-				const data = await response.json();
-				setUserProfile(data.profile);
+			setLoading((prev) => ({ ...prev, [tabType]: true }));
+			setErrors((prev) => ({ ...prev, [tabType]: false }));
+
+			// Fetch content data
+			const contentRes = await fetch(`/api/user/liked?type=${tabType}&page=1&limit=10`);
+			if (!contentRes.ok) {
+				throw new Error(`Failed to fetch ${tabType} content`);
+			}
+			const contentData = await contentRes.json();
+
+			setContent((prev) => ({
+				...prev,
+				[tabType]: contentData,
+			}));
+
+			// Fetch tags and authors for blogs and reviews
+			if (tabType === "blogs" || tabType === "reviews") {
+				const [tagsRes, authorsRes] = await Promise.all([
+					fetch(`/api/user/liked/tags?type=${tabType}`),
+					fetch(`/api/user/liked/authors?type=${tabType}`)
+				]);
+
+				if (tagsRes.ok && authorsRes.ok) {
+					const [tagsData, authorsData] = await Promise.all([
+						tagsRes.json(),
+						authorsRes.json()
+					]);
+
+					setTags((prev) => ({
+						...prev,
+						[tabType]: tagsData.tags || [],
+					}));
+					setAuthors((prev) => ({
+						...prev,
+						[tabType]: authorsData.authors || [],
+					}));
+				}
 			}
 		} catch (error) {
-			console.error("Error refreshing user profile:", error);
+			console.error(`Error fetching ${tabType} data:`, error);
+			setErrors((prev) => ({
+				...prev,
+				[tabType]: true,
+			}));
 		} finally {
 			setLoading((prev) => ({
 				...prev,
-				profile: false,
+				[tabType]: false,
 			}));
 		}
 	};
 
+	// Update content when initialLikedContent changes
+	useEffect(() => {
+		if (initialLikedContent) {
+			setContent({
+				blogs: { 
+					blogs: initialLikedContent.blogs.items || [], 
+					total: initialLikedContent.blogs.total || 0,
+					total_pages: Math.ceil((initialLikedContent.blogs.total || 0) / 5)
+				},
+				reviews: { 
+					reviews: initialLikedContent.reviews.items || [], 
+					total: initialLikedContent.reviews.total || 0,
+					total_pages: Math.ceil((initialLikedContent.reviews.total || 0) / 5)
+				},
+				projects: { 
+					projects: initialLikedContent.projects.items || [], 
+					total: initialLikedContent.projects.total || 0,
+					total_pages: Math.ceil((initialLikedContent.projects.total || 0) / 5)
+				},
+			});
+		}
+	}, [initialLikedContent]);
+
+	// Update metadata when initialMetadata changes
+	useEffect(() => {
+		if (initialMetadata) {
+			setTags({
+				blogs: initialMetadata.blogs.tags || [],
+				reviews: initialMetadata.reviews.tags || [],
+			});
+			setAuthors({
+				blogs: initialMetadata.blogs.authors || [],
+				reviews: initialMetadata.reviews.authors || [],
+			});
+		}
+	}, [initialMetadata]);
+
 	return (
 		<div className="blogs-container">
-			<ProfileInfo
-				session={session}
-				userProfile={userProfile}
-				onProfileUpdate={handleProfileUpdate}
-				isLoading={loading.profile}
-			/>
-
 			<div className="section-title">
 				<span className="title-text">Your Liked Content</span>
 				<div className="title-line" />
@@ -232,7 +206,7 @@ export default function ProfileContent({ session }) {
 
 			<ProfileTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
-			{loading[activeTab] ? (
+			{(loading[activeTab] || contextLoading) ? (
 				<div className="loading-wrapper">
 					<div className="loading-spinner" />
 				</div>

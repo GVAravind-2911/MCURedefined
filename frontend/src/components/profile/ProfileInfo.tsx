@@ -5,17 +5,34 @@ import { useEditingContext } from "@/contexts/EditingContext";
 interface UserProfileData {
 	id?: string;
 	userId?: string;
+	name?: string;
 	description?: string;
 	createdAt?: string;
 	updatedAt?: string;
 }
 
 interface ProfileInfoProps {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	session: any;
+	session: {
+		user: {
+			id: string;
+			name: string;
+			email: string;
+			image?: string;
+		};
+		session: {
+			id: string;
+			userId: string;
+			expiresAt: Date;
+			token: string;
+			createdAt: Date;
+			updatedAt: Date;
+		};
+	};
 	userProfile: UserProfileData | null;
 	onProfileUpdate: () => Promise<void>;
 	isLoading: boolean;
+	isUpdating?: boolean;
+	onUpdate?: (data: Partial<UserProfileData>) => Promise<void>;
 }
 
 export default function ProfileInfo({
@@ -23,6 +40,8 @@ export default function ProfileInfo({
 	userProfile,
 	onProfileUpdate,
 	isLoading,
+	isUpdating = false,
+	onUpdate,
 }: ProfileInfoProps) {
 	const { user } = session;
 	const firstLetter = user?.name ? user.name[0].toUpperCase() : "?";
@@ -71,25 +90,46 @@ export default function ProfileInfo({
 		setErrors({});
 
 		try {
-			const response = await fetch("/api/user/profile", {
-				method: "PUT",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
+			// Use optimized update function if available
+			if (onUpdate) {
+				await onUpdate({
 					name: formData.name,
 					description: formData.description,
-				}),
-			});
-
-			if (response.ok) {
-				setIsEditing(false); // Use context setter
-				await onProfileUpdate();
+				});
 			} else {
-				// Existing error handling...
+				// Fallback to direct API call
+				const response = await fetch("/api/user/profile", {
+					method: "PUT",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						name: formData.name,
+						description: formData.description,
+					}),
+				});
+
+				if (!response.ok) {
+					const errorData = await response.json();
+					if (errorData.details) {
+						const fieldErrors: { [key: string]: string } = {};
+						for (const error of errorData.details) {
+							fieldErrors[error.path[0]] = error.message;
+						}
+						setErrors(fieldErrors);
+					} else {
+						setErrors({ general: errorData.error || "Failed to update profile" });
+					}
+					return;
+				}
+
+				await onProfileUpdate();
 			}
+
+			setIsEditing(false);
 		} catch (error) {
 			console.error("Error updating profile:", error);
+			setErrors({ general: "Failed to update profile" });
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -154,8 +194,7 @@ export default function ProfileInfo({
 					</div>
 					<p className="username">
 						@
-						{user?.username ||
-							user?.name?.toLowerCase().replace(/\s+/g, "") ||
+						{user?.name?.toLowerCase().replace(/\s+/g, "") ||
 							"user"}
 					</p>
 

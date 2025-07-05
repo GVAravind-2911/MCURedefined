@@ -2,9 +2,8 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 import { db } from "@/db";
-import { reviewLike, reviewInteraction } from "@/db/schema";
-import { eq } from "drizzle-orm";
-import { nanoid } from "nanoid";
+import { reviewLike } from "@/db/schema";
+import { incrementReviewLikes } from "@/db/review-interactions";
 
 export async function POST(req: Request) {
 	try {
@@ -23,7 +22,7 @@ export async function POST(req: Request) {
 			);
 		}
 
-		// Add the like
+		// Add the like (ignore if already exists)
 		await db
 			.insert(reviewLike)
 			.values({
@@ -32,33 +31,8 @@ export async function POST(req: Request) {
 			})
 			.onConflictDoNothing();
 
-		// Update the likes count in interactions table
-		const existingInteraction = await db
-			.select()
-			.from(reviewInteraction)
-			.where(eq(reviewInteraction.reviewId, reviewId));
-
-		if (existingInteraction.length > 0) {
-			await db
-				.update(reviewInteraction)
-				.set({
-					// @ts-ignore
-					likes: existingInteraction[0].likes + 1,
-					lastUpdated: new Date(),
-				})
-				.where(eq(reviewInteraction.reviewId, reviewId));
-		} else {
-			// @ts-ignore
-			await db.insert(reviewInteraction).values({
-				id: nanoid(),
-				reviewId: reviewId,
-				likes: 1,
-				views: 0,
-				shares: 0,
-				lastUpdated: new Date(),
-				createdAt: new Date(),
-			});
-		}
+		// Increment the likes count in the interaction table
+		await incrementReviewLikes(reviewId);
 
 		return NextResponse.json({ success: true });
 	} catch (error) {
