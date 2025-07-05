@@ -211,7 +211,7 @@ class UserDBManager:
                 return False
             
             # Check if the user is an admin and active
-            if user.account_type == "admin" and user.email_verified:
+            if user.account_type == "admin" and bool(user.email_verified):
                 return True
                 
             return False
@@ -287,7 +287,7 @@ class UserDBManager:
             print(f"Error validating session: {e}")
             return False
     
-    def create_session(self, user_id: str, ip_address: str = None, user_agent: str = None, 
+    def create_session(self, user_id: str, ip_address: Optional[str] = None, user_agent: Optional[str] = None, 
                         expiry_days: int = 30) -> Optional[str]:
         """
         Create a new session for a user
@@ -346,16 +346,16 @@ class UserDBManager:
             bool: True if successful, False otherwise
         """
         try:
-            stmt = select(Session).where(Session.token == token)
-            session_obj = self.session.execute(stmt).scalar_one_or_none()
+            # Use proper SQLAlchemy update syntax
+            from sqlalchemy import update
+            update_stmt = update(Session).where(Session.token == token).values(expires_at=datetime.now())
+            result = self.session.execute(update_stmt)
             
-            if session_obj:
-                # Set expiry to now to invalidate
-                session_obj.expires_at = datetime.now()
+            if result.rowcount > 0:
                 self.session.commit()
                 return True
-                
-            return False
+            else:
+                return False
         
         except Exception as e:
             self.session.rollback()
@@ -406,13 +406,13 @@ class UserDBManager:
             stmt = select(BlogLike).where(BlogLike.user_id == user_id)
             likes = self.session.execute(stmt).scalars().all()
             
-            return [like.blog_id for like in likes]
+            return [getattr(like, 'blog_id') for like in likes]
             
         except Exception as e:
             print(f"Error getting user liked blogs: {e}")
             return []
     
-    def get_user_liked_reviews(self, user_id: str) -> List[Column[int]]:
+    def get_user_liked_reviews(self, user_id: str) -> List[int]:
         """
         Get all review IDs liked by a user
         
@@ -426,7 +426,7 @@ class UserDBManager:
             stmt = select(ReviewLike).where(ReviewLike.user_id == user_id)
             likes = self.session.execute(stmt).scalars().all()
             
-            return [like.review_id for like in likes]
+            return [getattr(like, 'review_id') for like in likes]
             
         except Exception as e:
             print(f"Error getting user liked reviews: {e}")
@@ -446,7 +446,7 @@ class UserDBManager:
             stmt = select(ProjectLike).where(ProjectLike.user_id == user_id)
             likes = self.session.execute(stmt).scalars().all()
             
-            return [like.project_id for like in likes]
+            return [getattr(like, 'project_id') for like in likes]
             
         except Exception as e:
             print(f"Error getting user liked projects: {e}")

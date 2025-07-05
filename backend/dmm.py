@@ -199,7 +199,7 @@ class BaseRepository:
         
         with db_session() as session:
             # Search by tags
-            if tags and len(tags) > 0:
+            if tags and len(tags) > 0 and tag_model is not None and item_id_field is not None:
                 item_ids = None
                 for tag in tags:
                     tag_items = set([
@@ -266,6 +266,8 @@ class BaseRepository:
             }
 
 class BaseModel:
+    __table__: sqlalchemy.Table  # Type hint for SQLAlchemy table
+    
     def to_dict(self):
         """Convert model to dictionary, safely handling detachment."""
         result = {}
@@ -740,6 +742,9 @@ class Timeline(Base, BaseModel):
     
     @staticmethod
     def updateViaTkinter(name, syn, cast, direc, musicd, timelinepos):
+        timeline_id = None
+        timeline_phase = None
+        
         with db_session() as session:
             timeline = session.query(Timeline).filter(Timeline.name == name).first()
             if timeline:
@@ -751,11 +756,14 @@ class Timeline(Base, BaseModel):
                 
                 # Cache specific timeline id for faster invalidation
                 timeline_id = timeline.id
+                timeline_phase = timeline.phase
                 
         # Clear cache        
         cache.delete("timeline_all")
-        cache.delete(f"timeline_id:{timeline_id}")
-        cache.delete(f"timeline_phase:{timeline.phase}")
+        if timeline_id is not None:
+            cache.delete(f"timeline_id:{timeline_id}")
+        if timeline_phase is not None:
+            cache.delete(f"timeline_phase:{timeline_phase}")
     
     @staticmethod
     def getTkinterContent(name):
