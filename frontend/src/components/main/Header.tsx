@@ -43,7 +43,12 @@ function Header({ session }: HeaderProps): ReactNode {
 	const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 	const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
-	const isActive = (path: string) => pathname === path;
+	const isActive = (path: string) => {
+		if (path === "/") {
+			return pathname === "/";
+		}
+		return pathname.startsWith(path);
+	};
 
 	return (
 		<header className={`main-header ${isScrolled ? "scrolled" : ""}`}>
