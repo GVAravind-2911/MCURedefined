@@ -100,10 +100,10 @@ function Header({ session }: HeaderProps): ReactNode {
 						</li>
 						<li>
 							<Link
-								href="/collaborate"
-								className={`nav-link ${isActive("/collaborate") ? "active" : ""}`}
+								href="/forum"
+								className={`nav-link ${isActive("/forum") ? "active" : ""}`}
 							>
-								COLLABORATE
+								FORUM
 							</Link>
 						</li>
 					</ul>
@@ -281,11 +281,11 @@ function Header({ session }: HeaderProps): ReactNode {
 						Release Slate
 					</Link>
 					<Link
-						href="/collaborate"
+						href="/forum"
 						className="mobile-nav-link"
 						onClick={closeMobileMenu}
 					>
-						Collaborate
+						Forum
 					</Link>
 
 					{!session && (

@@ -7,7 +7,7 @@ import { authClient } from "@/lib/auth/auth-client";
 
 interface CommentFormProps {
 	contentId: number;
-	contentType: "blog" | "review";
+	contentType: "blog" | "review" | "forum";
 	parentId?: string;
 	apiPath: string;
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -45,7 +45,12 @@ const CommentForm: React.FC<CommentFormProps> = ({
 			setIsSubmitting(true);
 
 			// Get parameter name based on content type
-			const paramName = contentType === "blog" ? "blogId" : "reviewId";
+			const paramName = 
+				contentType === "blog" 
+					? "blogId" 
+					: contentType === "review" 
+					? "reviewId" 
+					: "topicId";
 
 			// Prepare request body
 			// biome-ignore lint/suspicious/noExplicitAny: <explanation>

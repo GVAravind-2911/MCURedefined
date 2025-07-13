@@ -14,7 +14,7 @@ interface CommentProps {
 	currentUser: any;
 	onCommentAdded: (comment: any) => void;
 	contentId: number;
-	contentType: "blog" | "review";
+	contentType: "blog" | "review" | "forum";
 	apiPath: string;
 	refreshComments: () => void;
 	depth?: number;

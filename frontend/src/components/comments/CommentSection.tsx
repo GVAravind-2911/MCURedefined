@@ -10,7 +10,7 @@ import "@/styles/comments.css";
 
 interface CommentSectionProps {
 	contentId: number;
-	contentType: "blog" | "review";
+	contentType: "blog" | "review" | "forum";
 }
 
 interface CommentData {
@@ -38,10 +38,19 @@ const CommentSection: React.FC<CommentSectionProps> = ({
 
 	// Determine API paths based on content type
 	const apiPath =
-		contentType === "blog" ? "/api/blog/comments" : "/api/review/comments";
+		contentType === "blog" 
+			? "/api/blog/comments" 
+			: contentType === "review" 
+			? "/api/review/comments"
+			: "/api/forum/comments";
 
 	// Function to get the parameter name based on content type
-	const getParamName = () => (contentType === "blog" ? "blogId" : "reviewId");
+	const getParamName = () => 
+		contentType === "blog" 
+			? "blogId" 
+			: contentType === "review" 
+			? "reviewId" 
+			: "topicId";
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {

@@ -14,8 +14,8 @@ export const user = pgTable("user", {
 	email: text("email").notNull().unique(),
 	emailVerified: boolean("email_verified").notNull().default(false),
 	image: text("image"),
-	createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
-	updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+	updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
 	username: text("username").notNull().unique(),
 	displayUsername: text("display_name").notNull().unique(),
 	role: text("role").notNull().default("user"),
@@ -36,7 +36,7 @@ export const session = pgTable("session", {
 	expiresAt: timestamp("expires_at").notNull(),
 	ipAddress: text("ip_address"),
 	userAgent: text("user_agent"),
-	createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 	impersonatedBy: text("impersonated_by"),
 });
@@ -58,7 +58,7 @@ export const account = pgTable("account", {
 	scope: text("scope"),
 	idToken: text("id_token"),
 	password: text("password"),
-	createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
@@ -70,7 +70,7 @@ export const verification = pgTable("verification", {
 	identifier: text("identifier").notNull(),
 	value: text("value").notNull(),
 	expiresAt: timestamp("expires_at").notNull(),
-	createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
@@ -85,7 +85,7 @@ export const like = pgTable(
 			.references(() => user.id, { onDelete: "cascade" }),
 		blogId: integer("blog_id").notNull(),
 		// .references(() => blog.id, { onDelete: "cascade" }), // Uncomment if you have a blog table
-		createdAt: timestamp("created_at")
+		createdAt: timestamp("created_at", { withTimezone: true })
 			.notNull()
 			.default(sql`CURRENT_TIMESTAMP`),
 	},
@@ -104,7 +104,7 @@ export const interaction = pgTable("blog_interaction", {
 	lastUpdated: timestamp("last_updated")
 		.notNull()
 		.default(sql`CURRENT_TIMESTAMP`),
-	createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
 export type Interaction = typeof interaction.$inferSelect;
@@ -119,7 +119,7 @@ export const projectLike = pgTable(
 			.notNull()
 			.references(() => user.id, { onDelete: "cascade" }),
 		projectId: integer("project_id").notNull(),
-		createdAt: timestamp("created_at")
+		createdAt: timestamp("created_at", { withTimezone: true })
 			.notNull()
 			.default(sql`CURRENT_TIMESTAMP`),
 	},
@@ -138,7 +138,7 @@ export const projectInteraction = pgTable("project_interaction", {
 	lastUpdated: timestamp("last_updated")
 		.notNull()
 		.default(sql`CURRENT_TIMESTAMP`),
-	createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
 export type ProjectInteraction = typeof projectInteraction.$inferSelect;
@@ -153,7 +153,7 @@ export const reviewLike = pgTable(
 			.notNull()
 			.references(() => user.id, { onDelete: "cascade" }),
 		reviewId: integer("review_id").notNull(),
-		createdAt: timestamp("created_at")
+		createdAt: timestamp("created_at", { withTimezone: true })
 			.notNull()
 			.default(sql`CURRENT_TIMESTAMP`),
 	},
@@ -172,7 +172,7 @@ export const reviewInteraction = pgTable("review_interaction", {
 	lastUpdated: timestamp("last_updated")
 		.notNull()
 		.default(sql`CURRENT_TIMESTAMP`),
-	createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
 export type ReviewInteraction = typeof reviewInteraction.$inferSelect;
@@ -191,7 +191,7 @@ export const blogComment = pgTable("blog_comment", {
 		onDelete: "cascade",
 	}),
 	content: text("content").notNull(),
-	createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 	deleted: boolean("deleted").notNull().default(false),
 });
@@ -208,7 +208,7 @@ export const blogCommentLike = pgTable(
 		userId: text("user_id")
 			.notNull()
 			.references(() => user.id, { onDelete: "cascade" }),
-		createdAt: timestamp("created_at")
+		createdAt: timestamp("created_at", { withTimezone: true })
 			.notNull()
 			.default(sql`CURRENT_TIMESTAMP`),
 	},
@@ -229,7 +229,7 @@ export const reviewComment = pgTable("review_comment", {
 		onDelete: "cascade",
 	}),
 	content: text("content").notNull(),
-	createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 	deleted: boolean("deleted").notNull().default(false),
 });
@@ -246,7 +246,7 @@ export const reviewCommentLike = pgTable(
 		userId: text("user_id")
 			.notNull()
 			.references(() => user.id, { onDelete: "cascade" }),
-		createdAt: timestamp("created_at")
+		createdAt: timestamp("created_at", { withTimezone: true })
 			.notNull()
 			.default(sql`CURRENT_TIMESTAMP`),
 	},
@@ -262,9 +262,94 @@ export const userProfile = pgTable("user_profile", {
 		.notNull()
 		.references(() => user.id, { onDelete: "cascade" }),
 	description: text("description"),
-	createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
 export type UserProfile = typeof userProfile.$inferSelect;
 export type NewUserProfile = typeof userProfile.$inferInsert;
+
+// Forum Topic Table
+export const forumTopic = pgTable("forum_topic", {
+	id: text("id").primaryKey(),
+	title: text("title").notNull(),
+	content: text("content").notNull(),
+	userId: text("user_id")
+		.notNull()
+		.references(() => user.id, { onDelete: "cascade" }),
+	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+	updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+	deleted: boolean("deleted").notNull().default(false),
+	pinned: boolean("pinned").notNull().default(false),
+	locked: boolean("locked").notNull().default(false),
+	isSpoiler: boolean("is_spoiler").notNull().default(false),
+	spoilerFor: text("spoiler_for"), // What the spoiler is for (e.g., "Spider-Man 4", "Deadpool & Wolverine")
+	spoilerExpiresAt: timestamp("spoiler_expires_at"), // When spoiler protection expires
+});
+
+export type ForumTopic = typeof forumTopic.$inferSelect;
+export type NewForumTopic = typeof forumTopic.$inferInsert;
+
+// Forum Topic Like Table
+export const forumTopicLike = pgTable(
+	"forum_topic_like",
+	{
+		topicId: text("topic_id")
+			.notNull()
+			.references(() => forumTopic.id, { onDelete: "cascade" }),
+		userId: text("user_id")
+			.notNull()
+			.references(() => user.id, { onDelete: "cascade" }),
+		createdAt: timestamp("created_at", { withTimezone: true })
+			.notNull()
+			.default(sql`CURRENT_TIMESTAMP`),
+	},
+	(table) => [primaryKey({ columns: [table.topicId, table.userId] })],
+);
+
+export type ForumTopicLike = typeof forumTopicLike.$inferSelect;
+export type NewForumTopicLike = typeof forumTopicLike.$inferInsert;
+
+// Forum Comment Table (for comments on forum topics)
+export const forumComment = pgTable("forum_comment", {
+	id: text("id").primaryKey(),
+	topicId: text("topic_id")
+		.notNull()
+		.references(() => forumTopic.id, { onDelete: "cascade" }),
+	userId: text("user_id")
+		.notNull()
+		.references(() => user.id, { onDelete: "cascade" }),
+	parentId: text("parent_id").references(() => forumComment.id, {
+		onDelete: "cascade",
+	}),
+	content: text("content").notNull(),
+	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+	updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+	deleted: boolean("deleted").notNull().default(false),
+	isSpoiler: boolean("is_spoiler").notNull().default(false),
+	spoilerFor: text("spoiler_for"), // What the spoiler is for
+	spoilerExpiresAt: timestamp("spoiler_expires_at"), // When spoiler protection expires
+});
+
+export type ForumComment = typeof forumComment.$inferSelect;
+export type NewForumComment = typeof forumComment.$inferInsert;
+
+// Forum Comment Like Table
+export const forumCommentLike = pgTable(
+	"forum_comment_like",
+	{
+		commentId: text("comment_id")
+			.notNull()
+			.references(() => forumComment.id, { onDelete: "cascade" }),
+		userId: text("user_id")
+			.notNull()
+			.references(() => user.id, { onDelete: "cascade" }),
+		createdAt: timestamp("created_at", { withTimezone: true })
+			.notNull()
+			.default(sql`CURRENT_TIMESTAMP`),
+	},
+	(table) => [primaryKey({ columns: [table.commentId, table.userId] })],
+);
+
+export type ForumCommentLike = typeof forumCommentLike.$inferSelect;
+export type NewForumCommentLike = typeof forumCommentLike.$inferInsert;
