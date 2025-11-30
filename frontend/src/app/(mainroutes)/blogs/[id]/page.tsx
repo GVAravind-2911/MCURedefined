@@ -9,8 +9,8 @@ import parse from "html-react-parser";
 import ScriptEmbed from "@/components/edit/ScriptEmbed";
 import Image from "next/image";
 import { auth } from "@/lib/auth/auth";
-import LikeButton from "@/components/blog/LikeButton";
-import ShareButton from "@/components/blog/ShareButton";
+import ContentLikeButton from "@/components/shared/ContentLikeButton";
+import ContentShareButton from "@/components/shared/ContentShareButton";
 import "@/styles/blog.css";
 import { headers } from "next/headers";
 import { getUserLikedBlog } from "@/db/blog-likes";
@@ -232,14 +232,16 @@ export default async function BlogPage(props: PageProps): Promise<JSX.Element> {
 							))}
 						</span>
 						<div className="likeandshare">
-							<LikeButton
-								blogId={blog.id}
+							<ContentLikeButton
+								contentId={blog.id}
+								contentType="blogs"
 								initialCount={totalInteractions.likes}
 								userHasLiked={!!userHasLiked}
 								isLoggedIn={!!session?.user}
 							/>
-							<ShareButton
-								blogId={blog.id}
+							<ContentShareButton
+								contentId={blog.id}
+								contentType="blogs"
 								initialCount={totalInteractions.shares || 0}
 							/>
 						</div>

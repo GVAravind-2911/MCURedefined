@@ -4,24 +4,30 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { formatNumber } from "@/lib/utils/formatNumber";
+import type { ContentType } from "@/types/ContentTypes";
 
-interface ShareButtonProps {
-  blogId: number;
+interface ContentShareButtonProps {
+  contentId: number;
+  contentType: ContentType;
   initialCount: number;
 }
 
-export default function ShareButton({
-  blogId,
+export default function ContentShareButton({
+  contentId,
+  contentType,
   initialCount,
-}: ShareButtonProps) {
+}: ContentShareButtonProps) {
   const [count, setCount] = useState(initialCount);
   const [shared, setShared] = useState(false);
   const [isPending, setIsPending] = useState(false);
   const [animateCount, setAnimateCount] = useState(false);
 
+  const apiPath = contentType === "blogs" ? "/api/blog" : "/api/review";
+  const idKey = contentType === "blogs" ? "blogId" : "reviewId";
+
   const handleShare = async () => {
     if (isPending) return;
-    
+
     // Get the current URL to share
     const url = window.location.href;
 
@@ -36,14 +42,14 @@ export default function ShareButton({
       setIsPending(true);
 
       // Call API to increment share count
-      await axios.post("/api/blog/share", { blogId });
+      await axios.post(`${apiPath}/share`, { [idKey]: contentId });
 
       // Show "Copied!" temporarily
       setTimeout(() => {
         setShared(false);
       }, 2000);
     } catch (err) {
-      console.error("Failed to share blog:", err);
+      console.error(`Failed to share ${contentType}:`, err);
       // No need to revert count - sharing can be done multiple times
     } finally {
       setIsPending(false);
@@ -65,19 +71,23 @@ export default function ShareButton({
         onClick={handleShare}
         disabled={isPending}
         whileTap={{ scale: 0.9 }}
-        whileHover={{ 
+        whileHover={{
           scale: 1.05,
           boxShadow: "0 6px 14px rgba(0, 0, 0, 0.3)",
-          y: -2
+          y: -2,
         }}
-        animate={shared ? { 
-          backgroundColor: ["#333", "#2e7d32", "#333"],
-        } : {}}
-        transition={{ 
-          type: "spring", 
-          stiffness: 500, 
+        animate={
+          shared
+            ? {
+                backgroundColor: ["#333", "#2e7d32", "#333"],
+              }
+            : {}
+        }
+        transition={{
+          type: "spring",
+          stiffness: 500,
           damping: 17,
-          backgroundColor: { duration: 1 }
+          backgroundColor: { duration: 1 },
         }}
         title={`${count.toLocaleString()} shares`}
       >
@@ -89,10 +99,14 @@ export default function ShareButton({
           fill="none"
           stroke="currentColor"
           strokeWidth="2"
-          animate={shared ? { 
-            scale: [1, 1.3, 1],
-            rotate: [0, 45, 0],
-          } : {}}
+          animate={
+            shared
+              ? {
+                  scale: [1, 1.3, 1],
+                  rotate: [0, 45, 0],
+                }
+              : {}
+          }
           transition={{ duration: 0.5 }}
         >
           <title>Share</title>
@@ -102,7 +116,7 @@ export default function ShareButton({
           <path d="M8.59 13.51L15.42 17.49" />
           <path d="M15.41 6.51L8.59 10.49" />
         </motion.svg>
-        
+
         <div className="button-text">
           <AnimatePresence mode="wait">
             <motion.span
@@ -115,42 +129,46 @@ export default function ShareButton({
               {shared ? "Copied!" : "Share"}
             </motion.span>
           </AnimatePresence>
-          
-          <motion.span 
+
+          <motion.span
             className="share-count-wrapper"
-            animate={animateCount ? {
-              y: [0, -10, 0],
-              scale: [1, 1.2, 1],
-            } : {}}
+            animate={
+              animateCount
+                ? {
+                    y: [0, -10, 0],
+                    scale: [1, 1.2, 1],
+                  }
+                : {}
+            }
             transition={{ duration: 0.5 }}
           >
             {formatNumber(count)}
           </motion.span>
         </div>
-        
+
         {isPending && (
-          <motion.span 
+          <motion.span
             className="loading-indicator"
             animate={{ rotate: 360 }}
-            transition={{ 
-              repeat: Number.POSITIVE_INFINITY, 
+            transition={{
+              repeat: Number.POSITIVE_INFINITY,
               duration: 0.8,
-              ease: "linear" 
+              ease: "linear",
             }}
           >
-            <svg 
-              width="16" 
-              height="16" 
-              viewBox="0 0 24 24" 
-              fill="none" 
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-			  <title>Loading</title>
-              <path 
-                d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 9.27455 20.9097 6.80375 19.1414 5" 
-                strokeWidth="2.5" 
-                strokeLinecap="round" 
-                stroke="currentColor" 
+              <title>Loading</title>
+              <path
+                d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 9.27455 20.9097 6.80375 19.1414 5"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                stroke="currentColor"
               />
             </svg>
           </motion.span>

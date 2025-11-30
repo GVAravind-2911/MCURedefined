@@ -9,8 +9,8 @@ import parse from "html-react-parser";
 import ScriptEmbed from "@/components/edit/ScriptEmbed";
 import Image from "next/image";
 import { auth } from "@/lib/auth/auth";
-import ReviewLikeButton from "@/components/review/ReviewLikeButton";
-import ReviewShareButton from "@/components/review/ReviewShareButton";
+import ContentLikeButton from "@/components/shared/ContentLikeButton";
+import ContentShareButton from "@/components/shared/ContentShareButton";
 import CommentSection from "@/components/comments/DynamicComment";
 import ErrorMessage from "@/components/main/ErrorMessage";
 import "@/styles/blog.css";
@@ -247,14 +247,16 @@ export default async function ReviewPage(
 							))}
 						</span>
 						<div className="likeandshare">
-							<ReviewLikeButton
-								reviewId={blog.id}
+							<ContentLikeButton
+								contentId={blog.id}
+								contentType="reviews"
 								initialCount={totalInteractions.likes}
 								userHasLiked={!!userHasLiked}
 								isLoggedIn={!!session?.user}
 							/>
-							<ReviewShareButton
-								reviewId={blog.id}
+							<ContentShareButton
+								contentId={blog.id}
+								contentType="reviews"
 								initialCount={totalInteractions.shares || 0}
 							/>
 						</div>

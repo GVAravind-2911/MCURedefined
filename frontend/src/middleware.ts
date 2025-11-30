@@ -46,7 +46,7 @@ export async function middleware(request: NextRequest) {
 		}
 	}
 
-	if (pathname.includes("/manage/users")) {
+	if (pathname.includes("/manage")) {
 		if (!session) {
 			return NextResponse.redirect(new URL("/auth", request.url));
 		}

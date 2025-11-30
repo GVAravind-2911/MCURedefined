@@ -4,28 +4,36 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { formatNumber } from "@/lib/utils/formatNumber";
+import type { ContentType } from "@/types/ContentTypes";
 
-interface LikeButtonProps {
-  blogId: number;
+interface ContentLikeButtonProps {
+  contentId: number;
+  contentType: ContentType;
   initialCount: number;
   userHasLiked: boolean;
   isLoggedIn: boolean;
+  iconSize?: number;
 }
 
-export default function LikeButton({
-  blogId,
+export default function ContentLikeButton({
+  contentId,
+  contentType,
   initialCount,
   userHasLiked,
   isLoggedIn,
-}: LikeButtonProps) {
+  iconSize = 24,
+}: ContentLikeButtonProps) {
   const [liked, setLiked] = useState(userHasLiked);
   const [count, setCount] = useState(initialCount);
   const [isPending, setIsPending] = useState(false);
   const [animateCount, setAnimateCount] = useState(false);
 
+  const apiPath = contentType === "blogs" ? "/api/blog" : "/api/review";
+  const idKey = contentType === "blogs" ? "blogId" : "reviewId";
+
   const handleLike = async () => {
     if (isPending) return;
-    
+
     // Optimistic update
     setLiked(true);
     setCount((prev) => prev + 1);
@@ -33,11 +41,11 @@ export default function LikeButton({
     setIsPending(true);
 
     try {
-      await axios.post("/api/blog/like", { blogId });
+      await axios.post(`${apiPath}/like`, { [idKey]: contentId });
       // Success - already updated UI optimistically
     } catch (err) {
       // Revert on error
-      console.error("Failed to like blog:", err);
+      console.error(`Failed to like ${contentType}:`, err);
       setLiked(false);
       setCount((prev) => prev - 1);
     } finally {
@@ -47,7 +55,7 @@ export default function LikeButton({
 
   const handleUnlike = async () => {
     if (isPending) return;
-    
+
     // Optimistic update
     setLiked(false);
     setCount((prev) => prev - 1);
@@ -55,11 +63,11 @@ export default function LikeButton({
     setIsPending(true);
 
     try {
-      await axios.post("/api/blog/unlike", { blogId });
+      await axios.post(`${apiPath}/unlike`, { [idKey]: contentId });
       // Success - already updated UI optimistically
     } catch (err) {
       // Revert on error
-      console.error("Failed to unlike blog:", err);
+      console.error(`Failed to unlike ${contentType}:`, err);
       setLiked(true);
       setCount((prev) => prev + 1);
     } finally {
@@ -77,22 +85,22 @@ export default function LikeButton({
   if (!isLoggedIn) {
     return (
       <div className="likes">
-        <motion.div 
-          className="like-button disabled" 
+        <motion.div
+          className="like-button disabled"
           title={`${count} likes`}
           initial={{ opacity: 0.9 }}
           animate={{ opacity: 1 }}
-          whileHover={{ 
+          whileHover={{
             scale: 1.03,
-            boxShadow: "0 6px 12px rgba(236, 29, 36, 0.2)" 
+            boxShadow: "0 6px 12px rgba(236, 29, 36, 0.2)",
           }}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            width="24"
-            height="24"
+            width={iconSize}
+            height={iconSize}
             className="heart-icon"
           >
             <title>Like</title>
@@ -112,16 +120,16 @@ export default function LikeButton({
         onClick={liked ? handleUnlike : handleLike}
         disabled={isPending}
         whileTap={{ scale: 0.9 }}
-        whileHover={{ 
+        whileHover={{
           scale: 1.05,
           boxShadow: "0 6px 14px rgba(236, 29, 36, 0.4)",
-          y: -2
+          y: -2,
         }}
         title={`${count.toLocaleString()} likes`}
-        transition={{ 
-          type: "spring", 
-          stiffness: 500, 
-          damping: 17 
+        transition={{
+          type: "spring",
+          stiffness: 500,
+          damping: 17,
         }}
       >
         <motion.svg
@@ -130,22 +138,26 @@ export default function LikeButton({
           fill={liked ? "currentColor" : "none"}
           stroke="currentColor"
           strokeWidth={liked ? "0" : "2"}
-          width="24"
-          height="24"
+          width={iconSize}
+          height={iconSize}
           className="heart-icon"
-          animate={liked ? { 
-            scale: [1, 1.3, 1],
-            fill: ["#fff", "#ec1d24", "#ec1d24"], 
-          } : {}}
-          transition={{ 
+          animate={
+            liked
+              ? {
+                  scale: [1, 1.3, 1],
+                  fill: ["#fff", "#ec1d24", "#ec1d24"],
+                }
+              : {}
+          }
+          transition={{
             duration: 0.4,
-            ease: "easeInOut" 
+            ease: "easeInOut",
           }}
         >
           <title>{liked ? "Unlike" : "Like"}</title>
           <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
         </motion.svg>
-        
+
         <div className="button-text">
           <AnimatePresence mode="wait">
             <motion.span
@@ -158,43 +170,49 @@ export default function LikeButton({
               {liked ? "Liked" : "Like"}
             </motion.span>
           </AnimatePresence>
-          
-          <motion.span 
+
+          <motion.span
             className="like-count-wrapper"
-            animate={animateCount ? {
-              y: [0, -10, 0],
-              color: liked ? ["#ec1d24", "#ff4d4d", "#ec1d24"] : ["#fff", "#eee", "#fff"],
-              scale: [1, 1.2, 1],
-            } : {}}
+            animate={
+              animateCount
+                ? {
+                    y: [0, -10, 0],
+                    color: liked
+                      ? ["#ec1d24", "#ff4d4d", "#ec1d24"]
+                      : ["#fff", "#eee", "#fff"],
+                    scale: [1, 1.2, 1],
+                  }
+                : {}
+            }
             transition={{ duration: 0.5 }}
           >
             {formatNumber(count)}
           </motion.span>
         </div>
-        
+
         {isPending && (
-          <motion.span 
+          <motion.span
             className="loading-indicator"
             animate={{ rotate: 360 }}
-            transition={{ 
-              repeat: Number.POSITIVE_INFINITY, 
+            transition={{
+              repeat: Number.POSITIVE_INFINITY,
               duration: 0.8,
-              ease: "linear" 
+              ease: "linear",
             }}
           >
-            <svg 
-              width="16" 
-              height="16" 
-              viewBox="0 0 24 24" 
-              fill="none" 
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-			  <title>Loading</title>
-              <path 
-                d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 9.27455 20.9097 6.80375 19.1414 5" 
-                strokeWidth="2.5" 
-                strokeLinecap="round" 
-                stroke="currentColor" 
+              <title>Loading</title>
+              <path
+                d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 9.27455 20.9097 6.80375 19.1414 5"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                stroke="currentColor"
               />
             </svg>
           </motion.span>
