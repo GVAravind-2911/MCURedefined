@@ -1,0 +1,323 @@
+/* Font declarations */
+@font-face {
+	font-family: "BentonSansCompLight";
+	src: url("../fonts/BentonSans Comp Light.otf");
+}
+@font-face {
+	font-family: "BentonSansRegular";
+	src: url("../fonts/BentonSans Regular.otf");
+}
+@font-face {
+	font-family: "BentonSansBook";
+	src: url("../fonts/BentonSans Book.otf");
+}
+@font-face {
+	font-family: "BentonSansBold";
+	src: url("../fonts/BentonSans Bold.otf");
+}
+@font-face {
+	font-family: "BentonSansCompBlack";
+	src: url("../fonts/BentonSans Comp Black.otf");
+}
+
+/* Reset and Base Styles */
+:root {
+	--primary-color: #ec1d24;
+	--primary-dark: #d01c22;
+	--primary-light: rgba(236, 29, 36, 0.8);
+	--text-color: #ffffff;
+	--text-secondary: rgba(255, 255, 255, 0.8);
+	--background-color: #000000;
+	--background-card: rgba(18, 18, 18, 0.8);
+	--dark-bg: #0a0a0a;
+	--border-color: rgba(255, 255, 255, 0.1);
+	--border-hover: rgba(255, 255, 255, 0.2);
+	--max-width: 1200px;
+	--default-radius: 8px;
+	--box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+	--transition: all 0.3s ease;
+}
+
+* {
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+	border-width: 0;
+	border-style: solid;
+}
+
+html {
+	font-size: 16px;
+	scroll-behavior: smooth;
+	line-height: 1.5;
+}
+
+body {
+	font-family: "BentonSansRegular", sans-serif;
+	color: var(--text-color);
+	background-color: #000000; /* Set explicit black background */
+	overflow-x: hidden;
+	margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: "BentonSansBold", sans-serif;
+	margin: 0;
+	line-height: 1.2;
+}
+
+p {
+	margin: 0;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+button {
+	cursor: pointer;
+	font-family: inherit;
+}
+
+img,
+svg {
+	max-width: 100%;
+	display: block;
+}
+
+/* Common Utility Classes */
+.container {
+	width: 100%;
+	max-width: var(--max-width);
+	margin: 0 auto;
+	padding: 0 1rem;
+}
+
+.fade-in {
+	animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.lock-scroll {
+	overflow: hidden;
+}
+
+.main-content-wrapper {
+	min-height: calc(150vh - 80px - 250px); /* viewport height minus header and footer */
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+/* Button Styles */
+.button-primary {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.875rem 2rem;
+	background-color: var(--primary-color);
+	color: white;
+	font-family: "BentonSansRegular", sans-serif;
+	font-size: 1rem;
+	border: none;
+	border-radius: var(--default-radius);
+	cursor: pointer;
+	transition: var(--transition);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	box-shadow: 0 4px 10px rgba(236, 29, 36, 0.4);
+}
+
+.button-primary:hover {
+	background-color: var(--primary-dark);
+	transform: translateY(-3px);
+	box-shadow: 0 6px 15px rgba(236, 29, 36, 0.5);
+}
+
+.button-secondary {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.875rem 2rem;
+	background-color: transparent;
+	color: var(--text-color);
+	font-family: "BentonSansRegular", sans-serif;
+	font-size: 1rem;
+	border: 1px solid var(--border-color);
+	border-radius: var(--default-radius);
+	cursor: pointer;
+	transition: var(--transition);
+}
+
+.button-secondary:hover {
+	background-color: rgba(255, 255, 255, 0.05);
+	border-color: var(--border-hover);
+}
+
+/* Card Styles */
+.card {
+	background-color: var(--background-card);
+	border-radius: var(--default-radius);
+	padding: 2rem;
+	box-shadow: var(--box-shadow);
+	transition: var(--transition);
+	border: 1px solid rgba(236, 29, 36, 0.05);
+}
+
+.card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+	border-color: rgba(236, 29, 36, 0.1);
+}
+
+/* User Dropdown */
+.user-dropdown {
+	position: relative;
+	display: inline-block;
+}
+
+.user-dropdown-button {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.5rem 1rem;
+	background: transparent;
+	border: 1px solid var(--border-color);
+	border-radius: var(--default-radius);
+	color: var(--text-color);
+	font-size: 1rem;
+	cursor: pointer;
+	transition: var(--transition);
+}
+
+.user-dropdown-button:hover {
+	background-color: rgba(255, 255, 255, 0.05);
+	border-color: var(--border-hover);
+}
+
+.dropdown-arrow {
+	transition: transform 0.2s;
+	fill: none;
+	stroke: currentColor;
+}
+
+.dropdown-arrow.open {
+	transform: rotate(180deg);
+}
+
+.dropdown-menu {
+	position: absolute;
+	top: 100%;
+	right: 0;
+	margin-top: 0.5rem;
+	min-width: 180px;
+	background-color: #1a1a1a;
+	border: 1px solid var(--border-color);
+	border-radius: var(--default-radius);
+	box-shadow: var(--box-shadow);
+	overflow: hidden;
+	z-index: 1000;
+	animation: dropdownFade 0.2s ease-out;
+}
+
+.dropdown-item {
+	display: block;
+	width: 100%;
+	padding: 0.8rem 1rem;
+	text-align: left;
+	background: none;
+	border: none;
+	color: var(--text-color);
+	font-size: 0.9rem;
+	cursor: pointer;
+	transition: background-color 0.2s;
+	text-decoration: none;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dropdown-item:last-child {
+	border-bottom: none;
+}
+
+.dropdown-item:hover {
+	background-color: rgba(255, 255, 255, 0.05);
+	color: var(--primary-color);
+}
+
+@keyframes dropdownFade {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Fix padding for header */
+.main-content {
+	padding-top: 90px;
+}
+
+@media (max-width: 768px) {
+	.main-content {
+		padding-top: 80px;
+	}
+}
+
+::selection {
+	background-color: #333333; /* Darkish gray for general text selection */
+	color: white; /* Maintain white text for better contrast */
+}
+
+/* Red text specific selection */
+.text-primary::selection,
+[style*="color:#ec1d24"]::selection,
+[style*="color: #ec1d24"]::selection,
+[class*="primary"]::selection {
+	background-color: #ec1d24; /* Primary red color for selection */
+	color: white; /* White text on red background */
+}
+
+/* For Firefox */
+::-moz-selection {
+	background-color: #333333;
+	color: white;
+}
+
+.text-primary::-moz-selection,
+[style*="color:#ec1d24"]::-moz-selection,
+[style*="color: #ec1d24"]::-moz-selection,
+[class*="primary"]::-moz-selection {
+	background-color: #ec1d24;
+	color: white;
+}
+
+[style*="var(--primary-color)"]::selection,
+[style*="var(--primary)"]::selection {
+	background-color: #ec1d24;
+	color: white;
+}
+
+[style*="var(--primary-color)"]::-moz-selection,
+[style*="var(--primary)"]::-moz-selection {
+	background-color: #ec1d24;
+	color: white;
+}

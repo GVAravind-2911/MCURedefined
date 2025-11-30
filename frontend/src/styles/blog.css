@@ -1,0 +1,852 @@
+/* Font declarations */
+@font-face {
+    font-family: "BentonSansCompLight";
+    src: url("../fonts/BentonSans\ Comp\ Light.otf");
+}
+@font-face {
+    font-family: "BentonSansRegular";
+    src: url("../fonts/BentonSans\ Regular.otf");
+}
+@font-face {
+    font-family: "BentonSansBook";
+    src: url("../fonts/BentonSans\ Book.otf");
+}
+@font-face {
+    font-family: "BentonSansBold";
+    src: url("../fonts/BentonSans\ Bold.otf");
+}
+@font-face {
+    font-family: "BentonSansCompBlack";
+    src: url("../fonts/BentonSans\ Comp\ Black.otf");
+}
+
+body,
+html {
+    background-color: #000000;
+}
+
+/* Layout */
+.layout {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 2.5%;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.separator {
+    height: 2px;
+    width: 100%;
+    background-color: rgb(72, 72, 72);
+    margin: 0;
+}
+
+.otherblogs {
+    color: azure;
+    width: 22%;
+    margin-right: 3%;
+    display: flex;
+    flex-direction: column;
+    gap: 1%;
+    position: fixed;
+    right: 3%;
+    top: 120px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #ec1d24 rgba(40, 40, 40, 0.3);
+    padding-right: 10px;
+    z-index: 100;
+}
+
+.otherblogs::-webkit-scrollbar {
+    width: 6px;
+}
+
+.otherblogs::-webkit-scrollbar-track {
+    background: rgba(40, 40, 40, 0.3);
+    border-radius: 10px;
+}
+
+.otherblogs::-webkit-scrollbar-thumb {
+    background-color: rgba(236, 29, 36, 0.7);
+    border-radius: 10px;
+}
+
+.latestblogs {
+    font-family: "BentonSansBold", sans-serif;
+    color: #ec1d24;
+    text-align: center;
+    margin: 15px 0 20px;
+    position: sticky;
+    top: 0;
+    background-color: #000000;
+    padding: 5px 0;
+    z-index: 2;
+}
+
+.contents {
+    width: 60%;
+    margin-left: 5%;
+    margin-right: 25%;
+    margin-bottom: 25px;
+    margin-top: 1%;
+    border-radius: 5px;
+    margin-left: 5%;
+    padding-right: 0; /* Remove excessive padding */
+}
+
+/* Blog header section */
+.title {
+    font-size: 70px;
+    margin-left: 3%;
+    margin-top: 3%;
+    color: white;
+    font-family: "BentonSansBold", sans-serif;
+    text-align: center;
+}
+
+.colorforby {
+    font-family: "BentonSansRegular", sans-serif;
+}
+
+/* Author and date info */
+.meta-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 20px;
+    margin: 15px auto;
+    border-radius: 8px;
+    background-color: rgba(40, 40, 40, 0.3);
+    width: fit-content;
+}
+
+.byline,
+.datecreation,
+.dateupdate {
+    font-size: 18px;
+    margin: 0.5% 0;
+    letter-spacing: 0.03em;
+    font-family: "BentonSansRegular", sans-serif;
+}
+
+.byline {
+    margin-top: -3%;
+    color: #ec1d24;
+}
+
+.datecreation,
+.dateupdate {
+    font-size: 20px;
+    color: #ec1d24;
+    text-align: center;
+}
+
+/* Tags styling */
+.tagsspan {
+    margin: 20px 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.tags {
+    font-size: 16px;
+    color: #fff;
+    font-family: "BentonSansRegular", sans-serif;
+    background-color: rgba(236, 29, 36, 0.8);
+    border: none;
+    border-radius: 20px;
+    padding: 6px 16px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+}
+
+.tags:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(236, 29, 36, 0.4);
+    background-color: #ec1d24;
+    cursor: pointer;
+}
+
+.tags::before {
+    content: "#";
+    margin-right: 4px;
+    opacity: 0.7;
+}
+
+.likeandshare{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* --- LIKE AND SHARE BUTTON STYLES --- */
+
+/* Button containers with consistent styling */
+.likes,
+.share-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 5px;
+}
+
+/* Unified button styles with enhanced aesthetics */
+.like-button,
+.liked-button,
+.share,
+.like-button.disabled {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px 20px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    font-family: "BentonSansRegular", sans-serif;
+    font-size: 16px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    min-width: 130px;
+    height: 42px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Specific button variants with improved styling */
+.like-button {
+    background-color: #ec1d24;
+    color: white;
+    border: 2px solid transparent;
+    font-weight: 500;
+}
+
+.liked-button {
+    background-color: rgba(255, 255, 255, 0.95);
+    color: #ec1d24;
+    border: 2px solid #ec1d24;
+    font-weight: bold;
+}
+
+.share {
+    background-color: #333;
+    color: white;
+    border: 2px solid transparent;
+    font-weight: 500;
+}
+
+/* Enhanced button hover effects */
+.like-button:hover:not(.disabled) {
+    background-color: #d11920;
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 8px 15px rgba(236, 29, 36, 0.4);
+}
+
+.liked-button:hover {
+    background-color: #fff;
+    border-color: #ff3d44;
+    color: #ff3d44;
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 8px 15px rgba(236, 29, 36, 0.3);
+}
+
+.share:hover {
+    background-color: #444;
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Button active effects - scale down when pressed */
+.like-button:active, 
+.liked-button:active, 
+.share:active {
+    transform: scale(0.95);
+    transition: transform 0.1s;
+}
+
+/* Button ripple effect on click */
+.like-button::before,
+.liked-button::before,
+.share::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%, -50%);
+    transform-origin: 50% 50%;
+}
+
+.like-button:active::before,
+.liked-button:active::before,
+.share:active::before {
+    animation: ripple 0.4s ease-out;
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+    }
+    20% {
+        transform: scale(25, 25);
+        opacity: 0.3;
+    }
+    100% {
+        opacity: 0;
+        transform: scale(40, 40);
+    }
+}
+
+/* Disabled state with subtle differentiation */
+.like-button.disabled {
+    background-color: #777;
+    color: #ddd;
+    cursor: not-allowed;
+    pointer-events: auto;
+    opacity: 0.8;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.like-button.disabled:hover {
+    transform: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.like-button.disabled .heart-icon {
+    opacity: 0.6;
+}
+
+/* Button text with enhanced formatting and animations */
+.button-text {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    height: 22px;
+    letter-spacing: 0.02em;
+}
+
+/* Count wrappers with improved styling */
+.like-count-wrapper,
+.share-count-wrapper {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 6px;
+    font-size: 0.9em;
+    font-weight: normal;
+    opacity: 0.95;
+    background-color: rgba(255, 255, 255, 0.15);
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.liked-button .like-count-wrapper {
+    background-color: rgba(236, 29, 36, 0.1);
+}
+
+/* Heart icon with enhanced animations */
+.heart-icon {
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    fill: currentColor;
+}
+
+.liked-button .heart-icon {
+    fill: #ec1d24;
+    filter: drop-shadow(0 0 2px rgba(236, 29, 36, 0.3));
+}
+
+/* Like button pulse animation */
+@keyframes pulseLike {
+    0% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 0 rgba(236, 29, 36, 0));
+    }
+    50% {
+        transform: scale(1.35);
+        filter: drop-shadow(0 0 5px rgba(236, 29, 36, 0.6));
+    }
+    100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 2px rgba(236, 29, 36, 0.3));
+    }
+}
+
+.liked-button .heart-icon {
+    animation: pulseLike 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Animation for "Copied!" state of share button */
+.share.shared {
+    animation: pulse-green 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes pulse-green {
+    0% {
+        background-color: #333;
+    }
+    30% {
+        background-color: #2e7d32;
+    }
+    100% {
+        background-color: #333;
+    }
+}
+
+/* Count animations with improved effects */
+@keyframes countChange {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    35% {
+        transform: translateY(-12px);
+        opacity: 0.7;
+    }
+    70% {
+        transform: translateY(4px);
+        opacity: 0.9;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.count-animate {
+    animation: countChange 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Enhanced tooltip styling */
+.like-button:hover::after,
+.liked-button:hover::after,
+.share:hover::after,
+.like-button.disabled:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    white-space: nowrap;
+    pointer-events: none;
+    margin-bottom: 8px;
+    z-index: 100;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.like-button:hover::after,
+.liked-button:hover::after,
+.share:hover::after,
+.like-button.disabled:hover::after {
+    opacity: 1;
+}
+
+/* Loading indicator styling */
+.loading-indicator {
+    margin-left: 5px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.loading-indicator svg {
+    opacity: 0.8;
+}
+
+/* Focus states for accessibility */
+.like-button:focus,
+.liked-button:focus,
+.share:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(236, 29, 36, 0.3), 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.share:focus {
+    box-shadow: 0 0 0 3px rgba(100, 100, 100, 0.3), 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* End of like and share button styles */
+
+/* Content divider */
+.contentsinfo::after {
+    content: "";
+    display: block;
+    width: 60%;
+    height: 2px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(236, 29, 36, 0.7),
+        transparent
+    );
+    margin: 30px auto;
+}
+
+/* Main content section */
+.contentsmain {
+    margin: 2.5% 2% 5%;
+    width: 96%;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2%;
+}
+
+.maincontent {
+    font-size: 18px;
+    word-spacing: 0.1em;
+    font-family: "BentonSansBook", sans-serif;
+    white-space: pre-line;
+    padding-bottom: 2%;
+    color: white;
+    line-height: 2.5;
+    margin-bottom: 2%;
+    width: 100%;
+    align-items: center;
+}
+
+.textcontent {
+    width: 100%;
+}
+
+.textcontent i,
+.textcontent b i {
+    color: #ec1d24;
+}
+
+/* Content images */
+.contentimages {
+    margin-left: 25%;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    width: 50%;
+    height: 50%;
+    object-fit: contain;
+    border-radius: 5px;
+    justify-content: center;
+    align-self: center;
+}
+
+/* Video and embed handling */
+.video-container {
+    margin-left: 23%;
+    margin-top: 5%;
+    margin-bottom: 0.1%;
+    width: 50%;
+    height: 50%;
+    display: block;
+}
+
+.youtube-preview {
+    width: 75%;
+    height: 350px;
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    margin-left: 12.5%;
+}
+
+.embed-preview {
+    width: 50%;
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    margin-left: 25%;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.embed-preview iframe {
+    width: 100%;
+    height: 100%;
+}
+
+.video {
+    width: 90%;
+    height: 90%;
+}
+
+/* Loading states */
+.loading {
+    display: flex;
+    color: whitesmoke;
+    margin-top: 20%;
+    margin-bottom: 100px;
+    justify-content: center;
+    align-items: center;
+}
+
+.loadingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 1);
+    z-index: 9999;
+}
+
+/* Animations */
+.fade-in {
+    animation: fadeIn ease 1s;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Preview page container */
+.preview-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+/* Override contents styling for preview */
+.contents.preview-content {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto 30px auto;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
+.contents.preview-content .contentsinfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+}
+
+.contents.preview-content .title {
+    margin-left: 0;
+    text-align: center;
+    word-break: break-word;
+}
+
+.contents.preview-content .byline,
+.contents.preview-content .datecreation,
+.contents.preview-content .dateupdate {
+    margin-left: 0;
+    margin-top: 5px;
+    text-align: center;
+}
+
+.contents.preview-content .byline {
+    margin-top: 10px;
+}
+
+.contents.preview-content .contentsmain {
+    margin: 2.5% auto 5%;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.contents.preview-content .maincontent {
+    padding: 0 5%;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
+.contents.preview-content .textcontent {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    max-width: 100%;
+}
+
+/* Preview page action buttons */
+.preview-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+.preview-publish-btn,
+.preview-edit-btn {
+    background-color: #ec1d24;
+    color: white;
+    height: auto;
+    min-width: 200px;
+    padding: 15px 40px;
+    border-radius: 10px;
+    border: none;
+    font-family: "BentonSansCompBlack", sans-serif;
+    font-size: 28px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.preview-edit-btn {
+    background-color: rgba(40, 40, 40, 0.8);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.preview-publish-btn:hover,
+.preview-edit-btn:hover {
+    opacity: 0.85;
+    transform: scale(1.05);
+}
+
+.preview-publish-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Utility */
+#maindiv {
+    display: contents;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .title {
+        font-size: 48px;
+    }
+
+    .meta-info {
+        width: 90%;
+    }
+
+    .layout {
+        flex-direction: column;
+    }
+
+    .otherblogs {
+        position: static !important;
+        transform: none !important;
+        width: 90% !important;
+        max-height: none !important;
+        margin: 40px auto !important;
+        padding-right: 0;
+        z-index: auto !important;
+    }
+    
+    .contents {
+        order: -1; /* Make main content appear first */
+        width: 90%;
+        margin: 0 auto;
+    }
+
+    /* Mobile responsive button styles */
+    .like-button,
+    .liked-button,
+    .share,
+    .like-button.disabled {
+        padding: 8px 16px;
+        min-width: 110px;
+        height: 38px;
+        font-size: 15px;
+    }
+    
+    .button-text {
+        font-size: 15px;
+        gap: 5px;
+    }
+    
+    .like-count-wrapper,
+    .share-count-wrapper {
+        padding: 2px 6px;
+        margin-left: 4px;
+    }
+    
+    .heart-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    /* Preview buttons responsive */
+    .preview-publish-btn,
+    .preview-edit-btn {
+        font-size: 22px;
+        padding: 12px 30px;
+        min-width: 180px;
+    }
+}
+
+@media (max-width: 480px) {
+    .contents {
+        width: 90%;
+    }
+
+    /* Further reduce button size on small screens */
+    .like-button,
+    .liked-button,
+    .share,
+    .like-button.disabled {
+        padding: 6px 14px;
+        font-size: 14px;
+        min-width: 100px;
+        height: 36px;
+        gap: 6px;
+    }
+
+    .button-text {
+        font-size: 13px;
+        gap: 4px;
+    }
+    
+    .like-count-wrapper,
+    .share-count-wrapper {
+        padding: 1px 6px;
+        font-size: 0.85em;
+    }
+    
+    .heart-icon {
+        width: 18px;
+        height: 18px;
+    }
+
+    /* Preview buttons responsive */
+    .preview-publish-btn,
+    .preview-edit-btn {
+        font-size: 18px;
+        padding: 10px 25px;
+        min-width: 160px;
+    }
+}

@@ -1,0 +1,72 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+frontend/node_modules
+frontend/.pnp
+frontend/.pnp.js
+frontend/.yarn/install-state.gz
+
+# testing
+frontend/coverage
+
+# next.js
+frontend/.next/
+frontend/out/
+
+# production
+frontend/build
+
+# misc
+frontend/.DS_Store
+frontend/*.pem
+
+# debug
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# local env files
+frontend/.env*.local
+frontend/.env
+
+# vercel
+frontend/.vercel
+
+# typescript
+frontend/*.tsbuildinfo
+frontend/next-env.d.ts
+
+backend/MCURedefined
+backend/.env
+
+
+# Byte-compiled / optimized / DLL files
+**/__pycache__/
+*.py[cod]
+*$py.class
+.idea/
+
+/oldeditpage.js
+/.editorconfig
+/temp files/
+/temp.txt
+/test.ipynb
+/run.ps1
+
+backend/blog*.db
+backend/populate.py
+backend/tocheck.txt
+backend/try.py
+backend/try1.py
+backend/webscrape.py
+backend/imguploadtest.py
+backend/recommendation.py
+
+/package.json
+/package-lock.json
+creds.txt
+postcss.config.mjs.txt
+server.js
+tempblog.json
+tempindividualblog.json
+/node_modules/

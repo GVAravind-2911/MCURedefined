@@ -1,0 +1,146 @@
+.error-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 80vh;
+	padding: 3% 5%;
+	width: 100%;
+	margin-top: -3%;
+}
+
+.error-card {
+	background: rgba(0, 0, 0, 0.7); /* Nearly transparent black to blend with page background */
+	border-radius: 12px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+	padding: 5%;
+	width: 90%;
+	max-width: 550px;
+	text-align: center;
+	position: relative;
+	overflow: hidden;
+	animation: fadeIn 0.6s ease-out;
+	border: 1px solid rgba(236, 29, 36, 0.3);
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.error-title {
+	font-family: "BentonSansBold", sans-serif;
+	font-size: clamp(24px, 5vw, 32px);
+	color: #ec1d24;
+	margin: 3% 0;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
+.error-divider {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 6% 0;
+}
+
+.divider-line {
+	height: 2px;
+	width: 35%;
+	background: linear-gradient(
+		90deg,
+		transparent,
+		rgba(236, 29, 36, 0.7),
+		transparent
+	);
+}
+
+.error-details {
+	background: rgba(255, 255, 255, 0.05);
+	border-radius: 10px;
+	padding: 6%;
+	margin: 6% 0;
+	position: relative;
+	border-left: 3px solid #ec1d24;
+}
+
+.error-reasons {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.reason-item {
+	font-family: "BentonSansRegular", sans-serif;
+	font-size: clamp(14px, 3vw, 16px);
+	color: #ffffff; /* White text as requested */
+	padding: 10px 0 10px 30px;
+	position: relative;
+	text-align: left;
+}
+
+.reason-item::before {
+	content: "•";
+	position: absolute;
+	left: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: #ec1d24;
+	font-size: 20px;
+}
+
+.reload-button {
+	background-color: #ec1d24;
+	color: #fff;
+	border: none;
+	border-radius: 30px;
+	padding: 12px 24px;
+	font-family: "BentonSansBold", sans-serif;
+	font-size: clamp(14px, 2vw, 16px);
+	cursor: pointer;
+	margin-top: 4%;
+	margin-bottom: 2%;
+	position: relative;
+	overflow: hidden;
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	transition: all 0.3s ease;
+	box-shadow: 0 5px 15px rgba(236, 29, 36, 0.4);
+}
+
+.reload-button:hover {
+	transform: translateY(-3px);
+	background-color: #d81921;
+	box-shadow: 0 8px 20px rgba(236, 29, 36, 0.5);
+}
+
+.button-text {
+	position: relative;
+	z-index: 2;
+}
+
+.button-icon {
+	display: inline-flex;
+	align-items: center;
+	z-index: 2;
+}
+
+@media (max-width: 480px) {
+	.error-card {
+		padding: 8%;
+	}
+
+	.error-details {
+		padding: 8%;
+	}
+
+	.reason-item {
+		font-size: 14px;
+	}
+}

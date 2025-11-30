@@ -1,5 +1,8 @@
-# MCURedefined
+### MCU Redefined
 
-Welcome To The Main Branch Of MCU Redefined Website.
-This is the latest running version.
-Refer to Dev branch to find all the dev changes.
+This is the Source Code for the MCU Redefined Fanpage.
+Built using:
+
+1. NextJS
+2. Flask
+3. Turso LibSQL Database
