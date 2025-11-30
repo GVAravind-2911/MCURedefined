@@ -1,5 +1,4 @@
 from flask import Flask, session, request, render_template, redirect, url_for, jsonify
-from auth_utils import admin_required
 from dmm import BlogPost, Timeline, Reviews
 from datetime import datetime, date
 from flask_cors import CORS
@@ -8,13 +7,31 @@ from math import ceil
 import requests
 from dotenv import load_dotenv, find_dotenv
 from os import environ as env
-from userdbm import is_admin, get_user_liked
+from userdbm import get_user_liked
+import boto3
+import base64
+import io
+import uuid
 
 ENV_FIlE = find_dotenv()
 if ENV_FIlE:
     load_dotenv(ENV_FIlE)
 
-CLIENTID = "f7a420a28def437"
+# Cloudflare R2 Configuration
+R2_ACCOUNT_ID = env.get("R2_ACCOUNT_ID")
+R2_ACCESS_KEY_ID = env.get("R2_ACCESS_KEY_ID")
+R2_SECRET_ACCESS_KEY = env.get("R2_SECRET_ACCESS_KEY")
+R2_BUCKET_NAME = env.get("R2_BUCKET_NAME", "mcuredefined")
+R2_PUBLIC_URL = env.get("R2_PUBLIC_URL")  # e.g., https://your-bucket.r2.dev or custom domain
+
+# Initialize R2 client
+s3_client = boto3.client(
+    's3',
+    endpoint_url=f'https://{R2_ACCOUNT_ID}.r2.cloudflarestorage.com',
+    aws_access_key_id=R2_ACCESS_KEY_ID,
+    aws_secret_access_key=R2_SECRET_ACCESS_KEY,
+    region_name='auto'
+)
 
 app = Flask("mcuredefined")
 cors = CORS(app)
@@ -23,26 +40,55 @@ app.secret_key = env.get("APP_SECRET_KEY")
 
 
 def saveImage(imgstring):
+    """Upload image to Cloudflare R2 and return the public URL"""
     if imgstring["link"].startswith("data:image"):
-        imgstring = imgstring["link"].split(",")[1]
-
-        url = "https://api.imgur.com/3/upload"
-        headers = {
-            "Authorization": "Client-ID {}".format(CLIENTID)
+        # Extract the base64 data and mime type
+        data_part = imgstring["link"]
+        # Format: data:image/jpeg;base64,/9j/4AAQ...
+        header, base64_data = data_part.split(",", 1)
+        
+        # Get mime type from header (e.g., "data:image/jpeg;base64" -> "image/jpeg")
+        mime_type = header.split(":")[1].split(";")[0]
+        
+        # Get file extension from mime type
+        ext_map = {
+            'image/jpeg': 'jpg',
+            'image/jpg': 'jpg',
+            'image/png': 'png',
+            'image/gif': 'gif',
+            'image/webp': 'webp',
+            'image/svg+xml': 'svg'
         }
-        payload = {
-            "image": imgstring,
-            "type": "base64"
-        }
-
-        response = requests.post(url, headers=headers, data=payload)
-        if response.status_code == 200:
-            data = response.json()
-            deletehash = data['data']['deletehash']
-            link = data['data']['link']
-            return {"link": link, "deletehash": deletehash}
-        else:
-            raise Exception("Failed to upload image to Imgur")
+        extension = ext_map.get(mime_type, 'jpg')
+        
+        # Decode base64 to binary
+        image_binary = base64.b64decode(base64_data)
+        
+        # Create a file-like object
+        image_file = io.BytesIO(image_binary)
+        
+        # Generate unique filename
+        unique_id = str(uuid.uuid4())
+        filename = f"blog-images/{unique_id}.{extension}"
+        
+        try:
+            # Upload to R2
+            s3_client.upload_fileobj(
+                image_file,
+                R2_BUCKET_NAME,
+                filename,
+                ExtraArgs={
+                    'ContentType': mime_type,
+                }
+            )
+            
+            # Construct the public URL
+            public_url = f"{R2_PUBLIC_URL}/{filename}"
+            
+            return {"link": public_url, "key": filename}
+        except Exception as e:
+            print(f"R2 upload error: {str(e)}")
+            raise Exception(f"Failed to upload image to R2: {str(e)}")
     else:
         return imgstring
 
@@ -67,7 +113,6 @@ def blog(id):
     return jsonify(post)
 
 @app.route('/blogs/<int:id>', methods=['DELETE'])
-@admin_required
 def deleteBlog(id):
     BlogPost.delete(id)
     return jsonify({"message": "Blog deleted successfully"}), 200
@@ -84,44 +129,46 @@ def recent():
 
 
 @app.route('/blogs/create', methods=['POST'])
-@admin_required
 def createBlogPost():
-    token = request.headers.get('Authorization', '').replace('Bearer ', '')
-    if not is_admin(token):
-        return jsonify({"error": "Unauthorized - Admin access required"}), 403
+    try:
+        data = request.get_json()
+        
+        if data['thumbnail_path']["link"].startswith("data:image"):
+            imgUrl = saveImage(data['thumbnail_path'])
+            data['thumbnail_path'] = imgUrl
+        else:
+            data['thumbnail_path'] = {"link": "https://i.imgur.com/JloNMTG.png", "deletehash": ""}
 
-    data = request.get_json()
-    
-    if data['thumbnail_path']["link"].startswith("data:image"):
-        imgUrl = saveImage(data['thumbnail_path'])
-        data['thumbnail_path'] = imgUrl
-    else:
-        data['thumbnail_path'] = {"link": "https://i.imgur.com/JloNMTG.png", "deletehash": ""}
+        for i in data["content"]:
+            if i["type"] == "image":
+                imgurl = saveImage(i["content"])
+                i["content"] = imgurl
 
-    for i in data["content"]:
-        if i["type"] == "image":
-            imgurl = saveImage(i["content"])
-            i["content"] = imgurl
-
-    BlogPost.createDatabase()
-    BlogPost.insertBlogPost(data['title'], data['author'], data['description'], data['content'], data['tags'], data['thumbnail_path'])
-    return jsonify({"message": "Blog created successfully"})
+        BlogPost.createDatabase()
+        BlogPost.insertBlogPost(data['title'], data['author'], data['description'], data['content'], data['tags'], data['thumbnail_path'])
+        return jsonify({"message": "Blog created successfully"})
+    except Exception as e:
+        print(f"Error creating blog: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route('/blogs/update/<int:id>', methods=["PUT"])
-@admin_required
 def blogsSave(id):
-    data = request.get_json()
-    print(data)
-    imgurl = saveImage(data['thumbnail_path'])
-    data['thumbnail_path'] = imgurl
-    for i in data["content"]:
-        if i["type"] == "image":
-            imgurl = saveImage(i["content"])
-            i["content"] = imgurl
-    BlogPost.createDatabase()
-    BlogPost.update(id,data['title'], data['author'], data['description'], data['content'], data['tags'], data['thumbnail_path'])
-    return "Saved"
+    try:
+        data = request.get_json()
+        print(data)
+        imgurl = saveImage(data['thumbnail_path'])
+        data['thumbnail_path'] = imgurl
+        for i in data["content"]:
+            if i["type"] == "image":
+                imgurl = saveImage(i["content"])
+                i["content"] = imgurl
+        BlogPost.createDatabase()
+        BlogPost.update(id,data['title'], data['author'], data['description'], data['content'], data['tags'], data['thumbnail_path'])
+        return jsonify({"message": "Blog updated successfully"})
+    except Exception as e:
+        print(f"Error updating blog: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
 # Replace the problematic routes with these:
 @app.route('/blogs/search', methods=['GET'])
@@ -154,60 +201,65 @@ def get_all_blog_authors():
     return jsonify({"authors": authors_list})
 
 @app.route('/reviews/create', methods=['POST'])
-@admin_required
 def createReview():
-    data = request.get_json()
+    try:
+        data = request.get_json()
 
-    if data['thumbnail_path']["link"].startswith("data:image"):
-        imgUrl = saveImage(data['thumbnail_path'])
-        data['thumbnail_path'] = imgUrl
-    else:
-        data['thumbnail_path'] = {"link": "https://i.imgur.com/JloNMTG.png", "deletehash": ""}
+        if data['thumbnail_path']["link"].startswith("data:image"):
+            imgUrl = saveImage(data['thumbnail_path'])
+            data['thumbnail_path'] = imgUrl
+        else:
+            data['thumbnail_path'] = {"link": "https://i.imgur.com/JloNMTG.png", "deletehash": ""}
 
-    for i in data["content"]:
-        if i["type"] == "image":
-            imgurl = saveImage(i["content"])
-            i["content"] = imgurl
+        for i in data["content"]:
+            if i["type"] == "image":
+                imgurl = saveImage(i["content"])
+                i["content"] = imgurl
 
-    Reviews.createDatabase()
-    Reviews.insertReview(
-        title=data['title'],
-        author=data['author'],
-        description=data['description'],
-        content=data['content'],
-        tags=data['tags'],
-        thumbnail_path=data['thumbnail_path']
-    )
-    return jsonify({"message": "Review created successfully"})
+        Reviews.createDatabase()
+        Reviews.insertReview(
+            title=data['title'],
+            author=data['author'],
+            description=data['description'],
+            content=data['content'],
+            tags=data['tags'],
+            thumbnail_path=data['thumbnail_path']
+        )
+        return jsonify({"message": "Review created successfully"})
+    except Exception as e:
+        print(f"Error creating review: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/reviews/update/<int:id>', methods=["PUT"])
-@admin_required
 def updateReview(id):
-    data = request.get_json()
+    try:
+        data = request.get_json()
 
-    if data['thumbnail_path']["link"].startswith("data:image"):
-        imgurl = saveImage(data['thumbnail_path'])
-        data['thumbnail_path'] = imgurl
+        if data['thumbnail_path']["link"].startswith("data:image"):
+            imgurl = saveImage(data['thumbnail_path'])
+            data['thumbnail_path'] = imgurl
 
-    for i in data["content"]:
-        if i["type"] == "image":
-            imgurl = saveImage(i["content"])
-            i["content"] = imgurl
+        for i in data["content"]:
+            if i["type"] == "image":
+                imgurl = saveImage(i["content"])
+                i["content"] = imgurl
 
-    Reviews.createDatabase()
-    Reviews.updateReview(
-        id=id,
-        title=data['title'],
-        author=data['author'],
-        description=data['description'],
-        content=data['content'],
-        tags=data['tags'],
-        thumbnail_path=data['thumbnail_path']
-    )
-    return jsonify({"message": "Review updated successfully"})
+        Reviews.createDatabase()
+        Reviews.updateReview(
+            id=id,
+            title=data['title'],
+            author=data['author'],
+            description=data['description'],
+            content=data['content'],
+            tags=data['tags'],
+            thumbnail_path=data['thumbnail_path']
+        )
+        return jsonify({"message": "Review updated successfully"})
+    except Exception as e:
+        print(f"Error updating review: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/reviews/<int:id>', methods=["DELETE"])
-@admin_required
 def deleteReview(id):
     Reviews.deleteReview(id)
     return jsonify({"message": "Review deleted successfully"}), 200

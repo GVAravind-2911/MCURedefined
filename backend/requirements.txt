@@ -5,3 +5,4 @@ flask_cors
 flask_compress
 requests
 sqlalchemy-libsql
+boto3
