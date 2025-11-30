@@ -12,6 +12,7 @@ interface RedditCommentProps {
 	allReplies: Record<string, any[]>;
 	currentUser: any;
 	onCommentAdded: (comment: any) => void;
+	onCommentLikeToggle: (commentId: string, liked: boolean) => void;
 	contentId: number | string;
 	contentType: "blog" | "review" | "forum";
 	apiPath: string;
@@ -25,6 +26,7 @@ const RedditComment: React.FC<RedditCommentProps> = ({
 	allReplies,
 	currentUser,
 	onCommentAdded,
+	onCommentLikeToggle,
 	contentId,
 	contentType,
 	apiPath,
@@ -34,6 +36,10 @@ const RedditComment: React.FC<RedditCommentProps> = ({
 	const [showReplyForm, setShowReplyForm] = useState(false);
 	const [isLiking, setIsLiking] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
+	
+	// Local state for optimistic updates
+	const [localLikeCount, setLocalLikeCount] = useState(comment.likeCount || 0);
+	const [localUserHasLiked, setLocalUserHasLiked] = useState(comment.userHasLiked || false);
 	const [replyContent, setReplyContent] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
@@ -70,15 +76,25 @@ const RedditComment: React.FC<RedditCommentProps> = ({
 	const handleLike = async () => {
 		if (!currentUser || isLiking) return;
 
+		// Optimistic update
+		const wasLiked = localUserHasLiked;
+		const previousCount = localLikeCount;
+		
+		setLocalUserHasLiked(!wasLiked);
+		setLocalLikeCount(wasLiked ? previousCount - 1 : previousCount + 1);
+		setIsLiking(true);
+
 		try {
-			setIsLiking(true);
-			
 			// Use the standard like endpoint pattern for all content types
-			await axios.post(`${apiPath}/${comment.id}/like`);
+			const response = await axios.post(`${apiPath}/${comment.id}/like`);
 			
-			refreshComments();
+			// Update parent state to keep it in sync
+			onCommentLikeToggle(comment.id, response.data.liked);
 		} catch (err) {
+			// Revert optimistic update on error
 			console.error("Error liking comment:", err);
+			setLocalUserHasLiked(wasLiked);
+			setLocalLikeCount(previousCount);
 		} finally {
 			setIsLiking(false);
 		}
@@ -240,16 +256,14 @@ const RedditComment: React.FC<RedditCommentProps> = ({
 							<div className="comment-actions">
 								{!isDeleted && (
 									<>
-										<button
-											className={`comment-btn ${comment.userHasLiked ? "liked" : ""}`}
-											onClick={handleLike}
-											disabled={!currentUser || isLiking}
-										>
-											<span>{comment.userHasLiked ? "❤️" : "🤍"}</span>
-											<span>{comment.likeCount || 0}</span>
-										</button>
-										
-										{currentUser && depth < maxDepth && (
+								<button
+									className={`comment-btn ${localUserHasLiked ? "liked" : ""}`}
+									onClick={handleLike}
+									disabled={!currentUser || isLiking}
+								>
+									<span>{localUserHasLiked ? "❤️" : "🤍"}</span>
+									<span>{localLikeCount}</span>
+								</button>										{currentUser && depth < maxDepth && (
 											<button
 												className="comment-btn"
 												onClick={() => setShowReplyForm(!showReplyForm)}
@@ -370,6 +384,7 @@ const RedditComment: React.FC<RedditCommentProps> = ({
 							allReplies={allReplies}
 							currentUser={currentUser}
 							onCommentAdded={onCommentAdded}
+							onCommentLikeToggle={onCommentLikeToggle}
 							contentId={contentId}
 							contentType={contentType}
 							apiPath={apiPath}

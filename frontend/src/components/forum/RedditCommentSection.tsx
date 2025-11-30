@@ -130,6 +130,33 @@ const RedditCommentSection: React.FC<RedditCommentSectionProps> = ({
 		setComments((prevComments) => [newCommentData, ...prevComments]);
 	};
 
+	// Handle like toggle for optimistic updates - keeps parent state in sync
+	const handleCommentLikeToggle = (commentId: string, liked: boolean) => {
+		setComments((prevComments) =>
+			prevComments.map((comment) => {
+				if (comment.id !== commentId) return comment;
+				
+				// Calculate the change based on the previous state
+				const wasLiked = comment.userHasLiked;
+				let newCount = comment.likeCount || 0;
+				
+				// Only adjust count if the liked state actually changed
+				if (liked && !wasLiked) {
+					newCount += 1;
+				} else if (!liked && wasLiked) {
+					newCount = Math.max(0, newCount - 1);
+				}
+				
+				return {
+					...comment,
+					userHasLiked: liked,
+					likeCount: newCount,
+				};
+			}
+			)
+		);
+	};
+
 	const handleSubmitComment = async (e: React.FormEvent) => {
 		e.preventDefault();
 
@@ -296,6 +323,7 @@ const RedditCommentSection: React.FC<RedditCommentSectionProps> = ({
 								allReplies={commentsByParentId}
 								currentUser={session?.user}
 								onCommentAdded={handleAddComment}
+								onCommentLikeToggle={handleCommentLikeToggle}
 								contentId={contentId}
 								contentType={contentType}
 								apiPath={apiPath}
