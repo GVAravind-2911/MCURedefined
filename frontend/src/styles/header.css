@@ -367,6 +367,22 @@
 	color: #ec1d24;
 }
 
+.dropdown-divider {
+	height: 1px;
+	background-color: rgba(255, 255, 255, 0.1);
+	margin: 0.25rem 0;
+}
+
+.dropdown-label {
+	display: block;
+	padding: 0.5rem 1rem 0.25rem;
+	font-size: 0.7rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	color: rgba(255, 255, 255, 0.4);
+}
+
 @keyframes fadeIn {
 	from {
 		opacity: 0;

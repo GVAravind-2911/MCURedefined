@@ -160,6 +160,34 @@ function Header({ session }: HeaderProps): ReactNode {
 									>
 										Profile
 									</Link>
+									{session.user?.role === "admin" && (
+										<>
+											<div className="dropdown-divider" />
+											<span className="dropdown-label">Admin</span>
+											<Link
+												href="/manage/users"
+												className="dropdown-item"
+												onClick={() => setIsDropdownOpen(false)}
+											>
+												User Management
+											</Link>
+											<Link
+												href="/manage/blogs"
+												className="dropdown-item"
+												onClick={() => setIsDropdownOpen(false)}
+											>
+												Manage Blogs
+											</Link>
+											<Link
+												href="/manage/reviews"
+												className="dropdown-item"
+												onClick={() => setIsDropdownOpen(false)}
+											>
+												Manage Reviews
+											</Link>
+										</>
+									)}
+									<div className="dropdown-divider" />
 									<button
 										onClick={async () => {
 											try {
