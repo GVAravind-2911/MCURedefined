@@ -19,7 +19,7 @@ export default function ForgotPasswordForm({ onBack, onSuccess }) {
 		try {
 			emailSchema.parse(email);
 
-			const result = await authClient.forgetPassword({
+			const result = await authClient.requestPasswordReset({
 				email: email,
 				redirectTo: "/auth/reset-password",
 			});

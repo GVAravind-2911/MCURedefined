@@ -5,7 +5,7 @@
         "./src/*"
       ]
     },
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "esModuleInterop": true,
     "target": "ES2018",
     "lib": [
@@ -27,14 +27,25 @@
         "name": "next"
       }
     ],
-    "typeRoots": ["./types", "node_modules/@types"]
+    "typeRoots": [
+      "./types",
+      "node_modules/@types"
+    ]
   },
   "include": [
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "src/components/blog/BlogComponent.tsx", "src/components/main/Header.tsx", "src/components/main/LoadingSpinner.tsx", "src/app/(mainroutes)/create-blog/page.tsx", "src/app/(mainroutes)/create-blog/preview/page.tsx", "postcss.config.mjs", "../BlogComponent1.tsx"  ],
+    "**/*.tsx",
+    "src/components/blog/BlogComponent.tsx",
+    "src/components/main/Header.tsx",
+    "src/components/main/LoadingSpinner.tsx",
+    "src/app/(mainroutes)/create-blog/page.tsx",
+    "src/app/(mainroutes)/create-blog/preview/page.tsx",
+    "postcss.config.mjs",
+    "../BlogComponent1.tsx",
+    ".next/dev/types/**/*.ts"
+  ],
   "exclude": [
     "node_modules"
   ]

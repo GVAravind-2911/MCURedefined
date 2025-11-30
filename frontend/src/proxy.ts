@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 type Session = typeof auth.$Infer.Session;
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
 	const currentUrl = request.nextUrl; // This is a URL object
 
 	// Different parts you can access:
@@ -33,6 +33,18 @@ export async function middleware(request: NextRequest) {
 		}
 	}
 
+	// Check manage routes first (before blogs/reviews check) since /manage/blogs would match both
+	if (pathname.includes("manage")) {
+		if (!session) {
+			return NextResponse.redirect(new URL("/auth", request.url));
+		}
+
+		if (session.user.role !== "admin") {
+			console.log("User accessing user management");
+			return NextResponse.redirect(new URL("/", request.url));
+		}
+	}
+
 	if (
 		pathname.includes("blogs") ||
 		pathname.includes("release-slate") ||
@@ -45,17 +57,6 @@ export async function middleware(request: NextRequest) {
 			return NextResponse.redirect(new URL("/auth/verify-email", request.url));
 		}
 	}
-
-	if (pathname.includes("/manage")) {
-		if (!session) {
-			return NextResponse.redirect(new URL("/auth", request.url));
-		}
-
-		if (session.user.role !== "admin") {
-			console.log("User accessing user management");
-			return NextResponse.redirect(new URL("/", request.url));
-		}
-	}
 	return NextResponse.next();
 }
 
@@ -66,5 +67,6 @@ export const config = {
 		"/reviews/:path*",
 		"/release-slate/:path*",
 		"/auth/reset-password",
+		"/manage"
 	],
 };
