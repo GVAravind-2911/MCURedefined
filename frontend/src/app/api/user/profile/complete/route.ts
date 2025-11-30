@@ -4,6 +4,7 @@ import { user, userProfile } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import axios from "axios";
+import { getBackendUrl } from "@/lib/config/backend";
 
 /**
  * Optimized endpoint that fetches complete user profile data including:
@@ -46,21 +47,21 @@ export async function GET(req: Request) {
 			try {
 				// Fetch counts and preview data for all content types in parallel
 				const [blogsData, reviewsData, projectsData] = await Promise.all([
-					axios.post("http://localhost:4000/user/liked", {
+					axios.post(getBackendUrl("user/liked"), {
 						user_id: userId,
 						type: "blogs",
 						page: 1,
 						limit: 3, // Small preview
 					}).catch(() => ({ data: { blogs: [], total: 0 } })),
 					
-					axios.post("http://localhost:4000/user/liked", {
+					axios.post(getBackendUrl("user/liked"), {
 						user_id: userId,
 						type: "reviews",
 						page: 1,
 						limit: 3, // Small preview
 					}).catch(() => ({ data: { reviews: [], total: 0 } })),
 					
-					axios.post("http://localhost:4000/user/liked", {
+					axios.post(getBackendUrl("user/liked"), {
 						user_id: userId,
 						type: "projects",
 						page: 1,
@@ -90,19 +91,19 @@ export async function GET(req: Request) {
 				if (blogsData.data.total > 0 || reviewsData.data.total > 0) {
 					const [blogTags, blogAuthors, reviewTags, reviewAuthors] = await Promise.all([
 						blogsData.data.total > 0 ? 
-							axios.post("http://localhost:4000/user/liked/tags", { user_id: userId, type: "blogs" })
+							axios.post(getBackendUrl("user/liked/tags"), { user_id: userId, type: "blogs" })
 								.catch(() => ({ data: { tags: [] } })) : { data: { tags: [] } },
 						
 						blogsData.data.total > 0 ? 
-							axios.post("http://localhost:4000/user/liked/authors", { user_id: userId, type: "blogs" })
+							axios.post(getBackendUrl("user/liked/authors"), { user_id: userId, type: "blogs" })
 								.catch(() => ({ data: { authors: [] } })) : { data: { authors: [] } },
 						
 						reviewsData.data.total > 0 ? 
-							axios.post("http://localhost:4000/user/liked/tags", { user_id: userId, type: "reviews" })
+							axios.post(getBackendUrl("user/liked/tags"), { user_id: userId, type: "reviews" })
 								.catch(() => ({ data: { tags: [] } })) : { data: { tags: [] } },
 						
 						reviewsData.data.total > 0 ? 
-							axios.post("http://localhost:4000/user/liked/authors", { user_id: userId, type: "reviews" })
+							axios.post(getBackendUrl("user/liked/authors"), { user_id: userId, type: "reviews" })
 								.catch(() => ({ data: { authors: [] } })) : { data: { authors: [] } },
 					]);
 

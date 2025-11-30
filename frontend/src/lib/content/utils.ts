@@ -4,15 +4,17 @@
 
 import type { ContentBlock, ContentConfig, ErrorState } from "@/types/ContentTypes";
 import type { AxiosError } from "axios";
+import { getProxyUrl as getApiProxyUrl, API_PROXY_URL } from "@/lib/config/backend";
 
-// API proxy base URL (uses Next.js API routes)
-export const API_PROXY_URL = "/api/proxy";
+// Re-export for backward compatibility
+export { API_PROXY_URL };
 
 /**
- * Get the full API URL for a given path
+ * Get the full API URL for a given path (client-side proxy)
+ * @deprecated Use getProxyUrl from @/lib/config/backend instead
  */
 export function getApiUrl(path: string): string {
-	return `${API_PROXY_URL}/${path}`;
+	return getApiProxyUrl(path);
 }
 
 /**

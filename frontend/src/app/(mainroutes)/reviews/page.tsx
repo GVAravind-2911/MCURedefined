@@ -7,6 +7,7 @@ import { BlogProvider } from "@/components/blog/BlogContext";
 import ErrorMessage from "@/components/main/ErrorMessage";
 import "@/styles/bloghero.css";
 import "@/styles/blogposts.css";
+import { getBackendUrl, getProxyUrl, NO_CACHE_HEADERS } from "@/lib/config/backend";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -66,10 +67,8 @@ const handleApiError = (error: unknown): ErrorState => {
 
 async function getTags(): Promise<string[] | ErrorState> {
 	try {
-		const response = await axios.get("http://127.0.0.1:4000/reviews/tags", {
-			headers: {
-				"Cache-Control": "no-cache",
-			},
+		const response = await axios.get(getBackendUrl("reviews/tags"), {
+			headers: { "Cache-Control": "no-cache" },
 			timeout: 5000,
 		});
 		return response.data.tags || [];
@@ -80,10 +79,8 @@ async function getTags(): Promise<string[] | ErrorState> {
 
 async function getAuthors(): Promise<string[] | ErrorState> {
 	try {
-		const response = await axios.get("http://127.0.0.1:4000/reviews/authors", {
-			headers: {
-				"Cache-Control": "no-cache",
-			},
+		const response = await axios.get(getBackendUrl("reviews/authors"), {
+			headers: { "Cache-Control": "no-cache" },
 			timeout: 5000,
 		});
 		return response.data.authors || [];
@@ -98,13 +95,9 @@ async function getData(
 ): Promise<BlogResponse | ErrorState> {
 	try {
 		const response = await axios.get<BlogResponse>(
-			`http://127.0.0.1:4000/reviews?page=${page}&limit=${limit}`,
+			getBackendUrl(`reviews?page=${page}&limit=${limit}`),
 			{
-				headers: {
-					"Cache-Control": "no-cache",
-					Pragma: "no-cache",
-					Expires: "0",
-				},
+				headers: NO_CACHE_HEADERS,
 				timeout: 10000, // 10 second timeout
 			},
 		);
@@ -161,7 +154,7 @@ export default async function Reviews(): Promise<React.ReactElement> {
 					path="reviews"
 					initialBlogs={blogs}
 					totalPages={totalPages}
-					apiUrl="http://127.0.0.1:4000/reviews"
+					apiUrl={getProxyUrl("reviews")}
 					initialTags={tags}
 					initialAuthors={authors}
 				/>

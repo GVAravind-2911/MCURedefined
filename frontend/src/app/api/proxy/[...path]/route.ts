@@ -1,6 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-
-const BACKEND_URL = process.env.BACKEND_URL || "http://127.0.0.1:4000";
+import { BACKEND_URL } from "@/lib/config/backend";
 
 interface RouteParams {
 	params: Promise<{ path: string[] }>;

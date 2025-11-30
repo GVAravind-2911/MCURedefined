@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth/auth";
 import axios from "axios";
 import { headers } from "next/headers";
+import { getBackendUrl } from "@/lib/config/backend";
 
 export async function GET(req: Request) {
 	try {
@@ -25,7 +26,7 @@ export async function GET(req: Request) {
 		const limit = Number.parseInt(url.searchParams.get("limit") || "5");
 
 		// Send request to backend
-		const resp = await axios.post("http://localhost:4000/user/liked/search", {
+		const resp = await axios.post(getBackendUrl("user/liked/search"), {
 			user_id,
 			type,
 			query,

@@ -5,6 +5,7 @@ import ErrorMessage from "@/components/main/ErrorMessage";
 import axios, { type AxiosError } from "axios";
 import "@/styles/bloghero.css";
 import { BlogProvider } from "@/components/blog/BlogContext";
+import { getBackendUrl, getProxyUrl, NO_CACHE_HEADERS } from "@/lib/config/backend";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -68,13 +69,9 @@ async function getData(
 ): Promise<BlogResponse | ErrorState> {
 	try {
 		const response = await axios.get<BlogResponse>(
-			`http://127.0.0.1:4000/blogs?page=${page}&limit=${limit}`,
+			getBackendUrl(`blogs?page=${page}&limit=${limit}`),
 			{
-				headers: {
-					"Cache-Control": "no-cache",
-					Pragma: "no-cache",
-					Expires: "0",
-				},
+				headers: NO_CACHE_HEADERS,
 				timeout: 10000, // 10 second timeout
 			},
 		);
@@ -86,10 +83,8 @@ async function getData(
 
 async function getTags(): Promise<string[] | ErrorState> {
 	try {
-		const response = await axios.get("http://127.0.0.1:4000/blogs/tags", {
-			headers: {
-				"Cache-Control": "no-cache",
-			},
+		const response = await axios.get(getBackendUrl("blogs/tags"), {
+			headers: { "Cache-Control": "no-cache" },
 			timeout: 5000,
 		});
 		return response.data.tags || [];
@@ -100,10 +95,8 @@ async function getTags(): Promise<string[] | ErrorState> {
 
 async function getAuthors(): Promise<string[] | ErrorState> {
 	try {
-		const response = await axios.get("http://127.0.0.1:4000/blogs/authors", {
-			headers: {
-				"Cache-Control": "no-cache",
-			},
+		const response = await axios.get(getBackendUrl("blogs/authors"), {
+			headers: { "Cache-Control": "no-cache" },
 			timeout: 5000,
 		});
 		return response.data.authors || [];
@@ -159,7 +152,7 @@ export default async function Blogs(): Promise<React.ReactElement> {
 					path="blogs"
 					initialBlogs={blogs}
 					totalPages={totalPages}
-					apiUrl="http://127.0.0.1:4000/blogs"
+					apiUrl={getProxyUrl("blogs")}
 					initialTags={tags}
 					initialAuthors={authors}
 				/>

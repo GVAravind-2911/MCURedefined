@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import axios from "axios";
 import IndividualProject from "@/components/project/IndividualProject";
 import ErrorMessage from "@/components/main/ErrorMessage";
+import { getBackendUrl, NO_CACHE_HEADERS } from "@/lib/config/backend";
 
 interface ErrorState {
 	hasError: boolean;
@@ -68,14 +69,10 @@ const handleApiError = (error: unknown): ErrorState => {
 async function getProjectData(id: number): Promise<Project | ErrorState> {
 	try {
 		const response = await axios.get<Project>(
-			`http://127.0.0.1:4000/release-slate/${id}`,
+			getBackendUrl(`release-slate/${id}`),
 			{
 				timeout: 10000, // 10 second timeout
-				headers: {
-					"Cache-Control": "no-cache",
-					Pragma: "no-cache",
-					Expires: "0",
-				},
+				headers: NO_CACHE_HEADERS,
 			},
 		);
 		return response.data;

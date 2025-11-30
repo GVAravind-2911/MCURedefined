@@ -21,6 +21,7 @@ import {
 	incrementReviewView,
 } from "@/db/review-interactions";
 import Link from "next/link";
+import { getBackendUrl } from "@/lib/config/backend";
 
 interface PageProps {
 	params: Promise<{
@@ -90,7 +91,7 @@ const handleApiError = (error: unknown): ErrorState => {
 async function getBlogData(id: number): Promise<BlogData | ErrorState> {
 	try {
 		const response = await axios.get<BlogData>(
-			`http://127.0.0.1:4000/reviews/${id}`,
+			getBackendUrl(`reviews/${id}`),
 			{
 				timeout: 10000, // 10 second timeout
 				headers: {
@@ -107,7 +108,7 @@ async function getBlogData(id: number): Promise<BlogData | ErrorState> {
 async function getLatestBlogs(): Promise<Article[] | ErrorState> {
 	try {
 		const response = await axios.get<Article[]>(
-			"http://127.0.0.1:4000/reviews/latest",
+			getBackendUrl("reviews/latest"),
 			{
 				timeout: 5000, // 5 second timeout
 				headers: {

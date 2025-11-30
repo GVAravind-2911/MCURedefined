@@ -2,6 +2,7 @@ import type React from "react";
 import HomeComponent from "@/components/main/HomeComponent";
 import "@/styles/enhanced-home.css";
 import axios from "axios";
+import { getBackendUrl } from "@/lib/config/backend";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +18,7 @@ interface BlogData {
 
 async function fetchData(): Promise<BlogData | null> {
 	try {
-		const response = await axios.get("http://127.0.0.1:4000/blogs/recent");
+		const response = await axios.get(getBackendUrl("blogs/recent"));
 		if (response.status !== 200) {
 			return null;
 		}

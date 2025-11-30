@@ -4,7 +4,8 @@ import type { BlogList } from "@/types/BlogTypes";
 import AdminBlogComponent from "@/components/blog/AdminBlogComponent";
 import { BlogProvider } from "@/components/blog/BlogContext";
 import ErrorMessage from "@/components/main/ErrorMessage";
-import { handleApiError, getApiUrl, DEFAULT_CACHE_HEADERS } from "@/lib/content/utils";
+import { handleApiError, DEFAULT_CACHE_HEADERS } from "@/lib/content/utils";
+import { getBackendUrl, getProxyUrl } from "@/lib/config/backend";
 import axios from "axios";
 import "@/styles/blogposts.css";
 
@@ -19,27 +20,24 @@ async function getData(
 	config: ContentConfig,
 ): Promise<ContentListResponse | ErrorState> {
 	try {
-		// Use proxy API for server-side requests
-		const baseUrl = process.env.BACKEND_URL || "http://127.0.0.1:4000";
-		
 		// Make parallel requests to fetch all needed data at once
 		const [contentResponse, tagsResponse, authorsResponse] = await Promise.all([
 			axios.get<ContentListResponse>(
-				`${baseUrl}/${config.apiPath}?page=1&limit=5`,
+				getBackendUrl(`${config.apiPath}?page=1&limit=5`),
 				{
 					headers: DEFAULT_CACHE_HEADERS,
 					timeout: 10000,
 				},
 			),
 			axios.get<{ tags: string[] }>(
-				`${baseUrl}/${config.apiPath}/tags`,
+				getBackendUrl(`${config.apiPath}/tags`),
 				{
 					headers: DEFAULT_CACHE_HEADERS,
 					timeout: 5000,
 				},
 			),
 			axios.get<{ authors: string[] }>(
-				`${baseUrl}/${config.apiPath}/authors`,
+				getBackendUrl(`${config.apiPath}/authors`),
 				{
 					headers: DEFAULT_CACHE_HEADERS,
 					timeout: 5000,
@@ -93,7 +91,7 @@ export default async function ManageListPage({
 					path={config.apiPath}
 					initialBlogs={blogs as BlogList[]}
 					totalPages={total_pages || 1}
-					apiUrl={getApiUrl(config.apiPath)}
+					apiUrl={getProxyUrl(config.apiPath)}
 					initialTags={tags || []}
 					initialAuthors={authors || []}
 				/>

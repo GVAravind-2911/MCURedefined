@@ -4,6 +4,7 @@ import type { ReactElement } from "react";
 import ProjectsPage from "@/components/project/Projects";
 import ErrorMessage from "@/components/main/ErrorMessage";
 import axios from "axios";
+import { getBackendUrl, NO_CACHE_HEADERS } from "@/lib/config/backend";
 
 interface ErrorState {
 	hasError: boolean;
@@ -55,13 +56,9 @@ const handleApiError = (error: unknown): ErrorState => {
 
 async function getProjects(): Promise<Project[] | ErrorState> {
 	try {
-		const response = await axios.get("http://127.0.0.1:4000/release-slate", {
+		const response = await axios.get(getBackendUrl("release-slate"), {
 			timeout: 10000, // 10 second timeout
-			headers: {
-				"Cache-Control": "no-cache",
-				Pragma: "no-cache",
-				Expires: "0",
-			},
+			headers: NO_CACHE_HEADERS,
 		});
 		return response.data;
 	} catch (error) {

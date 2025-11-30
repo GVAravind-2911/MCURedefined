@@ -19,6 +19,7 @@ import Link from "next/link";
 import ErrorMessage from "@/components/main/ErrorMessage";
 import CommentSection from "@/components/comments/DynamicComment";
 import FixedSidebar from "@/components/blog/FixedSidebar";
+import { getBackendUrl } from "@/lib/config/backend";
 
 interface PageProps {
 	params: Promise<{
@@ -77,7 +78,7 @@ const handleApiError = (error: unknown): ErrorState => {
 async function getBlogData(id: number): Promise<BlogData | ErrorState> {
 	try {
 		const response = await axios.get<BlogData>(
-			`http://127.0.0.1:4000/blogs/${id}`,
+			getBackendUrl(`blogs/${id}`),
 			{
 				timeout: 10000, // 10 second timeout
 				headers: {
@@ -94,7 +95,7 @@ async function getBlogData(id: number): Promise<BlogData | ErrorState> {
 async function getLatestBlogs(): Promise<Article[] | null> {
 	try {
 		const response = await axios.get<Article[]>(
-			"http://127.0.0.1:4000/blogs/latest",
+			getBackendUrl("blogs/latest"),
 			{
 				timeout: 5000,
 				headers: {

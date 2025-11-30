@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth/auth";
 import axios from "axios";
 import { headers } from "next/headers";
+import { getBackendUrl } from "@/lib/config/backend";
 
 export async function GET(req: Request) {
 	try {
@@ -22,7 +23,7 @@ export async function GET(req: Request) {
 		const limit = Number.parseInt(url.searchParams.get("limit") || "5");
 
 		// Send request to backend with all required parameters
-		const resp = await axios.post("http://localhost:4000/user/liked", {
+		const resp = await axios.post(getBackendUrl("user/liked"), {
 			user_id, // Using user_id instead of userId to match backend expectation
 			type,
 			page,
