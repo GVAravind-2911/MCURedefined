@@ -82,4 +82,4 @@ export default memo(function SessionsModal({
 			</div>
 		</>
 	);
-}
+});

@@ -41,11 +41,18 @@ const ForumTopicCard: React.FC<ForumTopicCardProps> = ({
 		// Don't navigate if clicking on interactive elements
 		if (
 			(e.target as HTMLElement).closest(".topic-like-button") ||
-			(e.target as HTMLElement).closest("button") ||
-			(e.target as HTMLElement).closest(".spoiler-warning")
+			(e.target as HTMLElement).closest("button")
 		) {
 			return;
 		}
+		
+		// If spoiler warning should be shown, open the modal instead of navigating
+		if (shouldShowSpoilerWarning()) {
+			e.stopPropagation();
+			setShowSpoilerModal(true);
+			return;
+		}
+		
 		onTopicClick(topic.id);
 	};
 
@@ -56,6 +63,8 @@ const ForumTopicCard: React.FC<ForumTopicCardProps> = ({
 
 	const handleSpoilerConfirm = () => {
 		setSpoilerRevealed(true);
+		// Navigate to the topic after confirming
+		onTopicClick(topic.id);
 	};
 
 	const handleLikeClick = (e: React.MouseEvent) => {

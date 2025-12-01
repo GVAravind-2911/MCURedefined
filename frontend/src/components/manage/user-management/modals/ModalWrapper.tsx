@@ -25,4 +25,4 @@ export default memo(function ModalWrapper({ onClose, children }: ModalWrapperPro
 			</div>
 		</div>
 	);
-}
+});

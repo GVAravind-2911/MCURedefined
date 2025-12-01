@@ -1,6 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
+
+const DURATION_OPTIONS = [
+	{ value: "0.5", label: "2 weeks" },
+	{ value: "1", label: "1 month (default)" },
+	{ value: "2", label: "2 months" },
+	{ value: "3", label: "3 months" },
+	{ value: "6", label: "6 months" },
+	{ value: "12", label: "1 year" },
+];
 
 interface CreateTopicModalProps {
 	isOpen: boolean;
@@ -24,6 +33,25 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 	const [isSpoiler, setIsSpoiler] = useState(false);
 	const [spoilerFor, setSpoilerFor] = useState("");
 	const [spoilerDuration, setSpoilerDuration] = useState("1"); // Duration in months
+	const [durationDropdownOpen, setDurationDropdownOpen] = useState(false);
+	const durationDropdownRef = useRef<HTMLDivElement>(null);
+
+	// Close dropdown when clicking outside
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (durationDropdownRef.current && !durationDropdownRef.current.contains(event.target as Node)) {
+				setDurationDropdownOpen(false);
+			}
+		};
+
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => document.removeEventListener("mousedown", handleClickOutside);
+	}, []);
+
+	const getDurationLabel = () => {
+		const option = DURATION_OPTIONS.find(opt => opt.value === spoilerDuration);
+		return option?.label || "1 month (default)";
+	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -186,20 +214,41 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 									<label htmlFor="spoiler-duration" className="form-label">
 										Spoiler protection duration:
 									</label>
-									<select
-										id="spoiler-duration"
-										className="form-input form-select"
-										value={spoilerDuration}
-										onChange={(e) => setSpoilerDuration(e.target.value)}
-										disabled={isSubmitting}
-									>
-										<option value="0.5">2 weeks</option>
-										<option value="1">1 month (default)</option>
-										<option value="2">2 months</option>
-										<option value="3">3 months</option>
-										<option value="6">6 months</option>
-										<option value="12">1 year</option>
-									</select>
+									<div className="custom-dropdown" ref={durationDropdownRef}>
+										<button
+											type="button"
+											className="dropdown-trigger"
+											onClick={() => !isSubmitting && setDurationDropdownOpen(!durationDropdownOpen)}
+											disabled={isSubmitting}
+										>
+											<span>{getDurationLabel()}</span>
+											<svg
+												className={`dropdown-arrow ${durationDropdownOpen ? "open" : ""}`}
+												width="12"
+												height="12"
+												viewBox="0 0 12 12"
+											>
+												<path d="M2 4L6 8L10 4" stroke="currentColor" strokeWidth="2" fill="none" />
+											</svg>
+										</button>
+										{durationDropdownOpen && (
+											<div className="dropdown-menu">
+												{DURATION_OPTIONS.map((option) => (
+													<button
+														key={option.value}
+														type="button"
+														className={`dropdown-item ${spoilerDuration === option.value ? "selected" : ""}`}
+														onClick={() => {
+															setSpoilerDuration(option.value);
+															setDurationDropdownOpen(false);
+														}}
+													>
+														{option.label}
+													</button>
+												))}
+											</div>
+										)}
+									</div>
 									<div className="spoiler-help-text">
 										Spoiler protection will automatically expire after this duration
 									</div>

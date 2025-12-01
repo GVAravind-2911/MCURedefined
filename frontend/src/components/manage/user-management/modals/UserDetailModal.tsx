@@ -181,4 +181,4 @@ export default memo(function UserDetailModal({
 			</div>
 		</div>
 	);
-}
+});

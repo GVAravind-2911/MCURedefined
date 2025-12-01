@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth/auth";
 import { db } from "@/db";
 import { forumTopic, user, forumTopicLike, forumComment } from "@/db/schema";
 import { v4 as uuidv4 } from "uuid";
-import { and, desc, eq, sql, count, isNull } from "drizzle-orm";
+import { and, desc, eq, sql, count, isNull, inArray } from "drizzle-orm";
 import { headers } from "next/headers";
 
 // Get forum topics with pagination and sorting
@@ -16,6 +16,10 @@ export async function GET(req: NextRequest) {
 		const search = url.searchParams.get("search") || "";
 
 		const offset = (page - 1) * limit;
+
+		// Get current user session
+		const session = await auth.api.getSession({ headers: await headers() });
+		const currentUserId = session?.user?.id;
 
 		// Clean up expired spoilers
 		try {
@@ -116,8 +120,30 @@ export async function GET(req: NextRequest) {
 			.from(forumTopic)
 			.where(whereClause);
 
+		// Get user's likes for these topics if logged in
+		let userLikedTopicIds: string[] = [];
+		if (currentUserId && topics.length > 0) {
+			const topicIds = topics.map(t => t.id);
+			const userLikes = await db
+				.select({ topicId: forumTopicLike.topicId })
+				.from(forumTopicLike)
+				.where(
+					and(
+						eq(forumTopicLike.userId, currentUserId),
+						inArray(forumTopicLike.topicId, topicIds)
+					)
+				);
+			userLikedTopicIds = userLikes.map(l => l.topicId);
+		}
+
+		// Add userHasLiked to each topic
+		const topicsWithLikeStatus = topics.map(topic => ({
+			...topic,
+			userHasLiked: userLikedTopicIds.includes(topic.id),
+		}));
+
 		return NextResponse.json({
-			topics,
+			topics: topicsWithLikeStatus,
 			pagination: {
 				page,
 				limit,

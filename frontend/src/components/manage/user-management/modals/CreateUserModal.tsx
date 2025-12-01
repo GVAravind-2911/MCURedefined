@@ -89,4 +89,4 @@ export default memo(function CreateUserModal({
 			</div>
 		</>
 	);
-}
+});

@@ -42,4 +42,4 @@ export default memo(function DeleteUserModal({
 			</div>
 		</>
 	);
-}
+});

@@ -64,4 +64,4 @@ export default memo(function RoleModal({
 			</div>
 		</>
 	);
-}
+});

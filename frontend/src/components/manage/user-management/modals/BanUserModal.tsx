@@ -71,4 +71,4 @@ export default memo(function BanUserModal({
 			</div>
 		</>
 	);
-}
+});

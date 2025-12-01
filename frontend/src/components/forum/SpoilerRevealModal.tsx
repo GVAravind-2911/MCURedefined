@@ -16,9 +16,16 @@ const SpoilerRevealModal: React.FC<SpoilerRevealModalProps> = memo(({
 	spoilerFor,
 }) => {
 	const handleOverlayClick = (e: React.MouseEvent) => {
+		// Stop propagation to prevent parent click handlers from firing
+		e.stopPropagation();
 		if (e.target === e.currentTarget) {
 			onClose();
 		}
+	};
+
+	const handleModalClick = (e: React.MouseEvent) => {
+		// Stop propagation for clicks inside the modal
+		e.stopPropagation();
 	};
 
 	const handleConfirm = () => {
@@ -30,7 +37,7 @@ const SpoilerRevealModal: React.FC<SpoilerRevealModalProps> = memo(({
 
 	return (
 		<div className="spoiler-modal-overlay" onClick={handleOverlayClick}>
-			<div className="spoiler-modal">
+			<div className="spoiler-modal" onClick={handleModalClick}>
 				<div className="spoiler-modal-header">
 					<div className="spoiler-modal-icon">⚠️</div>
 					<h3 className="spoiler-modal-title">Spoiler Warning</h3>
