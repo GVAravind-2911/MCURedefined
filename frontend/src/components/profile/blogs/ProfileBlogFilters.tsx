@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, memo, useCallback } from "react";
 import TagMultiSelect from "./ProfileTagMultiSelect";
 
 interface ProfileBlogFiltersProps {
@@ -21,7 +21,7 @@ interface ProfileBlogFiltersProps {
 	setIsSearchFocused: (isFocused: boolean) => void;
 }
 
-const BlogFilters = ({
+const BlogFilters = memo(({
 	searchQuery,
 	setSearchQuery,
 	selectedTags,
@@ -231,6 +231,8 @@ const BlogFilters = ({
 			)}
 		</div>
 	);
-};
+});
+
+BlogFilters.displayName = "ProfileBlogFilters";
 
 export default BlogFilters;

@@ -338,17 +338,10 @@
 
 /* Animation for content */
 .fade-in {
-	animation: fadeIn 0.5s ease-in;
+	animation: fadeInSimple 0.5s ease-in;
 }
 
-@keyframes fadeIn {
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
-	}
-}
+/* fadeIn keyframes defined in globals.css */
 
 /* Responsive design - consolidated */
 @media (min-width: 768px) {

@@ -1,24 +1,4 @@
-/* Font definitions */
-@font-face {
-	font-family: "BentonSansCompLight";
-	src: url("../fonts/BentonSans\ Comp\ Light.otf");
-}
-@font-face {
-	font-family: "BentonSansRegular";
-	src: url("../fonts/BentonSans\ Regular.otf");
-}
-@font-face {
-	font-family: "BentonSansBook";
-	src: url("../fonts/BentonSans\ Book.otf");
-}
-@font-face {
-	font-family: "BentonSansBold";
-	src: url("../fonts/BentonSans\ Bold.otf");
-}
-@font-face {
-	font-family: "BentonSansCompBlack";
-	src: url("../fonts/BentonSans\ Comp\ Black.otf");
-}
+/* Font declarations are in globals.css */
 
 /* Main container layout */
 .blogs-container {
@@ -672,14 +652,7 @@
 	margin-bottom: 1rem;
 }
 
-@keyframes spin {
-	0% {
-		transform: rotate(0deg);
-	}
-	100% {
-		transform: rotate(360deg);
-	}
-}
+/* spin keyframe is defined in globals.css */
 
 /* Empty state */
 .no-results {
@@ -810,17 +783,10 @@
 
 /* Animations */
 .fade-in {
-	animation: fadeIn 0.3s ease-in;
+	animation: fadeInSimple 0.3s ease-in;
 }
 
-@keyframes fadeIn {
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
-	}
-}
+/* fadeIn keyframes defined in globals.css */
 
 @keyframes dropdownFade {
 	from {

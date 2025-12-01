@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, memo, useCallback } from "react";
 import { PiTag } from "react-icons/pi";
 
 interface ProfileTagMultiSelectProps {
@@ -7,7 +7,7 @@ interface ProfileTagMultiSelectProps {
 	onChange: (tags: string[]) => void;
 }
 
-const TagMultiSelect = ({
+const TagMultiSelect = memo(({
 	selectedTags,
 	availableTags,
 	onChange,
@@ -104,6 +104,8 @@ const TagMultiSelect = ({
 			)}
 		</div>
 	);
-};
+});
+
+TagMultiSelect.displayName = "ProfileTagMultiSelect";
 
 export default TagMultiSelect;

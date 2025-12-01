@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { authClient } from "@/lib/auth/auth-client";
 import axios from "axios";
 import RedditComment from "./RedditComment";
@@ -33,10 +33,10 @@ interface RedditCommentSectionProps {
 	contentType: "blog" | "review" | "forum";
 }
 
-const RedditCommentSection: React.FC<RedditCommentSectionProps> = ({
+const RedditCommentSection = memo(function RedditCommentSection({
 	contentId,
 	contentType,
-}) => {
+}: RedditCommentSectionProps) {
 	const [comments, setComments] = useState<CommentData[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [loadingMore, setLoadingMore] = useState(false);
@@ -354,7 +354,7 @@ const RedditCommentSection: React.FC<RedditCommentSectionProps> = ({
 			)}
 		</div>
 	);
-};
+});
 
 export default RedditCommentSection;
 

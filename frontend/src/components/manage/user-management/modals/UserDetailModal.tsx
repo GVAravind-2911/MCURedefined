@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import type { ManagedUser, UserStats, ModalState } from "../types";
 import { formatDate, getRoleBadgeClass } from "../utils";
 
@@ -14,7 +15,7 @@ interface UserDetailModalProps {
 	setModal: (modal: ModalState) => void;
 }
 
-export default function UserDetailModal({
+export default memo(function UserDetailModal({
 	user,
 	userStats,
 	statsLoading,

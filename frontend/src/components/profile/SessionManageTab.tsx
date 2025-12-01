@@ -1,7 +1,7 @@
 'use client'
 
 import { authClient } from '@/lib/auth/auth-client';
-import React, { useState, useCallback, memo } from 'react';
+import { useState, useCallback, memo } from 'react';
 import type { Session } from 'better-auth/types';
 
 interface SessionManageTabProps {
@@ -10,11 +10,11 @@ interface SessionManageTabProps {
     className?: string;
 }
 
-const SessionManageTab: React.FC<SessionManageTabProps> = ({ 
+const SessionManageTab = memo(function SessionManageTab({ 
     initialSessions, 
     currentSessionId,
     className = '' 
-}) => {
+}: SessionManageTabProps) {
     const [sessions, setSessions] = useState<Session[]>(() => {
         return initialSessions.map(session => ({
             ...session,
@@ -192,6 +192,6 @@ const SessionManageTab: React.FC<SessionManageTabProps> = ({
             )}
         </div>
     );
-}
+});
 
-export default memo(SessionManageTab);
+export default SessionManageTab;

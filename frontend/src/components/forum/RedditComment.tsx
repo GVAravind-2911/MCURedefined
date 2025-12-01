@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState, memo, useCallback } from "react";
 import axios from "axios";
 import { formatRelativeTime } from "@/lib/dateUtils";
 import Image from "next/image";
@@ -21,7 +21,7 @@ interface RedditCommentProps {
 	depth?: number;
 }
 
-const RedditComment: React.FC<RedditCommentProps> = ({
+const RedditComment = memo(function RedditComment({
 	comment,
 	replies,
 	allReplies,
@@ -33,7 +33,7 @@ const RedditComment: React.FC<RedditCommentProps> = ({
 	apiPath,
 	refreshComments,
 	depth = 0,
-}) => {
+}: RedditCommentProps) {
 	const [showReplyForm, setShowReplyForm] = useState(false);
 	const [isLiking, setIsLiking] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
@@ -512,6 +512,8 @@ const RedditComment: React.FC<RedditCommentProps> = ({
 			)}
 		</div>
 	);
-};
+});
+
+RedditComment.displayName = "RedditComment";
 
 export default RedditComment;

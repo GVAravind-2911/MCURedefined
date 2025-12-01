@@ -2,13 +2,22 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { authClient } from "@/lib/auth/auth-client";
 import { formatRelativeTime } from "@/lib/dateUtils";
 import Image from "next/image";
-import RedditCommentSection from "@/components/forum/RedditCommentSection";
 import LoadingSpinner from "@/components/main/LoadingSpinner";
-import EditHistoryModal from "@/components/forum/EditHistoryModal";
 import "@/styles/forum-thread.css";
+
+// Lazy load heavy components for better initial page load
+const RedditCommentSection = dynamic(
+	() => import("@/components/forum/RedditCommentSection"),
+	{ loading: () => <div className="loading-comments">Loading comments...</div> }
+);
+const EditHistoryModal = dynamic(
+	() => import("@/components/forum/EditHistoryModal"),
+	{ ssr: false }
+);
 
 interface ForumTopic {
 	id: string;

@@ -339,7 +339,7 @@
 	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 	z-index: 1000;
 	overflow: hidden;
-	animation: fadeIn 0.2s ease;
+	animation: headerDropdownFadeIn 0.2s ease;
 }
 
 .dropdown-item {
@@ -383,7 +383,7 @@
 	color: rgba(255, 255, 255, 0.4);
 }
 
-@keyframes fadeIn {
+@keyframes headerDropdownFadeIn {
 	from {
 		opacity: 0;
 		transform: translateY(-10px);

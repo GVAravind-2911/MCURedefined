@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import type { ManagedUser, UserSession } from "../types";
 import { formatDate } from "../utils";
 
@@ -12,7 +13,7 @@ interface SessionsModalProps {
 	actionLoading: boolean;
 }
 
-export default function SessionsModal({
+export default memo(function SessionsModal({
 	user,
 	sessions,
 	onRevokeSession,

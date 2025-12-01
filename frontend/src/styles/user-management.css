@@ -367,9 +367,7 @@
 	border-width: 2px;
 }
 
-@keyframes spin {
-	to { transform: rotate(360deg); }
-}
+/* spin keyframe is defined in globals.css */
 
 .loading-state p {
 	color: var(--um-text-secondary);
@@ -752,13 +750,10 @@
 	justify-content: center;
 	z-index: 1000;
 	padding: 2rem;
-	animation: fadeIn 0.2s ease;
+	animation: fadeInSimple 0.2s ease;
 }
 
-@keyframes fadeIn {
-	from { opacity: 0; }
-	to { opacity: 1; }
-}
+/* fadeIn keyframes defined in globals.css */
 
 .modal-content {
 	position: relative;

@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import axios from "axios";
 import type { ContentConfig, ContentData, ErrorState } from "@/types/ContentTypes";
-import { getApiUrl, getDraftStorageKey, handleApiError, normalizeContentBlocks } from "@/lib/content/utils";
+import { getDraftStorageKey, handleApiError, normalizeContentBlocks } from "@/lib/content/utils";
+import { getProxyUrl } from "@/lib/config/backend";
 import ContentEditor from "./ContentEditor";
 import LoadingSpinner from "@/components/main/LoadingSpinner";
 import ErrorMessage from "@/components/main/ErrorMessage";
@@ -46,7 +47,7 @@ export default function ContentEditWrapper({
 					// If not in localStorage, try to fetch from server
 					try {
 						const response = await axios.get<ContentData>(
-							getApiUrl(`${config.apiPath}/${id}`),
+							getProxyUrl(`${config.apiPath}/${id}`),
 							{ timeout: 10000 },
 						);
 						const contentData = response.data;

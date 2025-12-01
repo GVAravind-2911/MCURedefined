@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useState, memo, useCallback } from "react";
 import axios from "axios";
 import moment from "moment";
 import Image from "next/image";
@@ -20,7 +20,7 @@ interface CommentProps {
 	depth?: number;
 }
 
-const Comment: React.FC<CommentProps> = ({
+const Comment = memo(function Comment({
 	comment,
 	replies,
 	allReplies,
@@ -31,7 +31,7 @@ const Comment: React.FC<CommentProps> = ({
 	apiPath,
 	refreshComments,
 	depth = 0,
-}) => {
+}: CommentProps) {
 	const [showReplyForm, setShowReplyForm] = useState(false);
 	const [isLiking, setIsLiking] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
@@ -210,6 +210,8 @@ const Comment: React.FC<CommentProps> = ({
 			{showReplies && depth < maxDepth && renderReplies(replies, depth)}
 		</div>
 	);
-};
+});
+
+Comment.displayName = "Comment";
 
 export default Comment;

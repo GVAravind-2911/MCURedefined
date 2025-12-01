@@ -1,12 +1,12 @@
 "use client";
 
 // Footer.tsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-function Footer(): ReactNode {
+const Footer = memo(function Footer(): ReactNode {
 	const [isMobile, setIsMobile] = useState(false);
 
 	useEffect(() => {
@@ -138,6 +138,6 @@ function Footer(): ReactNode {
 			</div>
 		</footer>
 	);
-}
+});
 
 export default Footer;

@@ -1,11 +1,13 @@
 "use client";
 
+import { memo } from "react";
+
 interface ModalWrapperProps {
 	onClose: () => void;
 	children: React.ReactNode;
 }
 
-export default function ModalWrapper({ onClose, children }: ModalWrapperProps) {
+export default memo(function ModalWrapper({ onClose, children }: ModalWrapperProps) {
 	return (
 		<div className="modal-overlay" onClick={onClose}>
 			<div className="modal-content" onClick={(e) => e.stopPropagation()}>

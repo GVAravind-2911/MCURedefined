@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type React from "react";
 import Image from "next/image";
 import moment from "moment";
@@ -68,4 +69,4 @@ const BlogCard = ({
 	);
 };
 
-export default BlogCard;
+export default memo(BlogCard);

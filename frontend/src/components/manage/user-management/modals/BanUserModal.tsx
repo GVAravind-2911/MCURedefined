@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import type { ManagedUser } from "../types";
 
 interface BanUserModalProps {
@@ -13,7 +14,7 @@ interface BanUserModalProps {
 	actionLoading: boolean;
 }
 
-export default function BanUserModal({
+export default memo(function BanUserModal({
 	user,
 	banReason,
 	setBanReason,

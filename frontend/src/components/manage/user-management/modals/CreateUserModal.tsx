@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { USER_ROLES } from "@/types/UserManagementTypes";
 import type { NewUserData } from "../types";
 
@@ -11,7 +12,7 @@ interface CreateUserModalProps {
 	actionLoading: boolean;
 }
 
-export default function CreateUserModal({
+export default memo(function CreateUserModal({
 	newUserData,
 	setNewUserData,
 	onCreateUser,

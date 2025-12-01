@@ -3,7 +3,7 @@
  */
 
 import type { ContentConfig, ContentListResponse, ErrorState } from "@/types/ContentTypes";
-import { handleApiError, DEFAULT_CACHE_HEADERS } from "@/lib/content/utils";
+import { handleApiError } from "@/lib/content/utils";
 import { getBackendUrl, NO_CACHE_HEADERS } from "@/lib/config/backend";
 import axios from "axios";
 
@@ -36,14 +36,14 @@ export async function getContentList<T = unknown>(
       axios.get<{ tags: string[] }>(
         getBackendUrl(`${config.apiPath}/tags`),
         {
-          headers: DEFAULT_CACHE_HEADERS,
+          headers: NO_CACHE_HEADERS,
           timeout: 5000,
         }
       ),
       axios.get<{ authors: string[] }>(
         getBackendUrl(`${config.apiPath}/authors`),
         {
-          headers: DEFAULT_CACHE_HEADERS,
+          headers: NO_CACHE_HEADERS,
           timeout: 5000,
         }
       ),
@@ -76,7 +76,7 @@ export async function getContentById<T>(
       getBackendUrl(`${config.apiPath}/${id}`),
       {
         timeout: 10000,
-        headers: DEFAULT_CACHE_HEADERS,
+        headers: NO_CACHE_HEADERS,
       }
     );
     return response.data;
@@ -96,7 +96,7 @@ export async function getLatestContent<T>(
       getBackendUrl(`${config.apiPath}/latest`),
       {
         timeout: 5000,
-        headers: DEFAULT_CACHE_HEADERS,
+        headers: NO_CACHE_HEADERS,
       }
     );
     return response.data;

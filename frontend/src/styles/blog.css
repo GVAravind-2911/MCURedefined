@@ -1,29 +1,5 @@
-/* Font declarations */
-@font-face {
-    font-family: "BentonSansCompLight";
-    src: url("../fonts/BentonSans\ Comp\ Light.otf");
-}
-@font-face {
-    font-family: "BentonSansRegular";
-    src: url("../fonts/BentonSans\ Regular.otf");
-}
-@font-face {
-    font-family: "BentonSansBook";
-    src: url("../fonts/BentonSans\ Book.otf");
-}
-@font-face {
-    font-family: "BentonSansBold";
-    src: url("../fonts/BentonSans\ Bold.otf");
-}
-@font-face {
-    font-family: "BentonSansCompBlack";
-    src: url("../fonts/BentonSans\ Comp\ Black.otf");
-}
-
-body,
-html {
-    background-color: #000000;
-}
+/* Font declarations are in globals.css */
+/* body/html background is set in globals.css */
 
 /* Layout */
 .layout {
@@ -645,17 +621,10 @@ html {
 
 /* Animations */
 .fade-in {
-    animation: fadeIn ease 1s;
+    animation: fadeInSimple ease 1s;
 }
 
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
-}
+/* fadeIn keyframes defined in globals.css */
 
 /* Preview page container */
 .preview-container {

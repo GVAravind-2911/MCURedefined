@@ -4,18 +4,6 @@
 
 import type { ContentBlock, ContentConfig, ErrorState } from "@/types/ContentTypes";
 import type { AxiosError } from "axios";
-import { getProxyUrl as getApiProxyUrl, API_PROXY_URL } from "@/lib/config/backend";
-
-// Re-export for backward compatibility
-export { API_PROXY_URL };
-
-/**
- * Get the full API URL for a given path (client-side proxy)
- * @deprecated Use getProxyUrl from @/lib/config/backend instead
- */
-export function getApiUrl(path: string): string {
-	return getApiProxyUrl(path);
-}
 
 /**
  * Generate a unique block ID
@@ -157,12 +145,3 @@ export function processContentBlocksForSubmission(
 		return block;
 	});
 }
-
-/**
- * Default cache headers for API requests
- */
-export const DEFAULT_CACHE_HEADERS = {
-	"Cache-Control": "no-cache",
-	Pragma: "no-cache",
-	Expires: "0",
-};

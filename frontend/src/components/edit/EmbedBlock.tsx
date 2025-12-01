@@ -11,7 +11,6 @@ const EmbedBlock: React.FC<EmbedBlockProps> = ({ url, onChange, onDelete }) => {
 				const script = document.createElement("script");
 				const regex1 = /<script async.*?src="(https:\/\/.*?)"/;
 				const match1 = url.match(regex1);
-				console.log(match1);
 				if (match1) {
 					script.src = match1[1];
 					script.async = true;
@@ -24,14 +23,13 @@ const EmbedBlock: React.FC<EmbedBlockProps> = ({ url, onChange, onDelete }) => {
 			if (url.includes("www.youtube.com")) {
 				const regex = /^.*src="(https:\/\/www.youtube.com.+?)"/;
 				const match = url.match(regex);
-				console.log(match);
 				if (match) {
 					const embedUrl = `<iframe src="${match[1]}" frameborder="0" allowfullscreen class="video"></iframe>`;
 					onChange(embedUrl);
 				}
 			}
 		}
-	}, [url]);
+	}, [url, onChange]);
 
 	return (
 		<div className="content-block embed-block">

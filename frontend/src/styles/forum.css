@@ -1229,13 +1229,10 @@ input[type="checkbox"]:checked {
 	background: rgba(255, 107, 107, 0.1);
 	border: 1px solid rgba(255, 107, 107, 0.3);
 	border-radius: var(--forum-radius);
-	animation: fadeIn 0.3s ease;
+	animation: fadeInSimple 0.3s ease;
 }
 
-@keyframes fadeIn {
-	from { opacity: 0; }
-	to { opacity: 1; }
-}
+/* fadeIn keyframes defined in globals.css */
 
 /* Spoiler Reveal Modal */
 .spoiler-modal-overlay {

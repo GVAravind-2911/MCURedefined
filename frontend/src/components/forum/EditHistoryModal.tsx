@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { formatRelativeTime } from "@/lib/dateUtils";
 
 interface EditHistoryItem {
@@ -17,11 +17,11 @@ interface EditHistoryModalProps {
 	onClose: () => void;
 }
 
-const EditHistoryModal: React.FC<EditHistoryModalProps> = ({
+const EditHistoryModal = memo(function EditHistoryModal({
 	contentId,
 	contentType,
 	onClose,
-}) => {
+}: EditHistoryModalProps) {
 	const [history, setHistory] = useState<EditHistoryItem[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState("");
@@ -99,6 +99,6 @@ const EditHistoryModal: React.FC<EditHistoryModalProps> = ({
 			</div>
 		</div>
 	);
-};
+});
 
 export default EditHistoryModal;

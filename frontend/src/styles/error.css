@@ -18,11 +18,11 @@
 	text-align: center;
 	position: relative;
 	overflow: hidden;
-	animation: fadeIn 0.6s ease-out;
+	animation: fadeInDown 0.6s ease-out;
 	border: 1px solid rgba(236, 29, 36, 0.3);
 }
 
-@keyframes fadeIn {
+@keyframes fadeInDown {
 	from {
 		opacity: 0;
 		transform: translateY(-20px);

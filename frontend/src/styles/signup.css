@@ -25,7 +25,7 @@
 	border-radius: 12px;
 	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 	border: 1px solid rgba(255, 255, 255, 0.1);
-	animation: fadeIn 0.3s ease-out;
+	animation: fadeInUp 0.3s ease-out;
 }
 
 .mainlogo {
@@ -33,7 +33,7 @@
 	margin: 0 auto;
 }
 
-@keyframes fadeIn {
+@keyframes fadeInUp {
 	from {
 		opacity: 0;
 		transform: translateY(-20px);
@@ -176,11 +176,7 @@ button.loading::after {
 	text-decoration: underline;
 }
 
-@keyframes spin {
-	to {
-		transform: translateY(-50%) rotate(360deg);
-	}
-}
+/* spin keyframe is defined in globals.css */
 
 /* Add responsive adjustments */
 @media (max-width: 480px) {

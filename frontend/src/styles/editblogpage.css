@@ -22,26 +22,7 @@
 --editor-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@font-face {
-font-family: "BentonSansCompLight";
-src: url("../fonts/BentonSans\ Comp\ Light.otf");
-}
-@font-face {
-font-family: "BentonSansRegular";
-src: url("../fonts/BentonSans\ Regular.otf");
-}
-@font-face {
-font-family: "BentonSansBook";
-src: url("../fonts/BentonSans\ Book.otf");
-}
-@font-face {
-font-family: "BentonSansBold";
-src: url("../fonts/BentonSans\ Bold.otf");
-}
-@font-face {
-font-family: "BentonSansCompBlack";
-src: url("../fonts/BentonSans\ Comp\ Black.otf");
-}
+/* Font declarations are in globals.css */
 
 /* Main Container */
 .create-blog {
@@ -947,8 +928,8 @@ font-size: 0.9rem;
 }
 }
 
-/* Smooth animations */
-@keyframes fadeIn {
+/* Smooth animations - local to avoid conflicts with globals.css */
+@keyframes fadeInBlock {
 from {
 opacity: 0;
 transform: translateY(10px);
@@ -960,7 +941,7 @@ transform: translateY(0);
 }
 
 .content-block {
-animation: fadeIn 0.3s ease-out;
+animation: fadeInBlock 0.3s ease-out;
 }
 
 /* Focus visible for accessibility */

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import Image from "next/image";
 import type { JSX } from "react";
 import "@/styles/similararticle.css";
@@ -44,4 +45,4 @@ const SimilarBlog = ({ articles }: SimilarBlogProps): JSX.Element => {
 	);
 };
 
-export default SimilarBlog;
+export default memo(SimilarBlog);

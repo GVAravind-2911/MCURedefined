@@ -4,8 +4,8 @@ import type { BlogList } from "@/types/BlogTypes";
 import AdminBlogComponent from "@/components/blog/AdminBlogComponent";
 import { BlogProvider } from "@/components/blog/BlogContext";
 import ErrorMessage from "@/components/main/ErrorMessage";
-import { handleApiError, DEFAULT_CACHE_HEADERS } from "@/lib/content/utils";
-import { getBackendUrl, getProxyUrl } from "@/lib/config/backend";
+import { handleApiError } from "@/lib/content/utils";
+import { getBackendUrl, getProxyUrl, NO_CACHE_HEADERS } from "@/lib/config/backend";
 import axios from "axios";
 import "@/styles/blogposts.css";
 
@@ -25,21 +25,21 @@ async function getData(
 			axios.get<ContentListResponse>(
 				getBackendUrl(`${config.apiPath}?page=1&limit=5`),
 				{
-					headers: DEFAULT_CACHE_HEADERS,
+					headers: NO_CACHE_HEADERS,
 					timeout: 10000,
 				},
 			),
 			axios.get<{ tags: string[] }>(
 				getBackendUrl(`${config.apiPath}/tags`),
 				{
-					headers: DEFAULT_CACHE_HEADERS,
+					headers: NO_CACHE_HEADERS,
 					timeout: 5000,
 				},
 			),
 			axios.get<{ authors: string[] }>(
 				getBackendUrl(`${config.apiPath}/authors`),
 				{
-					headers: DEFAULT_CACHE_HEADERS,
+					headers: NO_CACHE_HEADERS,
 					timeout: 5000,
 				},
 			),

@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useMemo, useCallback, type ReactNode } from "react";
 
 interface UserProfileData {
 	id?: string;
@@ -68,9 +68,9 @@ export const ProfileProvider = ({ children, session, initialData }: ProfileProvi
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
-	const clearError = () => setError(null);
+	const clearError = useCallback(() => setError(null), []);
 
-	const fetchCompleteProfile = async (includeContent = false) => {
+	const fetchCompleteProfile = useCallback(async (includeContent = false) => {
 		try {
 			setIsLoading(true);
 			setError(null);
@@ -98,9 +98,9 @@ export const ProfileProvider = ({ children, session, initialData }: ProfileProvi
 		} finally {
 			setIsLoading(false);
 		}
-	};
+	}, []);
 
-	const updateProfile = async (data: Partial<UserProfileData>) => {
+	const updateProfile = useCallback(async (data: Partial<UserProfileData>) => {
 		try {
 			setIsUpdating(true);
 			setError(null);
@@ -130,24 +130,25 @@ export const ProfileProvider = ({ children, session, initialData }: ProfileProvi
 		} finally {
 			setIsUpdating(false);
 		}
-	};
+	}, [fetchCompleteProfile]);
 
-	const refreshProfile = async () => {
+	const refreshProfile = useCallback(async () => {
 		await fetchCompleteProfile(false);
-	};
+	}, [fetchCompleteProfile]);
 
-	const refreshLikedContent = async () => {
+	const refreshLikedContent = useCallback(async () => {
 		await fetchCompleteProfile(true);
-	};
+	}, [fetchCompleteProfile]);
 
 	// Initial load
 	useEffect(() => {
 		if (!userProfile && session?.user?.id) {
 			fetchCompleteProfile(false);
 		}
-	}, [session?.user?.id]);
+	}, [session?.user?.id, userProfile, fetchCompleteProfile]);
 
-	const value: ProfileContextData = {
+	// Memoize context value to prevent unnecessary re-renders
+	const value = useMemo<ProfileContextData>(() => ({
 		userProfile,
 		profileUser,
 		likedContent,
@@ -159,7 +160,19 @@ export const ProfileProvider = ({ children, session, initialData }: ProfileProvi
 		refreshLikedContent,
 		error,
 		clearError,
-	};
+	}), [
+		userProfile,
+		profileUser,
+		likedContent,
+		metadata,
+		isLoading,
+		isUpdating,
+		updateProfile,
+		refreshProfile,
+		refreshLikedContent,
+		error,
+		clearError,
+	]);
 
 	return (
 		<ProfileContext.Provider value={value}>

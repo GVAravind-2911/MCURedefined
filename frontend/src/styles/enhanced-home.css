@@ -215,14 +215,7 @@
 	}
 }
 
-@keyframes spin {
-	from {
-		transform: rotate(0deg);
-	}
-	to {
-		transform: rotate(360deg);
-	}
-}
+/* spin keyframe is defined in globals.css */
 
 .home-text10 {
 	color: #ec1d24;
@@ -584,20 +577,9 @@
 	box-shadow: 0 6px 15px rgba(236, 29, 36, 0.5);
 }
 
-/* Animation */
+/* Animation - uses fadeIn from globals.css */
 .fade-in {
 	animation: fadeIn 1s ease;
-}
-
-@keyframes fadeIn {
-	from {
-		opacity: 0;
-		transform: translateY(20px);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
 }
 
 /* Responsive Styles */

@@ -8,7 +8,7 @@ import {
 } from "react";
 import { useSearchParams, usePathname } from "next/navigation";
 import axios from "axios";
-import useDebounce from "./ProfileUseDebounce";
+import { useDebounce } from "@/hooks";
 import type { BlogList } from "@/types/BlogTypes";
 import { useBlogContext } from "../ProfileBlogContext";
 
@@ -39,8 +39,6 @@ const useBlogSearch = ({
 	const searchParams = useSearchParams();
 	const pathname = usePathname();
 	const blogContext = useBlogContext();
-
-	const isProfileContext = pathname.includes("/profile");
 
 	const [searchQuery, setSearchQuery] = useState(searchParams?.get("q") || "");
 	const [selectedTags, setSelectedTags] = useState(

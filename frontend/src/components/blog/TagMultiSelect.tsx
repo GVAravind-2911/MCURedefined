@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, memo, useCallback } from "react";
 import type React from "react";
 
 interface TagMultiSelectProps {
@@ -10,7 +10,7 @@ interface TagMultiSelectProps {
 	handleSearch: (query: string, tags: string[], author: string) => void;
 }
 
-const TagMultiSelect: React.FC<TagMultiSelectProps> = ({
+const TagMultiSelect: React.FC<TagMultiSelectProps> = memo(({
 	selectedTags,
 	tags,
 	toggleTag,
@@ -37,6 +37,16 @@ const TagMultiSelect: React.FC<TagMultiSelectProps> = ({
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
 	}, []);
+
+	const handleClearTags = useCallback((e: React.MouseEvent) => {
+		e.stopPropagation();
+		handleSearch(searchQuery, [], selectedAuthor);
+	}, [handleSearch, searchQuery, selectedAuthor]);
+
+	const handleToggleTag = useCallback((e: React.MouseEvent, tag: string) => {
+		e.stopPropagation();
+		toggleTag(tag);
+	}, [toggleTag]);
 
 	return (
 		<div className="filter-dropdown" ref={tagDropdownRef}>
@@ -70,10 +80,7 @@ const TagMultiSelect: React.FC<TagMultiSelectProps> = ({
 								{selectedTags.length > 0 && (
 									<button
 										className="clear-selection-button"
-										onClick={(e) => {
-											e.stopPropagation();
-											handleSearch(searchQuery, [], selectedAuthor);
-										}}
+										onClick={handleClearTags}
 										type="button"
 									>
 										Clear
@@ -83,10 +90,7 @@ const TagMultiSelect: React.FC<TagMultiSelectProps> = ({
 							{tags.map((tag) => (
 								<button
 									key={tag}
-									onClick={(e) => {
-										e.stopPropagation(); // Prevent closing dropdown
-										toggleTag(tag);
-									}}
+									onClick={(e) => handleToggleTag(e, tag)}
 									className={`dropdown-item multi-select-item ${selectedTags.includes(tag) ? "selected" : ""}`}
 									type="button"
 									role="menuitemcheckbox"
@@ -119,6 +123,8 @@ const TagMultiSelect: React.FC<TagMultiSelectProps> = ({
 			)}
 		</div>
 	);
-};
+});
+
+TagMultiSelect.displayName = "TagMultiSelect";
 
 export default TagMultiSelect;

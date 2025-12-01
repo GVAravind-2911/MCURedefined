@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState, memo, useCallback } from "react";
 import Image from "next/image";
 import { formatRelativeTime } from "@/lib/dateUtils";
 import SpoilerRevealModal from "./SpoilerRevealModal";
@@ -180,4 +180,4 @@ const ForumTopicCard: React.FC<ForumTopicCardProps> = ({
 	);
 };
 
-export default ForumTopicCard;
+export default memo(ForumTopicCard);

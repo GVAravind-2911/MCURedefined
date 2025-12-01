@@ -8,7 +8,7 @@ import {
 } from "react";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
-import useDebounce from "./UseDebounce";
+import { useDebounce } from "@/hooks";
 import type { BlogList } from "@/types/BlogTypes";
 import { useBlogContext } from "../BlogContext";
 

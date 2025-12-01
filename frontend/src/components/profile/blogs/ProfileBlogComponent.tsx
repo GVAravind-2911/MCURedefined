@@ -7,9 +7,9 @@ import type { BlogList } from "@/types/BlogTypes";
 import "@/styles/blogposts.css";
 import LoadingSpinner from "@/components/main/LoadingSpinner";
 import BlogFilters from "./ProfileBlogFilters";
-import BlogCard from "./ProfileBlogCard";
-import BlogPagination from "./ProfileBlogPagination";
-import EmptyState from "./ProfileEmptyState";
+import BlogCard from "@/components/blog/BlogCard";
+import BlogPagination from "@/components/blog/BlogPagination";
+import EmptyState from "@/components/blog/EmptyState";
 import useBlogSearch from "./hooks/ProfileUseBlogSearch";
 import { useBlogContext } from "./ProfileBlogContext";
 

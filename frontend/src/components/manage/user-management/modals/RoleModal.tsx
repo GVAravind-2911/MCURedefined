@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { USER_ROLES } from "@/types/UserManagementTypes";
 import type { ManagedUser } from "../types";
 
@@ -12,7 +13,7 @@ interface RoleModalProps {
 	actionLoading: boolean;
 }
 
-export default function RoleModal({
+export default memo(function RoleModal({
 	user,
 	selectedRole,
 	setSelectedRole,

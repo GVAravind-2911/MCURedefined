@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import type { ManagedUser } from "../types";
 
 interface DeleteUserModalProps {
@@ -9,7 +10,7 @@ interface DeleteUserModalProps {
 	actionLoading: boolean;
 }
 
-export default function DeleteUserModal({
+export default memo(function DeleteUserModal({
 	user,
 	onDeleteUser,
 	onClose,

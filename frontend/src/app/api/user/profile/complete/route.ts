@@ -40,8 +40,6 @@ export async function GET(req: Request) {
 			user: session.user,
 		};
 
-        console.log("Profile Data:", profileData);
-
 		// If requested, fetch liked content overview
 		if (includeContent) {
 			try {
@@ -68,9 +66,6 @@ export async function GET(req: Request) {
 						limit: 3, // Small preview
 					}).catch(() => ({ data: { projects: [], total: 0 } })),
 				]);
-
-                console.log("Blogs Data:", blogsData.data);
-                console.log("Reviews Data:", reviewsData.data);
 
 				responseData.likedContent = {
 					blogs: {

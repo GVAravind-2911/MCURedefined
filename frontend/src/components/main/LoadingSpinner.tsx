@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import type React from "react";
 import "@/styles/LoadingSpinner.css";
 
@@ -21,4 +22,4 @@ const LoadingSpinner: React.FC = () => {
 	);
 };
 
-export default LoadingSpinner;
+export default memo(LoadingSpinner);

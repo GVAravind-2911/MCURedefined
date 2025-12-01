@@ -103,11 +103,7 @@
 	animation: spin 0.8s linear infinite;
 }
 
-@keyframes spin {
-	to {
-		transform: rotate(360deg);
-	}
-}
+/* spin keyframe is defined in globals.css */
 
 /* Add padding to body when banner is present */
 body:has(.impersonation-banner) {

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { memo } from "react";
 
 interface SpoilerRevealModalProps {
 	isOpen: boolean;
@@ -9,7 +9,7 @@ interface SpoilerRevealModalProps {
 	spoilerFor: string;
 }
 
-const SpoilerRevealModal: React.FC<SpoilerRevealModalProps> = ({
+const SpoilerRevealModal: React.FC<SpoilerRevealModalProps> = memo(({
 	isOpen,
 	onClose,
 	onConfirm,
@@ -67,6 +67,8 @@ const SpoilerRevealModal: React.FC<SpoilerRevealModalProps> = ({
 			</div>
 		</div>
 	);
-};
+});
+
+SpoilerRevealModal.displayName = "SpoilerRevealModal";
 
 export default SpoilerRevealModal;

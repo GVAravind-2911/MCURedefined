@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, memo, useCallback } from "react";
 import TagMultiSelect from "./TagMultiSelect";
 
 interface BlogFiltersProps {
@@ -21,7 +21,7 @@ interface BlogFiltersProps {
 	apiUrl: string;
 }
 
-const BlogFilters: React.FC<BlogFiltersProps> = ({
+const BlogFilters: React.FC<BlogFiltersProps> = memo(({
 	searchQuery,
 	setSearchQuery,
 	selectedTags,
@@ -56,7 +56,7 @@ const BlogFilters: React.FC<BlogFiltersProps> = ({
 	}, []);
 
 	// Function to toggle a tag in the multi-select dropdown
-	const toggleTag = (tag: string) => {
+	const toggleTag = useCallback((tag: string) => {
 		let newTags: string[];
 		if (selectedTags.includes(tag)) {
 			newTags = selectedTags.filter((t) => t !== tag);
@@ -64,7 +64,7 @@ const BlogFilters: React.FC<BlogFiltersProps> = ({
 			newTags = [...selectedTags, tag];
 		}
 		handleSearch(searchQuery, newTags, selectedAuthor);
-	};
+	}, [selectedTags, handleSearch, searchQuery, selectedAuthor]);
 
 	return (
 		<div className="search-filters">
@@ -249,6 +249,8 @@ const BlogFilters: React.FC<BlogFiltersProps> = ({
 			)}
 		</div>
 	);
-};
+});
+
+BlogFilters.displayName = "BlogFilters";
 
 export default BlogFilters;

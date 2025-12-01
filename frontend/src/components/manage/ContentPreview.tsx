@@ -10,7 +10,8 @@ import moment from "moment";
 import Image from "next/image";
 import parse from "html-react-parser";
 import type { ContentBlock, ContentConfig, ContentData } from "@/types/ContentTypes";
-import { getApiUrl, getDraftStorageKey } from "@/lib/content/utils";
+import { getDraftStorageKey } from "@/lib/content/utils";
+import { getProxyUrl } from "@/lib/config/backend";
 import { authClient } from "@/lib/auth/auth-client";
 import "@/styles/blog.css";
 
@@ -110,8 +111,8 @@ export default function ContentPreview({
 
 			const apiPath =
 				mode === "edit"
-					? getApiUrl(`${config.apiPath}/update/${id}`)
-					: getApiUrl(`${config.apiPath}/create`);
+					? getProxyUrl(`${config.apiPath}/update/${id}`)
+					: getProxyUrl(`${config.apiPath}/create`);
 
 			const method = mode === "edit" ? "put" : "post";
 

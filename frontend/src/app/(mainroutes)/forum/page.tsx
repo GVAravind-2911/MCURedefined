@@ -2,12 +2,18 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { authClient } from "@/lib/auth/auth-client";
 import { useDebounce } from "@/hooks/useDebounce";
 import ForumTopicCard from "@/components/forum/ForumTopicCard";
-import CreateTopicModal from "@/components/forum/CreateTopicModal";
 import LoadingSpinner from "@/components/main/LoadingSpinner";
 import "@/styles/forum.css";
+
+// Lazy load the modal for better initial page load
+const CreateTopicModal = dynamic(
+	() => import("@/components/forum/CreateTopicModal"),
+	{ ssr: false }
+);
 
 interface ForumTopic {
 	id: string;

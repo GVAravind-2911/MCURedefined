@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type React from "react";
 
 interface BlogPaginationProps {
@@ -144,4 +145,4 @@ const BlogPagination: React.FC<BlogPaginationProps> = ({
 	);
 };
 
-export default BlogPagination;
+export default memo(BlogPagination);

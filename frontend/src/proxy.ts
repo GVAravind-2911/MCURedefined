@@ -6,16 +6,8 @@ import { NextResponse } from "next/server";
 type Session = typeof auth.$Infer.Session;
 
 export async function proxy(request: NextRequest) {
-	const currentUrl = request.nextUrl; // This is a URL object
-
-	// Different parts you can access:
-	const fullUrl = currentUrl.href; // Complete URL with protocol, hostname, path, query params
-	const pathname = currentUrl.pathname; // Just the path portion (/manage/users)
-	const origin = currentUrl.origin; // Protocol + hostname (https://yourdomain.com)
-	const searchParams = currentUrl.searchParams; // Query parameters
-
-	console.log(`Middleware checking: ${fullUrl}`);
-	console.log(`Path being protected: ${pathname}`);
+	const currentUrl = request.nextUrl;
+	const pathname = currentUrl.pathname;
 
 	const { data: session } = await betterFetch<Session>(
 		"/api/auth/get-session",
@@ -40,7 +32,6 @@ export async function proxy(request: NextRequest) {
 		}
 
 		if (session.user.role !== "admin") {
-			console.log("User accessing user management");
 			return NextResponse.redirect(new URL("/", request.url));
 		}
 	}
