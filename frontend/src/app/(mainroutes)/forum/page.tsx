@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth/auth-client";
 import ForumTopicCard from "@/components/forum/ForumTopicCard";
@@ -48,6 +48,26 @@ export default function ForumPage(): React.ReactElement {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [totalPages, setTotalPages] = useState(1);
 	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+	const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
+	const sortDropdownRef = useRef<HTMLDivElement>(null);
+
+	const sortOptions = [
+		{ value: "latest", label: "Latest" },
+		{ value: "popular", label: "Most Popular" },
+		{ value: "oldest", label: "Oldest" },
+	];
+
+	// Close dropdown when clicking outside
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (sortDropdownRef.current && !sortDropdownRef.current.contains(event.target as Node)) {
+				setIsSortDropdownOpen(false);
+			}
+		};
+
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => document.removeEventListener("mousedown", handleClickOutside);
+	}, []);
 
 	const fetchTopics = async (page = 1, search = "", sort = "latest") => {
 		try {
@@ -240,17 +260,46 @@ export default function ForumPage(): React.ReactElement {
 						/>
 					</form>
 
-					<div className="forum-sort">
+					<div className="forum-sort" ref={sortDropdownRef}>
 						<label className="forum-sort-label">Sort by:</label>
-						<select
-							className="forum-sort-select"
-							value={sortBy}
-							onChange={(e) => handleSortChange(e.target.value)}
-						>
-							<option value="latest">Latest</option>
-							<option value="popular">Most Popular</option>
-							<option value="oldest">Oldest</option>
-						</select>
+						<div className="forum-sort-dropdown">
+							<button
+								type="button"
+								className="forum-sort-trigger"
+								onClick={() => setIsSortDropdownOpen(!isSortDropdownOpen)}
+								aria-expanded={isSortDropdownOpen}
+							>
+								<span>{sortOptions.find(opt => opt.value === sortBy)?.label}</span>
+								<svg 
+									className={`forum-sort-arrow ${isSortDropdownOpen ? 'open' : ''}`}
+									width="12" 
+									height="12" 
+									viewBox="0 0 24 24" 
+									fill="none" 
+									stroke="currentColor" 
+									strokeWidth="2"
+								>
+									<polyline points="6,9 12,15 18,9"></polyline>
+								</svg>
+							</button>
+							{isSortDropdownOpen && (
+								<div className="forum-sort-menu">
+									{sortOptions.map((option) => (
+										<button
+											key={option.value}
+											type="button"
+											className={`forum-sort-option ${sortBy === option.value ? 'selected' : ''}`}
+											onClick={() => {
+												handleSortChange(option.value);
+												setIsSortDropdownOpen(false);
+											}}
+										>
+											{option.label}
+										</button>
+									))}
+								</div>
+							)}
+						</div>
 					</div>
 				</div>
 

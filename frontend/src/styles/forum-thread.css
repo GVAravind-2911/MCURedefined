@@ -889,6 +889,7 @@
 	font-size: 0.9rem;
 	transition: all 0.3s ease;
 	margin-top: 0.25rem;
+	color-scheme: dark;
 }
 
 .spoiler-input:focus {
@@ -904,6 +905,14 @@
 
 .spoiler-input[type="number"] {
 	max-width: 120px;
+	-moz-appearance: textfield;
+	appearance: textfield;
+}
+
+.spoiler-input[type="number"]::-webkit-outer-spin-button,
+.spoiler-input[type="number"]::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
 }
 
 /* Enhanced spoiler form for better visibility */

@@ -80,6 +80,7 @@
 	font-size: 1rem;
 	color: #ffffff;
 	transition: border-color 0.2s, box-shadow 0.2s;
+	color-scheme: dark;
 }
 
 .form-group input:-webkit-autofill,

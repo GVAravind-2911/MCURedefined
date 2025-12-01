@@ -500,6 +500,7 @@
 	padding: 12px;
 	font: 16px var(--font-regular);
 	outline: none;
+	color-scheme: dark;
 }
 
 .search-input::placeholder {
@@ -1115,6 +1116,7 @@
     font-family: var(--font-regular);
     font-size: 0.95rem;
     transition: var(--transition-fast);
+    color-scheme: dark;
 }
 
 .form-group input:focus,

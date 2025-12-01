@@ -36,6 +36,7 @@
 	--default-radius: 8px;
 	--box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 	--transition: all 0.3s ease;
+	color-scheme: dark;
 }
 
 * {
@@ -168,6 +169,65 @@ svg {
 .button-secondary:hover {
 	background-color: rgba(255, 255, 255, 0.05);
 	border-color: var(--border-hover);
+}
+
+/* Global Form Input Styling - Dark Theme */
+input[type="number"],
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+textarea,
+select {
+	color-scheme: dark;
+}
+
+/* Number Input Spinner Styling - Dark Theme */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+	background: transparent;
+}
+
+input[type="number"] {
+	-moz-appearance: textfield;
+	appearance: textfield;
+}
+
+/* Optional: Custom number input with visible dark spinners */
+input[type="number"].with-spinners::-webkit-outer-spin-button,
+input[type="number"].with-spinners::-webkit-inner-spin-button {
+	-webkit-appearance: inner-spin-button;
+	opacity: 1;
+	background: #1a1a1a;
+	border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Select/Dropdown Global Styling */
+select {
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	background-color: #1a1a1a;
+	color: white;
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+	background-repeat: no-repeat;
+	background-position: right 0.75rem center;
+	background-size: 1rem;
+	padding-right: 2.5rem;
+}
+
+select option {
+	background-color: #1a1a1a;
+	color: white;
+}
+
+select option:checked {
+	background-color: var(--primary-color);
+	color: white;
 }
 
 /* Card Styles */

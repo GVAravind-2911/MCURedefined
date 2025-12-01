@@ -51,7 +51,7 @@ export async function GET(req: NextRequest) {
 		let orderBy;
 		switch (sortBy) {
 			case "popular":
-				orderBy = desc(sql`like_count`);
+				orderBy = desc(sql`COALESCE(COUNT(DISTINCT ${forumTopicLike.userId}), 0)`);
 				break;
 			case "oldest":
 				orderBy = forumTopic.createdAt;

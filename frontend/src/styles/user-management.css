@@ -862,6 +862,19 @@
 	color: var(--um-text);
 	font-size: 0.95rem;
 	transition: var(--um-transition);
+	color-scheme: dark;
+}
+
+/* Number input spinner styling for dark theme */
+.modal-form input[type="number"]::-webkit-outer-spin-button,
+.modal-form input[type="number"]::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+.modal-form input[type="number"] {
+	-moz-appearance: textfield;
+	appearance: textfield;
 }
 
 .modal-form input:focus {
