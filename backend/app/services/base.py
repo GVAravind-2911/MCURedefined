@@ -170,6 +170,7 @@ class BaseContentService:
                     cls.model.id,
                     cls.model.title,
                     cls.model.author,
+                    cls.model.author_id,
                     cls.model.created_at,
                     cls.model.thumbnail_path
                 )
@@ -184,6 +185,7 @@ class BaseContentService:
                     'id': item.id,
                     'title': item.title,
                     'author': item.author,
+                    'author_id': item.author_id,
                     'created_at': item.created_at,
                     'thumbnail_path': parse_json_field(item.thumbnail_path)
                 }
@@ -198,10 +200,11 @@ class BaseContentService:
         query: str = "",
         tags: Optional[list[str]] = None,
         author: str = "",
+        author_id: str = "",
         page: int = 1,
         limit: int = 5
     ) -> dict:
-        """Search items by query, tags, or author."""
+        """Search items by query, tags, author, or author_id."""
         items = []
         total = 0
         
@@ -227,7 +230,17 @@ class BaseContentService:
                         if item:
                             items.append(cls._process_item(item, session))
             
-            # Search by author
+            # Search by author_id (exact match)
+            elif author_id:
+                base_query = session.query(cls.model).filter(
+                    cls.model.author_id == author_id
+                )
+                total = base_query.count()
+                
+                results = base_query.order_by(cls.model.created_at.desc()).offset((page-1)*limit).limit(limit)
+                items = [cls._process_item(item, session) for item in results]
+            
+            # Search by author name
             elif author:
                 base_query = session.query(cls.model).filter(
                     cls.model.author.ilike(f'%{author}%')

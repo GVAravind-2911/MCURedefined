@@ -6,6 +6,10 @@ import { v4 as uuidv4 } from "uuid";
 import { and, desc, eq, sql, inArray, count } from "drizzle-orm";
 import { headers } from "next/headers";
 
+// Constants for edit restrictions
+const MAX_EDITS = 5;
+const EDIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour in milliseconds
+
 // Get comments for a forum topic with pagination
 export async function GET(req: NextRequest) {
 	try {
@@ -55,6 +59,7 @@ export async function GET(req: NextRequest) {
 				isSpoiler: forumComment.isSpoiler,
 				spoilerFor: forumComment.spoilerFor,
 				spoilerExpiresAt: forumComment.spoilerExpiresAt,
+				editCount: forumComment.editCount,
 				username: user.displayUsername,
 				userImage: user.image,
 			})
@@ -106,12 +111,23 @@ export async function GET(req: NextRequest) {
 			likesMap[item.commentId] = Number(item.count);
 		}
 
-		// Enhance comments with like info
-		const enhancedComments = comments.map((c) => ({
-			...c,
-			likeCount: likesMap[c.id] || 0,
-			userHasLiked: userLikes.includes(c.id),
-		}));
+		// Enhance comments with like info and edit status
+		const now = Date.now();
+		const enhancedComments = comments.map((c) => {
+			const createdAt = new Date(c.createdAt).getTime();
+			const withinEditWindow = (now - createdAt) <= EDIT_WINDOW_MS;
+			const canEdit = currentUserId === c.userId && 
+				withinEditWindow && 
+				(c.editCount || 0) < MAX_EDITS &&
+				c.content !== "[deleted]";
+
+			return {
+				...c,
+				likeCount: likesMap[c.id] || 0,
+				userHasLiked: userLikes.includes(c.id),
+				canEdit,
+			};
+		});
 
 		// Get total count for pagination
 		const [{ count: total }] = await db

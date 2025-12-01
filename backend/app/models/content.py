@@ -39,7 +39,8 @@ class BlogPost(ContentBase, BaseModel):
 
     id = sa.Column(sa.Integer, primary_key=True)
     title = sa.Column(sa.String(255), nullable=False)
-    author = sa.Column(sa.String(30), nullable=False)
+    author = sa.Column(sa.String(30), nullable=False)  # Cached display name for performance
+    author_id = sa.Column(sa.Text, nullable=True)  # User ID from PostgreSQL user database (cross-db FK)
     description = sa.Column(sa.Text)
     content = sa.Column(sa.JSON)
     thumbnail_path = sa.Column(sa.JSON)
@@ -48,6 +49,7 @@ class BlogPost(ContentBase, BaseModel):
     
     __table_args__ = (
         Index('idx_blog_author', 'author'),
+        Index('idx_blog_author_id', 'author_id'),
         Index('idx_blog_title', 'title'),
         Index('idx_blog_created_at', 'created_at'),
     )
@@ -75,7 +77,8 @@ class Reviews(ContentBase, BaseModel):
 
     id = sa.Column(sa.Integer, primary_key=True)
     title = sa.Column(sa.String(255), nullable=False)
-    author = sa.Column(sa.String(30), nullable=False)
+    author = sa.Column(sa.String(30), nullable=False)  # Cached display name for performance
+    author_id = sa.Column(sa.Text, nullable=True)  # User ID from PostgreSQL user database (cross-db FK)
     description = sa.Column(sa.Text)
     content = sa.Column(sa.JSON)
     thumbnail_path = sa.Column(sa.JSON)
@@ -84,6 +87,7 @@ class Reviews(ContentBase, BaseModel):
     
     __table_args__ = (
         Index('idx_review_author', 'author'),
+        Index('idx_review_author_id', 'author_id'),
         Index('idx_review_title', 'title'),
         Index('idx_review_created_at', 'created_at'),
     )

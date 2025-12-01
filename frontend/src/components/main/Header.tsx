@@ -154,7 +154,7 @@ function Header({ session }: HeaderProps): ReactNode {
 							{isDropdownOpen && (
 								<div className="dropdown-menu">
 									<Link
-										href="/profile"
+										href={`/profile/${session.user?.username}`}
 										className="dropdown-item"
 										onClick={() => setIsDropdownOpen(false)}
 									>

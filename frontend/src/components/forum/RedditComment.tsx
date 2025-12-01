@@ -5,6 +5,7 @@ import axios from "axios";
 import { formatRelativeTime } from "@/lib/dateUtils";
 import Image from "next/image";
 import SpoilerRevealModal from "./SpoilerRevealModal";
+import EditHistoryModal from "./EditHistoryModal";
 
 interface RedditCommentProps {
 	comment: any;
@@ -49,11 +50,21 @@ const RedditComment: React.FC<RedditCommentProps> = ({
 	const [replySpoilerFor, setReplySpoilerFor] = useState("");
 	const [replySpoilerDuration, setReplySpoilerDuration] = useState(30);
 
+	// Edit state
+	const [isEditing, setIsEditing] = useState(false);
+	const [editContent, setEditContent] = useState("");
+	const [editError, setEditError] = useState("");
+	const [isSavingEdit, setIsSavingEdit] = useState(false);
+	const [localEditCount, setLocalEditCount] = useState(comment.editCount || 0);
+	const [localContent, setLocalContent] = useState(comment.content);
+	const [showEditHistory, setShowEditHistory] = useState(false);
+
 	const isAuthor = currentUser?.id === comment.userId;
 	const isAdmin = currentUser?.role === "admin";
 	const canDelete = isAuthor || isAdmin;
+	const canEdit = comment.canEdit && isAuthor && contentType === "forum";
 	const maxDepth = 5;
-	const isDeleted = comment.content === "[deleted]";
+	const isDeleted = comment.content === "[deleted]" || localContent === "[deleted]";
 
 	// Check if spoiler has expired
 	const isSpoilerActive = comment.isSpoiler && comment.spoilerExpiresAt && new Date(comment.spoilerExpiresAt) > new Date();
@@ -122,6 +133,46 @@ const RedditComment: React.FC<RedditCommentProps> = ({
 			alert("Failed to delete comment. Please try again.");
 		} finally {
 			setIsDeleting(false);
+		}
+	};
+
+	const handleEditClick = () => {
+		setEditContent(localContent);
+		setEditError("");
+		setIsEditing(true);
+	};
+
+	const handleCancelEdit = () => {
+		setIsEditing(false);
+		setEditContent("");
+		setEditError("");
+	};
+
+	const handleSaveEdit = async () => {
+		if (isSavingEdit) return;
+
+		if (!editContent.trim()) {
+			setEditError("Content is required");
+			return;
+		}
+
+		try {
+			setIsSavingEdit(true);
+			setEditError("");
+
+			const response = await axios.put(`/api/forum/comments/${comment.id}`, {
+				content: editContent.trim(),
+			});
+
+			// Update local state
+			setLocalContent(response.data.content);
+			setLocalEditCount(response.data.editCount);
+			setIsEditing(false);
+		} catch (err: any) {
+			console.error("Error saving comment:", err);
+			setEditError(err.response?.data?.error || "Failed to save changes");
+		} finally {
+			setIsSavingEdit(false);
 		}
 	};
 
@@ -221,6 +272,15 @@ const RedditComment: React.FC<RedditCommentProps> = ({
 					{comment.updatedAt !== comment.createdAt && (
 						<>
 							<span>edited</span>
+							{localEditCount > 0 && contentType === "forum" && (
+								<button
+									className="comment-edit-history-btn"
+									onClick={() => setShowEditHistory(true)}
+									title="View edit history"
+								>
+									({localEditCount})
+								</button>
+							)}
 						</>
 					)}
 				</div>
@@ -228,7 +288,39 @@ const RedditComment: React.FC<RedditCommentProps> = ({
 				{!collapsed && (
 					<>
 						<div className="comment-body">
-							{isDeleted ? (
+							{isEditing ? (
+								<div className="comment-edit-form">
+									<textarea
+										className="comment-edit-textarea"
+										value={editContent}
+										onChange={(e) => setEditContent(e.target.value)}
+										placeholder="Edit your comment..."
+										maxLength={2000}
+									/>
+									{editError && (
+										<div className="comment-edit-error">{editError}</div>
+									)}
+									<div className="comment-edit-actions">
+										<button
+											className="comment-edit-save-btn"
+											onClick={handleSaveEdit}
+											disabled={isSavingEdit}
+										>
+											{isSavingEdit ? "Saving..." : "Save"}
+										</button>
+										<button
+											className="comment-edit-cancel-btn"
+											onClick={handleCancelEdit}
+											disabled={isSavingEdit}
+										>
+											Cancel
+										</button>
+										<span className="comment-edit-remaining">
+											{5 - localEditCount} edits left
+										</span>
+									</div>
+								</div>
+							) : isDeleted ? (
 								<div className="deleted-comment">
 									[This comment has been deleted]
 								</div>
@@ -247,14 +339,14 @@ const RedditComment: React.FC<RedditCommentProps> = ({
 									{comment.isSpoiler && (
 										<span className="spoiler-badge-inline">🔍 Spoiler</span>
 									)}
-									{comment.content}
+									{localContent}
 								</div>
 							)}
 						</div>
 
 						<div className="comment-footer">
 							<div className="comment-actions">
-								{!isDeleted && (
+								{!isDeleted && !isEditing && (
 									<>
 								<button
 									className={`comment-btn ${localUserHasLiked ? "liked" : ""}`}
@@ -269,6 +361,15 @@ const RedditComment: React.FC<RedditCommentProps> = ({
 												onClick={() => setShowReplyForm(!showReplyForm)}
 											>
 												Reply
+											</button>
+										)}
+
+										{canEdit && (
+											<button
+												className="comment-btn"
+												onClick={handleEditClick}
+											>
+												Edit
 											</button>
 										)}
 
@@ -401,6 +502,14 @@ const RedditComment: React.FC<RedditCommentProps> = ({
 				onConfirm={handleSpoilerConfirm}
 				spoilerFor={comment.spoilerFor || "Unknown Content"}
 			/>
+
+			{showEditHistory && contentType === "forum" && (
+				<EditHistoryModal
+					contentId={comment.id}
+					contentType="comment"
+					onClose={() => setShowEditHistory(false)}
+				/>
+			)}
 		</div>
 	);
 };

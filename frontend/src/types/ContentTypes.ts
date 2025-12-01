@@ -12,9 +12,22 @@ export type ContentBlock = {
 	| { type: "embed"; content: string }
 );
 
+/**
+ * Author information from user database (cross-database reference)
+ */
+export interface AuthorInfo {
+	id: string;
+	name: string;
+	username: string;
+	display_name: string;
+	image: string | null;
+}
+
 export interface ContentData {
 	title: string;
 	author: string;
+	author_id?: string;
+	author_info?: AuthorInfo;
 	description: string;
 	content: ContentBlock[];
 	tags: string[];
@@ -27,6 +40,8 @@ export interface ContentListItem {
 	id: number;
 	title: string;
 	author: string;
+	author_id?: string;
+	author_info?: AuthorInfo;
 	description: string;
 	tags: string[];
 	thumbnail_path: { link: string };

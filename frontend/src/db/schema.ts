@@ -285,6 +285,7 @@ export const forumTopic = pgTable("forum_topic", {
 	isSpoiler: boolean("is_spoiler").notNull().default(false),
 	spoilerFor: text("spoiler_for"), // What the spoiler is for (e.g., "Spider-Man 4", "Deadpool & Wolverine")
 	spoilerExpiresAt: timestamp("spoiler_expires_at"), // When spoiler protection expires
+	editCount: integer("edit_count").notNull().default(0), // Track number of edits (max 5)
 });
 
 export type ForumTopic = typeof forumTopic.$inferSelect;
@@ -329,6 +330,7 @@ export const forumComment = pgTable("forum_comment", {
 	isSpoiler: boolean("is_spoiler").notNull().default(false),
 	spoilerFor: text("spoiler_for"), // What the spoiler is for
 	spoilerExpiresAt: timestamp("spoiler_expires_at"), // When spoiler protection expires
+	editCount: integer("edit_count").notNull().default(0), // Track number of edits (max 5)
 });
 
 export type ForumComment = typeof forumComment.$inferSelect;
@@ -353,3 +355,32 @@ export const forumCommentLike = pgTable(
 
 export type ForumCommentLike = typeof forumCommentLike.$inferSelect;
 export type NewForumCommentLike = typeof forumCommentLike.$inferInsert;
+
+// Forum Topic Edit History Table
+export const forumTopicEditHistory = pgTable("forum_topic_edit_history", {
+	id: text("id").primaryKey(),
+	topicId: text("topic_id")
+		.notNull()
+		.references(() => forumTopic.id, { onDelete: "cascade" }),
+	previousTitle: text("previous_title").notNull(),
+	previousContent: text("previous_content").notNull(),
+	editedAt: timestamp("edited_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+	editNumber: integer("edit_number").notNull(), // Which edit this was (1-5)
+});
+
+export type ForumTopicEditHistory = typeof forumTopicEditHistory.$inferSelect;
+export type NewForumTopicEditHistory = typeof forumTopicEditHistory.$inferInsert;
+
+// Forum Comment Edit History Table
+export const forumCommentEditHistory = pgTable("forum_comment_edit_history", {
+	id: text("id").primaryKey(),
+	commentId: text("comment_id")
+		.notNull()
+		.references(() => forumComment.id, { onDelete: "cascade" }),
+	previousContent: text("previous_content").notNull(),
+	editedAt: timestamp("edited_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+	editNumber: integer("edit_number").notNull(), // Which edit this was (1-5)
+});
+
+export type ForumCommentEditHistory = typeof forumCommentEditHistory.$inferSelect;
+export type NewForumCommentEditHistory = typeof forumCommentEditHistory.$inferInsert;

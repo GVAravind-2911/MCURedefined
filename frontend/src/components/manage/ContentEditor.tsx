@@ -16,6 +16,7 @@ import {
 	createContentBlock,
 	normalizeContentBlocks,
 } from "@/lib/content/utils";
+import { authClient } from "@/lib/auth/auth-client";
 import "@/styles/editblogpage.css";
 
 interface ContentEditorProps {
@@ -69,13 +70,24 @@ export default function ContentEditor({
 }: ContentEditorProps): React.ReactElement {
 	const router = useRouter();
 	const storageKey = getDraftStorageKey(config, mode === "edit" ? id : undefined);
+	const { data: session } = authClient.useSession();
 
 	const [contentBlocks, setContentBlocks] = useState<ContentBlock[]>([]);
 	const [tags, setTags] = useState<string[]>([]);
 	const [title, setTitle] = useState("");
 	const [author, setAuthor] = useState("");
+	const [authorId, setAuthorId] = useState<string | undefined>(undefined);
 	const [description, setDescription] = useState("");
 	const [thumbnail, setThumbnail] = useState("");
+
+	// Set author from session when available
+	useEffect(() => {
+		if (session?.user && mode === "create") {
+			// For new content, always use the logged-in user as author
+			setAuthor(session.user.displayUsername || session.user.name || "");
+			setAuthorId(session.user.id);
+		}
+	}, [session, mode]);
 
 	// Load data on mount
 	useEffect(() => {
@@ -83,6 +95,7 @@ export default function ContentEditor({
 		if (initialData) {
 			setTitle(initialData.title || "");
 			setAuthor(initialData.author || "");
+			setAuthorId(initialData.author_id);
 			setDescription(initialData.description || "");
 			setThumbnail(initialData.thumbnail_path?.link || "");
 			setTags(initialData.tags || []);
@@ -96,7 +109,11 @@ export default function ContentEditor({
 			try {
 				const storedData = JSON.parse(draft) as ContentData;
 				setTitle(storedData?.title || "");
-				setAuthor(storedData?.author || "");
+				// Don't override author from draft if session is available in create mode
+				if (mode !== "create" || !session?.user) {
+					setAuthor(storedData?.author || "");
+					setAuthorId(storedData?.author_id);
+				}
 				setDescription(storedData?.description || "");
 				setThumbnail(storedData?.thumbnail_path?.link || "");
 				setTags(storedData?.tags || []);
@@ -105,7 +122,7 @@ export default function ContentEditor({
 				console.error("Error loading draft:", error);
 			}
 		}
-	}, [initialData, storageKey]);
+	}, [initialData, storageKey, mode, session]);
 
 	const addBlock = useCallback(
 		(type: ContentBlock["type"], index: number) => {
@@ -177,13 +194,14 @@ export default function ContentEditor({
 		(): ContentData => ({
 			title,
 			author,
+			author_id: authorId,
 			description,
 			content: contentBlocks,
 			tags: tags.filter((tag) => tag.trim() !== ""),
 			thumbnail_path: { link: thumbnail },
 			created_at: new Date().toISOString(),
 		}),
-		[title, author, description, contentBlocks, tags, thumbnail],
+		[title, author, authorId, description, contentBlocks, tags, thumbnail],
 	);
 
 	const handlePreview = useCallback(() => {
@@ -243,14 +261,16 @@ export default function ContentEditor({
 
 			<section>
 				<h3 className="author-blog">Author</h3>
-				<input
-					type="text"
-					id="author"
-					name="author"
-					value={author}
-					onChange={(e) => setAuthor(e.target.value)}
-					placeholder="Author name..."
-				/>
+				<div className="author-display">
+					{session?.user?.image && (
+						<img 
+							src={session.user.image} 
+							alt={author} 
+							className="author-avatar-small"
+						/>
+					)}
+					<span className="author-name-display">{author || "Loading..."}</span>
+				</div>
 			</section>
 
 			<section>

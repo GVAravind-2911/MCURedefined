@@ -17,11 +17,21 @@ class ContentBlock(BaseModel):
     content: Any
 
 
+class AuthorInfo(BaseModel):
+    """Author information schema for cross-database user reference."""
+    id: str
+    name: str
+    username: str
+    display_name: str
+    image: Optional[str] = None
+
+
 # Blog Schemas
 class BlogBase(BaseModel):
     """Base blog schema."""
     title: str = Field(..., min_length=1, max_length=255)
-    author: str = Field(..., min_length=1, max_length=30)
+    author: str = Field(..., min_length=1, max_length=30)  # Display name (cached)
+    author_id: Optional[str] = None  # User ID from user database
     description: Optional[str] = None
     tags: list[str] = Field(default_factory=list)
 
@@ -42,7 +52,9 @@ class BlogResponse(BaseModel):
     """Response schema for a single blog post."""
     id: int
     title: str
-    author: str
+    author: str  # Cached display name
+    author_id: Optional[str] = None  # User ID from user database
+    author_info: Optional[AuthorInfo] = None  # Resolved author details
     description: Optional[str] = None
     content: Any
     thumbnail_path: Any
@@ -66,7 +78,8 @@ class BlogListResponse(BaseModel):
 class ReviewBase(BaseModel):
     """Base review schema."""
     title: str = Field(..., min_length=1, max_length=255)
-    author: str = Field(..., min_length=1, max_length=30)
+    author: str = Field(..., min_length=1, max_length=30)  # Display name (cached)
+    author_id: Optional[str] = None  # User ID from user database
     description: Optional[str] = None
     tags: list[str] = Field(default_factory=list)
 
@@ -87,7 +100,9 @@ class ReviewResponse(BaseModel):
     """Response schema for a single review."""
     id: int
     title: str
-    author: str
+    author: str  # Cached display name
+    author_id: Optional[str] = None  # User ID from user database
+    author_info: Optional[AuthorInfo] = None  # Resolved author details
     description: Optional[str] = None
     content: Any
     thumbnail_path: Any

@@ -3,10 +3,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth/auth-client";
-import { formatDistanceToNow } from "date-fns";
+import { formatRelativeTime } from "@/lib/dateUtils";
 import Image from "next/image";
 import RedditCommentSection from "@/components/forum/RedditCommentSection";
 import LoadingSpinner from "@/components/main/LoadingSpinner";
+import EditHistoryModal from "@/components/forum/EditHistoryModal";
 import "@/styles/forum-thread.css";
 
 interface ForumTopic {
@@ -23,6 +24,8 @@ interface ForumTopic {
 	locked: boolean;
 	likeCount: number;
 	userHasLiked: boolean;
+	editCount?: number;
+	canEdit?: boolean;
 }
 
 export default function ForumTopicPage(): React.ReactElement {
@@ -35,6 +38,12 @@ export default function ForumTopicPage(): React.ReactElement {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState("");
 	const [isDeleting, setIsDeleting] = useState(false);
+	const [isEditing, setIsEditing] = useState(false);
+	const [editTitle, setEditTitle] = useState("");
+	const [editContent, setEditContent] = useState("");
+	const [editError, setEditError] = useState("");
+	const [isSaving, setIsSaving] = useState(false);
+	const [showEditHistory, setShowEditHistory] = useState(false);
 
 	useEffect(() => {
 		if (topicId) {
@@ -96,6 +105,60 @@ export default function ForumTopicPage(): React.ReactElement {
 		}
 	};
 
+	const handleEditClick = () => {
+		if (!topic) return;
+		setEditTitle(topic.title);
+		setEditContent(topic.content);
+		setEditError("");
+		setIsEditing(true);
+	};
+
+	const handleCancelEdit = () => {
+		setIsEditing(false);
+		setEditTitle("");
+		setEditContent("");
+		setEditError("");
+	};
+
+	const handleSaveEdit = async () => {
+		if (!topic || isSaving) return;
+
+		if (!editTitle.trim() || !editContent.trim()) {
+			setEditError("Title and content are required");
+			return;
+		}
+
+		try {
+			setIsSaving(true);
+			setEditError("");
+
+			const response = await fetch(`/api/forum/topics/${topic.id}`, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					title: editTitle.trim(),
+					content: editContent.trim(),
+				}),
+			});
+
+			if (response.ok) {
+				const updatedTopic = await response.json();
+				setTopic((prev) => prev ? { ...prev, ...updatedTopic } : null);
+				setIsEditing(false);
+			} else {
+				const errorData = await response.json();
+				setEditError(errorData.error || "Failed to save changes");
+			}
+		} catch (err) {
+			console.error("Error saving topic:", err);
+			setEditError("Failed to save changes. Please try again.");
+		} finally {
+			setIsSaving(false);
+		}
+	};
+
 	const handleDeleteTopic = async () => {
 		if (!session?.user || !topic || isDeleting) return;
 		
@@ -131,11 +194,7 @@ export default function ForumTopicPage(): React.ReactElement {
 	};
 
 	const formatDate = (dateString: string) => {
-		try {
-			return formatDistanceToNow(new Date(dateString), { addSuffix: true });
-		} catch {
-			return "Recently";
-		}
+		return formatRelativeTime(dateString);
 	};
 
 	const getUserInitials = (username: string) => {
@@ -281,14 +340,59 @@ export default function ForumTopicPage(): React.ReactElement {
 								</div>
 
 								{/* Topic title */}
-								<h1 className="topic-post-title">
-									{topic.title}
-								</h1>
+								{isEditing ? (
+									<input
+										type="text"
+										className="edit-title-input"
+										value={editTitle}
+										onChange={(e) => setEditTitle(e.target.value)}
+										placeholder="Topic title"
+										maxLength={200}
+									/>
+								) : (
+									<h1 className="topic-post-title">
+										{topic.title}
+									</h1>
+								)}
 
 								{/* Topic content */}
-								<div className="topic-post-body">
-									{topic.content}
-								</div>
+								{isEditing ? (
+									<div className="edit-content-wrapper">
+										<textarea
+											className="edit-content-textarea"
+											value={editContent}
+											onChange={(e) => setEditContent(e.target.value)}
+											placeholder="Topic content"
+											maxLength={10000}
+										/>
+										{editError && (
+											<div className="edit-error">{editError}</div>
+										)}
+										<div className="edit-actions">
+											<button
+												className="edit-save-btn"
+												onClick={handleSaveEdit}
+												disabled={isSaving}
+											>
+												{isSaving ? "Saving..." : "Save Changes"}
+											</button>
+											<button
+												className="edit-cancel-btn"
+												onClick={handleCancelEdit}
+												disabled={isSaving}
+											>
+												Cancel
+											</button>
+											<span className="edit-remaining">
+												{5 - (topic.editCount || 0)} edits remaining
+											</span>
+										</div>
+									</div>
+								) : (
+									<div className="topic-post-body">
+										{topic.content}
+									</div>
+								)}
 
 								{/* Topic footer with voting and actions */}
 								<div className="topic-post-footer">
@@ -308,11 +412,30 @@ export default function ForumTopicPage(): React.ReactElement {
 											<span>{topic.userHasLiked ? "❤️" : "🤍"}</span>
 											<span>{topic.likeCount}</span>
 										</button>
+										{/* Edit history button */}
+										{(topic.editCount || 0) > 0 && (
+											<button
+												className="edit-history-btn"
+												onClick={() => setShowEditHistory(true)}
+												title="View edit history"
+											>
+												📝 {topic.editCount} edit{(topic.editCount || 0) > 1 ? 's' : ''}
+											</button>
+										)}
 									</div>
 									
 									{/* Topic actions for author */}
-									{session?.user?.id === topic.userId && !isTopicDeleted(topic) && (
+									{session?.user?.id === topic.userId && !isTopicDeleted(topic) && !isEditing && (
 										<div className="topic-actions">
+											{topic.canEdit && (
+												<button
+													className="topic-edit-btn"
+													onClick={handleEditClick}
+													title="Edit this topic"
+												>
+													✏️ Edit
+												</button>
+											)}
 											<button
 												className="topic-delete-btn"
 												onClick={handleDeleteTopic}
@@ -328,6 +451,15 @@ export default function ForumTopicPage(): React.ReactElement {
 						)}
 					</div>
 				</div>
+
+				{/* Edit History Modal */}
+				{showEditHistory && (
+					<EditHistoryModal
+						contentId={topicId}
+						contentType="topic"
+						onClose={() => setShowEditHistory(false)}
+					/>
+				)}
 
 				{/* Comments section */}
 				<div className="thread-comments">

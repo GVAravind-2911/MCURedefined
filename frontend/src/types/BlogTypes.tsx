@@ -26,10 +26,23 @@ interface EmbedBlock extends BaseBlock {
 
 export type ContentBlock = TextBlock | ImageBlock | EmbedBlock;
 
+/**
+ * Author information from user database (cross-database reference)
+ */
+export interface AuthorInfo {
+	id: string;
+	name: string;
+	username: string;
+	display_name: string;
+	image: string | null;
+}
+
 export interface BlogData {
 	id: number;
 	title: string;
 	author: string;
+	author_id?: string;
+	author_info?: AuthorInfo;
 	description: string;
 	content: ContentBlock[];
 	tags: string[];
@@ -42,6 +55,8 @@ export interface Article {
 	thumbnail_path: { link: string };
 	title: string;
 	author: string;
+	author_id?: string;
+	author_info?: AuthorInfo;
 	created_at: string;
 	id: number;
 }

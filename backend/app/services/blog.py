@@ -63,7 +63,8 @@ class BlogService(BaseContentService):
         description: str,
         content: list[dict],
         tags: list[str],
-        thumbnail_path: dict
+        thumbnail_path: dict,
+        author_id: Optional[str] = None
     ) -> int:
         """Create a new blog post."""
         logger.debug(
@@ -71,6 +72,7 @@ class BlogService(BaseContentService):
             **{
                 "blog.title": title,
                 "blog.author": author,
+                "blog.author_id": author_id,
                 "blog.tags": tags,
                 "blog.content_blocks": len(content),
             }
@@ -95,6 +97,7 @@ class BlogService(BaseContentService):
                 post = BlogPost(
                     title=title,
                     author=author,
+                    author_id=author_id,
                     description=description,
                     content=processed_content,
                     thumbnail_path=thumbnail,
@@ -138,7 +141,8 @@ class BlogService(BaseContentService):
         description: str,
         content: list[dict],
         tags: list[str],
-        thumbnail_path: dict
+        thumbnail_path: dict,
+        author_id: Optional[str] = None
     ) -> bool:
         """Update an existing blog post."""
         # Process thumbnail
@@ -159,6 +163,8 @@ class BlogService(BaseContentService):
             
             post.title = title  # type: ignore[assignment]
             post.author = author  # type: ignore[assignment]
+            if author_id is not None:
+                post.author_id = author_id  # type: ignore[assignment]
             post.description = description  # type: ignore[assignment]
             post.content = processed_content  # type: ignore[assignment]
             post.thumbnail_path = thumbnail  # type: ignore[assignment]
@@ -212,11 +218,12 @@ class BlogService(BaseContentService):
         query: str = "",
         tags: Optional[list[str]] = None,
         author: str = "",
+        author_id: str = "",
         page: int = 1,
         limit: int = 5
     ) -> dict:
         """Search blogs - returns with 'blogs' key for API compatibility."""
-        result = super().search(query, tags, author, page, limit)
+        result = super().search(query, tags, author, author_id, page, limit)
         result["blogs"] = result.pop("items")
         return result
     

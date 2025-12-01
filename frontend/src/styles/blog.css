@@ -137,6 +137,43 @@ html {
     color: #ec1d24;
 }
 
+/* Author link styling */
+.byline-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -3%;
+}
+
+.author-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #ec1d24;
+    transition: all 0.2s ease;
+    padding: 8px 16px;
+    border-radius: 25px;
+    background-color: rgba(236, 29, 36, 0.1);
+}
+
+.author-link:hover {
+    background-color: rgba(236, 29, 36, 0.2);
+    transform: translateY(-2px);
+}
+
+.author-avatar {
+    border-radius: 50%;
+    border: 2px solid #ec1d24;
+    object-fit: cover;
+}
+
+.author-name {
+    font-size: 18px;
+    font-family: "BentonSansRegular", sans-serif;
+    letter-spacing: 0.03em;
+}
+
 .datecreation,
 .dateupdate {
     font-size: 20px;

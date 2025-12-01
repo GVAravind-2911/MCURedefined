@@ -60,7 +60,8 @@ class ReviewService(BaseContentService):
         description: str,
         content: list[dict],
         tags: list[str],
-        thumbnail_path: dict
+        thumbnail_path: dict,
+        author_id: Optional[str] = None
     ) -> int:
         """Create a new review."""
         # Process thumbnail - use default if not a base64 image (new upload required)
@@ -77,6 +78,7 @@ class ReviewService(BaseContentService):
             review = Reviews(
                 title=title,
                 author=author,
+                author_id=author_id,
                 description=description,
                 content=processed_content,
                 thumbnail_path=thumbnail,
@@ -102,7 +104,8 @@ class ReviewService(BaseContentService):
         description: str,
         content: list[dict],
         tags: list[str],
-        thumbnail_path: dict
+        thumbnail_path: dict,
+        author_id: Optional[str] = None
     ) -> bool:
         """Update an existing review."""
         # Process thumbnail
@@ -123,6 +126,8 @@ class ReviewService(BaseContentService):
             
             review.title = title  # type: ignore[assignment]
             review.author = author  # type: ignore[assignment]
+            if author_id is not None:
+                review.author_id = author_id  # type: ignore[assignment]
             review.description = description  # type: ignore[assignment]
             review.content = processed_content  # type: ignore[assignment]
             review.thumbnail_path = thumbnail  # type: ignore[assignment]
@@ -154,12 +159,13 @@ class ReviewService(BaseContentService):
         query: str = "",
         tags: Optional[list[str]] = None,
         author: str = "",
+        author_id: str = "",
         page: int = 1,
         limit: int = 5
     ) -> dict:
-        """Search reviews - returns with 'blogs' key for API compatibility."""
-        result = super().search(query, tags, author, page, limit)
-        result["blogs"] = result.pop("items")
+        """Search reviews - returns with 'reviews' key for API compatibility."""
+        result = super().search(query, tags, author, author_id, page, limit)
+        result["reviews"] = result.pop("items")
         return result
     
     @classmethod

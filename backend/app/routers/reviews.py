@@ -14,6 +14,7 @@ from ..schemas.content import (
     AuthorsResponse,
 )
 from ..services.review import ReviewService
+from ..services.author import AuthorService
 from ..core.dependencies import get_current_admin
 from ..core.async_utils import run_sync
 
@@ -43,20 +44,24 @@ async def search_reviews(
     query: str = Query(default=""),
     tags: str = Query(default=""),
     author: str = Query(default=""),
+    author_id: str = Query(default=""),
     page: int = Query(default=1, ge=1),
     limit: int = Query(default=5, ge=1, le=50)
 ) -> dict[str, Any]:
-    """Search reviews by query, tags, or author."""
+    """Search reviews by query, tags, author, or author_id."""
     tags_list = [t.strip() for t in tags.split(",") if t.strip()]
     
     def _search() -> dict[str, Any]:
-        return ReviewService.search(
+        result = ReviewService.search(
             query=query.lower(),
             tags=tags_list if tags_list else None,
             author=author,
+            author_id=author_id,
             page=page,
             limit=limit
         )
+        # ReviewService.search already returns 'reviews' key
+        return result
     
     return await run_sync(_search)
 
@@ -83,6 +88,11 @@ async def get_review(review_id: int) -> dict[str, Any]:
     if not review:
         raise HTTPException(status_code=404, detail="Review not found")
     
+    # Resolve author info from user database if author_id exists
+    if review.get("author_id"):
+        author_info = await AuthorService.get_author_info(review["author_id"])
+        review["author_info"] = author_info
+    
     return review
 
 
@@ -100,7 +110,8 @@ async def create_review(
                 description=review.description or "",
                 content=[block.model_dump() for block in review.content],
                 tags=review.tags,
-                thumbnail_path=review.thumbnail_path.model_dump()
+                thumbnail_path=review.thumbnail_path.model_dump(),
+                author_id=review.author_id
             )
         
         review_id = await run_sync(_create)
@@ -125,7 +136,8 @@ async def update_review(
                 description=review.description or "",
                 content=[block.model_dump() for block in review.content],
                 tags=review.tags,
-                thumbnail_path=review.thumbnail_path.model_dump()
+                thumbnail_path=review.thumbnail_path.model_dump(),
+                author_id=review.author_id
             )
         
         success = await run_sync(_update)

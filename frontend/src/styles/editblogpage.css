@@ -112,6 +112,32 @@ font-size: 1.1rem;
 max-width: 700px;
 }
 
+/* Author Display (read-only) */
+.author-display {
+display: flex;
+align-items: center;
+gap: 12px;
+padding: 1rem 1.25rem;
+background: var(--editor-bg-input);
+border: 1px solid var(--editor-white-10);
+border-radius: var(--editor-radius);
+max-width: 700px;
+}
+
+.author-avatar-small {
+width: 36px;
+height: 36px;
+border-radius: 50%;
+border: 2px solid var(--editor-primary);
+object-fit: cover;
+}
+
+.author-name-display {
+font-size: 1.1rem;
+color: var(--editor-white-90);
+font-family: "BentonSansRegular", sans-serif;
+}
+
 #description {
 font-size: 1rem;
 }

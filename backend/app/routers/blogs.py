@@ -14,6 +14,7 @@ from ..schemas.content import (
     AuthorsResponse,
 )
 from ..services.blog import BlogService
+from ..services.author import AuthorService
 from ..core.dependencies import get_current_admin
 from ..core.logging import get_logger
 from ..core.async_utils import run_sync
@@ -54,20 +55,24 @@ async def search_blogs(
     query: str = Query(default=""),
     tags: str = Query(default=""),
     author: str = Query(default=""),
+    author_id: str = Query(default=""),
     page: int = Query(default=1, ge=1),
     limit: int = Query(default=5, ge=1, le=50)
 ) -> dict[str, Any]:
-    """Search blog posts by query, tags, or author."""
+    """Search blog posts by query, tags, author, or author_id."""
     tags_list = [t.strip() for t in tags.split(",") if t.strip()]
     
     def _search() -> dict[str, Any]:
-        return BlogService.search(
+        result = BlogService.search(
             query=query.lower(),
             tags=tags_list if tags_list else None,
             author=author,
+            author_id=author_id,
             page=page,
             limit=limit
         )
+        # BlogService.search already returns 'blogs' key
+        return result
     
     return await run_sync(_search)
 
@@ -93,6 +98,11 @@ async def get_blog(blog_id: int) -> dict[str, Any]:
     
     if not blog:
         raise HTTPException(status_code=404, detail="Blog not found")
+    
+    # Resolve author info from user database if author_id exists
+    if blog.get("author_id"):
+        author_info = await AuthorService.get_author_info(blog["author_id"])
+        blog["author_info"] = author_info
     
     return blog
 
@@ -128,7 +138,8 @@ async def create_blog(
                 description=blog.description or "",
                 content=[block.model_dump() for block in blog.content],
                 tags=blog.tags,
-                thumbnail_path=blog.thumbnail_path.model_dump()
+                thumbnail_path=blog.thumbnail_path.model_dump(),
+                author_id=blog.author_id
             )
         
         blog_id = await run_sync(_create)
@@ -179,7 +190,8 @@ async def update_blog(
                 description=blog.description or "",
                 content=[block.model_dump() for block in blog.content],
                 tags=blog.tags,
-                thumbnail_path=blog.thumbnail_path.model_dump()
+                thumbnail_path=blog.thumbnail_path.model_dump(),
+                author_id=blog.author_id
             )
         
         success = await run_sync(_update)

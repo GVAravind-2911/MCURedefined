@@ -205,10 +205,31 @@ export default async function BlogPage(props: PageProps): Promise<JSX.Element> {
 					<div className="contentsinfo">
 						<h1 className="title">{blog.title}</h1>
 						<div className="meta-info">
-							<h3 className="byline">
-								<span className="colorforby">By: </span>
-								{blog.author}
-							</h3>
+							<div className="byline-container">
+								{blog.author_info ? (
+									<Link 
+										href={`/profile/${blog.author_info.username}`}
+										className="author-link"
+										prefetch={false}
+									>
+										{blog.author_info.image && (
+											<Image
+												src={blog.author_info.image}
+												alt={blog.author_info.display_name}
+												width={32}
+												height={32}
+												className="author-avatar"
+											/>
+										)}
+										<span className="author-name">{blog.author_info.display_name}</span>
+									</Link>
+								) : (
+									<h3 className="byline">
+										<span className="colorforby">By: </span>
+										{blog.author}
+									</h3>
+								)}
+							</div>
 							<h3 className="datecreation">
 								{moment(blog.created_at).format("dddd, D MMMM, YYYY")}
 							</h3>
