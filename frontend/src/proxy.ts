@@ -67,6 +67,5 @@ export const config = {
 		"/reviews/:path*",
 		"/release-slate/:path*",
 		"/auth/reset-password",
-		"/manage"
 	],
 };
