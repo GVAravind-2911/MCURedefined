@@ -60,7 +60,13 @@ async function getProjects(): Promise<Project[] | ErrorState> {
 			timeout: 10000, // 10 second timeout
 			headers: NO_CACHE_HEADERS,
 		});
-		return response.data;
+		// Handle both array (legacy) and object (new paginated) response formats
+		const data = response.data;
+		if (Array.isArray(data)) {
+			return data;
+		}
+		// New format returns { projects: [...], total, total_pages, page }
+		return data.projects || [];
 	} catch (error) {
 		return handleApiError(error);
 	}

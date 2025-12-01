@@ -4,6 +4,7 @@ import type { Project } from "@/types/ProjectTypes";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useMemo } from "react";
+import { useDebounce } from "@/hooks/useDebounce";
 import "@/styles/projectsenhanced.css";
 
 const formatPosterPath = (path: string, phase: number): string => {
@@ -21,6 +22,9 @@ export default function ProjectsPage({ projects }: ProjectsPageProps) {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [selectedPhase, setSelectedPhase] = useState<number | null>(null);
 
+	// Debounce search query for 300ms to reduce filtering operations
+	const debouncedSearchQuery = useDebounce(searchQuery, 300);
+
 	// Data validation check - don't use conditional hooks
 	const isValidArray = Array.isArray(projects);
 
@@ -31,18 +35,18 @@ export default function ProjectsPage({ projects }: ProjectsPageProps) {
 		return [...new Set(projects.map((project) => project.phase))].sort();
 	}, [projects, isValidArray]);
 
-	// Filter projects based on search query and selected phase
+	// Filter projects based on debounced search query and selected phase
 	const filteredProjects = useMemo(() => {
 		if (!isValidArray) return [];
 		return projects.filter((project) => {
 			const matchesSearch = project.name
 				.toLowerCase()
-				.includes(searchQuery.toLowerCase());
+				.includes(debouncedSearchQuery.toLowerCase());
 			const matchesPhase =
 				selectedPhase === null || project.phase === selectedPhase;
 			return matchesSearch && matchesPhase;
 		});
-	}, [projects, searchQuery, selectedPhase, isValidArray]);
+	}, [projects, debouncedSearchQuery, selectedPhase, isValidArray]);
 
 	// Group filtered projects by phase
 	const projectsByPhase = useMemo(() => {

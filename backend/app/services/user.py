@@ -148,7 +148,7 @@ class UserService:
     ) -> dict[str, Any]:
         """Search within user's liked reviews."""
         if not liked_ids:
-            return {"blogs": [], "total": 0, "total_pages": 0, "page": page}
+            return {"reviews": [], "total": 0, "total_pages": 0, "page": page}
         
         # Get all liked reviews
         all_reviews = []
@@ -176,7 +176,7 @@ class UserService:
         paged = filtered[start_idx:end_idx] if start_idx < total else []
         
         return {
-            "blogs": paged,  # Named 'blogs' for API compatibility
+            "reviews": paged,
             "total": total,
             "total_pages": total_pages,
             "page": page

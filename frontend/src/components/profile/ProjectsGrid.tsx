@@ -4,6 +4,7 @@ import type { Project } from "@/types/ProjectTypes";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useMemo } from "react";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const formatPosterPath = (path: string, phase: number): string => {
 	// Extract filename from path
@@ -19,13 +20,16 @@ interface ProjectsGridProps {
 export default function ProjectsGrid({ projects }: ProjectsGridProps) {
 	const [searchQuery, setSearchQuery] = useState("");
 
-	// Filter projects based on search query
+	// Debounce search query for 300ms to reduce filtering operations
+	const debouncedSearchQuery = useDebounce(searchQuery, 300);
+
+	// Filter projects based on debounced search query
 	const filteredProjects = useMemo(() => {
 		if (!Array.isArray(projects)) return [];
 		return projects.filter((project) =>
-			project.name.toLowerCase().includes(searchQuery.toLowerCase()),
+			project.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase()),
 		);
-	}, [projects, searchQuery]);
+	}, [projects, debouncedSearchQuery]);
 
 	// Group filtered projects by phase
 	const projectsByPhase = useMemo(() => {

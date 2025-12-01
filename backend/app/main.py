@@ -12,7 +12,7 @@ from fastapi.middleware.gzip import GZipMiddleware
 from .core.config import settings
 from .core.database import ContentBase, content_engine
 from .core.logging import setup_logging, get_logger
-from .core.middleware import RequestLoggingMiddleware
+from .core.middleware import RequestLoggingMiddleware, RateLimitMiddleware
 from .core.async_utils import shutdown_executor
 from .routers import blogs_router, reviews_router, timeline_router, users_router
 
@@ -60,6 +60,9 @@ app = FastAPI(
 
 # Add request logging middleware (must be added first to wrap all requests)
 app.add_middleware(RequestLoggingMiddleware)
+
+# Add rate limiting middleware
+app.add_middleware(RateLimitMiddleware)
 
 # Add CORS middleware
 app.add_middleware(

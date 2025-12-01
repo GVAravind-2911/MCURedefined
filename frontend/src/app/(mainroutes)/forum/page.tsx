@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth/auth-client";
+import { useDebounce } from "@/hooks/useDebounce";
 import ForumTopicCard from "@/components/forum/ForumTopicCard";
 import CreateTopicModal from "@/components/forum/CreateTopicModal";
 import LoadingSpinner from "@/components/main/LoadingSpinner";
@@ -51,6 +52,9 @@ export default function ForumPage(): React.ReactElement {
 	const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
 	const sortDropdownRef = useRef<HTMLDivElement>(null);
 
+	// Debounce search query for 400ms to reduce API calls
+	const debouncedSearchQuery = useDebounce(searchQuery, 400);
+
 	const sortOptions = [
 		{ value: "latest", label: "Latest" },
 		{ value: "popular", label: "Most Popular" },
@@ -98,13 +102,13 @@ export default function ForumPage(): React.ReactElement {
 	};
 
 	useEffect(() => {
-		fetchTopics(currentPage, searchQuery, sortBy);
-	}, [currentPage, searchQuery, sortBy]);
+		fetchTopics(currentPage, debouncedSearchQuery, sortBy);
+	}, [currentPage, debouncedSearchQuery, sortBy]);
 
 	const handleSearch = (e: React.FormEvent) => {
 		e.preventDefault();
+		// Search is now handled by debounce, but keep form handler for explicit submit
 		setCurrentPage(1);
-		fetchTopics(1, searchQuery, sortBy);
 	};
 
 	const handleSortChange = (newSort: string) => {
