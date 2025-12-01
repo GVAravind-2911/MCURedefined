@@ -167,23 +167,23 @@ function Home({ latestBlog }: HomeProps): ReactNode {
 					<div className="home-column2">
 						<div className="home-card11">
 							<div className="home-content12">
-								<h2 className="home-header5">Collaborate</h2>
+								<h2 className="home-header5">Community Forum</h2>
 								<p className="home-description3">
-									Are you a passionate Marvel enthusiast with theories swirling
-									in your mind, eager to share your unique perspectives and
-									insights with fellow fans? Look no further! MCU Redefined
-									invites you to collaborate with us and be a part of our
-									vibrant community that celebrates theories and speculation.
+									Join the conversation with fellow Marvel enthusiasts! Share
+									your theories, discuss the latest releases, and connect with
+									a vibrant community of fans. Whether you want to debate plot
+									twists or speculate about what&apos;s coming next, the MCU
+									Redefined forum is your place to engage and be heard.
 								</p>
 							</div>
-							<Link href="/collaborate">
+							<Link href="/forum">
 								<button
 									type="button"
 									className="home-button6 button1"
-									value="cardcollabredir"
+									value="cardforumredir"
 									name="button"
 								>
-									Make Your Voice Heard
+									Join The Discussion
 								</button>
 							</Link>
 						</div>
