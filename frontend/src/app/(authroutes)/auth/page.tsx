@@ -7,7 +7,6 @@ import SignInForm from "@/components/auth/signin/SignInForm";
 import SignUpForm from "@/components/auth/signup/SignUpForm";
 import ForgotPasswordForm from "@/components/auth/resetpassword/ForgotPasswordForm";
 import ResetEmailSent from "@/components/auth/resetpassword/ResetEmailSent";
-import "@/styles/auth.css";
 
 export default function Auth() {
 	const router = useRouter();
@@ -40,16 +39,24 @@ export default function Auth() {
 			{authMode !== "signup" &&
 				authMode !== "forgot" &&
 				authMode !== "reset-sent" && (
-					<div className="auth-toggle">
+					<div className="flex gap-4 mb-8 relative z-1">
 						<button
-							className={authMode === "signin" ? "active" : ""}
+							className={`flex-1 py-3 border border-solid rounded-md text-white text-base cursor-pointer transition-all duration-300 ${
+								authMode === "signin"
+									? "bg-[#ec1d24] border-[#ec1d24] shadow-[0_0_15px_rgba(236,29,36,0.4)]"
+									: "bg-transparent border-[rgba(255,255,255,0.1)] hover:border-[#ec1d24] hover:shadow-[0_0_10px_rgba(236,29,36,0.2)]"
+							}`}
 							onClick={handleSignInClick}
 							type="button"
 						>
 							Sign In
 						</button>
 						<button
-							className={authMode === "signup" ? "active" : ""}
+							className={`flex-1 py-3 border border-solid rounded-md text-white text-base cursor-pointer transition-all duration-300 ${
+								authMode === "signup"
+									? "bg-[#ec1d24] border-[#ec1d24] shadow-[0_0_15px_rgba(236,29,36,0.4)]"
+									: "bg-transparent border-[rgba(255,255,255,0.1)] hover:border-[#ec1d24] hover:shadow-[0_0_10px_rgba(236,29,36,0.2)]"
+							}`}
 							onClick={handleSignUpClick}
 							type="button"
 						>

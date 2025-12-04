@@ -118,7 +118,7 @@ export default function SignUpForm({ onCancel }) {
 			<SignUpProgress currentStep={signUpStep} />
 
 			<div
-				className={`fade-transition ${transitioning ? "fade-out" : "fade-in"}`}
+				className={`transition-all duration-300 ease-in-out ${transitioning ? "opacity-0 translate-y-5" : "opacity-100 translate-y-0"}`}
 			>
 				{signUpStep === 1 && (
 					<StepOnePersonalInfo
