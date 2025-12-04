@@ -31,11 +31,13 @@ interface CommentsResponse {
 interface RedditCommentSectionProps {
 	contentId: number | string;
 	contentType: "blog" | "review" | "forum";
+	disabled?: boolean;
 }
 
 const RedditCommentSection = memo(function RedditCommentSection({
 	contentId,
 	contentType,
+	disabled = false,
 }: RedditCommentSectionProps) {
 	const [comments, setComments] = useState<CommentData[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -48,6 +50,7 @@ const RedditCommentSection = memo(function RedditCommentSection({
 	const [isSpoiler, setIsSpoiler] = useState(false);
 	const [spoilerFor, setSpoilerFor] = useState("");
 	const [spoilerDuration, setSpoilerDuration] = useState(30); // 30 days default
+	const [hideDeletedWithoutReplies, setHideDeletedWithoutReplies] = useState(false);
 	const { data: session } = authClient.useSession();
 
 	// Determine API paths based on content type
@@ -211,7 +214,13 @@ const RedditCommentSection = memo(function RedditCommentSection({
 	return (
 		<div className="reddit-comments-section">
 			{/* Comment form for new top-level comments */}
-			{session?.user ? (
+			{disabled ? (
+				<div className="topic-locked" style={{ padding: "1rem", margin: "1rem 0", backgroundColor: "rgba(255, 255, 255, 0.05)", borderRadius: "8px" }}>
+					<p style={{ margin: 0, fontSize: "0.9rem", color: "rgba(255, 255, 255, 0.6)" }}>
+						💬 New comments are disabled for this topic
+					</p>
+				</div>
+			) : session?.user ? (
 				<form className="comment-form-reddit" onSubmit={handleSubmitComment}>
 					<textarea
 						className="comment-textarea-reddit"
@@ -299,6 +308,36 @@ const RedditCommentSection = memo(function RedditCommentSection({
 				</div>
 			)}
 
+			{/* Filter options */}
+			{contentType === "forum" && !loading && rootComments.length > 0 && (
+				<div className="comment-filters" style={{
+					display: "flex",
+					alignItems: "center",
+					gap: "1rem",
+					padding: "0.75rem 1rem",
+					backgroundColor: "rgba(255, 255, 255, 0.03)",
+					borderRadius: "8px",
+					marginBottom: "1rem",
+					fontSize: "0.85rem"
+				}}>
+					<label style={{
+						display: "flex",
+						alignItems: "center",
+						gap: "0.5rem",
+						cursor: "pointer",
+						color: "rgba(255, 255, 255, 0.7)"
+					}}>
+						<input
+							type="checkbox"
+							checked={hideDeletedWithoutReplies}
+							onChange={(e) => setHideDeletedWithoutReplies(e.target.checked)}
+							style={{ cursor: "pointer" }}
+						/>
+						<span>Collapse deleted comments without replies</span>
+					</label>
+				</div>
+			)}
+
 			{/* Comments list */}
 			{loading ? (
 				<div style={{ padding: "2rem", textAlign: "center", color: "rgba(255, 255, 255, 0.6)" }}>
@@ -317,7 +356,7 @@ const RedditCommentSection = memo(function RedditCommentSection({
 					<div className="comments-list">
 						{rootComments.map((comment) => (
 							<RedditComment
-								key={comment.id}
+								key={`${comment.id}-${hideDeletedWithoutReplies}`}
 								comment={comment}
 								replies={commentsByParentId[comment.id] || []}
 								allReplies={commentsByParentId}
@@ -328,6 +367,8 @@ const RedditCommentSection = memo(function RedditCommentSection({
 								contentType={contentType}
 								apiPath={apiPath}
 								refreshComments={refreshComments}
+								disabled={disabled}
+								hideDeletedWithoutReplies={hideDeletedWithoutReplies}
 							/>
 						))}
 					</div>

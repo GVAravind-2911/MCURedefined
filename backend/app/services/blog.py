@@ -6,10 +6,10 @@ from typing import Optional
 from sqlalchemy.orm import Session
 
 from ..models.content import BlogPost, BlogTag
-from ..core.storage import process_image
 from ..core.cache import cache
 from ..core.logging import get_logger
 from .base import BaseContentService, get_session, DATETIME_FORMAT
+from .blog_image import blog_image_service
 
 logger = get_logger(__name__)
 
@@ -81,16 +81,11 @@ class BlogService(BaseContentService):
         try:
             # Process thumbnail - use default if not a base64 image (new upload required)
             logger.debug("Processing thumbnail image")
-            thumbnail = process_image(thumbnail_path, use_default_if_not_base64=True)
+            thumbnail = blog_image_service.process_thumbnail(thumbnail_path, use_default_if_not_base64=True)
             
             # Process content images
             logger.debug(f"Processing {len(content)} content blocks")
-            processed_content = []
-            for i, block in enumerate(content):
-                if block.get("type") == "image":
-                    logger.debug(f"Processing image in content block {i}")
-                    block["content"] = process_image(block.get("content", {}))
-                processed_content.append(block)
+            processed_content = blog_image_service.process_content_blocks(content)
             
             logger.debug("Saving blog post to database")
             with get_session() as session:
@@ -145,15 +140,30 @@ class BlogService(BaseContentService):
         author_id: Optional[str] = None
     ) -> bool:
         """Update an existing blog post."""
+        # First, get the existing post to compare images
+        with get_session() as session:
+            post = session.query(BlogPost).filter(BlogPost.id == blog_id).first()
+            
+            if not post:
+                return False
+            
+            # Store old content and thumbnail for cleanup
+            old_content = post.content or []
+            old_thumbnail = post.thumbnail_path
+        
         # Process thumbnail
-        thumbnail = process_image(thumbnail_path)
+        thumbnail = blog_image_service.process_thumbnail(thumbnail_path)
         
         # Process content images
-        processed_content = []
-        for block in content:
-            if block.get("type") == "image":
-                block["content"] = process_image(block.get("content", {}))
-            processed_content.append(block)
+        processed_content = blog_image_service.process_content_blocks(content)
+        
+        # Clean up orphaned images (old images no longer in use)
+        blog_image_service.cleanup_orphaned_images(
+            old_content=old_content,
+            new_content=processed_content,
+            old_thumbnail=old_thumbnail,
+            new_thumbnail=thumbnail
+        )
         
         with get_session() as session:
             post = session.query(BlogPost).filter(BlogPost.id == blog_id).first()
@@ -185,7 +195,14 @@ class BlogService(BaseContentService):
             if not post:
                 return False
             
+            # Store content and thumbnail for cleanup before deletion
+            content = post.content or []
+            thumbnail = post.thumbnail_path
+            
             session.delete(post)
+        
+        # Clean up all images after successful deletion
+        blog_image_service.cleanup_all_images(content, thumbnail)
         
         cls._invalidate_cache(blog_id)
         return True

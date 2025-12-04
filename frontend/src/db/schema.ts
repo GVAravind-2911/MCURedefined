@@ -286,6 +286,8 @@ export const forumTopic = pgTable("forum_topic", {
 	spoilerFor: text("spoiler_for"), // What the spoiler is for (e.g., "Spider-Man 4", "Deadpool & Wolverine")
 	spoilerExpiresAt: timestamp("spoiler_expires_at"), // When spoiler protection expires
 	editCount: integer("edit_count").notNull().default(0), // Track number of edits (max 5)
+	imageUrl: text("image_url"), // Public URL of the attached image (optional)
+	imageKey: text("image_key"), // R2 storage key for image deletion
 });
 
 export type ForumTopic = typeof forumTopic.$inferSelect;

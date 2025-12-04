@@ -19,6 +19,8 @@ interface RedditCommentProps {
 	apiPath: string;
 	refreshComments: () => void;
 	depth?: number;
+	disabled?: boolean;
+	hideDeletedWithoutReplies?: boolean;
 }
 
 const RedditComment = memo(function RedditComment({
@@ -33,10 +35,17 @@ const RedditComment = memo(function RedditComment({
 	apiPath,
 	refreshComments,
 	depth = 0,
+	disabled = false,
+	hideDeletedWithoutReplies = false,
 }: RedditCommentProps) {
+	// Determine if this deleted comment should start collapsed
+	const isDeletedContent = comment.deleted || comment.content === "[deleted]";
+	const hasNoReplies = replies.length === 0;
+	const shouldStartCollapsed = hideDeletedWithoutReplies && isDeletedContent && hasNoReplies;
+
 	const [showReplyForm, setShowReplyForm] = useState(false);
 	const [isLiking, setIsLiking] = useState(false);
-	const [collapsed, setCollapsed] = useState(false);
+	const [collapsed, setCollapsed] = useState(shouldStartCollapsed);
 	
 	// Local state for optimistic updates
 	const [localLikeCount, setLocalLikeCount] = useState(comment.likeCount || 0);
@@ -64,7 +73,7 @@ const RedditComment = memo(function RedditComment({
 	const canDelete = isAuthor || isAdmin;
 	const canEdit = comment.canEdit && isAuthor && contentType === "forum";
 	const maxDepth = 5;
-	const isDeleted = comment.content === "[deleted]" || localContent === "[deleted]";
+	const isDeleted = comment.deleted || comment.content === "[deleted]" || localContent === "[deleted]";
 
 	// Check if spoiler has expired
 	const isSpoilerActive = comment.isSpoiler && comment.spoilerExpiresAt && new Date(comment.spoilerExpiresAt) > new Date();
@@ -153,6 +162,11 @@ const RedditComment = memo(function RedditComment({
 
 		if (!editContent.trim()) {
 			setEditError("Content is required");
+			return;
+		}
+
+		if (editContent.trim() === localContent.trim()) {
+			setEditError("No changes to save");
 			return;
 		}
 
@@ -304,7 +318,8 @@ const RedditComment = memo(function RedditComment({
 										<button
 											className="comment-edit-save-btn"
 											onClick={handleSaveEdit}
-											disabled={isSavingEdit}
+											disabled={isSavingEdit || !editContent.trim() || editContent.trim() === localContent.trim()}
+											title={editContent.trim() === localContent.trim() ? "No changes to save" : ""}
 										>
 											{isSavingEdit ? "Saving..." : "Save"}
 										</button>
@@ -355,7 +370,7 @@ const RedditComment = memo(function RedditComment({
 								>
 									<span>{localUserHasLiked ? "❤️" : "🤍"}</span>
 									<span>{localLikeCount}</span>
-								</button>										{currentUser && depth < maxDepth && (
+								</button>										{currentUser && depth < maxDepth && !disabled && (
 											<button
 												className="comment-btn"
 												onClick={() => setShowReplyForm(!showReplyForm)}
@@ -491,6 +506,8 @@ const RedditComment = memo(function RedditComment({
 							apiPath={apiPath}
 							refreshComments={refreshComments}
 							depth={depth + 1}
+							disabled={disabled}
+							hideDeletedWithoutReplies={hideDeletedWithoutReplies}
 						/>
 					))}
 				</div>

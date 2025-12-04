@@ -14,7 +14,7 @@ from .core.database import ContentBase, content_engine
 from .core.logging import setup_logging, get_logger
 from .core.middleware import RequestLoggingMiddleware, RateLimitMiddleware
 from .core.async_utils import shutdown_executor
-from .routers import blogs_router, reviews_router, timeline_router, users_router
+from .routers import blogs_router, reviews_router, timeline_router, users_router, topic_images_router
 
 # Setup logging first
 setup_logging(settings.LOG_LEVEL)
@@ -81,6 +81,7 @@ app.include_router(blogs_router)
 app.include_router(reviews_router)
 app.include_router(timeline_router)
 app.include_router(users_router)
+app.include_router(topic_images_router)
 
 
 @app.get("/")

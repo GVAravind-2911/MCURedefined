@@ -1,5 +1,6 @@
 export interface ThumbnailPath {
 	link: string;
+	key?: string;
 }
 
 interface BaseBlock {
@@ -16,6 +17,7 @@ interface ImageBlock extends BaseBlock {
 	type: "image";
 	content: {
 		link: string;
+		key?: string;
 	};
 }
 

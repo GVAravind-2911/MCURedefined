@@ -45,8 +45,8 @@ export async function GET(req: NextRequest) {
 			console.warn("Failed to clean up expired comment spoilers:", error);
 		}
 
-		// Get comments for this forum topic (excluding deleted ones) with pagination
-		const comments = await db
+		// Get comments for this forum topic (including deleted ones for Reddit-style display)
+		const rawComments = await db
 			.select({
 				id: forumComment.id,
 				content: forumComment.content,
@@ -65,13 +65,24 @@ export async function GET(req: NextRequest) {
 			})
 			.from(forumComment)
 			.leftJoin(user, eq(forumComment.userId, user.id))
-			.where(and(
-				eq(forumComment.topicId, topicId),
-				eq(forumComment.deleted, false)
-			))
+			.where(eq(forumComment.topicId, topicId))
 			.orderBy(desc(forumComment.createdAt))
 			.limit(limit)
 			.offset(offset);
+
+		// Apply Reddit-style masking for deleted comments
+		const comments = rawComments.map(c => {
+			if (c.deleted || c.content === "[deleted]") {
+				return {
+					...c,
+					content: "[deleted]",
+					username: null,
+					userImage: null,
+					deleted: true,
+				};
+			}
+			return c;
+		});
 
 		// Get current user to check if they've liked comments
 		const session = await auth.api.getSession({ headers: await headers() });
@@ -129,14 +140,11 @@ export async function GET(req: NextRequest) {
 			};
 		});
 
-		// Get total count for pagination
+		// Get total count for pagination (including deleted comments for proper threading)
 		const [{ count: total }] = await db
 			.select({ count: sql<number>`count(*)`.mapWith(Number) })
 			.from(forumComment)
-			.where(and(
-				eq(forumComment.topicId, topicId),
-				eq(forumComment.deleted, false)
-			));
+			.where(eq(forumComment.topicId, topicId));
 
 		return NextResponse.json({
 			comments: enhancedComments,

@@ -10,6 +10,35 @@ import { v4 as uuidv4 } from "uuid";
 const MAX_EDITS = 5;
 const EDIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour in milliseconds
 
+const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:4000";
+
+/**
+ * Helper function to delete topic image from backend storage
+ */
+async function deleteTopicImage(imageKey: string): Promise<boolean> {
+	if (!imageKey) return false;
+	
+	try {
+		const response = await fetch(`${BACKEND_URL}/topic-images/delete`, {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ key: imageKey }),
+		});
+		
+		if (!response.ok) {
+			console.error("Failed to delete topic image:", imageKey);
+			return false;
+		}
+		
+		return true;
+	} catch (error) {
+		console.error("Error deleting topic image:", error);
+		return false;
+	}
+}
+
 // Get a single forum topic by ID
 export async function GET(
 	req: NextRequest,
@@ -31,6 +60,8 @@ export async function GET(
 				pinned: forumTopic.pinned,
 				locked: forumTopic.locked,
 				editCount: forumTopic.editCount,
+				imageUrl: forumTopic.imageUrl,
+				imageKey: forumTopic.imageKey,
 				username: user.displayUsername,
 				userImage: user.image,
 				likeCount: sql<number>`COALESCE(COUNT(DISTINCT ${forumTopicLike.userId}), 0)`.mapWith(Number),
@@ -50,6 +81,8 @@ export async function GET(
 				forumTopic.pinned,
 				forumTopic.locked,
 				forumTopic.editCount,
+				forumTopic.imageUrl,
+				forumTopic.imageKey,
 				user.displayUsername,
 				user.image
 			);
@@ -187,6 +220,12 @@ export async function PUT(
 			);
 		}
 
+		// If the topic has an image, delete it when editing (images cannot be edited)
+		if (existingTopic.imageKey) {
+			console.log("Deleting topic image on edit:", existingTopic.imageKey);
+			await deleteTopicImage(existingTopic.imageKey);
+		}
+
 		// Save edit history before updating
 		await db.insert(forumTopicEditHistory).values({
 			id: uuidv4(),
@@ -196,7 +235,7 @@ export async function PUT(
 			editNumber: currentEditCount + 1,
 		});
 
-		// Update the topic
+		// Update the topic (clear image fields since image was deleted)
 		await db
 			.update(forumTopic)
 			.set({
@@ -204,6 +243,8 @@ export async function PUT(
 				content: content.trim(),
 				// @ts-expect-error - editCount field exists in schema but TypeScript needs regeneration
 				editCount: currentEditCount + 1,
+				imageUrl: null,
+				imageKey: null,
 				updatedAt: new Date(),
 			})
 			.where(eq(forumTopic.id, id));
@@ -221,6 +262,8 @@ export async function PUT(
 				pinned: forumTopic.pinned,
 				locked: forumTopic.locked,
 				editCount: forumTopic.editCount,
+				imageUrl: forumTopic.imageUrl,
+				imageKey: forumTopic.imageKey,
 				username: user.displayUsername,
 				userImage: user.image,
 			})
@@ -284,12 +327,23 @@ export async function DELETE(
 			);
 		}
 
-		// Soft delete the topic by updating the deleted field and content
+		// Delete the image if it exists
+		if (existingTopic.imageKey) {
+			console.log("Deleting topic image on delete:", existingTopic.imageKey);
+			await deleteTopicImage(existingTopic.imageKey);
+		}
+
+		// Soft delete the topic by setting deleted flag and updating content
 		await db
 			.update(forumTopic)
 			.set({
+				// @ts-ignore - Drizzle type inference issue
+				deleted: true,
 				title: "[DELETED]",
 				content: "[This topic has been deleted by the author]",
+				imageUrl: null,
+				imageKey: null,
+				updatedAt: new Date(),
 			})
 			.where(eq(forumTopic.id, id));
 

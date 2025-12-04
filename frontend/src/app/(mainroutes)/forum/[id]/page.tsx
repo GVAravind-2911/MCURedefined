@@ -35,6 +35,8 @@ interface ForumTopic {
 	userHasLiked: boolean;
 	editCount?: number;
 	canEdit?: boolean;
+	imageUrl?: string | null;
+	imageKey?: string | null;
 }
 
 export default function ForumTopicPage(): React.ReactElement {
@@ -403,6 +405,32 @@ export default function ForumTopicPage(): React.ReactElement {
 									</div>
 								)}
 
+								{/* Topic Image (if present) */}
+								{topic.imageUrl && !isEditing && (
+									<div className="topic-image-container">
+										<Image
+											src={topic.imageUrl}
+											alt="Topic image"
+											width={800}
+											height={600}
+											className="topic-image"
+											style={{ 
+												maxWidth: "100%", 
+												height: "auto", 
+												borderRadius: "8px",
+												marginTop: "1rem"
+											}}
+										/>
+									</div>
+								)}
+
+								{/* Image will be removed warning when editing */}
+								{isEditing && topic.imageUrl && (
+									<div className="image-removal-warning">
+										⚠️ The attached image will be removed when you save your edit. Images cannot be edited.
+									</div>
+								)}
+
 								{/* Topic footer with voting and actions */}
 								<div className="topic-post-footer">
 									<div className="topic-vote-section">
@@ -472,21 +500,31 @@ export default function ForumTopicPage(): React.ReactElement {
 
 				{/* Comments section */}
 				<div className="thread-comments">
-					{isTopicDeleted(topic) ? (
-						<div className="topic-locked">
-							<h3>💬 Comments unavailable</h3>
-							<p>Comments are not available for deleted topics.</p>
-						</div>
-					) : !topic.locked ? (
-						<RedditCommentSection 
-							contentId={topicId} 
-							contentType="forum" 
-						/>
-					) : (
+					{topic.locked && !isTopicDeleted(topic) ? (
 						<div className="topic-locked">
 							<h3>🔒 This topic is locked</h3>
 							<p>Comments have been disabled for this topic.</p>
 						</div>
+					) : (
+						<>
+							{isTopicDeleted(topic) && (
+								<div className="topic-deleted-notice" style={{ 
+									padding: "0.75rem 1rem", 
+									backgroundColor: "rgba(220, 53, 69, 0.1)", 
+									borderRadius: "8px",
+									marginBottom: "1rem",
+									color: "#dc3545",
+									fontSize: "0.9rem"
+								}}>
+									⚠️ This topic has been deleted. You can still view existing comments but cannot add new ones.
+								</div>
+							)}
+							<RedditCommentSection 
+								contentId={topicId} 
+								contentType="forum" 
+								disabled={isTopicDeleted(topic)}
+							/>
+						</>
 					)}
 				</div>
 			</div>

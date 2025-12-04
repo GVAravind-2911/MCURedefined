@@ -6,9 +6,9 @@ from typing import Optional
 from sqlalchemy.orm import Session
 
 from ..models.content import Reviews, ReviewTag
-from ..core.storage import process_image
 from ..core.cache import cache
 from .base import BaseContentService, get_session, DATETIME_FORMAT
+from .review_image import review_image_service
 
 
 class ReviewService(BaseContentService):
@@ -65,14 +65,10 @@ class ReviewService(BaseContentService):
     ) -> int:
         """Create a new review."""
         # Process thumbnail - use default if not a base64 image (new upload required)
-        thumbnail = process_image(thumbnail_path, use_default_if_not_base64=True)
+        thumbnail = review_image_service.process_thumbnail(thumbnail_path, use_default_if_not_base64=True)
         
         # Process content images
-        processed_content = []
-        for block in content:
-            if block.get("type") == "image":
-                block["content"] = process_image(block.get("content", {}))
-            processed_content.append(block)
+        processed_content = review_image_service.process_content_blocks(content)
         
         with get_session() as session:
             review = Reviews(
@@ -108,15 +104,30 @@ class ReviewService(BaseContentService):
         author_id: Optional[str] = None
     ) -> bool:
         """Update an existing review."""
+        # First, get the existing review to compare images
+        with get_session() as session:
+            review = session.query(Reviews).filter(Reviews.id == review_id).first()
+            
+            if not review:
+                return False
+            
+            # Store old content and thumbnail for cleanup
+            old_content = review.content or []
+            old_thumbnail = review.thumbnail_path
+        
         # Process thumbnail
-        thumbnail = process_image(thumbnail_path)
+        thumbnail = review_image_service.process_thumbnail(thumbnail_path)
         
         # Process content images
-        processed_content = []
-        for block in content:
-            if block.get("type") == "image":
-                block["content"] = process_image(block.get("content", {}))
-            processed_content.append(block)
+        processed_content = review_image_service.process_content_blocks(content)
+        
+        # Clean up orphaned images (old images no longer in use)
+        review_image_service.cleanup_orphaned_images(
+            old_content=old_content,
+            new_content=processed_content,
+            old_thumbnail=old_thumbnail,
+            new_thumbnail=thumbnail
+        )
         
         with get_session() as session:
             review = session.query(Reviews).filter(Reviews.id == review_id).first()
@@ -148,7 +159,14 @@ class ReviewService(BaseContentService):
             if not review:
                 return False
             
+            # Store content and thumbnail for cleanup before deletion
+            content = review.content or []
+            thumbnail = review.thumbnail_path
+            
             session.delete(review)
+        
+        # Clean up all images after successful deletion
+        review_image_service.cleanup_all_images(content, thumbnail)
         
         cls._invalidate_cache(review_id)
         return True

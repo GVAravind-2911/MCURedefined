@@ -42,7 +42,7 @@ export function createContentBlock(type: ContentBlock["type"]): ContentBlock {
 		case "text":
 			return { id: generateBlockId(), type, content: "" };
 		case "image":
-			return { id: generateBlockId(), type, content: { link: "" } };
+			return { id: generateBlockId(), type, content: { link: "", key: "" } };
 		case "embed":
 			return { id: generateBlockId(), type, content: "" };
 	}
@@ -114,14 +114,15 @@ export function normalizeContentBlocks(blocks: ContentBlock[]): ContentBlock[] {
 	return blocks.map((block) => {
 		const id = block.id || generateBlockId();
 		if (block.type === "image") {
+			const imageContent = typeof block.content === "string"
+				? { link: block.content, key: "" }
+				: block.content as { link: string; key?: string };
 			return {
 				id,
 				type: "image" as const,
 				content: {
-					link:
-						typeof block.content === "string"
-							? block.content
-							: (block.content as { link: string }).link,
+					link: imageContent.link,
+					key: imageContent.key || "",
 				},
 			};
 		}
@@ -139,7 +140,7 @@ export function processContentBlocksForSubmission(
 		if (block.type === "image") {
 			return {
 				...block,
-				content: { link: block.content.link },
+				content: { link: block.content.link, key: block.content.key || "" },
 			};
 		}
 		return block;

@@ -31,6 +31,7 @@ interface ForumTopic {
 	spoilerFor?: string;
 	spoilerExpiresAt?: string;
 	userHasLiked?: boolean;
+	imageUrl?: string | null;
 }
 
 interface ForumResponse {
@@ -161,7 +162,7 @@ export default function ForumPage(): React.ReactElement {
 		isSpoiler: boolean;
 		spoilerFor?: string;
 		spoilerExpiresAt?: Date;
-	}) => {
+	}, imageData?: { url: string; key: string }) => {
 		if (!session?.user) {
 			throw new Error("You must be signed in to create a topic");
 		}
@@ -172,6 +173,12 @@ export default function ForumPage(): React.ReactElement {
 			requestBody.isSpoiler = true;
 			requestBody.spoilerFor = spoilerData.spoilerFor;
 			requestBody.spoilerExpiresAt = spoilerData.spoilerExpiresAt?.toISOString();
+		}
+
+		// Add image data if provided
+		if (imageData) {
+			requestBody.imageUrl = imageData.url;
+			requestBody.imageKey = imageData.key;
 		}
 
 		const response = await fetch("/api/forum/topics", {

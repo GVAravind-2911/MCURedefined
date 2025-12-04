@@ -81,6 +81,7 @@ export async function GET(req: NextRequest) {
 				isSpoiler: forumTopic.isSpoiler,
 				spoilerFor: forumTopic.spoilerFor,
 				spoilerExpiresAt: forumTopic.spoilerExpiresAt,
+				imageUrl: forumTopic.imageUrl,
 				username: user.displayUsername,
 				userImage: user.image,
 				likeCount: sql<number>`COALESCE(COUNT(DISTINCT ${forumTopicLike.userId}), 0)`.mapWith(Number),
@@ -107,6 +108,7 @@ export async function GET(req: NextRequest) {
 				forumTopic.isSpoiler,
 				forumTopic.spoilerFor,
 				forumTopic.spoilerExpiresAt,
+				forumTopic.imageUrl,
 				user.displayUsername,
 				user.image
 			)
@@ -172,7 +174,7 @@ export async function POST(req: NextRequest) {
 		}
 
 		const body = await req.json();
-		const { title, content, isSpoiler, spoilerFor, spoilerExpiresAt } = body;
+		const { title, content, isSpoiler, spoilerFor, spoilerExpiresAt, imageUrl, imageKey } = body;
 
 		if (!title || !content) {
 			return NextResponse.json(
@@ -219,6 +221,12 @@ export async function POST(req: NextRequest) {
 			topicData.spoilerExpiresAt = new Date(spoilerExpiresAt);
 		}
 
+		// Add image data if provided (image should already be uploaded via /api/forum/images/upload)
+		if (imageUrl && imageKey) {
+			topicData.imageUrl = imageUrl;
+			topicData.imageKey = imageKey;
+		}
+
 		// Insert topic
 		await db.insert(forumTopic).values(topicData);
 
@@ -237,6 +245,8 @@ export async function POST(req: NextRequest) {
 				isSpoiler: forumTopic.isSpoiler,
 				spoilerFor: forumTopic.spoilerFor,
 				spoilerExpiresAt: forumTopic.spoilerExpiresAt,
+				imageUrl: forumTopic.imageUrl,
+				imageKey: forumTopic.imageKey,
 				username: user.displayUsername,
 				userImage: user.image,
 			})

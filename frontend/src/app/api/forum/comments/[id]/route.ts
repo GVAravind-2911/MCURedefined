@@ -193,11 +193,13 @@ export async function DELETE(
 			);
 		}
 
-		// Soft delete the comment
+		// Soft delete the comment (set deleted flag and clear content)
 		await db
 			.update(forumComment)
 			.set({
+				deleted: true,
 				content: "[deleted]",
+				updatedAt: new Date(),
 			})
 			.where(eq(forumComment.id, id));
 

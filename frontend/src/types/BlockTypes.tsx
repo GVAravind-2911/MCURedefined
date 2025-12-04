@@ -1,5 +1,6 @@
 export type ImageContent = {
 	link: string;
+	key?: string;
 };
 
 export interface ImageBlockProps {

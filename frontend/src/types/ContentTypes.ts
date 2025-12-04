@@ -8,7 +8,7 @@ export type ContentBlock = {
 	id: string;
 } & (
 	| { type: "text"; content: string }
-	| { type: "image"; content: { link: string } }
+	| { type: "image"; content: { link: string; key?: string } }
 	| { type: "embed"; content: string }
 );
 
@@ -31,7 +31,7 @@ export interface ContentData {
 	description: string;
 	content: ContentBlock[];
 	tags: string[];
-	thumbnail_path: { link: string };
+	thumbnail_path: { link: string; key?: string };
 	created_at?: string;
 	updated_at?: string;
 }
@@ -44,7 +44,7 @@ export interface ContentListItem {
 	author_info?: AuthorInfo;
 	description: string;
 	tags: string[];
-	thumbnail_path: { link: string };
+	thumbnail_path: { link: string; key?: string };
 	created_at: string;
 	updated_at?: string;
 }

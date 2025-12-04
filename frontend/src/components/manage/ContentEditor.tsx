@@ -78,7 +78,7 @@ export default function ContentEditor({
 	const [author, setAuthor] = useState("");
 	const [authorId, setAuthorId] = useState<string | undefined>(undefined);
 	const [description, setDescription] = useState("");
-	const [thumbnail, setThumbnail] = useState("");
+	const [thumbnail, setThumbnail] = useState<{ link: string; key?: string }>({ link: "", key: "" });
 
 	// Set author from session when available
 	useEffect(() => {
@@ -97,7 +97,10 @@ export default function ContentEditor({
 			setAuthor(initialData.author || "");
 			setAuthorId(initialData.author_id);
 			setDescription(initialData.description || "");
-			setThumbnail(initialData.thumbnail_path?.link || "");
+			setThumbnail({
+				link: initialData.thumbnail_path?.link || "",
+				key: initialData.thumbnail_path?.key || ""
+			});
 			setTags(initialData.tags || []);
 			setContentBlocks(normalizeContentBlocks(initialData.content || []));
 			return;
@@ -115,7 +118,10 @@ export default function ContentEditor({
 					setAuthorId(storedData?.author_id);
 				}
 				setDescription(storedData?.description || "");
-				setThumbnail(storedData?.thumbnail_path?.link || "");
+				setThumbnail({
+					link: storedData?.thumbnail_path?.link || "",
+					key: storedData?.thumbnail_path?.key || ""
+				});
 				setTags(storedData?.tags || []);
 				setContentBlocks(normalizeContentBlocks(storedData?.content || []));
 			} catch (error) {
@@ -163,7 +169,8 @@ export default function ContentEditor({
 					newBlocks[index] = {
 						id: newBlocks[index].id,
 						type: "image",
-						content: { link: dataUrl },
+						// When uploading a new image, clear the key as this is a new base64 image
+						content: { link: dataUrl, key: "" },
 					};
 					return newBlocks;
 				});
@@ -182,7 +189,8 @@ export default function ContentEditor({
 
 			try {
 				const dataUrl = await readFileAsDataURL(file);
-				setThumbnail(dataUrl);
+				// When uploading a new image, clear the key as this is a new base64 image
+				setThumbnail({ link: dataUrl, key: "" });
 			} catch (error) {
 				console.error("Error uploading thumbnail:", error);
 			}
@@ -198,7 +206,7 @@ export default function ContentEditor({
 			description,
 			content: contentBlocks,
 			tags: tags.filter((tag) => tag.trim() !== ""),
-			thumbnail_path: { link: thumbnail },
+			thumbnail_path: thumbnail,
 			created_at: new Date().toISOString(),
 		}),
 		[title, author, authorId, description, contentBlocks, tags, thumbnail],
@@ -287,7 +295,7 @@ export default function ContentEditor({
 
 			<section>
 				<h3 className="thumbnail-blog">Upload Thumbnail:</h3>
-				<ThumbnailBlock src={thumbnail} onChange={handleThumbnailUpload} />
+				<ThumbnailBlock src={thumbnail.link} onChange={handleThumbnailUpload} />
 			</section>
 
 			<section>
