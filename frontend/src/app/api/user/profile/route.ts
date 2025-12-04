@@ -75,7 +75,6 @@ export async function PUT(request: Request) {
 				.update(user)
 				.set({
 					name,
-					// @ts-ignore
 					updatedAt: new Date(),
 				})
 				.where(eq(user.id, session.user.id));
@@ -93,13 +92,11 @@ export async function PUT(request: Request) {
 			await db
 				.update(userProfile)
 				.set({
-					// @ts-ignore
 					description,
 					updatedAt: new Date(),
 				})
 				.where(eq(userProfile.userId, session.user.id));
 		} else {
-			// @ts-ignore
 			await db.insert(userProfile).values({
 				id: crypto.randomUUID(),
 				userId: session.user.id,

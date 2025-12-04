@@ -23,11 +23,9 @@ export async function GET(req: NextRequest) {
 
 		// Clean up expired spoilers
 		try {
-			// @ts-ignore - Drizzle type inference issue with spoiler fields
 			await db
 				.update(forumTopic)
 				.set({
-                    // @ts-ignore
 					isSpoiler: false,
 					spoilerFor: null,
 					spoilerExpiresAt: null,

@@ -46,14 +46,12 @@ export async function incrementReviewView(reviewId: number) {
 			await db
 				.update(reviewInteraction)
 				.set({
-					// @ts-ignore
 					views: existingInteraction[0].views + 1,
 					lastUpdated: new Date(),
 				})
 				.where(eq(reviewInteraction.reviewId, reviewId));
 		} else {
 			// Create new record with all required fields
-			// @ts-ignore
 			await db.insert(reviewInteraction).values({
 				id: nanoid(),
 				reviewId: reviewId,
@@ -81,7 +79,6 @@ export async function incrementReviewLikes(reviewId: number) {
 			await db
 				.update(reviewInteraction)
 				.set({
-					// @ts-ignore - Using SQL increment like in blog interactions
 					likes: sql`likes + 1`,
 					lastUpdated: new Date(),
 				})
@@ -95,7 +92,6 @@ export async function incrementReviewLikes(reviewId: number) {
 				likes: 1,
 				shares: 0,
 			};
-			// @ts-ignore - Type inference issue with optional fields
 			await db.insert(reviewInteraction).values(newInteraction);
 		}
 	} catch (error) {
@@ -115,7 +111,6 @@ export async function decrementReviewLikes(reviewId: number) {
 			await db
 				.update(reviewInteraction)
 				.set({
-					// @ts-ignore - Using SQL decrement like in blog interactions
 					likes: sql`GREATEST(likes - 1, 0)`,
 					lastUpdated: new Date(),
 				})

@@ -57,7 +57,6 @@ export async function POST(
 				);
 		} else {
 			// Like
-			// @ts-ignore
 			await db.insert(reviewCommentLike).values({
 				commentId,
 				userId,

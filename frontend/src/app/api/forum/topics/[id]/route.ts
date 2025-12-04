@@ -241,7 +241,6 @@ export async function PUT(
 			.set({
 				title: title.trim(),
 				content: content.trim(),
-				// @ts-expect-error - editCount field exists in schema but TypeScript needs regeneration
 				editCount: currentEditCount + 1,
 				imageUrl: null,
 				imageKey: null,
@@ -337,7 +336,6 @@ export async function DELETE(
 		await db
 			.update(forumTopic)
 			.set({
-				// @ts-ignore - Drizzle type inference issue
 				deleted: true,
 				title: "[DELETED]",
 				content: "[This topic has been deleted by the author]",

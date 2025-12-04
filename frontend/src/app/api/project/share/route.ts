@@ -25,13 +25,11 @@ export async function POST(req: Request) {
 			await db
 				.update(projectInteraction)
 				.set({
-					// @ts-ignore
 					shares: existingInteraction[0].shares + 1,
 					lastUpdated: new Date(),
 				})
 				.where(eq(projectInteraction.projectId, projectId));
 		} else {
-			// @ts-ignore
 			await db.insert(projectInteraction).values({
 				id: nanoid(),
 				projectId: projectId,

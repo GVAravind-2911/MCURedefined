@@ -24,7 +24,7 @@
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
     "dotenv": "^16.4.7",
-    "drizzle-orm": "^0.40.0",
+    "drizzle-orm": "^0.45.0",
     "framer-motion": "^12.7.5",
     "html-react-parser": "^5.2.2",
     "ldrs": "^1.0.2",

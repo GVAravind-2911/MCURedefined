@@ -44,7 +44,6 @@ export async function incrementProjectView(projectId: number) {
 			await db
 				.update(projectInteraction)
 				.set({
-					// @ts-ignore
 					views: existingInteraction[0].views + 1,
 					lastUpdated: new Date(),
 				})

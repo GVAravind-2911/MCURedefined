@@ -26,11 +26,9 @@ export async function GET(req: NextRequest) {
 
 		// Clean up expired comment spoilers
 		try {
-			// @ts-ignore - Drizzle type inference issue with spoiler fields
 			await db
 				.update(forumComment)
 				.set({
-                    // @ts-ignore
 					isSpoiler: false,
 					spoilerFor: null,
 					spoilerExpiresAt: null,
@@ -210,7 +208,6 @@ export async function POST(req: NextRequest) {
 			insertData.parentId = parentId;
 		}
 
-		// @ts-ignore - Drizzle type inference issue with spoiler fields
 		await db.insert(forumComment).values(insertData);
 
 		// Get the created comment with user info

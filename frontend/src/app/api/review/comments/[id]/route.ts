@@ -44,7 +44,6 @@ export async function DELETE(
 		await db
 			.update(reviewComment)
 			.set({
-				// @ts-ignore
 				deleted: true,
 				content: "[comment deleted]",
 				updatedAt: new Date(),

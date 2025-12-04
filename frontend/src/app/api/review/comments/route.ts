@@ -114,7 +114,6 @@ export async function POST(req: NextRequest) {
 		const now = new Date();
 
 		// Insert comment
-		// @ts-ignore
 		await db.insert(reviewComment).values({
 			id: commentId,
 			reviewId,
