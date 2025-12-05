@@ -10,8 +10,8 @@ import {
 	getProjectInteractions,
 	incrementProjectView,
 } from "@/db/project-interactions";
-import ProjectLikeButton from "@/components/project/ProjectLikeButton";
-import ProjectShareButton from "@/components/project/ProjectShareButton";
+import LikeButton from "@/components/shared/LikeButton";
+import ShareButton from "@/components/shared/ShareButton";
 
 interface IndividualProjectProps {
 	project: Project;
@@ -76,16 +76,19 @@ export default async function IndividualProject({
 						</div>
 
 						{/* Interaction buttons */}
-						<div className="flex justify-center items-center gap-5 mt-5 p-4 w-full rounded-[10px] bg-white/5 max-[480px]:flex-col max-[480px]:gap-4">
-							<ProjectLikeButton
-								projectId={project.id}
+						<div className="flex justify-center items-center gap-4 mt-5 p-3 w-full rounded-xl bg-white/5">
+							<LikeButton
+								contentId={project.id}
+								contentType="project"
 								initialCount={totalInteractions.likes}
 								userHasLiked={!!userHasLiked}
 								isLoggedIn={!!session?.user}
+								size="md"
 							/>
-							<ProjectShareButton
-								projectId={project.id}
-								initialCount={totalInteractions.shares || 0}
+							<ShareButton
+								contentId={project.id}
+								contentType="project"
+								size="md"
 							/>
 						</div>
 					</div>

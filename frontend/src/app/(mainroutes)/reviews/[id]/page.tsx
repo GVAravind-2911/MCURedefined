@@ -9,8 +9,8 @@ import parse from "html-react-parser";
 import ScriptEmbed from "@/components/edit/ScriptEmbed";
 import Image from "next/image";
 import { auth } from "@/lib/auth/auth";
-import ContentLikeButton from "@/components/shared/ContentLikeButton";
-import ContentShareButton from "@/components/shared/ContentShareButton";
+import LikeButton from "@/components/shared/LikeButton";
+import ShareButton from "@/components/shared/ShareButton";
 import CommentSection from "@/components/comments/DynamicComment";
 import ErrorMessage from "@/components/main/ErrorMessage";
 import { headers } from "next/headers";
@@ -266,18 +266,19 @@ export default async function ReviewPage(
 								</Link>
 							))}
 						</span>
-						<div className="flex justify-center items-center gap-5 mt-5">
-							<ContentLikeButton
+						<div className="flex justify-center items-center gap-4 mt-5">
+							<LikeButton
 								contentId={blog.id}
-								contentType="reviews"
+								contentType="review"
 								initialCount={totalInteractions.likes}
 								userHasLiked={!!userHasLiked}
 								isLoggedIn={!!session?.user}
+								size="md"
 							/>
-							<ContentShareButton
+							<ShareButton
 								contentId={blog.id}
-								contentType="reviews"
-								initialCount={totalInteractions.shares || 0}
+								contentType="review"
+								size="md"
 							/>
 						</div>
 					</div>

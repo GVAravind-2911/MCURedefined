@@ -9,8 +9,8 @@ import parse from "html-react-parser";
 import ScriptEmbed from "@/components/edit/ScriptEmbed";
 import Image from "next/image";
 import { auth } from "@/lib/auth/auth";
-import ContentLikeButton from "@/components/shared/ContentLikeButton";
-import ContentShareButton from "@/components/shared/ContentShareButton";
+import LikeButton from "@/components/shared/LikeButton";
+import ShareButton from "@/components/shared/ShareButton";
 import { headers } from "next/headers";
 import { getUserLikedBlog } from "@/db/blog-likes";
 import { getBlogInteractions, incrementBlogView } from "@/db/blog-interactions";
@@ -251,18 +251,19 @@ export default async function BlogPage(props: PageProps): Promise<JSX.Element> {
 								</Link>
 							))}
 						</span>
-						<div className="flex justify-center items-center gap-5 mt-5">
-							<ContentLikeButton
+						<div className="flex justify-center items-center gap-4 mt-5">
+							<LikeButton
 								contentId={blog.id}
-								contentType="blogs"
+								contentType="blog"
 								initialCount={totalInteractions.likes}
 								userHasLiked={!!userHasLiked}
 								isLoggedIn={!!session?.user}
+								size="md"
 							/>
-							<ContentShareButton
+							<ShareButton
 								contentId={blog.id}
-								contentType="blogs"
-								initialCount={totalInteractions.shares || 0}
+								contentType="blog"
+								size="md"
 							/>
 						</div>
 					</div>
