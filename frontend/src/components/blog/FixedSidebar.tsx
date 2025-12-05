@@ -60,13 +60,16 @@ const FixedSidebar: React.FC<FixedSidebarProps> = ({
 	// Determine if showing reviews or blogs based on first article's ID
 
 	return (
-		<div className="otherblogs" ref={sidebarRef}>
-			<h2 className="latestblogs">Latest {isReview ? "Reviews" : "Blogs"}</h2>
-			<hr className="separator" />
+		<div 
+			className="text-[azure] w-[22%] mr-[3%] flex flex-col gap-[1%] fixed right-[3%] top-[120px] max-h-[calc(100vh-120px)] overflow-y-auto scrollbar-thin scrollbar-thumb-[#ec1d24] scrollbar-track-[rgba(40,40,40,0.3)] pr-2.5 z-100 max-md:static max-md:transform-none! max-md:w-[90%]! max-md:max-h-none! max-md:mx-auto! max-md:my-10! max-md:pr-0 max-md:z-auto!" 
+			ref={sidebarRef}
+		>
+			<h2 className="font-[BentonSansBold] text-[#ec1d24] text-center my-4 sticky top-0 bg-black py-1.5 z-2">Latest {isReview ? "Reviews" : "Blogs"}</h2>
+			<hr className="h-0.5 w-full bg-[rgb(72,72,72)] m-0 border-0" />
 			{latestBlogs.map((article, index) => (
 				<React.Fragment key={article.id}>
 					<SimilarBlog articles={article} />
-					{index < latestBlogs.length - 1 && <hr className="separator" />}
+					{index < latestBlogs.length - 1 && <hr className="h-0.5 w-full bg-[rgb(72,72,72)] m-0 border-0" />}
 				</React.Fragment>
 			))}
 		</div>

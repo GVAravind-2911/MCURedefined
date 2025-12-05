@@ -13,7 +13,6 @@ import ContentLikeButton from "@/components/shared/ContentLikeButton";
 import ContentShareButton from "@/components/shared/ContentShareButton";
 import CommentSection from "@/components/comments/DynamicComment";
 import ErrorMessage from "@/components/main/ErrorMessage";
-import "@/styles/blog.css";
 import { headers } from "next/headers";
 import { getUserLikedReview } from "@/db/review-likes";
 import {
@@ -134,12 +133,12 @@ const loadScript = (url: string): JSX.Element => {
 					src={`https://www.youtube.com/embed/${videoId}`}
 					title="youtube-video"
 					allowFullScreen
-					className="video"
+					className="w-[90%] h-[90%]"
 				/>
 			);
 		}
 	}
-	return <div className="invalid-embed">Invalid embed URL</div>;
+	return <div className="text-[#ec1d24] text-center py-4">Invalid embed URL</div>;
 };
 
 export default async function ReviewPage(
@@ -180,7 +179,7 @@ export default async function ReviewPage(
 			switch (block.type) {
 				case "text":
 					return (
-						<div key={uniqueKey} className="textcontent">
+						<div key={uniqueKey} className="w-full [&_i]:text-[#ec1d24] [&_b_i]:text-[#ec1d24]">
 							{parse(block.content)}
 						</div>
 					);
@@ -190,7 +189,7 @@ export default async function ReviewPage(
 							key={uniqueKey}
 							src={block.content.link}
 							alt={`blog-image-${index}`}
-							className="contentimages"
+							className="ml-[25%] mt-[5%] mb-[5%] w-1/2 h-1/2 object-contain rounded-[5px] justify-center self-center"
 							width={1000}
 							height={1000}
 						/>
@@ -198,7 +197,7 @@ export default async function ReviewPage(
 				case "embed":
 					if (block.content.includes("www.youtube.com")) {
 						return (
-							<div key={uniqueKey} className="youtube-preview">
+							<div key={uniqueKey} className="w-[75%] h-[350px] mt-10 flex justify-center ml-[12.5%]">
 								{loadScript(block.content)}
 							</div>
 						);
@@ -215,16 +214,16 @@ export default async function ReviewPage(
 
 	return (
 		<>
-			<div className="layout">
-				<div className="contents fade-in">
-					<div className="contentsinfo">
-						<h1 className="title">{blog.title}</h1>
-						<div className="meta-info">
-							<div className="byline-container">
+			<div className="flex flex-row w-full gap-[2.5%] relative overflow-x-hidden max-md:flex-col">
+				<div className="w-[60%] ml-[5%] mr-[25%] mb-[25px] mt-[1%] rounded-[5px] pr-0 animate-[fadeInSimple_1s_ease] max-md:-order-1 max-md:w-[90%] max-md:mx-auto max-[480px]:w-[90%]">
+					<div className="after:content-[''] after:block after:w-[60%] after:h-0.5 after:bg-linear-to-r after:from-transparent after:via-[#ec1d24]/70 after:to-transparent after:mx-auto after:my-8">
+						<h1 className="text-[70px] max-md:text-5xl ml-[3%] mt-[3%] text-white font-[BentonSansBold] text-center">{blog.title}</h1>
+						<div className="flex flex-col items-center py-3 px-5 my-4 mx-auto rounded-lg bg-[rgba(40,40,40,0.3)] w-fit max-md:w-[90%]">
+							<div className="flex justify-center items-center -mt-[3%]">
 								{blog.author_info ? (
 									<Link 
 										href={`/profile/${blog.author_info.username}`}
-										className="author-link"
+										className="flex items-center gap-2.5 no-underline text-[#ec1d24] transition-all duration-200 py-2 px-4 rounded-[25px] bg-[#ec1d24]/10 hover:bg-[#ec1d24]/20 hover:-translate-y-0.5"
 										prefetch={false}
 									>
 										{blog.author_info.image && (
@@ -233,41 +232,41 @@ export default async function ReviewPage(
 												alt={blog.author_info.display_name}
 												width={32}
 												height={32}
-												className="author-avatar"
+												className="rounded-full border-2 border-[#ec1d24] object-cover"
 											/>
 										)}
-										<span className="author-name">{blog.author_info.display_name}</span>
+										<span className="text-lg font-[BentonSansRegular] tracking-[0.03em]">{blog.author_info.display_name}</span>
 									</Link>
 								) : (
-									<h3 className="byline">
-										<span className="colorforby">By: </span>
+									<h3 className="text-lg my-[0.5%] tracking-[0.03em] font-[BentonSansRegular] -mt-[3%] text-[#ec1d24]">
+										<span className="font-[BentonSansRegular]">By: </span>
 										{blog.author}
 									</h3>
 								)}
 							</div>
-							<h3 className="datecreation">
+							<h3 className="text-xl text-[#ec1d24] text-center my-[0.5%] tracking-[0.03em] font-[BentonSansRegular]">
 								{moment(blog.created_at).format("dddd, D MMMM, YYYY")}
 							</h3>
 							{blog.updated_at && (
-								<h3 className="dateupdate">
-									<span className="colorforby">Updated: </span>
+								<h3 className="text-xl text-[#ec1d24] text-center my-[0.5%] tracking-[0.03em] font-[BentonSansRegular]">
+									<span className="font-[BentonSansRegular]">Updated: </span>
 									{moment(blog.updated_at).format("dddd, D MMMM, YYYY")}
 								</h3>
 							)}
 						</div>
-						<span className="tagsspan">
+						<span className="my-5 flex flex-wrap justify-center gap-2.5">
 							{blog.tags.map((tag: string) => (
 								<Link
 									key={tag}
 									href={`/reviews?tags=${encodeURIComponent(tag)}`}
-									className="tags"
+									className="text-base text-white font-[BentonSansRegular] bg-[#ec1d24]/80 border-none rounded-[20px] py-1.5 px-4 transition-all duration-300 inline-flex items-center before:content-['#'] before:mr-1 before:opacity-70 hover:-translate-y-[3px] hover:shadow-[0_4px_8px_rgba(236,29,36,0.4)] hover:bg-[#ec1d24] hover:cursor-pointer"
 									prefetch={false}
 								>
 									{tag}
 								</Link>
 							))}
 						</span>
-						<div className="likeandshare">
+						<div className="flex justify-center items-center gap-5 mt-5">
 							<ContentLikeButton
 								contentId={blog.id}
 								contentType="reviews"
@@ -282,8 +281,8 @@ export default async function ReviewPage(
 							/>
 						</div>
 					</div>
-					<div className="contentsmain">
-						<div className="maincontent">{contentElements}</div>
+					<div className="mx-[2.5%] mt-[2.5%] mb-[5%] w-[96%] rounded-[5px] flex flex-col justify-center p-[2%]">
+						<div className="text-lg [word-spacing:0.1em] font-[BentonSansBook] whitespace-pre-line pb-[2%] text-white leading-[2.5] mb-[2%] w-full items-center">{contentElements}</div>
 					</div>
 					<CommentSection contentId={blog.id} contentType="review" />
 				</div>

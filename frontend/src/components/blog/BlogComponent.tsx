@@ -3,7 +3,6 @@
 import React, { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import type { BlogList } from "@/types/BlogTypes";
-import "@/styles/blogposts.css";
 import LoadingSpinner from "../main/LoadingSpinner";
 import BlogFilters from "./BlogFilters";
 import BlogCard from "./BlogCard";
@@ -97,7 +96,7 @@ const BlogsComponent: React.FC<BlogComponentProps> = ({
 	}, [currentPage, totalPages, isSearchFocused, handlePageChange]);
 
 	return (
-		<div className="blogs-container" ref={containerRef}>
+		<div className="flex flex-col w-[90%] max-w-[1200px] mx-auto py-8" ref={containerRef}>
 			<BlogFilters
 				searchQuery={searchQuery}
 				setSearchQuery={setSearchQuery} // Add this line
@@ -111,14 +110,14 @@ const BlogsComponent: React.FC<BlogComponentProps> = ({
 				resetFilters={resetFilters}
 				apiUrl={apiUrl}
 			/>
-			<div className="blogs-wrapper">
+			<div className="flex flex-col gap-8">
 				{loading ? (
-					<div className="loading-wrapper">
+					<div className="flex justify-center items-center min-h-[300px]">
 						<LoadingSpinner />
 					</div>
-				) : blogs.length > 0 ? (
-					<div className="blogs fade-in">
-						<hr className="divider" />
+				) : blogs && blogs.length > 0 ? (
+					<div className="flex flex-col items-center w-full m-0 p-0 animate-[fadeIn_0.3s_ease-in]">
+						<hr className="w-full h-px bg-white/10 my-2.5 border-0" />
 						{blogs.map((blog) => (
 							<React.Fragment key={blog.id}>
 								<BlogCard
@@ -127,7 +126,7 @@ const BlogsComponent: React.FC<BlogComponentProps> = ({
 									handleNavigation={handleNavigation}
 									handleTagClick={handleTagClick}
 								/>
-								<hr className="divider" />
+								<hr className="w-full h-px bg-white/10 my-2.5 border-0" />
 							</React.Fragment>
 						))}
 					</div>

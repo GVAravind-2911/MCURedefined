@@ -49,9 +49,9 @@ const TagMultiSelect: React.FC<TagMultiSelectProps> = memo(({
 	}, [toggleTag]);
 
 	return (
-		<div className="filter-dropdown" ref={tagDropdownRef}>
+		<div className="relative z-10" ref={tagDropdownRef}>
 			<button
-				className={`filter-button ${selectedTags.length > 0 ? "filter-active" : ""}`}
+				className={`bg-white/10 border border-white/20 text-white py-2.5 px-5 rounded-[20px] cursor-pointer flex items-center gap-2 font-[BentonSansRegular] transition-all duration-200 hover:bg-white/15 ${selectedTags.length > 0 ? "bg-[#ec1d24]/20 border-[#ec1d24]/60" : ""}`}
 				onClick={() => setShowTagFilter(!showTagFilter)}
 				type="button"
 				aria-haspopup="menu"
@@ -61,7 +61,7 @@ const TagMultiSelect: React.FC<TagMultiSelectProps> = memo(({
 					? `${selectedTags.length} Tag${selectedTags.length > 1 ? "s" : ""} Selected`
 					: "Filter by Tags"}
 				<svg
-					className={`dropdown-icon ${showTagFilter ? "rotated" : ""}`}
+					className={`transition-transform duration-300 ${showTagFilter ? "rotate-180" : ""}`}
 					xmlns="http://www.w3.org/2000/svg"
 					width="12"
 					height="12"
@@ -72,14 +72,14 @@ const TagMultiSelect: React.FC<TagMultiSelectProps> = memo(({
 				</svg>
 			</button>
 			{showTagFilter && (
-				<div className="dropdown-menu multi-select" role="menu">
+				<div className="absolute top-[calc(100%+8px)] left-0 min-w-[220px] max-h-[300px] overflow-y-auto bg-[#0d0d0d] border border-white/20 rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.8)] z-100 animate-[dropdownFade_0.2s_ease] scrollbar-thin scrollbar-thumb-[#ec1d24]/60 scrollbar-track-[#1a1a1a] pt-0" role="menu">
 					{tags.length > 0 ? (
 						<>
-							<div className="dropdown-header">
+							<div className="flex justify-between items-center py-2.5 px-4 border-b border-white/20 bg-[#1a1a1a] text-sm text-white/80 font-[BentonSansBold]">
 								<span>Select multiple tags</span>
 								{selectedTags.length > 0 && (
 									<button
-										className="clear-selection-button"
+										className="bg-none border-none text-[#ec1d24] cursor-pointer p-0 text-sm font-[BentonSansRegular] transition-colors duration-200 hover:text-[#ff4d4d] hover:underline"
 										onClick={handleClearTags}
 										type="button"
 									>
@@ -91,22 +91,22 @@ const TagMultiSelect: React.FC<TagMultiSelectProps> = memo(({
 								<button
 									key={tag}
 									onClick={(e) => handleToggleTag(e, tag)}
-									className={`dropdown-item multi-select-item ${selectedTags.includes(tag) ? "selected" : ""}`}
+									className={`flex items-center w-full text-left py-3 px-4 border-none cursor-pointer border-b border-b-white/10 transition-all duration-200 ${selectedTags.includes(tag) ? "bg-[#ec1d24] text-white font-[BentonSansBold]" : "bg-transparent text-white/90 hover:bg-white/10 hover:text-white"}`}
 									type="button"
 									role="menuitemcheckbox"
 									aria-checked={selectedTags.includes(tag)}
 								>
-									<span className="checkbox">
+									<span className={`flex items-center justify-center w-4 h-4 border rounded mr-2.5 transition-all duration-200 ${selectedTags.includes(tag) ? "bg-white border-white" : "border-white/50 bg-transparent"}`}>
 										{selectedTags.includes(tag) && (
 											<svg
 												xmlns="http://www.w3.org/2000/svg"
 												viewBox="0 0 24 24"
-												width="16"
-												height="16"
+												width="14"
+												height="14"
 											>
 												<title>Selected</title>
 												<path
-													fill="currentColor"
+													fill="#ec1d24"
 													d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"
 												/>
 											</svg>
@@ -117,7 +117,7 @@ const TagMultiSelect: React.FC<TagMultiSelectProps> = memo(({
 							))}
 						</>
 					) : (
-						<div className="dropdown-empty">No tags available</div>
+						<div className="py-3 px-4 text-white/50 text-center italic">No tags available</div>
 					)}
 				</div>
 			)}

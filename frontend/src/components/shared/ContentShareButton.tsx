@@ -64,10 +64,10 @@ export default function ContentShareButton({
   }, [animateCount]);
 
   return (
-    <div className="share-container">
+    <div className="flex flex-col items-center mx-[5px]">
       <motion.button
         type="button"
-        className={`share ${shared ? "shared" : ""}`}
+        className="flex items-center justify-center gap-2.5 py-2.5 px-5 rounded-[30px] border-2 border-transparent cursor-pointer font-[BentonSansRegular] text-base min-w-[130px] h-[42px] shadow-[0_4px_12px_rgba(0,0,0,0.15)] relative overflow-hidden bg-[#333] text-white font-medium transition-all duration-300"
         onClick={handleShare}
         disabled={isPending}
         whileTap={{ scale: 0.9 }}
@@ -117,7 +117,7 @@ export default function ContentShareButton({
           <path d="M15.41 6.51L8.59 10.49" />
         </motion.svg>
 
-        <div className="button-text">
+        <div className="flex items-center gap-1.5 relative h-[22px] tracking-[0.02em]">
           <AnimatePresence mode="wait">
             <motion.span
               key={shared ? "copied" : "share"}
@@ -131,7 +131,7 @@ export default function ContentShareButton({
           </AnimatePresence>
 
           <motion.span
-            className="share-count-wrapper"
+            className="inline-flex items-center ml-1.5 text-[0.9em] font-normal opacity-95 bg-white/15 py-0.5 px-2 rounded-[10px]"
             animate={
               animateCount
                 ? {
@@ -148,7 +148,7 @@ export default function ContentShareButton({
 
         {isPending && (
           <motion.span
-            className="loading-indicator"
+            className="absolute"
             animate={{ rotate: 360 }}
             transition={{
               repeat: Number.POSITIVE_INFINITY,
