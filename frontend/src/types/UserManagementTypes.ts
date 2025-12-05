@@ -16,7 +16,7 @@ export interface ManagedUser {
 	role: string;
 	banned: boolean;
 	banReason: string | null;
-	banExpires: number | null;
+	banExpires: Date | string | null;
 }
 
 export interface UserListResponse {

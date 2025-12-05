@@ -3,7 +3,6 @@
 import React, { useRef, useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import type { BlogList } from "@/types/BlogTypes";
-import "@/styles/blogposts.css";
 import LoadingSpinner from "../main/LoadingSpinner";
 import BlogFilters from "./BlogFilters";
 import AdminBlogCard from "./AdminBlogCard";
@@ -15,6 +14,7 @@ import { authClient } from "@/lib/auth/auth-client";
 
 interface AdminBlogComponentProps {
 	path: string;
+	basePath?: string;
 	initialBlogs: BlogList[];
 	totalPages: number;
 	apiUrl: string;
@@ -24,6 +24,7 @@ interface AdminBlogComponentProps {
 
 const AdminBlogComponent: React.FC<AdminBlogComponentProps> = ({
 	path,
+	basePath = '',
 	initialBlogs,
 	totalPages: initialTotalPages,
 	apiUrl,
@@ -71,6 +72,7 @@ const AdminBlogComponent: React.FC<AdminBlogComponentProps> = ({
 		initialTags,
 		initialAuthors,
 		path,
+		basePath,
 		containerRef,
 	});
 
@@ -211,17 +213,17 @@ const AdminBlogComponent: React.FC<AdminBlogComponentProps> = ({
 
 	if (!initialLoadComplete || loading) {
 		return (
-			<div className="loading-wrapper">
+			<div className="flex justify-center items-center min-h-[300px]">
 				<LoadingSpinner />
 			</div>
 		);
 	}
 
 	return (
-		<div className="blogs-container" ref={containerRef}>
-			<div className="add-blog-button-container">
+		<div className="flex flex-col w-[90%] max-w-[1200px] mx-auto py-8" ref={containerRef}>
+			<div className="flex justify-end w-full max-w-[1200px] mb-4 max-md:justify-center max-md:mb-6">
 				<button
-					className="add-blog-button"
+					className="flex items-center gap-2 bg-[#ec1d24] text-white py-3 px-5 rounded-lg font-[BentonSansBold] cursor-pointer border-none shadow-[0_4px_6px_rgba(0,0,0,0.1)] transition-all duration-300 hover:bg-[#d81921] hover:-translate-y-0.5 hover:shadow-[0_6px_12px_rgba(0,0,0,0.15)] [&_svg]:w-5 [&_svg]:h-5 max-md:w-full max-md:justify-center"
 					onClick={handleAddNewBlog}
 					type="button"
 					aria-label={`Add new ${path.charAt(0).toUpperCase() + path.slice(1, -1)} post`}
@@ -247,14 +249,14 @@ const AdminBlogComponent: React.FC<AdminBlogComponentProps> = ({
 				apiUrl={apiUrl}
 			/>
 
-			<div className="blogs-wrapper">
+			<div className="flex flex-col gap-8">
 				{loading ? (
-					<div className="loading-wrapper">
+					<div className="flex justify-center items-center min-h-[300px]">
 						<LoadingSpinner />
 					</div>
 				) : blogs.length > 0 ? (
-					<div className="blogs fade-in">
-						<hr className="divider" />
+					<div className="flex flex-col items-center w-full m-0 p-0 animate-[fadeInSimple_0.3s_ease-in]">
+						<hr className="w-full h-px bg-white/10 my-2.5 border-0" />
 						{blogs.map((blog) => (
 							<React.Fragment key={blog.id}>
 								<AdminBlogCard
@@ -265,7 +267,7 @@ const AdminBlogComponent: React.FC<AdminBlogComponentProps> = ({
 									handleEdit={handleEdit}
 									handleDelete={handleDelete}
 								/>
-								<hr className="divider" />
+								<hr className="w-full h-px bg-white/10 my-2.5 border-0" />
 							</React.Fragment>
 						))}
 					</div>
@@ -284,17 +286,17 @@ const AdminBlogComponent: React.FC<AdminBlogComponentProps> = ({
 			</div>
 
 			{/* Delete Confirmation Dialog */}
-			<dialog className="delete-confirmation-dialog" ref={dialogRef}>
-				<h2>Delete Blog Post</h2>
-				<p>
+			<dialog className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#121212] text-white border-none rounded-lg p-6 min-w-[400px] shadow-[0_10px_30px_rgba(0,0,0,0.8)] border-t-4 border-t-[#e74c3c] backdrop:bg-black/70 max-md:min-w-[calc(100vw-40px)] max-md:max-w-[calc(100vw-40px)] max-md:p-4" ref={dialogRef}>
+				<h2 className="mt-0 text-[#e74c3c] font-[BentonSansBold]">Delete Blog Post</h2>
+				<p className="mb-6 font-[BentonSansRegular]">
 					Are you sure you want to delete{" "}
-					<span className="delete-blog-title">{blogToDelete?.title}</span>?
+					<span className="font-bold text-[#ec1d24]">{blogToDelete?.title}</span>?
 				</p>
-				<p>This action cannot be undone.</p>
-				<div className="delete-dialog-buttons">
+				<p className="mb-6 font-[BentonSansRegular]">This action cannot be undone.</p>
+				<div className="flex justify-end gap-3">
 					<button
 						type="button"
-						className="delete-dialog-button cancel"
+						className="py-2.5 px-5 rounded-md font-[BentonSansRegular] cursor-pointer transition-all duration-200 bg-transparent text-white border border-white/30 hover:bg-white/10 hover:border-white/50 disabled:opacity-50 disabled:cursor-not-allowed"
 						onClick={cancelDelete}
 						disabled={isDeleting}
 					>
@@ -302,7 +304,7 @@ const AdminBlogComponent: React.FC<AdminBlogComponentProps> = ({
 					</button>
 					<button
 						type="button"
-						className="delete-dialog-button confirm"
+						className="py-2.5 px-5 rounded-md font-[BentonSansRegular] cursor-pointer transition-all duration-200 bg-[#e74c3c] text-white border-none hover:bg-[#c0392b] disabled:opacity-50 disabled:cursor-not-allowed"
 						onClick={confirmDelete}
 						disabled={isDeleting}
 					>

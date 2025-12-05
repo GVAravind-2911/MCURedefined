@@ -2,8 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { authClient } from "@/lib/auth/auth-client";
-import "@/styles/user-management.css";
-import "@/styles/bloghero.css";
 
 import type { UserListState, ModalState, UserStats, NewUserData, ManagedUser, UserSession } from "./types";
 import UserToolbar from "./UserToolbar";
@@ -348,7 +346,7 @@ export default function UserManagement() {
 	const totalPages = Math.ceil(userState.total / pageSize);
 
 	return (
-		<div className="user-management-container">
+		<div className="max-w-[1400px] mx-auto p-8 min-h-screen bg-linear-to-b from-[#0a0a0a] to-[#111111]">
 			<UserToolbar
 				searchValue={searchValue}
 				setSearchValue={setSearchValue}
@@ -367,9 +365,9 @@ export default function UserManagement() {
 
 			{/* Error State */}
 			{userState.error && (
-				<div className="error-message">
-					<p>{userState.error}</p>
-					<button type="button" onClick={fetchUsers} className="btn-secondary">
+				<div className="flex items-center justify-between p-5 bg-red-500/15 border border-red-500/30 rounded-[10px] mb-6">
+					<p className="text-red-300 text-[0.95rem]">{userState.error}</p>
+					<button type="button" onClick={fetchUsers} className="py-3 px-6 bg-transparent text-white/70 border border-white/10 rounded-[10px] font-semibold text-[0.95rem] cursor-pointer transition-all duration-[0.25s] hover:border-white/20 hover:text-white hover:bg-white/5">
 						Retry
 					</button>
 				</div>
@@ -377,9 +375,9 @@ export default function UserManagement() {
 
 			{/* Loading State */}
 			{userState.loading && (
-				<div className="loading-state">
-					<div className="loading-spinner" />
-					<p>Loading users...</p>
+				<div className="flex flex-col items-center justify-center gap-4 py-16 px-8 bg-[rgba(18,18,18,0.95)] rounded-[14px] border border-white/10">
+					<div className="w-12 h-12 border-[3px] border-white/10 border-t-[#ec1d24] rounded-full animate-spin" />
+					<p className="text-white/70 text-base">Loading users...</p>
 				</div>
 			)}
 
