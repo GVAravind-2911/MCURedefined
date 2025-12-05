@@ -346,7 +346,7 @@ export default function UserManagement() {
 	const totalPages = Math.ceil(userState.total / pageSize);
 
 	return (
-		<div className="max-w-[1400px] mx-auto p-8 min-h-screen bg-linear-to-b from-[#0a0a0a] to-[#111111]">
+		<div className="w-full max-w-[1400px] mx-auto px-4 pb-8">
 			<UserToolbar
 				searchValue={searchValue}
 				setSearchValue={setSearchValue}
