@@ -259,15 +259,15 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 	if (!isOpen) return null;
 
 	return (
-		<div className="create-topic-overlay" onClick={handleOverlayClick}>
-			<div className="create-topic-modal">
-				<div className="create-topic-header">
-					<h2 className="create-topic-title">
+		<div className="fixed inset-0 bg-black/85 flex items-center justify-center z-1000 p-4" onClick={handleOverlayClick}>
+			<div className="bg-[linear-gradient(135deg,rgba(12,12,12,0.98)_0%,rgba(26,26,26,0.98)_100%)] border border-[rgba(236,29,36,0.5)] rounded-xl p-8 w-full max-w-[700px] max-h-[90vh] overflow-y-auto backdrop-blur-[20px] shadow-[0_20px_40px_rgba(0,0,0,0.5),0_0_0_1px_rgba(236,29,36,0.1)] relative animate-[modalSlideIn_0.3s_ease] before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-[3px] before:bg-[linear-gradient(90deg,transparent,#ec1d24,transparent)] before:rounded-t-xl max-md:m-4 max-md:p-6 max-md:max-w-[calc(100vw-2rem)]">
+				<div className="flex justify-between items-center mb-8 pb-6 border-b border-white/10">
+					<h2 className="font-[BentonSansBold] text-[1.75rem] max-md:text-2xl text-white m-0 flex items-center gap-2 uppercase tracking-[0.5px] after:content-[''] after:block after:w-10 after:h-[3px] after:bg-[#ec1d24] after:ml-3">
 						💭 Create New Topic
 					</h2>
 					<button
 						type="button"
-						className="close-modal-button"
+						className="bg-white/10 border border-white/20 text-white/70 text-2xl cursor-pointer w-10 h-10 rounded-lg transition-all duration-300 ease-in-out flex items-center justify-center hover:bg-[rgba(236,29,36,0.2)] hover:border-[rgba(236,29,36,0.5)] hover:text-white hover:scale-105"
 						onClick={handleClose}
 						disabled={isSubmitting}
 					>
@@ -275,15 +275,15 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 					</button>
 				</div>
 
-				<form className="create-topic-form" onSubmit={handleSubmit}>
-					<div className="form-group">
-						<label htmlFor="topic-title" className="form-label">
+				<form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+					<div className="flex flex-col gap-3">
+						<label htmlFor="topic-title" className="font-[BentonSansBold] text-white/80 text-[0.95rem] uppercase tracking-[0.5px]">
 							Topic Title
 						</label>
 						<input
 							id="topic-title"
 							type="text"
-							className="form-input"
+							className="py-4 px-5 border border-white/20 rounded-lg bg-white/5 text-white font-[BentonSansRegular] text-base transition-all duration-300 ease-in-out shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] focus:outline-none focus:border-[#ec1d24] focus:bg-white/10 focus:shadow-[0_0_0_3px_rgba(236,29,36,0.15),inset_0_2px_4px_rgba(0,0,0,0.1)]"
 							value={title}
 							onChange={(e) => setTitle(e.target.value)}
 							placeholder="What would you like to discuss?"
@@ -291,18 +291,18 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 							disabled={isSubmitting}
 							required
 						/>
-						<div className="character-count">
+						<div className="text-[0.8rem] text-white/50 text-right mt-1">
 							{title.length}/200
 						</div>
 					</div>
 
-					<div className="form-group">
-						<label htmlFor="topic-content" className="form-label">
+					<div className="flex flex-col gap-3">
+						<label htmlFor="topic-content" className="font-[BentonSansBold] text-white/80 text-[0.95rem] uppercase tracking-[0.5px]">
 							Content
 						</label>
 						<textarea
 							id="topic-content"
-							className="form-textarea"
+							className="py-4 px-5 border border-white/20 rounded-lg bg-white/5 text-white font-[BentonSansRegular] text-base transition-all duration-300 ease-in-out shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] resize-y min-h-[150px] focus:outline-none focus:border-[#ec1d24] focus:bg-white/10 focus:shadow-[0_0_0_3px_rgba(236,29,36,0.15),inset_0_2px_4px_rgba(0,0,0,0.1)]"
 							value={content}
 							onChange={(e) => setContent(e.target.value)}
 							placeholder="Share your thoughts, ask questions, or start a discussion..."
@@ -310,35 +310,35 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 							disabled={isSubmitting}
 							required
 						/>
-						<div className="character-count">
+						<div className="text-[0.8rem] text-white/50 text-right mt-1">
 							{content.length}/10,000
 						</div>
 					</div>
 
 					{/* Image Upload Section */}
-					<div className="form-group">
-						<label className="form-label">
+					<div className="flex flex-col gap-3">
+						<label className="font-[BentonSansBold] text-white/80 text-[0.95rem] uppercase tracking-[0.5px]">
 							📷 Attach Image (optional)
 						</label>
-						<div className="image-upload-info">
-							<small>⚠️ Images cannot be edited after posting. Max size: 5MB</small>
+						<div className="mb-2 text-white/70">
+							<small className="text-[#ffa500]">⚠️ Images cannot be edited after posting. Max size: 5MB</small>
 						</div>
 						
 						{imagePreview ? (
-							<div className="image-preview-container">
-								<div className="image-preview-wrapper">
+							<div className="flex flex-col items-center gap-4 p-4 bg-white/5 rounded-lg border border-white/10">
+								<div className="max-w-full flex justify-center">
 									<Image
 										src={imagePreview}
 										alt="Preview"
 										width={400}
 										height={300}
-										className="image-preview"
-										style={{ objectFit: "contain", maxHeight: "200px", width: "auto" }}
+										className="max-h-[200px] w-auto rounded-lg"
+										style={{ objectFit: "contain" }}
 									/>
 								</div>
 								<button
 									type="button"
-									className="remove-image-button"
+									className="bg-[rgba(220,53,69,0.2)] text-[#dc3545] border border-[rgba(220,53,69,0.3)] py-2 px-4 rounded-lg cursor-pointer transition-all duration-300 ease-in-out text-sm hover:not-disabled:bg-[rgba(220,53,69,0.3)] hover:not-disabled:border-[rgba(220,53,69,0.5)] disabled:opacity-50 disabled:cursor-not-allowed"
 									onClick={handleRemoveImage}
 									disabled={isSubmitting}
 								>
@@ -347,7 +347,7 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 							</div>
 						) : (
 							<div
-								className="image-dropzone"
+								className="border-2 border-dashed border-white/20 rounded-lg p-8 text-center cursor-pointer transition-all duration-300 ease-in-out bg-white/5 hover:border-[#ec1d24] hover:bg-[rgba(236,29,36,0.2)]"
 								onDragOver={handleDragOver}
 								onDrop={handleDrop}
 								onClick={() => fileInputRef.current?.click()}
@@ -357,44 +357,44 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 									type="file"
 									accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
 									onChange={handleImageSelect}
-									className="hidden-file-input"
+									className="hidden"
 									disabled={isSubmitting}
 								/>
-								<div className="dropzone-content">
-									<span className="dropzone-icon">🖼️</span>
+								<div className="flex flex-col items-center gap-2 text-white/70">
+									<span className="text-4xl">🖼️</span>
 									<span>Click or drag an image here</span>
-									<small>JPEG, PNG, GIF, WebP • Max 5MB</small>
+									<small className="text-white/50">JPEG, PNG, GIF, WebP • Max 5MB</small>
 								</div>
 							</div>
 						)}
 					</div>
 
 					{/* Spoiler Options */}
-					<div className="form-group">
-						<div className="spoiler-checkbox-group">
+					<div className="flex flex-col gap-3">
+						<div className="flex items-center gap-3 p-5 bg-[linear-gradient(135deg,rgba(255,165,0,0.08)_0%,rgba(255,107,53,0.08)_100%)] border border-[rgba(255,165,0,0.25)] rounded-lg transition-all duration-300 ease-in-out mb-2 hover:bg-[linear-gradient(135deg,rgba(255,165,0,0.12)_0%,rgba(255,107,53,0.12)_100%)] hover:border-[rgba(255,165,0,0.4)]">
 							<input
 								id="is-spoiler"
 								type="checkbox"
-								className="spoiler-checkbox"
+								className="accent-[#ffa500] scale-[1.3] cursor-pointer m-0"
 								checked={isSpoiler}
 								onChange={(e) => setIsSpoiler(e.target.checked)}
 								disabled={isSubmitting}
 							/>
-							<label htmlFor="is-spoiler" className="spoiler-label">
+							<label htmlFor="is-spoiler" className="m-0 cursor-pointer flex items-center gap-2 text-base text-white/90 font-[BentonSansBold]">
 								⚠️ This topic contains spoilers
 							</label>
 						</div>
 
 						{isSpoiler && (
-							<div className="spoiler-fields">
-								<div className="spoiler-field">
-									<label htmlFor="spoiler-for" className="form-label">
+							<div className="ml-0 p-6 border-l-[3px] border-[rgba(255,165,0,0.4)] bg-[linear-gradient(135deg,rgba(255,165,0,0.03)_0%,rgba(255,107,53,0.03)_100%)] rounded-r-lg flex flex-col gap-5 mt-4 animate-[slideDown_0.3s_ease] max-md:pl-4 max-[480px]:ml-0 max-[480px]:pl-4">
+								<div className="flex flex-col gap-2">
+									<label htmlFor="spoiler-for" className="text-sm text-white/80 font-[BentonSansBold]">
 										Spoiler for:
 									</label>
 									<input
 										id="spoiler-for"
 										type="text"
-										className="form-input"
+										className="text-[0.95rem] py-3.5 px-4 bg-white/5 border border-[rgba(255,165,0,0.2)] rounded-lg text-white font-[BentonSansRegular] transition-all duration-300 ease-in-out focus:outline-none focus:border-[#ffa500] focus:bg-[rgba(255,165,0,0.08)] focus:shadow-[0_0_0_3px_rgba(255,165,0,0.15)]"
 										value={spoilerFor}
 										onChange={(e) => setSpoilerFor(e.target.value)}
 										placeholder="e.g., Deadpool & Wolverine, Spider-Man 4, etc."
@@ -402,20 +402,20 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 										required={isSpoiler}
 									/>
 								</div>
-								<div className="spoiler-field">
-									<label htmlFor="spoiler-duration" className="form-label">
+								<div className="flex flex-col gap-2">
+									<label htmlFor="spoiler-duration" className="text-sm text-white/80 font-[BentonSansBold]">
 										Spoiler protection duration:
 									</label>
-									<div className="custom-dropdown" ref={durationDropdownRef}>
+									<div className="relative" ref={durationDropdownRef}>
 										<button
 											type="button"
-											className="dropdown-trigger"
+											className="flex items-center justify-between gap-3 w-full py-3.5 px-4 bg-white/5 border border-[rgba(255,165,0,0.2)] rounded-lg text-white/90 text-[0.95rem] cursor-pointer transition-all duration-300 ease-in-out text-left hover:border-[rgba(255,165,0,0.4)] hover:bg-[rgba(255,165,0,0.05)] focus:outline-none focus:border-[#ffa500] focus:bg-[rgba(255,165,0,0.08)] focus:shadow-[0_0_0_3px_rgba(255,165,0,0.15)] disabled:opacity-60 disabled:cursor-not-allowed"
 											onClick={() => !isSubmitting && setDurationDropdownOpen(!durationDropdownOpen)}
 											disabled={isSubmitting}
 										>
 											<span>{getDurationLabel()}</span>
 											<svg
-												className={`dropdown-arrow ${durationDropdownOpen ? "open" : ""}`}
+												className={`shrink-0 opacity-70 transition-transform duration-200 ${durationDropdownOpen ? "rotate-180" : ""}`}
 												width="12"
 												height="12"
 												viewBox="0 0 12 12"
@@ -424,12 +424,12 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 											</svg>
 										</button>
 										{durationDropdownOpen && (
-											<div className="dropdown-menu">
+											<div className="absolute top-[calc(100%+6px)] left-0 right-0 bg-[#1a1a1a] border border-[rgba(255,165,0,0.3)] rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.5)] z-100 overflow-hidden animate-[dropdownFadeIn_0.2s_ease]">
 												{DURATION_OPTIONS.map((option) => (
 													<button
 														key={option.value}
 														type="button"
-														className={`dropdown-item ${spoilerDuration === option.value ? "selected" : ""}`}
+														className={`flex items-center w-full py-3 px-4 bg-transparent border-none text-white/70 text-[0.95rem] text-left cursor-pointer transition-all duration-300 ease-in-out hover:bg-[rgba(255,165,0,0.1)] hover:text-white/90 ${spoilerDuration === option.value ? 'bg-[rgba(255,165,0,0.15)] text-[#ffa500] font-medium' : ''}`}
 														onClick={() => {
 															setSpoilerDuration(option.value);
 															setDurationDropdownOpen(false);
@@ -441,7 +441,7 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 											</div>
 										)}
 									</div>
-									<div className="spoiler-help-text">
+									<div className="text-[0.8rem] text-white/50 mt-1 italic">
 										Spoiler protection will automatically expire after this duration
 									</div>
 								</div>
@@ -450,15 +450,15 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 					</div>
 
 					{error && (
-						<div className="error-message">
+						<div className="text-[#ff6b6b] text-sm text-center py-3 px-4 bg-[rgba(255,107,107,0.1)] border border-[rgba(255,107,107,0.3)] rounded-lg animate-[fadeInSimple_0.3s_ease]">
 							{error}
 						</div>
 					)}
 
-					<div className="form-actions">
+					<div className="flex gap-4 justify-end pt-4 border-t border-white/10 max-md:flex-col max-md:gap-3">
 						<button
 							type="button"
-							className="form-button form-button-secondary"
+							className="py-3.5 px-7 border-none rounded-lg font-[BentonSansBold] text-base cursor-pointer transition-all duration-300 ease-in-out relative overflow-hidden uppercase tracking-[0.5px] bg-white/10 text-white/80 border border-white/20 hover:not-disabled:bg-white/20 hover:not-disabled:text-white hover:not-disabled:border-white/30 hover:not-disabled:-translate-y-px max-md:w-full"
 							onClick={handleClose}
 							disabled={isSubmitting}
 						>
@@ -466,7 +466,7 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 						</button>
 						<button
 							type="submit"
-							className="form-button form-button-primary"
+							className="py-3.5 px-7 border-none rounded-lg font-[BentonSansBold] text-base cursor-pointer transition-all duration-300 ease-in-out relative overflow-hidden uppercase tracking-[0.5px] bg-[linear-gradient(135deg,#ec1d24,#d01c22)] text-white shadow-[0_4px_15px_rgba(236,29,36,0.3)] hover:not-disabled:bg-[linear-gradient(135deg,#ff3a3a,#ec1d24)] hover:not-disabled:-translate-y-0.5 hover:not-disabled:shadow-[0_6px_20px_rgba(236,29,36,0.4)] disabled:bg-[rgba(236,29,36,0.4)] disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none max-md:w-full"
 							disabled={isSubmitting || !title.trim() || !content.trim()}
 						>
 							{isUploadingImage ? "Uploading Image..." : isSubmitting ? "Creating..." : "Create Topic"}

@@ -4,16 +4,10 @@ import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { authClient } from "@/lib/auth/auth-client";
-import { formatRelativeTime } from "@/lib/dateUtils";
-import Image from "next/image";
 import LoadingSpinner from "@/components/main/LoadingSpinner";
-import "@/styles/forum-thread.css";
+import TopicPost, { isTopicDeleted } from "@/components/forum/TopicPost";
+import TopicComments from "@/components/forum/TopicComments";
 
-// Lazy load heavy components for better initial page load
-const RedditCommentSection = dynamic(
-	() => import("@/components/forum/RedditCommentSection"),
-	{ loading: () => <div className="loading-comments">Loading comments...</div> }
-);
 const EditHistoryModal = dynamic(
 	() => import("@/components/forum/EditHistoryModal"),
 	{ ssr: false }
@@ -190,7 +184,6 @@ export default function ForumTopicPage(): React.ReactElement {
 			});
 
 			if (response.ok) {
-				// Refresh the topic to show deleted state
 				await fetchTopic();
 			} else {
 				const errorData = await response.json();
@@ -204,55 +197,20 @@ export default function ForumTopicPage(): React.ReactElement {
 		}
 	};
 
-	const formatDate = (dateString: string) => {
-		return formatRelativeTime(dateString);
-	};
-
-	const getUserInitials = (username: string) => {
-		return username
-			? username
-					.split(" ")
-					.map((n) => n[0])
-					.join("")
-					.toUpperCase()
-					.slice(0, 2)
-			: "?";
-	};
-
-	const isTopicDeleted = (topic: ForumTopic) => {
-		return topic.deleted || topic.title === "[DELETED]" || topic.content.includes("[This topic has been deleted");
-	};
-
 	if (loading) {
-		return (
-			<div className="forum-thread-page forum-page">
-				<div className="forum-thread-container">
-					<div className="forum-loading">
-						<LoadingSpinner />
-						<p style={{ marginTop: "1rem", color: "rgba(255, 255, 255, 0.7)" }}>
-							Loading topic...
-						</p>
-					</div>
-				</div>
-			</div>
-		);
+		return <LoadingSpinner />;
 	}
 
 	if (error || !topic) {
 		return (
-			<div className="forum-thread-page forum-page">
-				<div className="forum-thread-container">
-					<button
-						className="back-to-forum"
-						onClick={() => router.push("/forum")}
-					>
-						← Back to Forum
-					</button>
-					<div className="forum-empty">
-						<h3>
+			<div className="min-h-screen bg-[linear-gradient(135deg,#0c0c0c_0%,#1a1a1a_50%,#0c0c0c_100%)] text-white py-8">
+				<div className="max-w-[1000px] mx-auto px-4">
+					<BackToForumButton onClick={() => router.push("/forum")} />
+					<div className="text-center py-16 px-8 bg-[rgba(40,40,40,0.3)] border border-white/10 rounded-lg backdrop-blur-[10px]">
+						<h3 className="text-[#ec1d24] mb-4 font-[BentonSansBold] text-2xl">
 							{error || "Topic not found"}
 						</h3>
-						<p>
+						<p className="text-white/70 mb-8 text-lg leading-relaxed">
 							{error === "Topic not found" 
 								? "This topic may have been deleted or moved."
 								: "Something went wrong while loading the topic."
@@ -265,231 +223,29 @@ export default function ForumTopicPage(): React.ReactElement {
 	}
 
 	return (
-		<div className="forum-thread-page forum-page">
-			<div className="forum-thread-container">
-				{/* Back to forum button */}
-				<button
-					className="back-to-forum"
-					onClick={() => router.push("/forum")}
-				>
-					← Back to Forum
-				</button>
+		<div className="min-h-screen bg-[linear-gradient(135deg,#0c0c0c_0%,#1a1a1a_50%,#0c0c0c_100%)] text-white py-8">
+			<div className="max-w-[1000px] mx-auto px-4">
+				<BackToForumButton onClick={() => router.push("/forum")} />
 
-				{/* Topic post - Reddit style */}
-				<div className={`topic-post ${isTopicDeleted(topic) ? 'topic-deleted' : ''}`}>
-					<div className="topic-post-content">
-						{isTopicDeleted(topic) ? (
-							// Deleted topic view
-							<>
-								<div className="topic-post-header">
-									<div className="user-info">
-										<div className="user-avatar" style={{ backgroundColor: "#666" }}>
-											❌
-										</div>
-										<span className="username" style={{ color: "#666" }}>[deleted]</span>
-									</div>
-									<span>•</span>
-									<span>{formatDate(topic.createdAt)}</span>
-									<div className="topic-status">
-										<span className="status-badge" style={{ backgroundColor: "rgba(220, 53, 69, 0.2)", color: "#dc3545" }}>
-											🗑️ Deleted
-										</span>
-									</div>
-								</div>
-								<h1 className="topic-post-title" style={{ color: "#666" }}>
-									[Deleted Topic]
-								</h1>
-								<div className="topic-post-body" style={{ 
-									color: "#666", 
-									fontStyle: "italic",
-									backgroundColor: "rgba(255, 255, 255, 0.02)",
-									padding: "1rem",
-									borderRadius: "8px",
-									border: "1px solid rgba(255, 255, 255, 0.1)"
-								}}>
-									This topic has been deleted and is no longer available.
-								</div>
-							</>
-						) : (
-							// Normal topic view
-							<>
-								{/* Topic header with user info and timestamps */}
-								<div className="topic-post-header">
-									<div className="user-info">
-										{topic.userImage ? (
-											<Image
-												src={topic.userImage}
-												alt={topic.username}
-												width={24}
-												height={24}
-												className="user-avatar"
-												style={{ borderRadius: "50%" }}
-											/>
-										) : (
-											<div className="user-avatar">
-												{getUserInitials(topic.username)}
-											</div>
-										)}
-										<span className="username">{topic.username}</span>
-									</div>
-									<span>{formatDate(topic.createdAt)}</span>
-									{topic.updatedAt !== topic.createdAt && (
-										<>
-											<span>•</span>
-											<span>edited {formatDate(topic.updatedAt)}</span>
-										</>
-									)}
-									{/* Status badges */}
-									<div className="topic-status">
-										{topic.pinned && (
-											<span className="status-badge pinned">📌 Pinned</span>
-										)}
-										{topic.locked && (
-											<span className="status-badge locked">🔒 Locked</span>
-										)}
-									</div>
-								</div>
+				<TopicPost
+					topic={topic}
+					currentUserId={session?.user?.id}
+					isEditing={isEditing}
+					editTitle={editTitle}
+					editContent={editContent}
+					editError={editError}
+					isSaving={isSaving}
+					isDeleting={isDeleting}
+					onEditTitleChange={setEditTitle}
+					onEditContentChange={setEditContent}
+					onSaveEdit={handleSaveEdit}
+					onCancelEdit={handleCancelEdit}
+					onEditClick={handleEditClick}
+					onDeleteClick={handleDeleteTopic}
+					onLikeToggle={handleLikeToggle}
+					onShowEditHistory={() => setShowEditHistory(true)}
+				/>
 
-								{/* Topic title */}
-								{isEditing ? (
-									<input
-										type="text"
-										className="edit-title-input"
-										value={editTitle}
-										onChange={(e) => setEditTitle(e.target.value)}
-										placeholder="Topic title"
-										maxLength={200}
-									/>
-								) : (
-									<h1 className="topic-post-title">
-										{topic.title}
-									</h1>
-								)}
-
-								{/* Topic content */}
-								{isEditing ? (
-									<div className="edit-content-wrapper">
-										<textarea
-											className="edit-content-textarea"
-											value={editContent}
-											onChange={(e) => setEditContent(e.target.value)}
-											placeholder="Topic content"
-											maxLength={10000}
-										/>
-										{editError && (
-											<div className="edit-error">{editError}</div>
-										)}
-										<div className="edit-actions">
-											<button
-												className="edit-save-btn"
-												onClick={handleSaveEdit}
-												disabled={isSaving}
-											>
-												{isSaving ? "Saving..." : "Save Changes"}
-											</button>
-											<button
-												className="edit-cancel-btn"
-												onClick={handleCancelEdit}
-												disabled={isSaving}
-											>
-												Cancel
-											</button>
-											<span className="edit-remaining">
-												{5 - (topic.editCount || 0)} edits remaining
-											</span>
-										</div>
-									</div>
-								) : (
-									<div className="topic-post-body">
-										{topic.content}
-									</div>
-								)}
-
-								{/* Topic Image (if present) */}
-								{topic.imageUrl && !isEditing && (
-									<div className="topic-image-container">
-										<Image
-											src={topic.imageUrl}
-											alt="Topic image"
-											width={800}
-											height={600}
-											className="topic-image"
-											style={{ 
-												maxWidth: "100%", 
-												height: "auto", 
-												borderRadius: "8px",
-												marginTop: "1rem"
-											}}
-										/>
-									</div>
-								)}
-
-								{/* Image will be removed warning when editing */}
-								{isEditing && topic.imageUrl && (
-									<div className="image-removal-warning">
-										⚠️ The attached image will be removed when you save your edit. Images cannot be edited.
-									</div>
-								)}
-
-								{/* Topic footer with voting and actions */}
-								<div className="topic-post-footer">
-									<div className="topic-vote-section">
-										<button
-											className={`topic-like-btn ${topic.userHasLiked ? "liked" : ""}`}
-											onClick={handleLikeToggle}
-											disabled={!session?.user || isTopicDeleted(topic)}
-											title={
-												isTopicDeleted(topic) 
-													? "Cannot like deleted topics"
-													: session?.user 
-													? "Like this topic" 
-													: "Sign in to like"
-											}
-										>
-											<span>{topic.userHasLiked ? "❤️" : "🤍"}</span>
-											<span>{topic.likeCount}</span>
-										</button>
-										{/* Edit history button */}
-										{(topic.editCount || 0) > 0 && (
-											<button
-												className="edit-history-btn"
-												onClick={() => setShowEditHistory(true)}
-												title="View edit history"
-											>
-												📝 {topic.editCount} edit{(topic.editCount || 0) > 1 ? 's' : ''}
-											</button>
-										)}
-									</div>
-									
-									{/* Topic actions for author */}
-									{session?.user?.id === topic.userId && !isTopicDeleted(topic) && !isEditing && (
-										<div className="topic-actions">
-											{topic.canEdit && (
-												<button
-													className="topic-edit-btn"
-													onClick={handleEditClick}
-													title="Edit this topic"
-												>
-													✏️ Edit
-												</button>
-											)}
-											<button
-												className="topic-delete-btn"
-												onClick={handleDeleteTopic}
-												disabled={isDeleting}
-												title="Delete this topic"
-											>
-												{isDeleting ? "🔄" : "🗑️"} {isDeleting ? "Deleting..." : "Delete"}
-											</button>
-										</div>
-									)}
-								</div>
-							</>
-						)}
-					</div>
-				</div>
-
-				{/* Edit History Modal */}
 				{showEditHistory && (
 					<EditHistoryModal
 						contentId={topicId}
@@ -498,36 +254,19 @@ export default function ForumTopicPage(): React.ReactElement {
 					/>
 				)}
 
-				{/* Comments section */}
-				<div className="thread-comments">
-					{topic.locked && !isTopicDeleted(topic) ? (
-						<div className="topic-locked">
-							<h3>🔒 This topic is locked</h3>
-							<p>Comments have been disabled for this topic.</p>
-						</div>
-					) : (
-						<>
-							{isTopicDeleted(topic) && (
-								<div className="topic-deleted-notice" style={{ 
-									padding: "0.75rem 1rem", 
-									backgroundColor: "rgba(220, 53, 69, 0.1)", 
-									borderRadius: "8px",
-									marginBottom: "1rem",
-									color: "#dc3545",
-									fontSize: "0.9rem"
-								}}>
-									⚠️ This topic has been deleted. You can still view existing comments but cannot add new ones.
-								</div>
-							)}
-							<RedditCommentSection 
-								contentId={topicId} 
-								contentType="forum" 
-								disabled={isTopicDeleted(topic)}
-							/>
-						</>
-					)}
-				</div>
+				<TopicComments topic={topic} topicId={topicId} />
 			</div>
 		</div>
+	);
+}
+
+function BackToForumButton({ onClick }: { onClick: () => void }): React.ReactElement {
+	return (
+		<button
+			className="bg-[rgba(236,29,36,0.1)] border border-[rgba(236,29,36,0.3)] text-[#ec1d24] py-3 px-6 rounded-lg cursor-pointer transition-all duration-300 ease-in-out flex items-center gap-2 font-[BentonSansRegular] text-[0.95rem] font-medium mb-8 backdrop-blur-[5px] hover:bg-[rgba(236,29,36,0.2)] hover:border-[#ec1d24] hover:text-white hover:-translate-x-1"
+			onClick={onClick}
+		>
+			← Back to Forum
+		</button>
 	);
 }

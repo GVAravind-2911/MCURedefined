@@ -7,7 +7,6 @@ import { authClient } from "@/lib/auth/auth-client";
 import { useDebounce } from "@/hooks/useDebounce";
 import ForumTopicCard from "@/components/forum/ForumTopicCard";
 import LoadingSpinner from "@/components/main/LoadingSpinner";
-import "@/styles/forum.css";
 
 // Lazy load the modal for better initial page load
 const CreateTopicModal = dynamic(
@@ -221,7 +220,11 @@ export default function ForumPage(): React.ReactElement {
 			pages.push(
 				<button
 					key={i}
-					className={`pagination-button ${i === currentPage ? "active" : ""}`}
+					className={`py-2.5 px-4 border rounded-lg font-[BentonSansRegular] font-medium cursor-pointer transition-all duration-300 ease-in-out min-w-10 text-center ${
+						i === currentPage 
+							? 'bg-[linear-gradient(135deg,#ec1d24,#d01c22)] border-[#ec1d24] text-white font-semibold shadow-[0_4px_15px_rgba(236,29,36,0.3)]' 
+							: 'border-white/20 bg-white/5 text-white/80 hover:bg-[rgba(236,29,36,0.1)] hover:border-[rgba(236,29,36,0.5)] hover:-translate-y-0.5 hover:text-white'
+					}`}
 					onClick={() => handlePageChange(i)}
 				>
 					{i}
@@ -230,9 +233,9 @@ export default function ForumPage(): React.ReactElement {
 		}
 
 		return (
-			<div className="forum-pagination">
+			<div className="flex justify-center items-center mt-10 gap-2 p-5 bg-[rgba(40,40,40,0.3)] border border-white/10 rounded-lg backdrop-blur-[10px]">
 				<button
-					className="pagination-button"
+					className="py-2.5 px-4 border border-white/20 rounded-lg bg-white/5 text-white/80 font-[BentonSansRegular] font-medium cursor-pointer transition-all duration-300 ease-in-out min-w-10 text-center hover:bg-[rgba(236,29,36,0.1)] hover:border-[rgba(236,29,36,0.5)] hover:-translate-y-0.5 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none"
 					onClick={() => handlePageChange(currentPage - 1)}
 					disabled={currentPage === 1}
 				>
@@ -240,7 +243,7 @@ export default function ForumPage(): React.ReactElement {
 				</button>
 				{pages}
 				<button
-					className="pagination-button"
+					className="py-2.5 px-4 border border-white/20 rounded-lg bg-white/5 text-white/80 font-[BentonSansRegular] font-medium cursor-pointer transition-all duration-300 ease-in-out min-w-10 text-center hover:bg-[rgba(236,29,36,0.1)] hover:border-[rgba(236,29,36,0.5)] hover:-translate-y-0.5 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none"
 					onClick={() => handlePageChange(currentPage + 1)}
 					disabled={currentPage === totalPages}
 				>
@@ -251,13 +254,14 @@ export default function ForumPage(): React.ReactElement {
 	};
 
 	return (
-		<div className="forum-page fade-in">
-			<div className="forum-container">
-				<div className="forum-header">
-					<h1 className="forum-title">Community Forum</h1>
+		<div className="w-full min-h-screen bg-[linear-gradient(135deg,#0c0c0c_0%,#1a1a1a_50%,#0c0c0c_100%)] pt-20 animate-[fadeIn_0.5s_ease]">
+			<div className="max-w-[1200px] mx-auto p-8 max-md:p-4">
+				{/* Forum Header */}
+				<div className="flex justify-between items-center mb-8 p-8 max-md:p-6 bg-[linear-gradient(135deg,rgba(236,29,36,0.1)_0%,rgba(40,40,40,0.4)_100%)] border border-[rgba(236,29,36,0.5)] rounded-xl backdrop-blur-[10px] relative overflow-hidden max-md:flex-col max-md:gap-4 max-md:items-stretch before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-[3px] before:bg-[linear-gradient(90deg,transparent,#ec1d24,transparent)]">
+					<h1 className="font-[BentonSansBold] text-[2.5rem] max-md:text-[2rem] max-md:text-center text-white m-0 uppercase tracking-[1px] [text-shadow:2px_2px_4px_rgba(0,0,0,0.5)] after:content-[''] after:block after:w-[60px] after:h-[3px] after:bg-[#ec1d24] after:mt-2">Community Forum</h1>
 					{session?.user && (
 						<button
-							className="create-topic-button"
+							className="bg-[linear-gradient(135deg,#ec1d24,#d01c22)] text-white border-none py-3 px-6 rounded-lg font-[BentonSansBold] text-base cursor-pointer transition-all duration-300 ease-in-out no-underline inline-flex items-center gap-2 shadow-[0_4px_15px_rgba(236,29,36,0.3)] uppercase tracking-[0.5px] hover:bg-[linear-gradient(135deg,#ff3a3a,#ec1d24)] hover:-translate-y-[3px] hover:shadow-[0_6px_20px_rgba(236,29,36,0.5)]"
 							onClick={() => setIsCreateModalOpen(true)}
 						>
 							<span>+</span>
@@ -266,29 +270,30 @@ export default function ForumPage(): React.ReactElement {
 					)}
 				</div>
 
-				<div className="forum-controls">
-					<form className="forum-search" onSubmit={handleSearch}>
+				{/* Forum Controls */}
+				<div className="flex justify-between items-center mb-8 gap-4 flex-wrap p-5 bg-[rgba(40,40,40,0.3)] border border-white/10 rounded-lg backdrop-blur-[10px] relative z-10 max-md:flex-col max-md:gap-4">
+					<form className="flex-1 max-w-[400px] max-md:max-w-none max-md:w-full" onSubmit={handleSearch}>
 						<input
 							type="text"
-							className="forum-search-input"
+							className="w-full py-3 px-4 border border-white/20 rounded-lg bg-white/5 text-white font-[BentonSansRegular] text-base transition-all duration-300 ease-in-out placeholder:text-white/50 focus:outline-none focus:border-[#ec1d24] focus:bg-white/10 focus:shadow-[0_0_0_3px_rgba(236,29,36,0.15)]"
 							placeholder="Search topics..."
 							value={searchQuery}
 							onChange={(e) => setSearchQuery(e.target.value)}
 						/>
 					</form>
 
-					<div className="forum-sort" ref={sortDropdownRef}>
-						<label className="forum-sort-label">Sort by:</label>
-						<div className="forum-sort-dropdown">
+					<div className="flex items-center gap-3 relative z-50" ref={sortDropdownRef}>
+						<label className="text-white/80 font-[BentonSansRegular] text-base font-medium">Sort by:</label>
+						<div className="relative">
 							<button
 								type="button"
-								className="forum-sort-trigger"
+								className="flex items-center justify-between gap-3 py-2.5 px-3.5 border border-white/20 rounded-lg bg-white/10 text-white font-[BentonSansRegular] text-base cursor-pointer transition-all duration-200 ease-in-out min-w-[140px] hover:bg-white/20 hover:border-[rgba(236,29,36,0.5)] focus:outline-none focus:border-[#ec1d24] focus:shadow-[0_0_0_3px_rgba(236,29,36,0.15)]"
 								onClick={() => setIsSortDropdownOpen(!isSortDropdownOpen)}
 								aria-expanded={isSortDropdownOpen}
 							>
 								<span>{sortOptions.find(opt => opt.value === sortBy)?.label}</span>
 								<svg 
-									className={`forum-sort-arrow ${isSortDropdownOpen ? 'open' : ''}`}
+									className={`shrink-0 transition-transform duration-200 ${isSortDropdownOpen ? 'rotate-180' : ''}`}
 									width="12" 
 									height="12" 
 									viewBox="0 0 24 24" 
@@ -300,12 +305,12 @@ export default function ForumPage(): React.ReactElement {
 								</svg>
 							</button>
 							{isSortDropdownOpen && (
-								<div className="forum-sort-menu">
+								<div className="absolute top-[calc(100%+4px)] left-0 right-0 bg-[#1a1a1a] border border-white/20 rounded-lg overflow-hidden z-1000 shadow-[0_4px_20px_rgba(0,0,0,0.4)] animate-[dropdownFadeIn_0.15s_ease]">
 									{sortOptions.map((option) => (
 										<button
 											key={option.value}
 											type="button"
-											className={`forum-sort-option ${sortBy === option.value ? 'selected' : ''}`}
+											className={`block w-full py-2.5 px-3.5 bg-transparent border-none text-white/80 font-[BentonSansRegular] text-base text-left cursor-pointer transition-all duration-150 ease-in-out hover:bg-white/10 hover:text-white ${sortBy === option.value ? 'bg-[rgba(236,29,36,0.15)] text-[#ec1d24]' : ''}`}
 											onClick={() => {
 												handleSortChange(option.value);
 												setIsSortDropdownOpen(false);
@@ -321,33 +326,24 @@ export default function ForumPage(): React.ReactElement {
 				</div>
 
 				{error && (
-					<div style={{ 
-						color: "#ff6666", 
-						textAlign: "center", 
-						padding: "1rem",
-						backgroundColor: "rgba(255, 102, 102, 0.1)",
-						borderRadius: "8px",
-						marginBottom: "2rem"
-					}}>
+					<div className="text-[#ff6666] text-center p-4 bg-[rgba(255,102,102,0.1)] rounded-lg mb-8">
 						{error}
 					</div>
 				)}
 
 				{loading ? (
-					<div className="forum-loading">
-						<LoadingSpinner />
-					</div>
+					<LoadingSpinner />
 				) : topics.length === 0 ? (
-					<div className="forum-empty">
-						<h3>No topics found</h3>
+					<div className="text-center py-16 px-8 bg-[rgba(40,40,40,0.3)] border border-white/10 rounded-xl backdrop-blur-[10px]">
+						<h3 className="text-[#ec1d24] mb-4 font-[BentonSansBold] text-2xl">No topics found</h3>
 						{searchQuery ? (
-							<p>Try adjusting your search or clear the search to see all topics.</p>
+							<p className="text-white/70 mb-8 text-lg leading-relaxed">Try adjusting your search or clear the search to see all topics.</p>
 						) : (
 							<>
-								<p>Be the first to start a discussion!</p>
+								<p className="text-white/70 mb-8 text-lg leading-relaxed">Be the first to start a discussion!</p>
 								{session?.user && (
 									<button
-										className="create-topic-button"
+										className="bg-[linear-gradient(135deg,#ec1d24,#d01c22)] text-white border-none py-3 px-6 rounded-lg font-[BentonSansBold] text-base cursor-pointer transition-all duration-300 ease-in-out no-underline inline-flex items-center gap-2 shadow-[0_4px_15px_rgba(236,29,36,0.3)] uppercase tracking-[0.5px] hover:bg-[linear-gradient(135deg,#ff3a3a,#ec1d24)] hover:-translate-y-[3px] hover:shadow-[0_6px_20px_rgba(236,29,36,0.5)]"
 										onClick={() => setIsCreateModalOpen(true)}
 									>
 										Create the first topic
@@ -358,7 +354,7 @@ export default function ForumPage(): React.ReactElement {
 					</div>
 				) : (
 					<>
-						<div className="forum-topics">
+						<div className="flex flex-col gap-5">
 							{topics.map((topic) => (
 								<ForumTopicCard
 									key={topic.id}
@@ -374,18 +370,12 @@ export default function ForumPage(): React.ReactElement {
 				)}
 
 				{!session?.user && (
-					<div style={{
-						textAlign: "center",
-						padding: "2rem",
-						backgroundColor: "rgba(255, 255, 255, 0.05)",
-						borderRadius: "8px",
-						marginTop: "2rem"
-					}}>
-						<p style={{ color: "rgba(255, 255, 255, 0.8)", marginBottom: "1rem" }}>
+					<div className="text-center p-8 bg-white/5 rounded-lg mt-8">
+						<p className="text-white/80 mb-4">
 							Want to join the discussion?
 						</p>
 						<button
-							className="create-topic-button"
+							className="bg-[linear-gradient(135deg,#ec1d24,#d01c22)] text-white border-none py-3 px-6 rounded-lg font-[BentonSansBold] text-base cursor-pointer transition-all duration-300 ease-in-out no-underline inline-flex items-center gap-2 shadow-[0_4px_15px_rgba(236,29,36,0.3)] uppercase tracking-[0.5px] hover:bg-[linear-gradient(135deg,#ff3a3a,#ec1d24)] hover:-translate-y-[3px] hover:shadow-[0_6px_20px_rgba(236,29,36,0.5)]"
 							onClick={() => router.push("/auth")}
 						>
 							Sign In to Participate

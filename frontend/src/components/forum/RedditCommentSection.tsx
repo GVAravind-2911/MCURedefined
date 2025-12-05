@@ -212,18 +212,18 @@ const RedditCommentSection = memo(function RedditCommentSection({
 	);
 
 	return (
-		<div className="reddit-comments-section">
+		<div className="mt-8">
 			{/* Comment form for new top-level comments */}
 			{disabled ? (
-				<div className="topic-locked" style={{ padding: "1rem", margin: "1rem 0", backgroundColor: "rgba(255, 255, 255, 0.05)", borderRadius: "8px" }}>
-					<p style={{ margin: 0, fontSize: "0.9rem", color: "rgba(255, 255, 255, 0.6)" }}>
+				<div className="p-4 my-4 bg-white/5 rounded-lg">
+					<p className="m-0 text-[0.9rem] text-white/60">
 						💬 New comments are disabled for this topic
 					</p>
 				</div>
 			) : session?.user ? (
-				<form className="comment-form-reddit" onSubmit={handleSubmitComment}>
+				<form className="bg-white/5 rounded-lg p-4 mb-6 border border-white/10" onSubmit={handleSubmitComment}>
 					<textarea
-						className="comment-textarea-reddit"
+						className="w-full min-h-[100px] p-3 bg-white/5 border border-white/20 rounded-lg text-white font-[BentonSansRegular] text-[0.95rem] resize-y transition-all duration-300 ease-in-out focus:outline-none focus:border-[#ec1d24] focus:bg-white/10"
 						value={newComment}
 						onChange={(e) => setNewComment(e.target.value)}
 						placeholder="What are your thoughts?"
@@ -233,34 +233,34 @@ const RedditCommentSection = memo(function RedditCommentSection({
 					
 					{/* Spoiler fields for forum comments */}
 					{contentType === "forum" && (
-						<div className="spoiler-form-section">
-							<label className="spoiler-checkbox-label">
+						<div className="mt-3 p-3 bg-[rgba(255,165,0,0.05)] border border-[rgba(255,165,0,0.2)] rounded-lg">
+							<label className="flex items-center gap-2 cursor-pointer">
 								<input
 									type="checkbox"
 									checked={isSpoiler}
 									onChange={(e) => setIsSpoiler(e.target.checked)}
-									className="spoiler-checkbox"
+									className="accent-[#ffa500] scale-[1.2] cursor-pointer"
 								/>
-								<span className="spoiler-checkbox-text">Mark as spoiler</span>
+								<span className="text-white/80 text-sm font-[BentonSansBook]">Mark as spoiler</span>
 							</label>
 							
 							{isSpoiler && (
-								<div className="spoiler-details">
-									<div className="spoiler-field">
-										<label className="spoiler-label">
+								<div className="mt-3 flex flex-col gap-3 pl-6 border-l-2 border-[rgba(255,165,0,0.3)]">
+									<div className="flex flex-col gap-1.5">
+										<label className="text-sm text-white/70">
 											What is this a spoiler for?
 											<input
 												type="text"
 												value={spoilerFor}
 												onChange={(e) => setSpoilerFor(e.target.value)}
 												placeholder="e.g., Spider-Man: No Way Home"
-												className="spoiler-input"
+												className="mt-1.5 w-full py-2 px-3 bg-white/5 border border-[rgba(255,165,0,0.2)] rounded-lg text-white text-sm font-[BentonSansRegular] transition-all duration-300 ease-in-out focus:outline-none focus:border-[#ffa500] focus:bg-[rgba(255,165,0,0.05)]"
 												required
 											/>
 										</label>
 									</div>
-									<div className="spoiler-field">
-										<label className="spoiler-label">
+									<div className="flex flex-col gap-1.5">
+										<label className="text-sm text-white/70">
 											Spoiler expires after (days)
 											<input
 												type="number"
@@ -268,7 +268,7 @@ const RedditCommentSection = memo(function RedditCommentSection({
 												onChange={(e) => setSpoilerDuration(Number(e.target.value))}
 												min="1"
 												max="365"
-												className="spoiler-input"
+												className="mt-1.5 w-full py-2 px-3 bg-white/5 border border-[rgba(255,165,0,0.2)] rounded-lg text-white text-sm font-[BentonSansRegular] transition-all duration-300 ease-in-out focus:outline-none focus:border-[#ffa500] focus:bg-[rgba(255,165,0,0.05)]"
 											/>
 										</label>
 									</div>
@@ -277,10 +277,10 @@ const RedditCommentSection = memo(function RedditCommentSection({
 						</div>
 					)}
 					
-					<div className="comment-form-actions-reddit">
+					<div className="flex justify-end gap-2 mt-3">
 						<button
 							type="button"
-							className="comment-cancel-reddit"
+							className="py-2 px-4 bg-transparent border-none text-white/60 text-sm cursor-pointer transition-all duration-200 ease-in-out disabled:opacity-30 disabled:cursor-not-allowed hover:not-disabled:text-white/80"
 							onClick={() => {
 								setNewComment("");
 								setIsSpoiler(false);
@@ -293,7 +293,7 @@ const RedditCommentSection = memo(function RedditCommentSection({
 						</button>
 						<button
 							type="submit"
-							className="comment-submit-reddit"
+							className="py-2 px-5 bg-[#ec1d24] border-none rounded-full text-white text-sm font-[BentonSansBold] cursor-pointer transition-all duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed hover:not-disabled:bg-[#d01c22]"
 							disabled={!newComment.trim() || isSubmitting || (isSpoiler && !spoilerFor.trim())}
 						>
 							{isSubmitting ? "Posting..." : "Comment"}
@@ -301,37 +301,22 @@ const RedditCommentSection = memo(function RedditCommentSection({
 					</div>
 				</form>
 			) : (
-				<div className="topic-locked" style={{ padding: "1rem", margin: "1rem 0" }}>
-					<p style={{ margin: 0, fontSize: "0.9rem" }}>
-						Please <a href="/auth" style={{ color: "#ec1d24" }}>sign in</a> to join the conversation
+				<div className="p-4 my-4 bg-white/5 rounded-lg">
+					<p className="m-0 text-[0.9rem] text-white/70">
+						Please <a href="/auth" className="text-[#ec1d24] hover:underline">sign in</a> to join the conversation
 					</p>
 				</div>
 			)}
 
 			{/* Filter options */}
 			{contentType === "forum" && !loading && rootComments.length > 0 && (
-				<div className="comment-filters" style={{
-					display: "flex",
-					alignItems: "center",
-					gap: "1rem",
-					padding: "0.75rem 1rem",
-					backgroundColor: "rgba(255, 255, 255, 0.03)",
-					borderRadius: "8px",
-					marginBottom: "1rem",
-					fontSize: "0.85rem"
-				}}>
-					<label style={{
-						display: "flex",
-						alignItems: "center",
-						gap: "0.5rem",
-						cursor: "pointer",
-						color: "rgba(255, 255, 255, 0.7)"
-					}}>
+				<div className="flex items-center gap-4 py-3 px-4 bg-white/3 rounded-lg mb-4 text-[0.85rem]">
+					<label className="flex items-center gap-2 cursor-pointer text-white/70">
 						<input
 							type="checkbox"
 							checked={hideDeletedWithoutReplies}
 							onChange={(e) => setHideDeletedWithoutReplies(e.target.checked)}
-							style={{ cursor: "pointer" }}
+							className="cursor-pointer"
 						/>
 						<span>Collapse deleted comments without replies</span>
 					</label>
@@ -340,20 +325,20 @@ const RedditCommentSection = memo(function RedditCommentSection({
 
 			{/* Comments list */}
 			{loading ? (
-				<div style={{ padding: "2rem", textAlign: "center", color: "rgba(255, 255, 255, 0.6)" }}>
+				<div className="py-8 text-center text-white/60">
 					Loading comments...
 				</div>
 			) : error ? (
-				<div style={{ padding: "2rem", textAlign: "center", color: "#dc3545" }}>
+				<div className="py-8 text-center text-[#dc3545]">
 					{error}
 				</div>
 			) : rootComments.length === 0 ? (
-				<div style={{ padding: "2rem", textAlign: "center", color: "rgba(255, 255, 255, 0.6)" }}>
+				<div className="py-8 text-center text-white/60">
 					<p>No comments yet. Be the first to share your thoughts!</p>
 				</div>
 			) : (
 				<>
-					<div className="comments-list">
+					<div className="flex flex-col gap-0">
 						{rootComments.map((comment) => (
 							<RedditComment
 								key={`${comment.id}-${hideDeletedWithoutReplies}`}
@@ -375,17 +360,11 @@ const RedditCommentSection = memo(function RedditCommentSection({
 					
 					{/* Load More button for forum comments */}
 					{contentType === "forum" && hasMore && (
-						<div style={{ 
-							display: "flex", 
-							justifyContent: "center", 
-							padding: "2rem 0",
-							borderTop: "1px solid rgba(255, 255, 255, 0.1)",
-							marginTop: "1rem"
-						}}>
+						<div className="flex justify-center py-8 border-t border-white/10 mt-4">
 							<button
 								onClick={loadMoreComments}
 								disabled={loadingMore}
-								className={`load-more-comments-btn${loadingMore ? " loading" : ""}`}
+								className={`bg-white/5 border border-white/20 text-white py-3 px-6 rounded-md cursor-pointer transition-all duration-200 ease-in-out text-[0.9rem] font-[BentonSansRegular] ${loadingMore ? "cursor-not-allowed opacity-60" : "hover:bg-white/10 hover:border-[#ec1d24]"}`}
 							>
 								{loadingMore ? "Loading more comments..." : "Load More Comments"}
 							</button>
@@ -398,24 +377,3 @@ const RedditCommentSection = memo(function RedditCommentSection({
 });
 
 export default RedditCommentSection;
-
-/* Add this CSS to your global stylesheet or a CSS module:
-.load-more-comments-btn {
-	background: rgba(255, 255, 255, 0.05);
-	border: 1px solid rgba(255, 255, 255, 0.2);
-	color: white;
-	padding: 0.75rem 1.5rem;
-	border-radius: 6px;
-	cursor: pointer;
-	transition: all 0.2s ease;
-	font-size: 0.9rem;
-	font-family: BentonSansRegular, sans-serif;
-}
-.load-more-comments-btn.loading {
-	cursor: not-allowed;
-}
-.load-more-comments-btn:not(.loading):hover {
-	background: rgba(255, 255, 255, 0.1);
-	border-color: #ec1d24;
-}
-*/
