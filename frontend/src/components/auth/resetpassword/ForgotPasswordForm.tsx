@@ -70,9 +70,16 @@ export default function ForgotPasswordForm({ onBack, onSuccess }) {
 				<button
 					type="submit"
 					disabled={isLoading}
-					className={`p-3 bg-[#ec1d24] text-white border-none rounded-md text-base font-medium cursor-pointer transition-all duration-300 relative overflow-hidden hover:enabled:bg-[#d81921] hover:enabled:-translate-y-0.5 hover:enabled:shadow-[0_6px_12px_rgba(0,0,0,0.15)] disabled:opacity-70 disabled:cursor-not-allowed ${isLoading ? "text-transparent after:content-[''] after:absolute after:w-5 after:h-5 after:top-1/2 after:left-1/2 after:-mt-2.5 after:-ml-2.5 after:rounded-full after:border-2 after:border-transparent after:border-t-white after:animate-spin" : ""}`}
+					className="p-3 bg-[#ec1d24] text-white border-none rounded-md text-base font-medium cursor-pointer transition-all duration-300 relative overflow-hidden hover:enabled:bg-[#d81921] hover:enabled:-translate-y-0.5 hover:enabled:shadow-[0_6px_12px_rgba(0,0,0,0.15)] disabled:opacity-70 disabled:cursor-not-allowed"
 				>
-					{isLoading ? "Sending..." : "Send Reset Link"}
+					<span className={isLoading ? "opacity-0" : ""}>
+						{isLoading ? "Sending..." : "Send Reset Link"}
+					</span>
+					{isLoading && (
+						<span className="absolute inset-0 flex items-center justify-center">
+							<span className="w-5 h-5 border-2 border-transparent border-t-white rounded-full animate-spin" />
+						</span>
+					)}
 				</button>
 
 				<button
