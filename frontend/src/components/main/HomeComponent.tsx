@@ -18,14 +18,17 @@ interface HomeProps {
 function Home({ latestBlog }: HomeProps): ReactNode {
 	return (
 		<div>
-			<div className="fade-in">
+			<div className="animate-[fadeIn_1s_ease]">
 				<HeroSection />
 
-				<section className="home-description">
-					<div className="home-container4">
-						<p className="home-paragraph">
+				{/* Description Section */}
+				<section className="w-full flex py-20 px-8 items-center flex-col bg-[#0a0a0a] relative overflow-hidden before:content-[''] before:absolute before:top-0 before:left-0 before:w-full before:h-px before:bg-linear-to-r before:from-transparent before:via-[#ec1d24] before:to-transparent max-md:py-8 max-md:px-6">
+					<div className="w-full flex max-w-[1200px] items-center flex-col relative">
+						<p className="text-white w-full font-[BentonSansBook] text-center leading-[1.8] py-8 px-6 mb-8 bg-[#0a0a0a]/50 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.2)] backdrop-blur-md border border-[#ec1d24]/10 transform translate-y-[30px] opacity-0 animate-[fadeUp_1s_forwards_0.3s_ease-out] text-[clamp(1.125rem,2vw,1.25rem)] max-sm:text-base max-sm:leading-normal">
 							<span>Welcome to </span>
-							<span className="home-text10">MCU REDEFINED</span>
+							<span className="text-[#ec1d24] font-[BentonSansBold] relative inline-block">
+								MCU REDEFINED
+							</span>
 							<span>
 								, the fanpage dedicated to all Marvel enthusiasts! Immerse
 								yourself in a world where heroes and villains collide, as we
@@ -42,14 +45,17 @@ function Home({ latestBlog }: HomeProps): ReactNode {
 					</div>
 				</section>
 
-				<section className="home-cards">
-					<div className="home-card">
-						<div className="home-row">
-							<div className="home-main">
-								<div className="home-content01">
-									<h2 className="home-header1">Latest Blog Post</h2>
+				{/* Latest Blog Card Section */}
+				<section className="w-full flex py-12 px-8 items-center flex-col bg-[#0a0a0a] max-md:py-8 max-md:px-6">
+					<div className="w-full flex max-w-[1200px] bg-[#ec1d24]/10 rounded-xl py-12 px-8 shadow-[0_10px_30px_rgba(0,0,0,0.3)] backdrop-blur-md border border-[#ec1d24]/10 mb-12 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_15px_40px_rgba(236,29,36,0.2)] max-md:py-8 max-md:px-6 max-sm:py-6 max-sm:px-4">
+						<div className="w-full flex items-center justify-between gap-8 max-md:flex-col">
+							<div className="flex-1 flex flex-col gap-6">
+								<div className="flex flex-col gap-4">
+									<h2 className="text-white font-[BentonSansBold] leading-[1.2] text-[clamp(2rem,3vw,3rem)] max-sm:text-[1.75rem]">
+										Latest Blog Post
+									</h2>
 									{latestBlog.id === 0 ? (
-										<p className="home-description2">
+										<p className="text-white/80 font-[BentonSansBook] leading-[1.6] text-[clamp(1rem,1.5vw,1.125rem)] max-sm:text-sm">
 											Stay up-to-date with the latest news from the Marvel
 											Cinematic Universe. Explore our blog for insights on
 											upcoming releases, production updates, and
@@ -57,12 +63,13 @@ function Home({ latestBlog }: HomeProps): ReactNode {
 										</p>
 									) : (
 										<div>
-											<h3 className="home-blog-title">{latestBlog.title}</h3>
-											<p className="home-blog-meta">
+											<h3 className="text-white font-[BentonSansBold] text-xl mb-2">
+												{latestBlog.title}
+											</h3>
+											<p className="text-white/60 font-[BentonSansRegular] text-sm">
 												By {latestBlog.author} •{" "}
 												{new Date(latestBlog.created_at).toLocaleDateString()}
 											</p>
-											{/* Removed home-description2 when blog is received */}
 										</div>
 									)}
 								</div>
@@ -73,23 +80,23 @@ function Home({ latestBlog }: HomeProps): ReactNode {
 								>
 									<button
 										type="button"
-										className="home-learn button"
+										className="flex items-center p-0 bg-transparent text-[#ec1d24] font-[BentonSansRegular] text-lg transition-transform duration-300 border-none mt-4 cursor-pointer hover:translate-x-2"
 										name="button"
 									>
-										<span className="home-text15">
+										<span className="mr-2">
 											{latestBlog.id === 0 ? "Browse Blogs" : "Read More"}
 										</span>
 										<Image
 											alt="arrowsvg"
 											src="/images/Icons/arrow-2.svg"
-											className="home-image02"
+											className="w-4 h-4 object-contain filter-[invert(21%)_sepia(100%)_saturate(5281%)_hue-rotate(349deg)_brightness(94%)_contrast(103%)]"
 											width={30}
 											height={30}
 										/>
 									</button>
 								</Link>
 							</div>
-							<div className="home-image-container">
+							<div className="w-[300px] h-[200px] flex justify-center items-center relative overflow-hidden rounded-xl bg-white/5 shrink-0 max-md:w-full max-md:h-[180px]">
 								<Image
 									alt="blog thumbnail"
 									src={
@@ -98,7 +105,7 @@ function Home({ latestBlog }: HomeProps): ReactNode {
 											: latestBlog.thumbnail_path.link ||
 												"/images/DailyBugle.svg"
 									}
-									className="home-image03"
+									className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
 									width={240}
 									height={180}
 								/>
@@ -106,12 +113,16 @@ function Home({ latestBlog }: HomeProps): ReactNode {
 						</div>
 					</div>
 				</section>
-				<section className="home-join-us">
-					<div className="home-content11">
-						<div className="home-main2">
-							<div className="home-heading2">
-								<h2 className="home-header4">MCU Timeline</h2>
-								<p className="home-caption10">
+
+				{/* MCU Timeline Section */}
+				<section className="w-full flex py-12 px-8 items-center flex-col bg-[#0a0a0a] max-md:py-8 max-md:px-6">
+					<div className="w-full flex max-w-[1200px] bg-linear-to-br from-[#ec1d24]/5 to-black/30 rounded-xl flex-col py-12 px-8 shadow-[0_10px_30px_rgba(0,0,0,0.3)] overflow-hidden relative group max-md:py-8 max-md:px-6 max-sm:py-6 max-sm:px-4">
+						<div className="flex flex-col items-center gap-8 z-2">
+							<div className="flex flex-col items-center text-center gap-4">
+								<h2 className="text-white font-[BentonSansBold] leading-[1.2] text-[clamp(2.5rem,4vw,3.5rem)] max-sm:text-[1.75rem]">
+									MCU Timeline
+								</h2>
+								<p className="text-white/80 font-[BentonSansBook] max-w-[800px] leading-[1.6] text-[clamp(1rem,1.5vw,1.25rem)] max-sm:text-sm">
 									Follow the Marvel Cinematic Universe Timeline: Unveil the Epic
 									Saga in Chronological Order
 								</p>
@@ -119,7 +130,7 @@ function Home({ latestBlog }: HomeProps): ReactNode {
 							<Link href="/release-slate">
 								<button
 									type="button"
-									className="home-view1 button1"
+									className="inline-flex items-center justify-center py-3.5 px-8 bg-[#ec1d24] text-white font-[BentonSansRegular] text-base border-none rounded-md cursor-pointer transition-all duration-300 uppercase tracking-[0.5px] mt-4 shadow-[0_4px_10px_rgba(236,29,36,0.4)] hover:bg-[#d01c22] hover:-translate-y-[3px] hover:shadow-[0_6px_15px_rgba(236,29,36,0.5)]"
 									name="button"
 								>
 									Unveil MCU Timeline
@@ -129,7 +140,7 @@ function Home({ latestBlog }: HomeProps): ReactNode {
 						<Image
 							alt="timelineimage"
 							src="/images/Timeline.png"
-							className="home-image20"
+							className="w-full h-full object-cover mt-12 transition-transform duration-300 group-hover:translate-x-5"
 							width={2300}
 							height={238}
 							style={{ objectFit: "contain" }}
@@ -137,26 +148,29 @@ function Home({ latestBlog }: HomeProps): ReactNode {
 					</div>
 				</section>
 
-				<section className="home-get-yours">
-					<div className="home-row1">
-						<div className="home-column">
-							<div className="home-card09">
+				{/* Community Section */}
+				<section className="w-full flex py-12 px-8 items-stretch flex-row justify-center bg-[#0a0a0a] gap-8 max-w-[1200px] mx-auto max-xl:flex-col max-md:py-8 max-md:gap-4">
+					<div className="flex flex-1 gap-8 h-full max-md:flex-row max-md:h-auto max-md:gap-4">
+						{/* Avengers Card */}
+						<div className="flex-1 flex flex-col">
+							<div className="bg-linear-to-br from-black/30 to-[#ec1d24]/5 rounded-xl p-8 h-full flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.3)] border border-[#ec1d24]/10 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_15px_40px_rgba(236,29,36,0.2)] group max-md:p-6">
 								<Image
 									alt="avengerslogo"
 									src="/images/AvengersLogo.png"
-									className="home-image21"
+									className="w-full max-w-[200px] h-auto object-contain transition-transform duration-300 group-hover:scale-110"
 									width={300}
 									height={300}
 									style={{ objectFit: "contain" }}
 								/>
 							</div>
 						</div>
-						<div className="home-column1">
-							<div className="home-card10">
+						{/* Guardians Card */}
+						<div className="flex-1 flex flex-col">
+							<div className="bg-linear-to-br from-black/30 to-[#ec1d24]/5 rounded-xl p-8 h-full flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.3)] border border-[#ec1d24]/10 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_15px_40px_rgba(236,29,36,0.2)] group max-md:p-6">
 								<Image
 									alt="guardianslogo"
 									src="/images/GuardiansLogo.png"
-									className="home-image22"
+									className="w-full max-w-[200px] h-auto object-contain transition-transform duration-300 group-hover:scale-110"
 									width={300}
 									height={320}
 									style={{ objectFit: "contain" }}
@@ -164,11 +178,14 @@ function Home({ latestBlog }: HomeProps): ReactNode {
 							</div>
 						</div>
 					</div>
-					<div className="home-column2">
-						<div className="home-card11">
-							<div className="home-content12">
-								<h2 className="home-header5">Community Forum</h2>
-								<p className="home-description3">
+					{/* Forum Card */}
+					<div className="flex-2 flex flex-col max-xl:w-full">
+						<div className="bg-linear-to-br from-[#ec1d24]/10 to-black/30 rounded-xl py-12 px-8 h-full flex flex-col gap-8 shadow-[0_10px_30px_rgba(0,0,0,0.3)] border border-[#ec1d24]/10 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_15px_40px_rgba(236,29,36,0.2)] max-sm:py-6 max-sm:px-4">
+							<div className="flex flex-col gap-6">
+								<h2 className="text-white font-[BentonSansBold] leading-[1.2] text-[clamp(2rem,3vw,2.5rem)] max-sm:text-[1.75rem]">
+									Community Forum
+								</h2>
+								<p className="text-white/80 font-[BentonSansBook] leading-[1.6] text-[clamp(1rem,1.5vw,1.125rem)] max-sm:text-sm">
 									Join the conversation with fellow Marvel enthusiasts! Share
 									your theories, discuss the latest releases, and connect with
 									a vibrant community of fans. Whether you want to debate plot
@@ -179,7 +196,7 @@ function Home({ latestBlog }: HomeProps): ReactNode {
 							<Link href="/forum">
 								<button
 									type="button"
-									className="home-button6 button1"
+									className="inline-flex items-center justify-center py-3.5 px-8 bg-[#ec1d24] text-white font-[BentonSansRegular] text-base border-none rounded-md cursor-pointer transition-all duration-300 uppercase tracking-[0.5px] mt-auto self-start shadow-[0_4px_10px_rgba(236,29,36,0.4)] hover:bg-[#d01c22] hover:-translate-y-[3px] hover:shadow-[0_6px_15px_rgba(236,29,36,0.5)]"
 									value="cardforumredir"
 									name="button"
 								>

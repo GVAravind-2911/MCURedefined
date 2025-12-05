@@ -6,10 +6,10 @@ import ImpersonationBanner from "@/components/shared/ImpersonationBanner";
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
 	return (
-		<div className="home-container">
+		<div className="pt-[100px] mt-0 min-h-screen bg-black">
 			<ImpersonationBanner />
 			<HeaderWrapper />
-			<div className="main-content-wrapper">{children}</div>
+			<div className="min-h-[calc(150vh-80px-250px)] flex flex-col w-full">{children}</div>
 			<Footer />
 		</div>
 	);

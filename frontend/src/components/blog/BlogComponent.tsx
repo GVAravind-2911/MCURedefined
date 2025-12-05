@@ -96,7 +96,7 @@ const BlogsComponent: React.FC<BlogComponentProps> = ({
 	}, [currentPage, totalPages, isSearchFocused, handlePageChange]);
 
 	return (
-		<div className="flex flex-col w-[90%] max-w-[1200px] mx-auto py-8" ref={containerRef}>
+		<div className="flex flex-col w-[95%] sm:w-[90%] max-w-[1200px] mx-auto py-4 sm:py-6 md:py-8" ref={containerRef}>
 			<BlogFilters
 				searchQuery={searchQuery}
 				setSearchQuery={setSearchQuery} // Add this line
@@ -116,18 +116,15 @@ const BlogsComponent: React.FC<BlogComponentProps> = ({
 						<LoadingSpinner />
 					</div>
 				) : blogs && blogs.length > 0 ? (
-					<div className="flex flex-col items-center w-full m-0 p-0 animate-[fadeIn_0.3s_ease-in]">
-						<hr className="w-full h-px bg-white/10 my-2.5 border-0" />
+					<div className="flex flex-col gap-4 sm:gap-5 w-full animate-[fadeIn_0.3s_ease-in]">
 						{blogs.map((blog) => (
-							<React.Fragment key={blog.id}>
-								<BlogCard
-									blog={blog}
-									path={path}
-									handleNavigation={handleNavigation}
-									handleTagClick={handleTagClick}
-								/>
-								<hr className="w-full h-px bg-white/10 my-2.5 border-0" />
-							</React.Fragment>
+							<BlogCard
+								key={blog.id}
+								blog={blog}
+								path={path}
+								handleNavigation={handleNavigation}
+								handleTagClick={handleTagClick}
+							/>
 						))}
 					</div>
 				) : (

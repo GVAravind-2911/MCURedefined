@@ -1,8 +1,5 @@
 import "@/styles/globals.css";
 import "@/styles/LoadingSpinner.css";
-import "@/styles/header.css";
-import "@/styles/enhanced-home.css";
-import "@/styles/footer.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Layout from "@/components/main/Layout";

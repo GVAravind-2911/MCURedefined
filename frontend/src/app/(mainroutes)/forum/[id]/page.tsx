@@ -203,7 +203,7 @@ export default function ForumTopicPage(): React.ReactElement {
 
 	if (error || !topic) {
 		return (
-			<div className="min-h-screen bg-[linear-gradient(135deg,#0c0c0c_0%,#1a1a1a_50%,#0c0c0c_100%)] text-white py-8">
+			<div className="min-h-screen bg-[linear-gradient(135deg,#0a0a0a_0%,#1a1a1a_50%,#0a0a0a_100%)] text-white py-8">
 				<div className="max-w-[1000px] mx-auto px-4">
 					<BackToForumButton onClick={() => router.push("/forum")} />
 					<div className="text-center py-16 px-8 bg-[rgba(40,40,40,0.3)] border border-white/10 rounded-lg backdrop-blur-[10px]">
@@ -223,7 +223,7 @@ export default function ForumTopicPage(): React.ReactElement {
 	}
 
 	return (
-		<div className="min-h-screen bg-[linear-gradient(135deg,#0c0c0c_0%,#1a1a1a_50%,#0c0c0c_100%)] text-white py-8">
+		<div className="min-h-screen bg-[linear-gradient(135deg,#0a0a0a_0%,#1a1a1a_50%,#0a0a0a_100%)] text-white py-8">
 			<div className="max-w-[1000px] mx-auto px-4">
 				<BackToForumButton onClick={() => router.push("/forum")} />
 

@@ -67,26 +67,26 @@ const BlogFilters: React.FC<BlogFiltersProps> = memo(({
 	}, [selectedTags, handleSearch, searchQuery, selectedAuthor]);
 
 	return (
-		<div className="mb-8 animate-[fadeIn_0.5s_ease]">
-			<h2 className="flex items-center mb-8 font-[BentonSansBold] text-white">
-				<span className="text-[28px] mr-4 whitespace-nowrap">Explore Posts</span>
-				<div className="grow h-[3px] bg-linear-to-r from-[#ec1d24] to-transparent" />
+		<div className="mb-4 sm:mb-6 md:mb-8 animate-[fadeIn_0.5s_ease]">
+			<h2 className="flex items-center mb-4 sm:mb-6 md:mb-8 font-[BentonSansBold] text-white">
+				<span className="text-xl sm:text-2xl md:text-[28px] mr-3 sm:mr-4 whitespace-nowrap">Explore Posts</span>
+				<div className="grow h-0.5 sm:h-[3px] bg-linear-to-r from-[#ec1d24] to-transparent" />
 			</h2>
 
-			<div className="relative flex mb-4 rounded-[30px] overflow-hidden bg-white/10 border border-white/20 transition-shadow duration-300 focus-within:shadow-[0_0_0_2px_rgba(236,29,36,0.5)]">
+			<div className="relative flex mb-3 sm:mb-4 rounded-full overflow-hidden bg-white/10 border border-white/20 transition-shadow duration-300 focus-within:shadow-[0_0_0_2px_rgba(236,29,36,0.5)]">
 				<input
 					type="text"
 					value={searchQuery}
 					onChange={(e) => setSearchQuery(e.target.value)}
 					onFocus={() => setIsSearchFocused(true)}
 					onBlur={() => setIsSearchFocused(false)}
-					placeholder="Search by title or description..."
-							className="grow py-3 px-5 border-none bg-transparent text-white text-base font-[BentonSansRegular] w-full outline-none placeholder:text-white/60"
+					placeholder="Search posts..."
+					className="grow py-2.5 sm:py-3 px-4 sm:px-5 border-none bg-transparent text-white text-sm sm:text-base font-[BentonSansRegular] w-full outline-none placeholder:text-white/60"
 					aria-label="Search blogs"
 				/>
 				{searchQuery && (
 					<button
-						className="absolute right-[50px] top-1/2 -translate-y-1/2 bg-transparent border-none text-white/60 cursor-pointer flex items-center justify-center p-0 w-6 h-6 mr-[1.5%] hover:text-white"
+						className="absolute right-[45px] sm:right-[50px] top-1/2 -translate-y-1/2 bg-transparent border-none text-white/60 cursor-pointer flex items-center justify-center p-0 w-5 h-5 sm:w-6 sm:h-6 hover:text-white active:scale-90"
 						onClick={() => handleSearch("", selectedTags, selectedAuthor)}
 						type="button"
 						aria-label="Clear search"
@@ -94,8 +94,8 @@ const BlogFilters: React.FC<BlogFiltersProps> = memo(({
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 0 24 24"
-							width="16"
-							height="16"
+							width="14"
+							height="14"
 						>
 							<title>Clear search</title>
 							<path
@@ -106,7 +106,7 @@ const BlogFilters: React.FC<BlogFiltersProps> = memo(({
 					</button>
 				)}
 				<button
-					className="bg-transparent text-white/70 border-none py-2.5 px-5 cursor-pointer flex items-center justify-center transition-all duration-200 border-l border-l-white/20 hover:bg-[#ec1d24]/20 hover:text-white"
+					className="bg-transparent text-white/70 border-none py-2 sm:py-2.5 px-3 sm:px-5 cursor-pointer flex items-center justify-center transition-all duration-200 border-l border-l-white/20 hover:bg-[#ec1d24]/20 hover:text-white active:bg-[#ec1d24]/30"
 					onClick={() =>
 						handleSearch(searchQuery, selectedTags, selectedAuthor)
 					}
@@ -116,8 +116,9 @@ const BlogFilters: React.FC<BlogFiltersProps> = memo(({
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						viewBox="0 0 24 24"
-						width="18"
-						height="18"
+						width="16"
+						height="16"
+						className="sm:w-[18px] sm:h-[18px]"
 					>
 						<title>Search</title>
 						<path
@@ -128,7 +129,7 @@ const BlogFilters: React.FC<BlogFiltersProps> = memo(({
 				</button>
 			</div>
 
-			<div className="flex gap-4 flex-wrap mt-4 max-md:flex-col max-md:gap-2">
+			<div className="flex gap-2 sm:gap-3 md:gap-4 flex-wrap mt-3 sm:mt-4">
 				<TagMultiSelect
 					selectedTags={selectedTags}
 					tags={tags}
@@ -138,9 +139,9 @@ const BlogFilters: React.FC<BlogFiltersProps> = memo(({
 					handleSearch={handleSearch}
 				/>
 
-				<div className="relative z-10 max-md:w-full" ref={authorDropdownRef}>
+				<div className="relative z-10" ref={authorDropdownRef}>
 					<button
-						className={`bg-white/10 border border-white/20 text-white py-2.5 px-5 rounded-[20px] cursor-pointer flex items-center gap-2 font-[BentonSansRegular] transition-all duration-200 hover:bg-white/15 ${selectedAuthor ? "bg-[#ec1d24]/20 border-[#ec1d24]/60" : ""}`}
+						className={`bg-white/10 border border-white/20 text-white py-2 sm:py-2.5 px-3 sm:px-5 rounded-full text-sm sm:text-base cursor-pointer flex items-center gap-1.5 sm:gap-2 font-[BentonSansRegular] transition-all duration-200 hover:bg-white/15 active:scale-95 ${selectedAuthor ? "bg-[#ec1d24]/20 border-[#ec1d24]/60" : ""}`}
 						onClick={() => setShowAuthorFilter(!showAuthorFilter)}
 						type="button"
 						aria-haspopup="true"
@@ -159,7 +160,7 @@ const BlogFilters: React.FC<BlogFiltersProps> = memo(({
 						</svg>
 					</button>
 					{showAuthorFilter && (
-						<div className="absolute top-[calc(100%+8px)] left-0 min-w-[220px] max-h-[300px] overflow-y-auto bg-[#0d0d0d] border border-white/20 rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.8)] z-100 animate-[dropdownFade_0.2s_ease] scrollbar-thin scrollbar-thumb-[#ec1d24]/60 scrollbar-track-[#1a1a1a] max-md:w-full max-md:left-0 max-md:right-0" role="menu">
+						<div className="absolute top-[calc(100%+8px)] left-0 min-w-[180px] sm:min-w-[220px] max-h-[250px] sm:max-h-[300px] overflow-y-auto bg-[#0a0a0a] border border-white/20 rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.8)] z-100 animate-[dropdownFade_0.2s_ease] scrollbar-thin scrollbar-thumb-[#ec1d24]/60 scrollbar-track-[#1a1a1a]" role="menu">
 							{authors.length > 0 ? (
 								authors.map((author) => (
 									<button
@@ -168,7 +169,7 @@ const BlogFilters: React.FC<BlogFiltersProps> = memo(({
 											handleSearch(searchQuery, selectedTags, author);
 											setShowAuthorFilter(false);
 										}}
-										className={`block w-full text-left py-3 px-4 border-none cursor-pointer border-b border-b-white/10 transition-all duration-200 ${selectedAuthor === author ? "bg-[#ec1d24] text-white font-[BentonSansBold]" : "bg-transparent text-white/90 hover:bg-white/10 hover:text-white"}`}
+										className={`block w-full text-left py-2.5 sm:py-3 px-3 sm:px-4 text-sm sm:text-base border-none cursor-pointer border-b border-b-white/10 transition-all duration-200 ${selectedAuthor === author ? "bg-[#ec1d24] text-white font-[BentonSansBold]" : "bg-transparent text-white/90 hover:bg-white/10 hover:text-white active:bg-white/15"}`}
 										type="button"
 										role="menuitem"
 									>
@@ -184,20 +185,20 @@ const BlogFilters: React.FC<BlogFiltersProps> = memo(({
 
 				{activeFilters.length > 0 && (
 					<button
-						className="bg-transparent border border-[#ec1d24]/70 text-[#ec1d24]/90 py-2.5 px-5 rounded-[20px] cursor-pointer font-[BentonSansRegular] transition-all duration-200 hover:bg-[#ec1d24]/10 hover:text-[#ec1d24]"
+						className="bg-transparent border border-[#ec1d24]/70 text-[#ec1d24]/90 py-2 sm:py-2.5 px-3 sm:px-5 rounded-full text-sm sm:text-base cursor-pointer font-[BentonSansRegular] transition-all duration-200 hover:bg-[#ec1d24]/10 hover:text-[#ec1d24] active:bg-[#ec1d24]/20"
 						onClick={resetFilters}
 						type="button"
 						aria-label="Clear all filters"
 					>
-						Clear All Filters
+						Clear All
 					</button>
 				)}
 			</div>
 
 			{activeFilters.length > 0 && (
-				<div className="flex flex-wrap items-center my-3 py-2 px-3 bg-white/5 rounded-lg max-md:flex-col max-md:items-start">
-					<span className="font-bold mr-2.5 text-white/70 text-sm max-md:mb-2">Active filters:</span>
-					<div className="flex flex-wrap gap-2 max-md:w-full">
+				<div className="flex flex-wrap items-center my-2 sm:my-3 py-2 px-2.5 sm:px-3 bg-white/5 rounded-lg gap-2">
+					<span className="font-bold mr-1.5 sm:mr-2.5 text-white/70 text-xs sm:text-sm">Active:</span>
+					<div className="flex flex-wrap gap-1.5 sm:gap-2">
 						{activeFilters.map((filter) => (
 							<span
 								key={`${filter.type}-${filter.value}`}

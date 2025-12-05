@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function AuthLayout({ children }) {
 	return (
-		<div className="fixed inset-0 bg-[#121212] z-9999">
+		<div className="fixed inset-0 bg-[#0a0a0a] z-9999">
 			{/* Gradient layer with more color stops for smoother transition */}
 			<div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(236,29,36,0.2)_0%,rgba(118,14,18,0.15)_25%,rgba(60,7,9,0.1)_50%,rgba(0,0,0,0.5)_75%,rgba(0,0,0,0.9)_100%)]" />
 			{/* Noise overlay to reduce banding */}

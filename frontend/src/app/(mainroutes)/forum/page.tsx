@@ -254,7 +254,7 @@ export default function ForumPage(): React.ReactElement {
 	};
 
 	return (
-		<div className="w-full min-h-screen bg-[linear-gradient(135deg,#0c0c0c_0%,#1a1a1a_50%,#0c0c0c_100%)] pt-20 animate-[fadeIn_0.5s_ease]">
+		<div className="w-full min-h-screen bg-[linear-gradient(135deg,#0a0a0a_0%,#1a1a1a_50%,#0a0a0a_100%)] pt-20 animate-[fadeIn_0.5s_ease]">
 			<div className="max-w-[1200px] mx-auto p-8 max-md:p-4">
 				{/* Forum Header */}
 				<div className="flex justify-between items-center mb-8 p-8 max-md:p-6 bg-[linear-gradient(135deg,rgba(236,29,36,0.1)_0%,rgba(40,40,40,0.4)_100%)] border border-[rgba(236,29,36,0.5)] rounded-xl backdrop-blur-[10px] relative overflow-hidden max-md:flex-col max-md:gap-4 max-md:items-stretch before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-[3px] before:bg-[linear-gradient(90deg,transparent,#ec1d24,transparent)]">

@@ -112,14 +112,14 @@ export default function VerifyEmailPage() {
 
 	if (isLoading) {
 		return (
-			<div className="flex justify-center items-center min-h-screen bg-[#121212]">
+			<div className="flex justify-center items-center min-h-screen bg-[#0a0a0a]">
 				<div className="w-12 h-12 rounded-full border-2 border-transparent border-t-[#ec1d24] border-b-[#ec1d24] animate-spin" />
 			</div>
 		);
 	}
 
 	return (
-		<div className="min-h-screen flex flex-col items-center justify-center px-4 bg-[#121212] bg-linear-to-r from-[rgba(236,29,36,0.2)] to-[rgba(0,0,0,0.9)]">
+		<div className="min-h-screen flex flex-col items-center justify-center px-4 bg-[#0a0a0a] bg-linear-to-r from-[rgba(236,29,36,0.2)] to-[rgba(0,0,0,0.9)]">
 			<div className="max-w-md w-full mx-auto">
 				<div className="bg-[#1a1a1a] rounded-lg shadow-[0_10px_30px_rgba(0,0,0,0.8)] p-8 mb-8 border-t-4 border-[#ec1d24]">
 					{/* Logo */}

@@ -3,6 +3,7 @@ import type React from "react";
 import Image from "next/image";
 import moment from "moment";
 import type { BlogList } from "@/types/BlogTypes";
+import { Calendar, Clock, User } from "lucide-react";
 
 interface BlogCardProps {
 	blog: BlogList;
@@ -23,47 +24,104 @@ const BlogCard = ({
 	return (
 		<a
 			href={`/${path}/${blog.id}`}
-			className="group flex flex-col md:flex-row w-full p-3 md:p-5 my-2.5 bg-white/3 rounded-xl transition-all duration-300 no-underline overflow-hidden shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:bg-white/5 hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(0,0,0,0.2)]"
+			className="group flex flex-col sm:flex-row w-full bg-white/2 rounded-xl sm:rounded-2xl transition-all duration-300 no-underline overflow-hidden border border-white/5 hover:border-white/10 hover:bg-white/4 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)] active:scale-[0.99]"
 			onClick={(e) => handleNavigation(e, blog.id)}
 		>
-			<div className="w-full md:w-60 h-[180px] md:h-[180px] mb-4 md:mb-0 rounded-lg overflow-hidden shrink-0 relative bg-[#111]">
+			{/* Thumbnail Section */}
+			<div className="relative w-full sm:w-56 md:w-64 lg:w-72 h-48 sm:h-auto sm:min-h-[200px] shrink-0 overflow-hidden bg-black/30">
 				<Image
 					src={blog.thumbnail_path.link}
-					width={400}
-					height={250}
+					fill
+					sizes="(max-width: 640px) 100vw, 288px"
 					alt={blog.title}
-					className="w-full h-full object-cover transition-transform duration-400 group-hover:scale-105"
+					className="object-cover transition-transform duration-500 group-hover:scale-105"
 				/>
-			</div>
-			<div className="grow p-0 md:pl-5 flex flex-col">
-				<h2 className="font-[BentonSansBold] text-lg md:text-2xl m-0 mb-2 md:mb-3 text-white leading-[1.3]">{blog.title}</h2>
-				<div className="mb-2 md:mb-3 flex flex-col md:flex-row flex-wrap gap-2 md:gap-4">
-					<p className="text-sm m-0 text-[#ec1d24] font-[BentonSansRegular]">By: {blog.author}</p>
-					<p className="text-sm m-0 text-white/60 font-[BentonSansRegular]">
-						Posted: {moment(blog.created_at).format("MMM D, YYYY")}
-					</p>
-					{blog.updated_at && (
-						<p className="text-sm m-0 text-[#ec1d24]/80 font-[BentonSansRegular]">
-							Updated: {moment(blog.updated_at).format("MMM D, YYYY")}
-						</p>
-					)}
+				{/* Gradient Overlay */}
+				<div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent sm:bg-linear-to-r sm:from-transparent sm:via-transparent sm:to-black/20" />
+				
+				{/* Mobile Date Badge */}
+				<div className="absolute bottom-3 left-3 sm:hidden flex items-center gap-1.5 px-2.5 py-1 bg-black/60 backdrop-blur-sm rounded-full">
+					<Calendar className="w-3 h-3 text-[#ec1d24]" />
+					<span className="text-xs text-white/90 font-[BentonSansRegular]">
+						{moment(blog.created_at).format("MMM D, YYYY")}
+					</span>
 				</div>
-				<p className="text-sm md:text-base leading-relaxed text-white/80 m-0 mb-auto font-[BentonSansRegular]">{blog.description}</p>
+			</div>
+
+			{/* Content Section */}
+			<div className="flex-1 p-4 sm:p-5 md:p-6 flex flex-col min-w-0">
+				{/* Tags */}
 				{blog.tags && blog.tags.length > 0 && (
-					<div className="flex flex-wrap gap-2 mt-3 md:mt-4">
-						{blog.tags.map((tag) => (
+					<div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3">
+						{blog.tags.slice(0, 3).map((tag) => (
 							<button
 								key={`${blog.id}-${tag}`}
-								className="bg-transparent text-[#ec1d24] text-[13px] py-1.5 px-3 rounded-2xl cursor-pointer transition-all duration-200 border border-[#ec1d24]/50 font-[BentonSansRegular] before:content-['#'] hover:bg-[#ec1d24]/10 hover:border-[#ec1d24]/80"
+								className="bg-[#ec1d24]/10 text-[#ec1d24] text-[10px] sm:text-xs py-1 px-2.5 sm:px-3 rounded-full cursor-pointer transition-all duration-200 border border-[#ec1d24]/20 font-[BentonSansRegular] hover:bg-[#ec1d24]/20 hover:border-[#ec1d24]/40 active:scale-95"
 								onClick={(e) => handleTagClick(e, tag)}
 								type="button"
 								aria-label={`Filter by tag: ${tag}`}
 							>
-								{tag}
+								<span className="opacity-60">#</span>{tag}
 							</button>
 						))}
+						{blog.tags.length > 3 && (
+							<span className="text-[10px] sm:text-xs py-1 px-2 text-white/40 font-[BentonSansRegular] self-center">
+								+{blog.tags.length - 3}
+							</span>
+						)}
 					</div>
 				)}
+
+				{/* Title */}
+				<h2 className="font-[BentonSansBold] text-lg sm:text-xl md:text-2xl text-white leading-snug line-clamp-2 mb-2 sm:mb-3 group-hover:text-[#ec1d24] transition-colors duration-300">
+					{blog.title}
+				</h2>
+
+				{/* Description */}
+				<p className="text-sm sm:text-[15px] leading-relaxed text-white/50 mb-4 font-[BentonSansRegular] line-clamp-2 sm:line-clamp-3 flex-1">
+					{blog.description}
+				</p>
+
+				{/* Meta Info */}
+				<div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-3 border-t border-white/5">
+					{/* Author */}
+					<div className="flex items-center gap-1.5 text-white/60">
+						<User className="w-3.5 h-3.5 text-[#ec1d24]" />
+						<span className="text-xs sm:text-sm font-[BentonSansRegular]">
+							{blog.author}
+						</span>
+					</div>
+
+					<span className="hidden sm:block w-px h-4 bg-white/20" />
+
+					{/* Date */}
+					<div className="hidden sm:flex items-center gap-1.5 text-white/50">
+						<Calendar className="w-3.5 h-3.5" />
+						<span className="text-xs sm:text-sm font-[BentonSansRegular]">
+							{moment(blog.created_at).format("MMM D, YYYY")}
+						</span>
+					</div>
+
+					{blog.updated_at && (
+						<>
+							<span className="hidden sm:block w-px h-4 bg-white/20" />
+							<div className="flex items-center gap-1.5 text-[#ec1d24]/60">
+								<Clock className="w-3.5 h-3.5" />
+								<span className="text-xs font-[BentonSansRegular]">
+									Updated {moment(blog.updated_at).format("MMM D")}
+								</span>
+							</div>
+						</>
+					)}
+
+					{/* Read More Arrow (appears on hover) */}
+					<div className="ml-auto flex items-center gap-1 text-[#ec1d24] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+						<span className="text-xs font-[BentonSansRegular]">Read</span>
+						<svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+						</svg>
+					</div>
+				</div>
 			</div>
 		</a>
 	);

@@ -176,7 +176,7 @@ export default function ResetPasswordPage() {
 
 	if (!isTokenValid) {
 		return (
-			<div className="min-h-screen flex flex-col items-center justify-center px-4 bg-[#121212] bg-linear-to-r from-[rgba(236,29,36,0.2)] to-[rgba(0,0,0,0.9)]">
+			<div className="min-h-screen flex flex-col items-center justify-center px-4 bg-[#0a0a0a] bg-linear-to-r from-[rgba(236,29,36,0.2)] to-[rgba(0,0,0,0.9)]">
 				<div className="max-w-md w-full mx-auto">
 					<div className="bg-[#1a1a1a] rounded-lg shadow-[0_10px_30px_rgba(0,0,0,0.8)] p-8 mb-8 border-t-4 border-[#ec1d24] relative overflow-hidden after:content-[''] after:absolute after:top-0 after:right-0 after:w-[100px] after:h-[100px] after:bg-[radial-gradient(circle_at_top_right,rgba(236,29,36,0.15),transparent_70%)] after:z-0">
 						<div className="text-center mb-6 relative z-10">
@@ -211,7 +211,7 @@ export default function ResetPasswordPage() {
 
 	if (isSuccess) {
 		return (
-			<div className="min-h-screen flex flex-col items-center justify-center px-4 bg-[#121212] bg-linear-to-r from-[rgba(236,29,36,0.2)] to-[rgba(0,0,0,0.9)]">
+			<div className="min-h-screen flex flex-col items-center justify-center px-4 bg-[#0a0a0a] bg-linear-to-r from-[rgba(236,29,36,0.2)] to-[rgba(0,0,0,0.9)]">
 				<div className="max-w-md w-full mx-auto">
 					<div className="bg-[#1a1a1a] rounded-lg shadow-[0_10px_30px_rgba(0,0,0,0.8)] p-8 mb-8 border-t-4 border-[#ec1d24] relative overflow-hidden after:content-[''] after:absolute after:top-0 after:right-0 after:w-[100px] after:h-[100px] after:bg-[radial-gradient(circle_at_top_right,rgba(236,29,36,0.15),transparent_70%)] after:z-0">
 						<div className="text-center mb-6 relative z-10">
@@ -241,7 +241,7 @@ export default function ResetPasswordPage() {
 	}
 
 	return (
-		<div className="min-h-screen flex flex-col items-center justify-center px-4 bg-[#121212] bg-linear-to-r from-[rgba(236,29,36,0.2)] to-[rgba(0,0,0,0.9)]">
+		<div className="min-h-screen flex flex-col items-center justify-center px-4 bg-[#0a0a0a] bg-linear-to-r from-[rgba(236,29,36,0.2)] to-[rgba(0,0,0,0.9)]">
 			<div className="max-w-md w-full mx-auto">
 				<div className="bg-[#1a1a1a] rounded-lg shadow-[0_10px_30px_rgba(0,0,0,0.8)] p-8 mb-8 border-t-4 border-[#ec1d24] relative overflow-hidden after:content-[''] after:absolute after:top-0 after:right-0 after:w-[100px] after:h-[100px] after:bg-[radial-gradient(circle_at_top_right,rgba(236,29,36,0.15),transparent_70%)] after:z-0 md:p-6">
 					<div className="text-center mb-6 relative z-10">

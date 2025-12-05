@@ -108,7 +108,7 @@ export default async function ProfilePage({ params }: PageProps) {
 	]);
 
 	return (
-		<div className="flex flex-col w-full mx-auto min-h-screen bg-linear-to-br from-black/95 to-[#141414]/98 py-8">
+		<div className="flex flex-col w-full mx-auto min-h-screen bg-linear-to-br from-black/95 to-[#0a0a0a]/98 py-8">
 			<UnifiedProfileClient
 				profileUser={{
 					id: profileUser.id,

@@ -9,10 +9,12 @@ import ScriptEmbed from "@/components/edit/ScriptEmbed";
 import moment from "moment";
 import Image from "next/image";
 import parse from "html-react-parser";
+import Link from "next/link";
 import type { ContentBlock, ContentConfig, ContentData } from "@/types/ContentTypes";
 import { getDraftStorageKey } from "@/lib/content/utils";
 import { getProxyUrl } from "@/lib/config/backend";
 import { authClient } from "@/lib/auth/auth-client";
+import { ArrowLeft, Clock, Calendar, Star, Newspaper } from "lucide-react";
 
 interface ContentPreviewProps {
 	config: ContentConfig;
@@ -20,33 +22,18 @@ interface ContentPreviewProps {
 	id?: string;
 }
 
-interface TextContentProps {
-	content: string;
-}
+// Calculate reading time
+const calculateReadingTime = (content: ContentBlock[]): number => {
+	const textContent = content
+		.filter((block) => block.type === "text")
+		.map((block) => block.content)
+		.join(" ");
+	const wordCount = textContent.split(/\s+/).length;
+	return Math.ceil(wordCount / 200);
+};
 
-interface ImageContentProps {
-	src: { link: string };
-}
-
-interface EmbedContentProps {
-	url: string;
-}
-
-const TextContent: React.FC<TextContentProps> = ({ content }) => (
-	<div className="w-full [&_i]:text-[#ec1d24] [&_b_i]:text-[#ec1d24]">{parse(content)}</div>
-);
-
-const ImageContent: React.FC<ImageContentProps> = ({ src }) => (
-	<Image
-		src={src.link}
-		alt="content-image"
-		className="ml-[25%] mt-[5%] mb-[5%] w-1/2 h-1/2 object-contain rounded-[5px] justify-center self-center"
-		width={1000}
-		height={1000}
-	/>
-);
-
-const EmbedContent: React.FC<EmbedContentProps> = ({ url }) => {
+// YouTube video loader
+const loadScript = (url: string): JSX.Element | null => {
 	if (url.includes("www.youtube.com")) {
 		const regex =
 			/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|vi|e(?:mbed)?)\/|\S*?[?&]v=|(?:\S*\?list=))|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
@@ -54,21 +41,16 @@ const EmbedContent: React.FC<EmbedContentProps> = ({ url }) => {
 		if (match) {
 			const videoId = match[1];
 			return (
-				<div className="w-[75%] h-[350px] mt-10 flex justify-center ml-[12.5%]">
-					<iframe
-						src={`https://www.youtube.com/embed/${videoId}`}
-						title="youtube-video"
-						allowFullScreen
-						className="w-[90%] h-[90%]"
-					/>
-				</div>
+				<iframe
+					src={`https://www.youtube.com/embed/${videoId}`}
+					title="YouTube video"
+					allowFullScreen
+					className="absolute top-0 left-0 w-full h-full border-0"
+				/>
 			);
 		}
 	}
-	if (url.includes("script async")) {
-		return <ScriptEmbed content={url} />;
-	}
-	return <div className="text-[#ec1d24] text-center py-4">{url}</div>;
+	return null;
 };
 
 export default function ContentPreview({
@@ -80,7 +62,7 @@ export default function ContentPreview({
 	const [content, setContent] = useState<ContentData | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [isSaving, setIsSaving] = useState(false);
-	const [stickyProgress, setStickyProgress] = useState(1); // 1 = fully sticky, 0 = not sticky
+	const [backButtonOpacity, setBackButtonOpacity] = useState(1);
 	const sentinelRef = useRef<HTMLDivElement>(null);
 	const session = authClient.useSession();
 	const token = session?.data?.session?.token || null;
@@ -95,25 +77,30 @@ export default function ContentPreview({
 		setLoading(false);
 	}, [storageKey]);
 
-	// Track scroll progress for gradual footer transition
+	// Track scroll for back button visibility with gradual fade
 	useEffect(() => {
-		const sentinel = sentinelRef.current;
-		if (!sentinel) return;
-
-		const observer = new IntersectionObserver(
-			([entry]) => {
-				// Use intersection ratio for gradual transition
-				// When ratio is 0, footer is fully sticky; when 1, fully shrunk
-				setStickyProgress(1 - entry.intersectionRatio);
-			},
-			{ 
-				threshold: Array.from({ length: 51 }, (_, i) => i / 50) // 0, 0.02, 0.04, ... 1.0 (finer steps)
+		const handleScroll = () => {
+			const scrollY = window.scrollY;
+			const heroHeight = window.innerHeight * 0.7; // Approximate hero height
+			
+			// Start fading when 60% through the hero, fully hidden when hitting main content
+			const fadeStartPoint = heroHeight * 0.6;
+			const fadeEndPoint = heroHeight;
+			
+			if (scrollY <= fadeStartPoint) {
+				setBackButtonOpacity(1);
+			} else if (scrollY >= fadeEndPoint) {
+				setBackButtonOpacity(0);
+			} else {
+				// Gradual fade between start and end points
+				const fadeProgress = (scrollY - fadeStartPoint) / (fadeEndPoint - fadeStartPoint);
+				setBackButtonOpacity(1 - fadeProgress);
 			}
-		);
+		};
 
-		observer.observe(sentinel);
-		return () => observer.disconnect();
-	}, [loading, content]);
+		window.addEventListener("scroll", handleScroll, { passive: true });
+		return () => window.removeEventListener("scroll", handleScroll);
+	}, []);
 
 	const handleEdit = (): void => {
 		if (mode === "edit" && id) {
@@ -193,78 +180,211 @@ export default function ContentPreview({
 		</div>
 	);
 
-	const renderContent = (block: ContentBlock, index: number): JSX.Element => {
-		switch (block.type) {
-			case "text":
-				return <TextContent key={block.id || index} content={block.content} />;
-			case "image":
-				return <ImageContent key={block.id || index} src={block.content} />;
-			case "embed":
-				return <EmbedContent key={block.id || index} url={block.content} />;
-		}
-	};
+	const isReview = config.singularName === "review";
+	const readingTime = calculateReadingTime(content.content || []);
+
+	// Render content blocks with new styling
+	const contentElements = (content.content || []).map(
+		(block: ContentBlock, index: number): JSX.Element => {
+			const uniqueKey = `${block.id || index}-${block.type}`;
+
+			switch (block.type) {
+				case "text":
+					return (
+						<div key={uniqueKey} className="w-full prose prose-invert prose-lg max-w-none [&_i]:text-[#ec1d24] [&_b_i]:text-[#ec1d24] [&_p]:text-white/85 [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_h4]:text-white [&_a]:text-[#ec1d24] [&_a:hover]:text-[#ff3d44] [&_blockquote]:border-l-[#ec1d24] [&_blockquote]:bg-white/5 [&_blockquote]:py-2 [&_blockquote]:px-4 [&_blockquote]:rounded-r-lg">
+							{parse(block.content)}
+						</div>
+					);
+				case "image":
+					return (
+						<figure key={uniqueKey} className="w-full flex flex-col items-center my-6 sm:my-8">
+							<div className="relative w-full max-w-[600px] flex justify-center overflow-hidden rounded-xl shadow-2xl bg-black/20">
+								<Image
+									src={block.content.link}
+									alt={`content-image-${index}`}
+									className="w-full h-auto object-contain max-h-[60vh]"
+									width={600}
+									height={400}
+									style={{ width: '100%', height: 'auto', maxHeight: '60vh', objectFit: 'contain' }}
+								/>
+							</div>
+						</figure>
+					);
+				case "embed":
+					if (block.content.includes("www.youtube.com")) {
+						return (
+							<div key={uniqueKey} className="w-full my-6 sm:my-8 flex justify-center">
+								<div className="relative w-full max-w-[600px] aspect-video rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10">
+									{loadScript(block.content)}
+								</div>
+							</div>
+						);
+					}
+					if (block.content.includes("script async")) {
+						return <ScriptEmbed key={uniqueKey} content={block.content} />;
+					}
+					return <div key={uniqueKey} className="text-[#ec1d24] text-center py-4">{block.content}</div>;
+				default:
+					return <div key={uniqueKey} />;
+			}
+		},
+	);
 
 	return (
-		<div className="flex flex-col w-full min-h-screen">
-			<div className="w-[60%] mx-auto mb-[25px] mt-[1%] rounded-[5px] animate-[fadeInSimple_1s_ease] max-md:w-[90%] max-[480px]:w-[90%]">
-				<div className="after:content-[''] after:block after:w-[60%] after:h-0.5 after:bg-linear-to-r after:from-transparent after:via-[#ec1d24]/70 after:to-transparent after:mx-auto after:my-8">
-					<h1 className="text-[70px] max-md:text-5xl ml-[3%] mt-[3%] text-white font-[BentonSansBold] text-center">{content.title}</h1>
-					<div className="flex flex-col items-center py-3 px-5 my-4 mx-auto rounded-lg bg-[rgba(40,40,40,0.3)] w-fit max-md:w-[90%]">
-						<h3 className="text-lg my-[0.5%] tracking-[0.03em] font-[BentonSansRegular] text-[#ec1d24]">
-							<span className="font-[BentonSansRegular]">By: </span>
-							{content.author}
-						</h3>
-						<h3 className="text-xl text-[#ec1d24] text-center my-[0.5%] tracking-[0.03em] font-[BentonSansRegular]">
-							<span className="font-[BentonSansRegular]">
-								{mode === "edit" ? "Posted: " : "Created: "}
-							</span>
-							{moment(content.created_at || new Date()).format(
-								"dddd, D MMMM, YYYY",
-							)}
-						</h3>
-						{content.updated_at && (
-							<h3 className="text-xl text-[#ec1d24] text-center my-[0.5%] tracking-[0.03em] font-[BentonSansRegular]">
-								<span className="font-[BentonSansRegular]">Updated: </span>
-								{content.updated_at}
-							</h3>
+		<>
+			{/* Hero Section with Thumbnail */}
+			<div className="relative w-full">
+				{/* Back Button - Liquid Glass */}
+				<button
+					type="button"
+					onClick={handleEdit}
+					className={`fixed top-24 left-4 z-50 flex items-center gap-2 px-4 py-2.5
+						bg-linear-to-br from-white/10 via-white/5 to-transparent
+						backdrop-blur-xl backdrop-saturate-150
+						rounded-xl
+						border border-white/20
+						shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.1)]
+						text-white/90 hover:text-white
+						text-sm font-[BentonSansRegular]
+						transition-[box-shadow,border-color,color] duration-300 
+						hover:shadow-[0_8px_40px_rgba(236,29,36,0.15),inset_0_1px_0_rgba(255,255,255,0.15)] 
+						hover:border-white/30
+						group
+						${backButtonOpacity === 0 ? "pointer-events-none" : ""}`}
+				style={{ opacity: backButtonOpacity, transform: `translateX(${(1 - backButtonOpacity) * -16}px)` }}
+				>
+					<ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+					<span className="hidden sm:inline">Back to Edit</span>
+				</button>
+
+				{/* Hero Image */}
+				<div className="relative w-full h-[40vh] sm:h-[50vh] md:h-[60vh] lg:h-[70vh] overflow-hidden">
+					<Image
+						src={content.thumbnail_path?.link || "/images/placeholder.jpg"}
+						alt={content.title}
+						fill
+						priority
+						className="object-cover"
+					/>
+					{/* Gradient Overlay */}
+					<div className="absolute inset-0 bg-linear-to-t from-black via-black/60 to-transparent" />
+					<div className="absolute inset-0 bg-linear-to-b from-black/40 via-transparent to-transparent" />
+
+					{/* Badges Container */}
+					<div className="absolute top-24 right-4 sm:top-28 sm:right-8 flex items-center gap-2">
+						{/* Preview Badge */}
+						<div className="flex items-center gap-2 px-4 py-2 bg-amber-500/90 backdrop-blur-sm rounded-full">
+							<span className="text-sm sm:text-base font-[BentonSansBold] text-white">Preview</span>
+						</div>
+
+						{/* Content Type Badge */}
+						{isReview ? (
+							<div className="flex items-center gap-2 px-4 py-2 bg-[#ec1d24]/90 backdrop-blur-sm rounded-full">
+								<Star className="w-4 h-4 sm:w-5 sm:h-5 text-white fill-white" />
+								<span className="text-sm sm:text-base font-[BentonSansBold] text-white">Review</span>
+							</div>
+						) : (
+							<div className="flex items-center gap-2 px-4 py-2 bg-[#ec1d24]/90 backdrop-blur-sm rounded-full">
+								<Newspaper className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+								<span className="text-sm sm:text-base font-[BentonSansBold] text-white">Blog</span>
+							</div>
 						)}
 					</div>
-					<span className="my-5 flex flex-wrap justify-center gap-2.5">
-						{content.tags?.map((tag, index) => (
-							<button 
-								key={`tag-${index}`} 
-								type="button" 
-								className="text-base text-white font-[BentonSansRegular] bg-[#ec1d24]/80 border-none rounded-[20px] py-1.5 px-4 transition-all duration-300 inline-flex items-center before:content-['#'] before:mr-1 before:opacity-70 hover:-translate-y-[3px] hover:shadow-[0_4px_8px_rgba(236,29,36,0.4)] hover:bg-[#ec1d24] cursor-default"
-							>
-								{tag}
-							</button>
-						))}
-					</span>
 				</div>
-				<div className="mx-[2.5%] mt-[2.5%] mb-[5%] w-[96%] rounded-[5px] flex flex-col justify-center p-[2%]">
-					<div className="text-lg [word-spacing:0.1em] font-[BentonSansBook] whitespace-pre-line pb-[2%] text-white leading-[2.5] mb-[2%] w-full items-center">
-						{content.content?.map((block, index) => renderContent(block, index))}
+
+				{/* Title Overlay */}
+				<div className="absolute bottom-0 left-0 right-0 px-4 sm:px-6 md:px-8 lg:px-12 pb-8 sm:pb-12 md:pb-16">
+					<div className="max-w-5xl mx-auto">
+						{/* Tags */}
+						<div className="flex flex-wrap gap-2 mb-4 sm:mb-6">
+							{(content.tags || []).slice(0, 4).map((tag: string) => (
+								<span
+									key={tag}
+									className="text-xs sm:text-sm text-white/90 font-[BentonSansRegular] bg-[#ec1d24]/80 rounded-full py-1.5 px-3 sm:px-4 transition-all duration-300 inline-flex items-center"
+								>
+									<span className="opacity-70 mr-1">#</span>{tag}
+								</span>
+							))}
+						</div>
+
+						{/* Title */}
+						<h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl text-white font-[BentonSansBold] leading-tight mb-4 sm:mb-6 max-w-4xl drop-shadow-lg">
+							{content.title}
+						</h1>
+
+						{/* Meta Info Bar */}
+						<div className="flex flex-wrap items-center gap-3 sm:gap-4 md:gap-6 text-white/80">
+							{/* Author */}
+							<span className="text-sm sm:text-base font-[BentonSansRegular] text-white/80">
+								By {content.author}
+							</span>
+
+							<span className="hidden sm:block w-px h-5 bg-white/30" />
+
+							{/* Date */}
+							<div className="flex items-center gap-1.5 text-white/70">
+								<Calendar className="w-4 h-4" />
+								<span className="text-sm font-[BentonSansRegular]">
+									{moment(content.created_at || new Date()).format("MMM D, YYYY")}
+								</span>
+							</div>
+
+							<span className="hidden sm:block w-px h-5 bg-white/30" />
+
+							{/* Reading Time */}
+							<div className="flex items-center gap-1.5 text-white/70">
+								<Clock className="w-4 h-4" />
+								<span className="text-sm font-[BentonSansRegular]">
+									{readingTime} min read
+								</span>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
-			{/* Sentinel element to detect when we've scrolled past the content */}
-			<div ref={sentinelRef} className="h-[100px]" />
+
+			{/* Main Content Area */}
+			<div className="flex flex-col w-full max-w-[1200px] mx-auto gap-8 relative px-4 sm:px-6 md:px-8 py-8 sm:py-12">
+				{/* Article Content */}
+				<article className="flex-1 max-w-4xl mx-auto w-full animate-[fadeInSimple_0.6s_ease]">
+					{/* Article Body */}
+					<div className="bg-white/2 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 lg:p-10 border border-white/5 shadow-xl">
+						<div className="text-base sm:text-lg md:text-xl font-[BentonSansBook] text-white/90 leading-relaxed sm:leading-loose space-y-6">
+							{contentElements}
+						</div>
+					</div>
+
+					{/* Tags Section at Bottom */}
+					<div ref={sentinelRef} className="mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-white/10">
+						<h3 className="text-sm font-[BentonSansBold] text-white/50 uppercase tracking-wider mb-4">Tags</h3>
+						<div className="flex flex-wrap gap-2">
+							{(content.tags || []).map((tag: string) => (
+								<span
+									key={tag}
+									className="text-sm text-white/70 font-[BentonSansRegular] bg-white/5 border border-white/10 rounded-full py-2 px-4 transition-all duration-300 inline-flex items-center hover:bg-[#ec1d24]/10 hover:text-[#ec1d24] hover:border-[#ec1d24]/30"
+								>
+									<span className="opacity-50 mr-1">#</span>{tag}
+								</span>
+							))}
+						</div>
+					</div>
+				</article>
+			</div>
+
+			{/* Floating Action Bar - Liquid Glass Effect */}
 			<div 
-				className="flex justify-center gap-4 py-6 px-4 sticky bottom-0"
-				style={{
-					width: `${20 + (stickyProgress * 80)}%`,
-					margin: '0 auto',
-					backgroundColor: `rgba(30, 30, 30, ${stickyProgress * 0.8})`,
-					backdropFilter: stickyProgress > 0.1 ? 'blur(8px)' : 'none',
-					borderTop: `1px solid rgba(236, 29, 36, ${stickyProgress * 0.3})`,
-					borderRadius: stickyProgress < 0.5 ? '25px 25px 0 0' : '0',
-					transition: 'width 0.15s ease-out, background-color 0.15s ease-out, border-top 0.15s ease-out, border-radius 0.2s ease-out',
-				}}
+				className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center justify-center gap-4 py-3 px-6
+					bg-linear-to-br from-white/10 via-white/5 to-transparent
+					backdrop-blur-xl backdrop-saturate-150
+					rounded-2xl
+					border border-white/20
+					shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.1)]
+					transition-all duration-300"
 			>
 				<button
 					type="submit"
 					onClick={handlePublish}
-					className="px-8 py-3 text-lg font-[BentonSansBold] text-white bg-[#ec1d24] border-none rounded-[25px] cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(236,29,36,0.5)] hover:bg-[#ff2a32] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none"
+					className="px-6 py-2.5 text-base font-[BentonSansBold] text-white bg-[#ec1d24] border-none rounded-xl cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(236,29,36,0.5)] hover:bg-[#ff2a32] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none"
 					disabled={isSaving}
 				>
 					{isSaving
@@ -275,14 +395,15 @@ export default function ContentPreview({
 							? "Save"
 							: "Publish"}
 				</button>
+				<div className="w-px h-6 bg-linear-to-b from-transparent via-white/30 to-transparent" />
 				<button
 					type="button"
-					className="px-8 py-3 text-lg font-[BentonSansBold] text-[#ec1d24] bg-transparent border-2 border-[#ec1d24] rounded-[25px] cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ec1d24]/10 hover:shadow-[0_4px_12px_rgba(236,29,36,0.3)]"
+					className="px-6 py-2.5 text-base font-[BentonSansBold] text-white/90 bg-white/10 border border-white/20 rounded-xl cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/20 hover:text-white"
 					onClick={handleEdit}
 				>
 					Edit
 				</button>
 			</div>
-		</div>
+		</>
 	);
 }

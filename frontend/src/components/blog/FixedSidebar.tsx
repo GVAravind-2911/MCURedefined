@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import type { Article } from "@/types/BlogTypes";
 import SimilarBlog from "./SimilarBlog";
+import { TrendingUp } from "lucide-react";
 
 interface FixedSidebarProps {
 	latestBlogs: Article[];
@@ -18,7 +19,7 @@ const FixedSidebar: React.FC<FixedSidebarProps> = ({
 
 	useEffect(() => {
 		const checkMobile = () => {
-			setIsMobile(window.innerWidth <= 768);
+			setIsMobile(window.innerWidth < 1024);
 		};
 
 		checkMobile();
@@ -57,22 +58,59 @@ const FixedSidebar: React.FC<FixedSidebarProps> = ({
 		};
 	}, [isMobile]);
 
-	// Determine if showing reviews or blogs based on first article's ID
+	if (!latestBlogs || latestBlogs.length === 0) {
+		return null;
+	}
 
 	return (
-		<div 
-			className="text-[azure] w-[22%] mr-[3%] flex flex-col gap-[1%] fixed right-[3%] top-[120px] max-h-[calc(100vh-120px)] overflow-y-auto scrollbar-thin scrollbar-thumb-[#ec1d24] scrollbar-track-[rgba(40,40,40,0.3)] pr-2.5 z-100 max-md:static max-md:transform-none! max-md:w-[90%]! max-md:max-h-none! max-md:mx-auto! max-md:my-10! max-md:pr-0 max-md:z-auto!" 
+		<aside 
+			className="w-full lg:w-[340px] xl:w-[380px] lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-120px)] transition-transform duration-300 ease-out" 
 			ref={sidebarRef}
 		>
-			<h2 className="font-[BentonSansBold] text-[#ec1d24] text-center my-4 sticky top-0 bg-black py-1.5 z-2">Latest {isReview ? "Reviews" : "Blogs"}</h2>
-			<hr className="h-0.5 w-full bg-[rgb(72,72,72)] m-0 border-0" />
-			{latestBlogs.map((article, index) => (
-				<React.Fragment key={article.id}>
-					<SimilarBlog articles={article} />
-					{index < latestBlogs.length - 1 && <hr className="h-0.5 w-full bg-[rgb(72,72,72)] m-0 border-0" />}
-				</React.Fragment>
-			))}
-		</div>
+			<div className="bg-white/2 backdrop-blur-sm rounded-2xl border border-white/5 overflow-hidden shadow-xl">
+				{/* Header */}
+				<div className="flex items-center gap-3 px-5 py-4 border-b border-white/10 bg-linear-to-r from-[#ec1d24]/10 to-transparent">
+					<div className="flex items-center justify-center w-9 h-9 rounded-lg bg-[#ec1d24]/20">
+						<TrendingUp className="w-5 h-5 text-[#ec1d24]" />
+					</div>
+					<div>
+						<h2 className="font-[BentonSansBold] text-white text-base">
+							Latest {isReview ? "Reviews" : "Blogs"}
+						</h2>
+						<p className="text-xs text-white/50 font-[BentonSansRegular]">
+							Don't miss these reads
+						</p>
+					</div>
+				</div>
+
+				{/* Scrollable Content */}
+				<div className="overflow-y-auto max-h-[calc(100vh-220px)] lg:max-h-[calc(100vh-200px)] scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent hover:scrollbar-thumb-white/20">
+					<div className="divide-y divide-white/5">
+						{latestBlogs.map((article) => (
+							<SimilarBlog key={article.id} articles={article} isReview={isReview} />
+						))}
+					</div>
+				</div>
+
+				{/* Footer Link */}
+				<div className="px-5 py-3 border-t border-white/5 bg-white/1">
+					<a 
+						href={isReview ? "/reviews" : "/blogs"}
+						className="flex items-center justify-center gap-2 text-sm text-[#ec1d24] font-[BentonSansRegular] hover:text-[#ff3d44] transition-colors group"
+					>
+						<span>View all {isReview ? "reviews" : "blogs"}</span>
+						<svg 
+							className="w-4 h-4 transition-transform group-hover:translate-x-1" 
+							fill="none" 
+							viewBox="0 0 24 24" 
+							stroke="currentColor"
+						>
+							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+						</svg>
+					</a>
+				</div>
+			</div>
+		</aside>
 	);
 };
 

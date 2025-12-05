@@ -286,7 +286,7 @@ const AdminBlogComponent: React.FC<AdminBlogComponentProps> = ({
 			</div>
 
 			{/* Delete Confirmation Dialog */}
-			<dialog className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#121212] text-white border-none rounded-lg p-6 min-w-[400px] shadow-[0_10px_30px_rgba(0,0,0,0.8)] border-t-4 border-t-[#e74c3c] backdrop:bg-black/70 max-md:min-w-[calc(100vw-40px)] max-md:max-w-[calc(100vw-40px)] max-md:p-4" ref={dialogRef}>
+			<dialog className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#0a0a0a] text-white border-none rounded-lg p-6 min-w-[400px] shadow-[0_10px_30px_rgba(0,0,0,0.8)] border-t-4 border-t-[#e74c3c] backdrop:bg-black/70 max-md:min-w-[calc(100vw-40px)] max-md:max-w-[calc(100vw-40px)] max-md:p-4" ref={dialogRef}>
 				<h2 className="mt-0 text-[#e74c3c] font-[BentonSansBold]">Delete Blog Post</h2>
 				<p className="mb-6 font-[BentonSansRegular]">
 					Are you sure you want to delete{" "}
