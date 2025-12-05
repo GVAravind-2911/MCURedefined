@@ -4,7 +4,6 @@ import type React from "react";
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import type { BlogList } from "@/types/BlogTypes";
-import "@/styles/blogposts.css";
 import LoadingSpinner from "@/components/main/LoadingSpinner";
 import BlogFilters from "./ProfileBlogFilters";
 import BlogCard from "@/components/blog/BlogCard";
@@ -113,7 +112,7 @@ const BlogComponent = ({
 	}, [currentPage, totalPages, isSearchFocused, handlePageChange]);
 
 	return (
-		<div ref={containerRef} className="blog-component">
+		<div ref={containerRef} className="flex flex-col w-full">
 			<BlogFilters
 				searchQuery={searchQuery}
 				setSearchQuery={setSearchQuery}
@@ -130,10 +129,10 @@ const BlogComponent = ({
 			/>
 
 			{loading ? (
-				<div className="loading-state">Loading...</div>
+				<div className="flex justify-center items-center min-h-[200px] text-white/70">Loading...</div>
 			) : blogs.length > 0 ? (
 				<>
-					<div className="blogs-grid">
+					<div className="flex flex-col gap-4">
 						{blogs.map((blog, index) => (
 							<BlogCard
 								key={blog.id || index}

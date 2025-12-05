@@ -19,6 +19,7 @@ interface UseBlogSearchProps {
 	initialTags: string[];
 	initialAuthors: string[];
 	path: string;
+	basePath?: string;
 	containerRef: RefObject<HTMLDivElement>;
 }
 
@@ -34,6 +35,7 @@ const useBlogSearch = ({
 	initialTags,
 	initialAuthors,
 	path,
+	basePath = '',
 	containerRef,
 }: UseBlogSearchProps) => {
 	const searchParams = useSearchParams();
@@ -110,12 +112,13 @@ const useBlogSearch = ({
 			if (author) params.set("author", author);
 			if (page > 1) params.set("page", page.toString());
 
-			const url = params.toString() ? `/${path}?${params}` : `/${path}`;
+			const urlPath = basePath ? `/${basePath}/${path}` : `/${path}`;
+			const url = params.toString() ? `${urlPath}?${params}` : urlPath;
 			window.history.pushState({}, "", url);
 
 			fetchBlogs(page, query, tags, author);
 		},
-		[path, fetchBlogs],
+		[path, basePath, fetchBlogs],
 	);
 
 	const resetFilters = useCallback(() => {
@@ -125,8 +128,9 @@ const useBlogSearch = ({
 		setCurrentPage(1);
 		blogContext.setBlogs(initialBlogs);
 		blogContext.setTotalPages(initialTotalPages);
-		window.history.pushState({}, "", `/${path}`);
-	}, [initialBlogs, initialTotalPages, path, blogContext]);
+		const urlPath = basePath ? `/${basePath}/${path}` : `/${path}`;
+		window.history.pushState({}, "", urlPath);
+	}, [initialBlogs, initialTotalPages, path, basePath, blogContext]);
 
 	const handlePageChange = useCallback(
 		(page: number) => {
@@ -144,7 +148,8 @@ const useBlogSearch = ({
 			if (selectedAuthor) params.set("author", selectedAuthor);
 			params.set("page", page.toString());
 
-			const url = `/${path}?${params}`;
+			const urlPath = basePath ? `/${basePath}/${path}` : `/${path}`;
+			const url = `${urlPath}?${params}`;
 			window.history.pushState({}, "", url);
 
 			if (

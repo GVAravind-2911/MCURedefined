@@ -21,7 +21,7 @@ export const user = pgTable("user", {
 	role: text("role").notNull().default("user"),
 	banned: boolean("banned").notNull().default(false),
 	banReason: text("ban_reason"),
-	banExpires: integer("ban_expires"),
+	banExpires: timestamp("ban_expires", { withTimezone: true }),
 });
 
 export type User = typeof user.$inferSelect;

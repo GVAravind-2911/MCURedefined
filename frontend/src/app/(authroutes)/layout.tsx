@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Suspense } from "react";
 import LoadingSpinner from "@/components/main/LoadingSpinner";
+import ImpersonationBanner from "@/components/shared/ImpersonationBanner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,6 +27,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
 	return (
 		<html lang="en" className={inter.className}>
 			<body>
+				<ImpersonationBanner />
 				{/* <Providers> */}
 				<Suspense fallback={<LoadingSpinner />}>{children}</Suspense>
 				{/* </Providers> */}

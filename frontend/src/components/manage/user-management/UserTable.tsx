@@ -31,81 +31,81 @@ export default function UserTable({
 	actionLoading,
 }: UserTableProps) {
 	return (
-		<div className="user-table-container">
-			<table className="user-table">
-				<thead>
+		<div className="bg-[rgba(18,18,18,0.95)] rounded-[14px] border border-white/10 overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
+			<table className="w-full border-collapse">
+				<thead className="bg-black/30">
 					<tr>
-						<th onClick={() => onSort("name")} className="sortable">
+						<th onClick={() => onSort("name")} className="py-4 px-5 text-left font-semibold text-[0.8rem] uppercase tracking-[0.5px] text-white/50 border-b border-white/10 cursor-pointer select-none transition-all duration-[0.25s] hover:text-white hover:bg-white/5">
 							User
 							{sortBy === "name" && (
-								<span className="sort-indicator">{sortDirection === "asc" ? " ↑" : " ↓"}</span>
+								<span className="text-[#ec1d24] ml-1">{sortDirection === "asc" ? " ↑" : " ↓"}</span>
 							)}
 						</th>
-						<th onClick={() => onSort("email")} className="sortable">
+						<th onClick={() => onSort("email")} className="py-4 px-5 text-left font-semibold text-[0.8rem] uppercase tracking-[0.5px] text-white/50 border-b border-white/10 cursor-pointer select-none transition-all duration-[0.25s] hover:text-white hover:bg-white/5">
 							Email
 							{sortBy === "email" && (
-								<span className="sort-indicator">{sortDirection === "asc" ? " ↑" : " ↓"}</span>
+								<span className="text-[#ec1d24] ml-1">{sortDirection === "asc" ? " ↑" : " ↓"}</span>
 							)}
 						</th>
-						<th onClick={() => onSort("role")} className="sortable">
+						<th onClick={() => onSort("role")} className="py-4 px-5 text-left font-semibold text-[0.8rem] uppercase tracking-[0.5px] text-white/50 border-b border-white/10 cursor-pointer select-none transition-all duration-[0.25s] hover:text-white hover:bg-white/5">
 							Role
 							{sortBy === "role" && (
-								<span className="sort-indicator">{sortDirection === "asc" ? " ↑" : " ↓"}</span>
+								<span className="text-[#ec1d24] ml-1">{sortDirection === "asc" ? " ↑" : " ↓"}</span>
 							)}
 						</th>
-						<th>Status</th>
-						<th onClick={() => onSort("createdAt")} className="sortable">
+						<th className="py-4 px-5 text-left font-semibold text-[0.8rem] uppercase tracking-[0.5px] text-white/50 border-b border-white/10">Status</th>
+						<th onClick={() => onSort("createdAt")} className="py-4 px-5 text-left font-semibold text-[0.8rem] uppercase tracking-[0.5px] text-white/50 border-b border-white/10 cursor-pointer select-none transition-all duration-[0.25s] hover:text-white hover:bg-white/5">
 							Created
 							{sortBy === "createdAt" && (
-								<span className="sort-indicator">{sortDirection === "asc" ? " ↑" : " ↓"}</span>
+								<span className="text-[#ec1d24] ml-1">{sortDirection === "asc" ? " ↑" : " ↓"}</span>
 							)}
 						</th>
-						<th>Actions</th>
+						<th className="py-4 px-5 text-left font-semibold text-[0.8rem] uppercase tracking-[0.5px] text-white/50 border-b border-white/10">Actions</th>
 					</tr>
 				</thead>
 				<tbody>
 					{users.map((user) => (
 						<tr 
 							key={user.id} 
-							className={`${user.banned ? "banned-row" : ""} clickable-row`}
+							className={`border-b border-white/10 last:border-b-0 transition-all duration-[0.25s] cursor-pointer hover:bg-white/5 ${user.banned ? "bg-red-500/5 hover:bg-red-500/10" : ""}`}
 							onClick={() => onViewUserDetail(user)}
 						>
-							<td className="user-cell">
-								<div className="user-info">
+							<td className="py-4 px-5 text-white text-[0.95rem] min-w-[220px]">
+								<div className="flex items-center gap-3.5">
 									{user.image ? (
-										<img src={user.image} alt={user.name} className="user-avatar" />
+										<img src={user.image} alt={user.name} className="w-11 h-11 rounded-full object-cover border-2 border-white/10 transition-all duration-[0.25s] group-hover:border-[#ec1d24]" />
 									) : (
-										<div className="user-avatar-placeholder">
+										<div className="w-11 h-11 rounded-full bg-linear-to-br from-[#ec1d24]/15 to-[#ec1d24] flex items-center justify-center font-bold text-[1.1rem] text-white border-2 border-white/10">
 											{user.name.charAt(0).toUpperCase()}
 										</div>
 									)}
-									<div className="user-details">
-										<span className="user-name">{user.name}</span>
-										<span className="user-username">@{user.username || user.displayUsername}</span>
+									<div className="flex flex-col gap-0.5">
+										<span className="font-semibold text-white">{user.name}</span>
+										<span className="text-[0.85rem] text-white/50">@{user.username || user.displayUsername}</span>
 									</div>
 								</div>
 							</td>
-							<td>
-								<div className="email-cell">
+							<td className="py-4 px-5 text-white text-[0.95rem]">
+								<div className="flex items-center gap-2">
 									<span>{user.email}</span>
 									{user.emailVerified ? (
-										<span className="verified-badge" title="Email Verified">✓</span>
+										<span className="text-green-500 text-[0.9rem] font-bold" title="Email Verified">✓</span>
 									) : (
-										<span className="unverified-badge" title="Email Not Verified">✗</span>
+										<span className="text-white/50 text-[0.9rem]" title="Email Not Verified">✗</span>
 									)}
 								</div>
 							</td>
-							<td>
-								<span className={`role-badge ${getRoleBadgeClass(user.role)}`}>
+							<td className="py-4 px-5 text-white text-[0.95rem]">
+								<span className={`inline-flex items-center py-1.5 px-3.5 rounded-[20px] text-[0.8rem] font-semibold capitalize ${getRoleBadgeClass(user.role)}`}>
 									{user.role}
 								</span>
 							</td>
-							<td>
+							<td className="py-4 px-5 text-white text-[0.95rem]">
 								{user.banned ? (
-									<div className="status-banned">
-										<span className="status-badge banned">Banned</span>
+									<div className="flex flex-col gap-1">
+										<span className="inline-flex items-center py-1.5 px-3.5 rounded-[20px] text-[0.8rem] font-semibold bg-red-500/15 text-red-300 border border-red-500/30">Banned</span>
 										{user.banReason && (
-											<span className="ban-reason" title={user.banReason}>
+											<span className="text-[0.75rem] text-white/50 italic" title={user.banReason}>
 												{user.banReason.length > 20
 													? `${user.banReason.substring(0, 20)}...`
 													: user.banReason}
@@ -113,15 +113,15 @@ export default function UserTable({
 										)}
 									</div>
 								) : (
-									<span className="status-badge active">Active</span>
+									<span className="inline-flex items-center py-1.5 px-3.5 rounded-[20px] text-[0.8rem] font-semibold bg-green-500/15 text-green-300 border border-green-500/30">Active</span>
 								)}
 							</td>
-							<td>{formatDate(user.createdAt)}</td>
-							<td onClick={(e) => e.stopPropagation()}>
-								<div className="action-buttons">
+							<td className="py-4 px-5 text-white text-[0.95rem]">{formatDate(user.createdAt)}</td>
+							<td className="py-4 px-5 text-white text-[0.95rem]" onClick={(e) => e.stopPropagation()}>
+								<div className="flex gap-2 flex-wrap">
 									<button
 										type="button"
-										className="action-btn impersonate"
+										className="flex items-center justify-center w-[34px] h-[34px] rounded-md border border-white/10 bg-transparent text-white/70 cursor-pointer transition-all duration-[0.25s] hover:enabled:-translate-y-0.5 hover:enabled:bg-blue-500/15 hover:enabled:border-blue-500 hover:enabled:text-blue-500 disabled:opacity-40 disabled:cursor-not-allowed"
 										onClick={() => onImpersonate(user)}
 										disabled={actionLoading || user.role === "admin"}
 										title={user.role === "admin" ? "Cannot impersonate admins" : "Impersonate User"}
@@ -135,7 +135,7 @@ export default function UserTable({
 									{user.banned ? (
 										<button
 											type="button"
-											className="action-btn unban"
+											className="flex items-center justify-center w-[34px] h-[34px] rounded-md border border-white/10 bg-transparent text-white/70 cursor-pointer transition-all duration-[0.25s] hover:enabled:-translate-y-0.5 hover:enabled:bg-yellow-500/15 hover:enabled:border-yellow-500 hover:enabled:text-yellow-500 disabled:opacity-40 disabled:cursor-not-allowed"
 											onClick={() => onUnbanUser(user)}
 											disabled={actionLoading}
 											title="Unban User"
@@ -148,7 +148,7 @@ export default function UserTable({
 									) : (
 										<button
 											type="button"
-											className="action-btn ban"
+											className="flex items-center justify-center w-[34px] h-[34px] rounded-md border border-white/10 bg-transparent text-white/70 cursor-pointer transition-all duration-[0.25s] hover:enabled:-translate-y-0.5 hover:enabled:bg-yellow-500/15 hover:enabled:border-yellow-500 hover:enabled:text-yellow-500 disabled:opacity-40 disabled:cursor-not-allowed"
 											onClick={() => setModal({ type: "ban", user })}
 											disabled={actionLoading || user.role === "admin"}
 											title={user.role === "admin" ? "Cannot ban admins" : "Ban User"}
@@ -162,7 +162,7 @@ export default function UserTable({
 
 									<button
 										type="button"
-										className="action-btn role"
+										className="flex items-center justify-center w-[34px] h-[34px] rounded-md border border-white/10 bg-transparent text-white/70 cursor-pointer transition-all duration-[0.25s] hover:enabled:-translate-y-0.5 hover:enabled:bg-purple-500/15 hover:enabled:border-purple-500 hover:enabled:text-purple-500 disabled:opacity-40 disabled:cursor-not-allowed"
 										onClick={() => {
 											setSelectedRole(user.role);
 											setModal({ type: "role", user });
@@ -179,7 +179,7 @@ export default function UserTable({
 
 									<button
 										type="button"
-										className="action-btn sessions"
+										className="flex items-center justify-center w-[34px] h-[34px] rounded-md border border-white/10 bg-transparent text-white/70 cursor-pointer transition-all duration-[0.25s] hover:enabled:-translate-y-0.5 hover:enabled:bg-green-500/15 hover:enabled:border-green-500 hover:enabled:text-green-500 disabled:opacity-40 disabled:cursor-not-allowed"
 										onClick={() => onViewSessions(user)}
 										disabled={actionLoading}
 										title="View Sessions"
@@ -193,7 +193,7 @@ export default function UserTable({
 
 									<button
 										type="button"
-										className="action-btn delete"
+										className="flex items-center justify-center w-[34px] h-[34px] rounded-md border border-white/10 bg-transparent text-white/70 cursor-pointer transition-all duration-[0.25s] hover:enabled:-translate-y-0.5 hover:enabled:bg-red-500/15 hover:enabled:border-red-500 hover:enabled:text-red-500 disabled:opacity-40 disabled:cursor-not-allowed"
 										onClick={() => setModal({ type: "delete", user })}
 										disabled={actionLoading || user.role === "admin"}
 										title={user.role === "admin" ? "Cannot delete admins" : "Delete User"}
@@ -211,8 +211,8 @@ export default function UserTable({
 			</table>
 
 			{users.length === 0 && (
-				<div className="empty-state">
-					<p>No users found matching your criteria.</p>
+				<div className="py-16 px-8 text-center">
+					<p className="text-white/50 text-base">No users found matching your criteria.</p>
 				</div>
 			)}
 		</div>
