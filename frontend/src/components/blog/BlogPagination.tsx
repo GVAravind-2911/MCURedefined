@@ -20,7 +20,7 @@ const BlogPagination: React.FC<BlogPaginationProps> = ({
 				<button
 					onClick={() => handlePageChange(1)}
 					disabled={currentPage <= 1}
-					className="flex items-center gap-1.5 bg-[#ec1d24]/10 text-[#ec1d24]/80 border border-[#ec1d24]/40 py-2 px-4 rounded-[20px] cursor-pointer font-[BentonSansBold] text-sm transition-all duration-200 hover:not-disabled:bg-[#ec1d24]/20 hover:not-disabled:text-[#ec1d24] disabled:opacity-40 disabled:cursor-not-allowed"
+					className="flex items-center gap-1.5 bg-[#ec1d24]/10 text-[#ec1d24]/80 border border-[#ec1d24]/40 py-2 px-4 rounded-[20px] cursor-pointer font-[BentonSansBold] text-sm transition-all duration-200 hover:enabled:bg-[#ec1d24]/20 hover:enabled:text-[#ec1d24] disabled:opacity-40 disabled:cursor-not-allowed"
 					aria-label="First page"
 					type="button"
 				>
@@ -118,7 +118,7 @@ const BlogPagination: React.FC<BlogPaginationProps> = ({
 				<button
 					onClick={() => handlePageChange(totalPages)}
 					disabled={currentPage >= totalPages}
-					className="flex items-center gap-1.5 bg-[#ec1d24]/10 text-[#ec1d24]/80 border border-[#ec1d24]/40 py-2 px-4 rounded-[20px] cursor-pointer font-[BentonSansBold] text-sm transition-all duration-200 hover:not-disabled:bg-[#ec1d24]/20 hover:not-disabled:text-[#ec1d24] disabled:opacity-40 disabled:cursor-not-allowed"
+					className="flex items-center gap-1.5 bg-[#ec1d24]/10 text-[#ec1d24]/80 border border-[#ec1d24]/40 py-2 px-4 rounded-[20px] cursor-pointer font-[BentonSansBold] text-sm transition-all duration-200 hover:enabled:bg-[#ec1d24]/20 hover:enabled:text-[#ec1d24] disabled:opacity-40 disabled:cursor-not-allowed"
 					aria-label="Last page"
 					type="button"
 				>
