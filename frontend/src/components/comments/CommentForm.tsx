@@ -82,22 +82,22 @@ const CommentForm: React.FC<CommentFormProps> = ({
 	};
 
 	return (
-		<form className="comment-form" onSubmit={handleSubmit}>
+		<form className="mb-8 bg-[rgba(40,40,40,0.3)] p-4 rounded-lg transition-all duration-300 focus-within:bg-[rgba(50,50,50,0.5)]" onSubmit={handleSubmit}>
 			<textarea
 				ref={textareaRef}
 				value={content}
 				onChange={(e) => setContent(e.target.value)}
 				onInput={handleInput}
 				placeholder={placeholder}
-				className="comment-textarea"
+				className="w-full min-h-20 py-3 px-3 border border-white/20 rounded-md bg-[rgba(30,30,30,0.5)] text-white font-['BentonSansRegular'] resize-none transition-all duration-300 mb-2 text-base overflow-hidden focus:outline-none focus:border-[rgba(236,29,36,0.6)] focus:bg-[rgba(40,40,40,0.7)] placeholder:text-white/50"
 				rows={1}
 				disabled={isSubmitting}
 				maxLength={2000}
 			/>
-			<div className="comment-form-actions">
+			<div className="flex justify-end gap-3">
 				<button
 					type="button"
-					className="comment-cancel"
+					className="py-2 px-4 rounded-full border border-white/30 bg-transparent text-white/70 font-['BentonSansRegular'] text-sm cursor-pointer transition-all duration-300 hover:text-white hover:border-white disabled:opacity-50 disabled:cursor-not-allowed"
 					onClick={() => setContent("")}
 					disabled={!content.trim() || isSubmitting}
 				>
@@ -105,7 +105,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
 				</button>
 				<button
 					type="submit"
-					className="comment-submit"
+					className="py-2 px-4 rounded-full border-none bg-[rgba(236,29,36,0.8)] text-white font-['BentonSansRegular'] text-sm cursor-pointer transition-all duration-300 hover:bg-[#ec1d24] hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
 					disabled={!content.trim() || isSubmitting}
 				>
 					{isSubmitting ? "Posting..." : "Post"}

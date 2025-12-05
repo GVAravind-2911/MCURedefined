@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth/auth-client";
 import Image from "next/image";
-import "@/styles/verify-email.css";
 import Link from "next/link";
 import { emailSchema } from "@/lib/auth/validation-schemas";
 
@@ -113,16 +112,16 @@ export default function VerifyEmailPage() {
 
 	if (isLoading) {
 		return (
-			<div className="loading-container">
-				<div className="loading-spinner" />
+			<div className="flex justify-center items-center min-h-screen bg-[#121212]">
+				<div className="w-12 h-12 rounded-full border-2 border-transparent border-t-[#ec1d24] border-b-[#ec1d24] animate-spin" />
 			</div>
 		);
 	}
 
 	return (
-		<div className="verify-page">
-			<div className="verify-container">
-				<div className="verify-card">
+		<div className="min-h-screen flex flex-col items-center justify-center px-4 bg-[#121212] bg-linear-to-r from-[rgba(236,29,36,0.2)] to-[rgba(0,0,0,0.9)]">
+			<div className="max-w-md w-full mx-auto">
+				<div className="bg-[#1a1a1a] rounded-lg shadow-[0_10px_30px_rgba(0,0,0,0.8)] p-8 mb-8 border-t-4 border-[#ec1d24]">
 					{/* Logo */}
 					<div className="text-center mb-4">
 						<Image
@@ -133,35 +132,38 @@ export default function VerifyEmailPage() {
 						/>
 					</div>
 
-					<div className="verify-header">
-						<h2 className="verify-title">Verify Your Email</h2>
-						<p className="verify-subtitle">
+					<div className="text-center mb-6">
+						<h2 className="font-['BentonSansBold'] text-3xl font-extrabold text-white mb-2 uppercase tracking-wider [text-shadow:2px_2px_4px_rgba(0,0,0,0.5)] after:content-[''] after:block after:w-20 after:h-1 after:bg-[#ec1d24] after:mx-auto after:mt-3">
+							Verify Your Email
+						</h2>
+						<p className="font-['BentonSansRegular'] text-sm text-white/70 mt-2 leading-relaxed">
 							We&apos;ve sent a verification link to{" "}
-							<span className="email-highlight">{email}</span>
+							<span className="font-medium text-[#ec1d24]">{email}</span>
 						</p>
 					</div>
 
-					<div className="verify-content">
-						<div className="verify-info-box">
-							<p className="verify-info-text">
+					<div className="mt-8">
+						<div className="rounded-md bg-white/5 border border-white/10 p-4 mb-6">
+							<p className="font-['BentonSansRegular'] text-sm text-white/80 mb-4">
 								Please check your inbox and click on the verification link to
 								complete your registration.
 							</p>
-							<p className="verify-info-text">
+							<p className="font-['BentonSansRegular'] text-sm text-white/80">
 								If you don&apos;t see the email, check your spam folder.
 							</p>
 						</div>
 
 						{validationError && (
-							<div className="error-message">{validationError}</div>
+							<div className="font-['BentonSansRegular'] text-sm text-red-400 mt-2 p-3 bg-red-500/10 rounded-md border border-red-500/30">
+								{validationError}
+							</div>
 						)}
 
-						<div style={{ display: "flex", gap: "10px" }}>
+						<div className="flex gap-2.5">
 							<button
 								onClick={handleResendVerification}
-								className="resend-button"
+								className="flex-3 flex justify-center py-3 px-5 bg-[#ec1d24] text-white border-none rounded-lg font-['BentonSansBold'] text-sm font-medium cursor-pointer shadow-md transition-all duration-300 hover:bg-[#d81921] hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-[3px] focus:ring-[rgba(236,29,36,0.5)]"
 								type="button"
-								style={{ flex: "3" }}
 								disabled={!!validationError}
 							>
 								Resend Verification Email
@@ -169,23 +171,29 @@ export default function VerifyEmailPage() {
 
 							<button
 								onClick={handleRefreshCheck}
-								className="resend-button"
+								className="flex-1 flex justify-center py-3 px-5 bg-[#ec1d24] text-white border-none rounded-lg font-['BentonSansBold'] text-sm font-medium cursor-pointer shadow-md transition-all duration-300 hover:bg-[#d81921] hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-[3px] focus:ring-[rgba(236,29,36,0.5)]"
 								type="button"
-								style={{ flex: "1" }}
 							>
 								Refresh
 							</button>
 						</div>
 
 						{resendSuccess && (
-							<div className="success-message" style={{ marginTop: "16px" }}>
+							<div className="font-['BentonSansRegular'] text-sm text-emerald-500 p-3 bg-emerald-500/10 rounded-md border border-emerald-500/30 mt-4">
 								Verification email has been resent. Please check your inbox.
 							</div>
 						)}
 
-						{resendError && <div className="error-message">{resendError}</div>}
+						{resendError && (
+							<div className="font-['BentonSansRegular'] text-sm text-red-400 mt-2 p-3 bg-red-500/10 rounded-md border border-red-500/30">
+								{resendError}
+							</div>
+						)}
 
-						<Link href="/" className="back-link">
+						<Link 
+							href="/" 
+							className="block text-center mt-4 text-white/70 font-['BentonSansRegular'] text-sm no-underline transition-colors duration-200 hover:text-[#ec1d24]"
+						>
 							Back to home
 						</Link>
 					</div>

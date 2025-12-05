@@ -6,7 +6,6 @@ import { authClient } from "@/lib/auth/auth-client";
 import axios from "axios";
 import CommentForm from "./CommentForm";
 import Comment from "./Comment";
-import "@/styles/comments.css";
 
 interface CommentSectionProps {
 	contentId: number;
@@ -91,10 +90,10 @@ const CommentSection: React.FC<CommentSectionProps> = ({
 	);
 
 	return (
-		<div className="comments-section">
-			<h2 className="section-title">
-				<span className="title-text">Comments</span>
-				<div className="title-line" />
+		<div className="mt-8 pt-8 border-t border-white/10">
+			<h2 className="font-['BentonSansBold'] relative flex items-center mb-8">
+				<span className="text-white text-3xl mr-4">Comments</span>
+				<div className="grow h-0.5 bg-[#ec1d24] opacity-80" />
 			</h2>
 
 			{session?.user ? (
@@ -105,23 +104,23 @@ const CommentSection: React.FC<CommentSectionProps> = ({
 					onCommentAdded={handleAddComment}
 				/>
 			) : (
-				<div className="login-to-comment">
+				<div className="bg-[rgba(40,40,40,0.3)] p-6 text-center rounded-lg mb-8 text-white/80">
 					<p>
-						Please <a href="/auth">sign in</a> to join the conversation
+						Please <a href="/auth" className="text-[#ec1d24] no-underline font-bold transition-all duration-300 hover:underline">sign in</a> to join the conversation
 					</p>
 				</div>
 			)}
 
 			{loading ? (
-				<div className="comments-loading">Loading comments...</div>
+				<div className="text-center p-8 text-white/70 font-['BentonSansRegular']">Loading comments...</div>
 			) : error ? (
-				<div className="comments-error">{error}</div>
+				<div className="text-center p-8 text-red-400 font-['BentonSansRegular']">{error}</div>
 			) : rootComments.length === 0 ? (
-				<div className="no-comments">
+				<div className="text-center p-8 text-white/70 font-['BentonSansRegular']">
 					<p>Be the first to share your thoughts!</p>
 				</div>
 			) : (
-				<div className="comments-list">
+				<div className="flex flex-col gap-6">
 					{rootComments.map((comment) => (
 						<Comment
 							key={comment.id}

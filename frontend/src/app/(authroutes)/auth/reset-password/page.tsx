@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth/auth-client";
 import Image from "next/image";
-import "@/styles/reset-password.css";
-import { resetPasswordSchema } from "@/lib/auth/validation-schemas"; // Update with the correct path
+import { resetPasswordSchema } from "@/lib/auth/validation-schemas";
 
 export default function ResetPasswordPage() {
 	const [password, setPassword] = useState("");
@@ -30,7 +29,6 @@ export default function ResetPasswordPage() {
 	const router = useRouter();
 
 	useEffect(() => {
-		// Extract token from URL on client-side
 		const urlToken = new URLSearchParams(window.location.search).get("token");
 
 		if (!urlToken) {
@@ -44,7 +42,6 @@ export default function ResetPasswordPage() {
 		setIsTokenValid(true);
 	}, []);
 
-	// Check password strength on password change
 	useEffect(() => {
 		const strength = {
 			score: 0,
@@ -55,7 +52,6 @@ export default function ResetPasswordPage() {
 			hasSpecial: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
 		};
 
-		// Calculate score based on criteria met
 		strength.score =
 			(strength.hasLength ? 1 : 0) +
 			(strength.hasUppercase ? 1 : 0) +
@@ -66,29 +62,25 @@ export default function ResetPasswordPage() {
 		setPasswordStrength(strength);
 	}, [password]);
 
-	// Generate a secure random password
 	const generateRandomPassword = () => {
 		const lowercase = "abcdefghijklmnopqrstuvwxyz";
 		const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		const numbers = "0123456789";
 		const special = "!@#$%^&*()_+-=[]{};'\"\\|,.<>/?";
 
-		// Ensure at least one of each character type
 		let password =
 			lowercase.charAt(Math.floor(Math.random() * lowercase.length)) +
 			uppercase.charAt(Math.floor(Math.random() * uppercase.length)) +
 			numbers.charAt(Math.floor(Math.random() * numbers.length)) +
 			special.charAt(Math.floor(Math.random() * special.length));
 
-		// Add additional random characters for length (12-16 characters total)
 		const allChars = lowercase + uppercase + numbers + special;
-		const length = Math.floor(Math.random() * 5) + 12; // Length between 12-16 chars
+		const length = Math.floor(Math.random() * 5) + 12;
 
 		for (let i = 4; i < length; i++) {
 			password += allChars.charAt(Math.floor(Math.random() * allChars.length));
 		}
 
-		// Shuffle the password
 		password = password
 			.split("")
 			.sort(() => 0.5 - Math.random())
@@ -109,8 +101,6 @@ export default function ResetPasswordPage() {
 		} catch (error) {
 			if (error instanceof Error) {
 				try {
-					// Try to parse Zod validation errors
-					// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 					const formattedErrors = JSON.parse((error as any).message);
 					const newErrors: { [key: string]: string } = {};
 
@@ -124,7 +114,6 @@ export default function ResetPasswordPage() {
 
 					setValidationErrors(newErrors);
 				} catch {
-					// If parsing fails, show generic error
 					setError((error as Error).message);
 				}
 			}
@@ -142,7 +131,6 @@ export default function ResetPasswordPage() {
 			return;
 		}
 
-		// Use Zod validation
 		if (!validateForm()) {
 			return;
 		}
@@ -162,12 +150,10 @@ export default function ResetPasswordPage() {
 
 			setIsSuccess(true);
 
-			// Redirect to login after 3 seconds
 			setTimeout(() => {
 				router.push("/auth");
 			}, 3000);
 
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		} catch (err: any) {
 			console.error("Reset password error:", err);
 			setError(
@@ -178,12 +164,22 @@ export default function ResetPasswordPage() {
 		}
 	};
 
+	const getStrengthColor = (score: number) => {
+		const colors = ["transparent", "bg-red-500", "bg-orange-500", "bg-yellow-500", "bg-green-500", "bg-green-600"];
+		return colors[score] || "transparent";
+	};
+
+	const getStrengthText = (score: number) => {
+		const texts = ["No password", "Very weak", "Weak", "Medium", "Strong", "Very strong"];
+		return texts[score] || "";
+	};
+
 	if (!isTokenValid) {
 		return (
-			<div className="reset-page">
-				<div className="reset-container">
-					<div className="reset-card">
-						<div className="reset-logo">
+			<div className="min-h-screen flex flex-col items-center justify-center px-4 bg-[#121212] bg-linear-to-r from-[rgba(236,29,36,0.2)] to-[rgba(0,0,0,0.9)]">
+				<div className="max-w-md w-full mx-auto">
+					<div className="bg-[#1a1a1a] rounded-lg shadow-[0_10px_30px_rgba(0,0,0,0.8)] p-8 mb-8 border-t-4 border-[#ec1d24] relative overflow-hidden after:content-[''] after:absolute after:top-0 after:right-0 after:w-[100px] after:h-[100px] after:bg-[radial-gradient(circle_at_top_right,rgba(236,29,36,0.15),transparent_70%)] after:z-0">
+						<div className="text-center mb-6 relative z-10">
 							<Image
 								src="/images/MainLogo.svg"
 								alt="MCU Redefined"
@@ -192,17 +188,18 @@ export default function ResetPasswordPage() {
 							/>
 						</div>
 
-						<div className="reset-header">
-							<h2 className="reset-title">Invalid Token</h2>
+						<div className="text-center mb-6 relative z-10">
+							<h2 className="font-['BentonSansBold'] text-3xl font-extrabold text-white mb-2 uppercase tracking-wider [text-shadow:2px_2px_4px_rgba(0,0,0,0.5)] after:content-[''] after:block after:w-20 after:h-1 after:bg-[#ec1d24] after:mx-auto after:mt-3">
+								Invalid Token
+							</h2>
 						</div>
 
-						<div className="reset-content">
-							<div className="reset-error">
-								{error ||
-									"Missing or invalid reset token. Please request a new password reset link."}
+						<div className="mt-8 relative z-10">
+							<div className="text-sm text-red-400 p-3 bg-red-500/10 rounded-md border border-red-500/30 mb-4">
+								{error || "Missing or invalid reset token. Please request a new password reset link."}
 							</div>
 
-							<a href="/auth" className="reset-link">
+							<a href="/auth" className="block text-center mt-5 text-white/70 font-['BentonSansRegular'] text-sm no-underline transition-colors duration-200 hover:text-[#ec1d24]">
 								Back to login
 							</a>
 						</div>
@@ -214,10 +211,10 @@ export default function ResetPasswordPage() {
 
 	if (isSuccess) {
 		return (
-			<div className="reset-page">
-				<div className="reset-container">
-					<div className="reset-card">
-						<div className="reset-logo">
+			<div className="min-h-screen flex flex-col items-center justify-center px-4 bg-[#121212] bg-linear-to-r from-[rgba(236,29,36,0.2)] to-[rgba(0,0,0,0.9)]">
+				<div className="max-w-md w-full mx-auto">
+					<div className="bg-[#1a1a1a] rounded-lg shadow-[0_10px_30px_rgba(0,0,0,0.8)] p-8 mb-8 border-t-4 border-[#ec1d24] relative overflow-hidden after:content-[''] after:absolute after:top-0 after:right-0 after:w-[100px] after:h-[100px] after:bg-[radial-gradient(circle_at_top_right,rgba(236,29,36,0.15),transparent_70%)] after:z-0">
+						<div className="text-center mb-6 relative z-10">
 							<Image
 								src="/images/MainLogo.svg"
 								alt="MCU Redefined"
@@ -226,14 +223,15 @@ export default function ResetPasswordPage() {
 							/>
 						</div>
 
-						<div className="reset-header">
-							<h2 className="reset-title">Password Reset Successful</h2>
+						<div className="text-center mb-6 relative z-10">
+							<h2 className="font-['BentonSansBold'] text-3xl font-extrabold text-white mb-2 uppercase tracking-wider [text-shadow:2px_2px_4px_rgba(0,0,0,0.5)] after:content-[''] after:block after:w-20 after:h-1 after:bg-[#ec1d24] after:mx-auto after:mt-3">
+								Password Reset Successful
+							</h2>
 						</div>
 
-						<div className="reset-content">
-							<div className="reset-success">
-								Your password has been successfully reset. You will be
-								redirected to the login page.
+						<div className="mt-8 relative z-10">
+							<div className="text-sm text-emerald-500 p-4 bg-emerald-500/10 rounded-md border border-emerald-500/30">
+								Your password has been successfully reset. You will be redirected to the login page.
 							</div>
 						</div>
 					</div>
@@ -243,10 +241,10 @@ export default function ResetPasswordPage() {
 	}
 
 	return (
-		<div className="reset-page">
-			<div className="reset-container">
-				<div className="reset-card">
-					<div className="reset-logo">
+		<div className="min-h-screen flex flex-col items-center justify-center px-4 bg-[#121212] bg-linear-to-r from-[rgba(236,29,36,0.2)] to-[rgba(0,0,0,0.9)]">
+			<div className="max-w-md w-full mx-auto">
+				<div className="bg-[#1a1a1a] rounded-lg shadow-[0_10px_30px_rgba(0,0,0,0.8)] p-8 mb-8 border-t-4 border-[#ec1d24] relative overflow-hidden after:content-[''] after:absolute after:top-0 after:right-0 after:w-[100px] after:h-[100px] after:bg-[radial-gradient(circle_at_top_right,rgba(236,29,36,0.15),transparent_70%)] after:z-0 md:p-6">
+					<div className="text-center mb-6 relative z-10">
 						<Image
 							src="/images/MainLogo.svg"
 							alt="MCU Redefined"
@@ -255,49 +253,50 @@ export default function ResetPasswordPage() {
 						/>
 					</div>
 
-					<div className="reset-header">
-						<h2 className="reset-title">Reset Your Password</h2>
-						<p className="reset-subtitle">
+					<div className="text-center mb-6 relative z-10">
+						<h2 className="font-['BentonSansBold'] text-3xl font-extrabold text-white mb-2 uppercase tracking-wider [text-shadow:2px_2px_4px_rgba(0,0,0,0.5)] after:content-[''] after:block after:w-20 after:h-1 after:bg-[#ec1d24] after:mx-auto after:mt-3 md:text-2xl">
+							Reset Your Password
+						</h2>
+						<p className="font-['BentonSansRegular'] text-sm text-white/70 mt-2 leading-relaxed">
 							Please enter your new password below
 						</p>
 					</div>
 
-					<div className="reset-content">
-						<form onSubmit={handleSubmit} className="reset-form">
-							<div className="password-section">
-								<div className="form-item">
-									<div className="password-header">
-										<label htmlFor="password">New Password</label>
+					<div className="mt-8 relative z-10">
+						<form onSubmit={handleSubmit} className="w-full">
+							<div className="mb-6">
+								<div className="mb-4">
+									<div className="flex justify-between items-center mb-2">
+										<label htmlFor="password" className="block font-['BentonSansRegular'] text-sm text-white/80">
+											New Password
+										</label>
 										<button
 											type="button"
-											className="generate-password-btn"
+											className="bg-transparent border-none text-[#ec1d24] text-xs cursor-pointer transition-colors duration-200 p-0 underline hover:text-[#f43f46]"
 											onClick={generateRandomPassword}
 										>
 											Generate Password
 										</button>
 									</div>
-									<div className="password-input-wrapper">
+									<div className="relative flex items-center">
 										<input
 											type="password"
 											id="password"
-											name="new-password" // For password manager compatibility
+											name="new-password"
 											autoComplete="new-password"
 											value={password}
 											onChange={(e) => setPassword(e.target.value)}
 											required
-											className={`password-field ${validationErrors.password ? "error" : ""}`}
+											className={`w-full py-3 px-3 bg-white/5 border rounded-md text-white font-['BentonSansRegular'] text-sm transition-all duration-300 focus:outline-none focus:border-[#ec1d24] focus:shadow-[0_0_0_2px_rgba(236,29,36,0.25)] placeholder:text-white/30 ${validationErrors.password ? "border-red-400" : "border-white/10"}`}
 											placeholder="Enter your new password"
 										/>
 										<button
 											type="button"
-											className="toggle-password-btn"
+											className="absolute right-3 bg-transparent border-none text-white/50 text-xs cursor-pointer transition-colors duration-200 p-0 hover:text-white/80"
 											onClick={() => {
-												const input = document.getElementById(
-													"password",
-												) as HTMLInputElement;
+												const input = document.getElementById("password") as HTMLInputElement;
 												if (input) {
-													input.type =
-														input.type === "password" ? "text" : "password";
+													input.type = input.type === "password" ? "text" : "password";
 												}
 											}}
 										>
@@ -305,86 +304,66 @@ export default function ResetPasswordPage() {
 										</button>
 									</div>
 
-									<div className="password-strength-meter">
-										<div className="password-strength-bar">
+									<div className="mt-2.5 mb-2.5">
+										<div className="h-1.5 bg-white/10 rounded-sm mb-1.5 overflow-hidden">
 											<div
-												className={`strength-bar-fill strength-${passwordStrength.score}`}
+												className={`h-full rounded-sm transition-all duration-300 ${getStrengthColor(passwordStrength.score)}`}
 												style={{ width: `${passwordStrength.score * 20}%` }}
 											/>
 										</div>
-										<div className="password-strength-text">
-											{passwordStrength.score === 0 && "No password"}
-											{passwordStrength.score === 1 && "Very weak"}
-											{passwordStrength.score === 2 && "Weak"}
-											{passwordStrength.score === 3 && "Medium"}
-											{passwordStrength.score === 4 && "Strong"}
-											{passwordStrength.score === 5 && "Very strong"}
+										<div className="text-xs text-white/70 text-right">
+											{getStrengthText(passwordStrength.score)}
 										</div>
 									</div>
 
-									<div className="password-requirements">
-										<div
-											className={`requirement ${passwordStrength.hasLength ? "met" : ""}`}
-										>
-											{passwordStrength.hasLength ? "✓" : "○"} At least 8
-											characters
+									<div className="grid grid-cols-2 gap-1.5 mt-2 mb-3 text-xs text-white/60 sm:grid-cols-1">
+										<div className={`flex items-center gap-1 transition-colors duration-300 ${passwordStrength.hasLength ? "text-green-500" : ""}`}>
+											{passwordStrength.hasLength ? "✓" : "○"} At least 8 characters
 										</div>
-										<div
-											className={`requirement ${passwordStrength.hasUppercase ? "met" : ""}`}
-										>
-											{passwordStrength.hasUppercase ? "✓" : "○"} Uppercase
-											letter
+										<div className={`flex items-center gap-1 transition-colors duration-300 ${passwordStrength.hasUppercase ? "text-green-500" : ""}`}>
+											{passwordStrength.hasUppercase ? "✓" : "○"} Uppercase letter
 										</div>
-										<div
-											className={`requirement ${passwordStrength.hasLowercase ? "met" : ""}`}
-										>
-											{passwordStrength.hasLowercase ? "✓" : "○"} Lowercase
-											letter
+										<div className={`flex items-center gap-1 transition-colors duration-300 ${passwordStrength.hasLowercase ? "text-green-500" : ""}`}>
+											{passwordStrength.hasLowercase ? "✓" : "○"} Lowercase letter
 										</div>
-										<div
-											className={`requirement ${passwordStrength.hasNumber ? "met" : ""}`}
-										>
+										<div className={`flex items-center gap-1 transition-colors duration-300 ${passwordStrength.hasNumber ? "text-green-500" : ""}`}>
 											{passwordStrength.hasNumber ? "✓" : "○"} Number
 										</div>
-										<div
-											className={`requirement ${passwordStrength.hasSpecial ? "met" : ""}`}
-										>
-											{passwordStrength.hasSpecial ? "✓" : "○"} Special
-											character
+										<div className={`flex items-center gap-1 transition-colors duration-300 ${passwordStrength.hasSpecial ? "text-green-500" : ""}`}>
+											{passwordStrength.hasSpecial ? "✓" : "○"} Special character
 										</div>
 									</div>
 
 									{validationErrors.password && (
-										<div className="validation-error">
+										<div className="text-red-400 text-xs mt-1.5">
 											{validationErrors.password}
 										</div>
 									)}
 								</div>
 
-								<div className="form-item">
-									<label htmlFor="confirmPassword">Confirm Password</label>
-									<div className="password-input-wrapper">
+								<div className="mb-4">
+									<label htmlFor="confirmPassword" className="block mb-2 font-['BentonSansRegular'] text-sm text-white/80">
+										Confirm Password
+									</label>
+									<div className="relative flex items-center">
 										<input
 											type="password"
 											id="confirmPassword"
-											name="confirm-password" // For password manager compatibility
+											name="confirm-password"
 											autoComplete="new-password"
 											value={confirmPassword}
 											onChange={(e) => setConfirmPassword(e.target.value)}
 											required
-											className={`password-field ${validationErrors.confirmPassword ? "error" : ""}`}
+											className={`w-full py-3 px-3 bg-white/5 border rounded-md text-white font-['BentonSansRegular'] text-sm transition-all duration-300 focus:outline-none focus:border-[#ec1d24] focus:shadow-[0_0_0_2px_rgba(236,29,36,0.25)] placeholder:text-white/30 ${validationErrors.confirmPassword ? "border-red-400" : "border-white/10"}`}
 											placeholder="Confirm your new password"
 										/>
 										<button
 											type="button"
-											className="toggle-password-btn"
+											className="absolute right-3 bg-transparent border-none text-white/50 text-xs cursor-pointer transition-colors duration-200 p-0 hover:text-white/80"
 											onClick={() => {
-												const input = document.getElementById(
-													"confirmPassword",
-												) as HTMLInputElement;
+												const input = document.getElementById("confirmPassword") as HTMLInputElement;
 												if (input) {
-													input.type =
-														input.type === "password" ? "text" : "password";
+													input.type = input.type === "password" ? "text" : "password";
 												}
 											}}
 										>
@@ -392,30 +371,37 @@ export default function ResetPasswordPage() {
 										</button>
 									</div>
 									{confirmPassword && password !== confirmPassword && (
-										<div className="validation-error match-error">
+										<div className="text-red-400 text-xs mt-1.5 flex items-center gap-1 before:content-['✗']">
 											Passwords don&apos;t match
 										</div>
 									)}
 									{validationErrors.confirmPassword && (
-										<div className="validation-error">
+										<div className="text-red-400 text-xs mt-1.5">
 											{validationErrors.confirmPassword}
 										</div>
 									)}
 								</div>
 							</div>
 
-							{error && <div className="reset-error">{error}</div>}
+							{error && (
+								<div className="text-sm text-red-400 mt-2 p-3 bg-red-500/10 rounded-md border border-red-500/30 mb-4">
+									{error}
+								</div>
+							)}
 
 							<button
 								type="submit"
-								className={`reset-button ${isLoading ? "loading" : ""}`}
+								className={`w-full flex justify-center py-3.5 px-5 bg-[#ec1d24] text-white border-none rounded-lg font-['BentonSansBold'] text-sm font-medium cursor-pointer shadow-md transition-all duration-300 relative overflow-hidden hover:bg-[#d81921] hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-[3px] focus:ring-[rgba(236,29,36,0.5)] disabled:bg-gray-500 disabled:cursor-not-allowed disabled:translate-y-0 ${isLoading ? "text-transparent" : ""}`}
 								disabled={isLoading}
 							>
+								{isLoading ? (
+									<span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 border-2 border-transparent border-t-white rounded-full animate-spin" />
+								) : null}
 								{isLoading ? "Processing..." : "Reset Password"}
 							</button>
 						</form>
 
-						<a href="/auth" className="reset-link">
+						<a href="/auth" className="block text-center mt-5 text-white/70 font-['BentonSansRegular'] text-sm no-underline transition-colors duration-200 hover:text-[#ec1d24]">
 							Back to login
 						</a>
 					</div>

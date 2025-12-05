@@ -80,7 +80,7 @@ const Comment = memo(function Comment({
 		if (!replyItems || replyItems.length === 0) return null;
 
 		return (
-			<div className={`comment-replies ${currentDepth > 0 ? "nested" : ""}`}>
+			<div className={`mt-2.5 ml-4 pl-3 border-l-2 border-[rgba(236,29,36,0.5)] ${currentDepth > 0 ? "nested" : ""}`}>
 				{replyItems.map((reply) => (
 					<Comment
 						key={reply.id}
@@ -105,35 +105,43 @@ const Comment = memo(function Comment({
 		return null;
 	}
 
+	// Calculate background opacity based on depth
+	const getDepthBgClass = () => {
+		if (depth === 0) return "bg-[rgba(40,40,40,0.3)]";
+		if (depth === 1) return "bg-[rgba(45,45,45,0.4)]";
+		if (depth === 2) return "bg-[rgba(50,50,50,0.5)]";
+		return "bg-[rgba(55,55,55,0.6)]";
+	};
+
 	return (
-		<div className={`comment-container ${depth > 0 ? `depth-${depth}` : ""}`}>
-			<div className={`comment ${comment.deleted ? "comment-deleted" : ""}`}>
-				<div className="comment-header">
-					<div className="comment-user">
+		<div className="relative">
+			<div className={`${getDepthBgClass()} rounded-lg p-4 transition-all duration-300 mb-1 hover:bg-[rgba(50,50,50,0.4)] ${comment.deleted ? "comment-deleted" : ""}`}>
+				<div className="flex justify-between items-center mb-3 flex-wrap gap-2 md:items-start">
+					<div className="flex items-center gap-2 flex-wrap md:w-full">
 						{comment.userImage ? (
 							<Image
 								src={comment.userImage}
 								alt={comment.username || "User"}
 								width={32}
 								height={32}
-								className="comment-avatar"
+								className="w-8 h-8 rounded-full object-cover"
 							/>
 						) : (
-							<div className="comment-avatar-placeholder">
+							<div className="w-8 h-8 rounded-full bg-[#ec1d24] text-white flex items-center justify-center font-['BentonSansBold'] text-base">
 								{comment.username ? comment.username[0].toUpperCase() : "?"}
 							</div>
 						)}
-						<span className="comment-username">
+						<span className="text-white font-['BentonSansBold'] text-[0.95rem]">
 							{comment.username || "[deleted]"}
 						</span>
-						<span className="comment-date">
+						<span className="text-white/50 text-[0.8rem] font-['BentonSansRegular']">
 							{moment(comment.createdAt).fromNow()}
 						</span>
 					</div>
 
 					{canDelete && !comment.deleted && (
 						<button
-							className="comment-delete-button"
+							className="bg-transparent border-none text-red-400/70 text-[0.85rem] font-['BentonSansRegular'] cursor-pointer transition-all duration-200 inline-flex items-center justify-center gap-1.5 py-1.5 px-3.5 rounded whitespace-nowrap h-8 shrink-0 hover:text-red-500 hover:bg-red-500/10"
 							onClick={handleDelete}
 							disabled={isDeleting}
 							type="button"
@@ -143,34 +151,36 @@ const Comment = memo(function Comment({
 					)}
 				</div>
 
-				<div className="comment-content">{comment.content}</div>
+				<div className={`text-white font-['BentonSansRegular'] leading-relaxed mb-4 wrap-break-word whitespace-pre-wrap ${comment.deleted ? "text-white/50 italic" : ""}`}>
+					{comment.content}
+				</div>
 
-				<div className="comment-actions">
+				<div className="flex items-center gap-3 mt-3 flex-nowrap overflow-x-auto pb-1 scrollbar-hide">
 					{currentUser && !comment.deleted && (
-						// Update the like button in Comment.tsx
 						<button
-							className={`comment-like-button ${comment.userHasLiked ? "liked" : ""}`}
+							className={`bg-transparent border-none text-white/70 text-[0.85rem] font-['BentonSansRegular'] cursor-pointer transition-all duration-200 inline-flex items-center justify-center gap-1.5 py-1.5 px-3.5 rounded whitespace-nowrap h-8 shrink-0 hover:text-white hover:bg-white/10 ${comment.userHasLiked ? "text-[#ec1d24]" : ""}`}
 							onClick={handleLike}
 							disabled={isLiking}
 							type="button"
 						>
 							<svg
-								className="heart-icon"
+								className={`transition-all duration-300 ${comment.userHasLiked ? "fill-[#ec1d24] stroke-[#ec1d24] animate-[pulse_0.4s]" : "fill-none stroke-current"}`}
 								xmlns="http://www.w3.org/2000/svg"
 								width="16"
 								height="16"
 								viewBox="0 0 24 24"
+								strokeWidth="2"
 							>
 								<title>Like</title>
 								<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
 							</svg>
-							{comment.likes > 0 && comment.likes}
+							{comment.likes > 0 && <span className="inline m-0 text-[0.85rem]">{comment.likes}</span>}
 						</button>
 					)}
 
 					{currentUser && !comment.deleted && (
 						<button
-							className="comment-reply-button"
+							className="bg-transparent border-none text-white/70 text-[0.85rem] font-['BentonSansRegular'] cursor-pointer transition-all duration-200 inline-flex items-center justify-center gap-1.5 py-1.5 px-3.5 rounded whitespace-nowrap h-8 shrink-0 hover:text-white hover:bg-white/10"
 							type="button"
 							onClick={() => setShowReplyForm(!showReplyForm)}
 						>
@@ -180,7 +190,7 @@ const Comment = memo(function Comment({
 
 					{replies && replies.length > 0 && (
 						<button
-							className="comment-toggle-replies"
+							className="bg-transparent border-none text-white/70 text-[0.85rem] font-['BentonSansRegular'] cursor-pointer transition-all duration-200 inline-flex items-center justify-center gap-1.5 py-1.5 px-3.5 rounded whitespace-nowrap h-8 shrink-0 hover:text-white hover:bg-white/10"
 							onClick={() => setShowReplies(!showReplies)}
 							type="button"
 						>
