@@ -58,23 +58,21 @@ export default function ProjectShareButton({
     }, [animateCount]);
 
     return (
-        <div className="share-container">
+        <div className="flex flex-col items-center mx-1">
 			<motion.button
 				type="button"
-				className={`share ${shared ? "shared" : ""}`}
+				className={`flex items-center justify-center gap-2.5 py-2.5 px-5 max-md:py-2 max-md:px-4 max-[480px]:py-1.5 max-[480px]:px-3.5 rounded-[30px] border-2 border-transparent cursor-pointer font-[BentonSansRegular] font-medium text-base max-md:text-[15px] max-[480px]:text-sm w-[140px] max-md:w-[120px] max-[480px]:w-[110px] h-[42px] max-md:h-[38px] max-[480px]:h-9 shadow-[0_4px_12px_rgba(0,0,0,0.15)] relative overflow-hidden origin-center transition-all duration-300 bg-[#333] text-white hover:bg-[#444] ${shared ? "animate-[pulse-green_1.5s_cubic-bezier(0.175,0.885,0.32,1.275)]" : ""}`}
 				onClick={handleShare}
 				disabled={isPending}
 				whileTap={{ 
-					scale: 0.95 // Reduced scale effect to prevent dramatic resizing
+					scale: 0.95
 				}}
 				whileHover={{ 
 					y: -2,
 					boxShadow: "0 6px 14px rgba(0, 0, 0, 0.3)",
-					// Removed scale from here to avoid width issues
 				}}
 				animate={shared ? { 
 					backgroundColor: ["#333", "#2e7d32", "#333"],
-					// No dimension changes here
 				} : {}}
 				transition={{ 
 					type: "spring", 
@@ -83,7 +81,7 @@ export default function ProjectShareButton({
 					backgroundColor: { duration: 1 }
 				}}
 				title={`${count.toLocaleString()} shares`}
-				layout="position" // Add layout="position" to maintain relative positions
+				layout="position"
 			>
                 <motion.svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -93,6 +91,7 @@ export default function ProjectShareButton({
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
+                    className="w-[18px] h-[18px] max-md:w-4 max-md:h-4 min-w-[18px] min-h-[18px] max-md:min-w-4 max-md:min-h-4 shrink-0 block transition-all duration-300 stroke-[2px] stroke-round"
                     animate={shared ? { 
                         scale: [1, 1.3, 1],
                         rotate: [0, 45, 0],
@@ -107,7 +106,7 @@ export default function ProjectShareButton({
                     <path d="M15.41 6.51L8.59 10.49" />
                 </motion.svg>
                 
-                <div className="button-text">
+                <div className="flex items-center gap-1.5 max-md:gap-1.5 max-[480px]:gap-1 relative h-[22px] tracking-[0.02em] whitespace-nowrap">
                     <AnimatePresence mode="wait">
                         <motion.span
                             key={shared ? "copied" : "share"}
@@ -115,13 +114,14 @@ export default function ProjectShareButton({
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
                             transition={{ duration: 0.2 }}
+                            className="text-[15px] max-[480px]:text-[13px]"
                         >
                             {shared ? "Copied!" : "Share"}
                         </motion.span>
                     </AnimatePresence>
                     
                     <motion.span 
-                        className="share-count-wrapper"
+                        className="inline-flex items-center ml-1.5 max-md:ml-1 text-[0.9em] max-[480px]:text-[0.85em] font-normal opacity-95 bg-white/15 py-0.5 max-[480px]:py-px px-2 max-[480px]:px-1.5 rounded-[10px]"
                         animate={animateCount ? {
                             y: [0, -10, 0],
                             scale: [1, 1.2, 1],
@@ -134,7 +134,7 @@ export default function ProjectShareButton({
                 
                 {isPending && (
                     <motion.span 
-                        className="loading-indicator"
+                        className="ml-1.5 inline-flex items-center"
                         animate={{ rotate: 360 }}
                         transition={{ 
                             repeat: Number.POSITIVE_INFINITY, 
@@ -148,6 +148,7 @@ export default function ProjectShareButton({
                             viewBox="0 0 24 24" 
                             fill="none" 
                             xmlns="http://www.w3.org/2000/svg"
+                            className="opacity-80"
                         >
                             <title>Loading</title>
                             <path 

@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useMemo } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
-import "@/styles/projectsenhanced.css";
 
 const formatPosterPath = (path: string, phase: number): string => {
 	// Extract filename from static/img/posters/name.extension
@@ -88,12 +87,15 @@ export default function ProjectsPage({ projects }: ProjectsPageProps) {
 	}
 
 	return (
-		<div className="projects-page fade-in">
-			<div className="project-hero">
-				<div className="hero-overlay" />
-				<div className="hero-content">
-					<h1 className="hero-title">MCU Timeline</h1>
-					<p className="hero-description">
+		<div className="flex flex-col w-full items-center pb-12 animate-[fadeInSimple_0.5s_ease-in]">
+			{/* Hero section */}
+			<div className="relative w-[92%] h-[280px] max-md:h-[220px] bg-linear-to-r from-[#ec1d24]/80 to-black/80 bg-cover bg-center mb-8 flex items-center justify-center overflow-hidden rounded-lg">
+				<div className="absolute inset-0 bg-linear-to-b from-black/70 to-black/90 z-1" />
+				<div className="relative z-2 text-center px-4 max-w-[800px]">
+					<h1 className="font-[BentonSansBold] text-[clamp(28px,5vw,48px)] max-md:text-2xl text-white mb-4 uppercase tracking-[1px] [text-shadow:2px_2px_4px_rgba(0,0,0,0.5)] after:content-[''] after:block after:w-20 after:h-1 after:bg-[#ec1d24] after:mx-auto after:mt-3">
+						MCU Timeline
+					</h1>
+					<p className="font-[BentonSansRegular] text-[clamp(16px,2vw,18px)] max-md:text-sm text-white/80 max-w-[600px] mx-auto leading-relaxed">
 						Explore the Marvel Cinematic Universe films and shows across
 						different phases. From the genesis of Iron Man to the latest
 						adventures in the multiverse saga.
@@ -101,19 +103,21 @@ export default function ProjectsPage({ projects }: ProjectsPageProps) {
 				</div>
 			</div>
 
-			<div className="projects-search-container">
-				<div className="search-filters">
-					<div className="search-bar">
+			{/* Search and filters */}
+			<div className="w-[90%] max-w-[1200px] mx-auto mb-8">
+				<div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 w-full mb-6">
+					{/* Search bar */}
+					<div className="flex items-center bg-white/10 rounded-lg px-4 transition-all duration-300 border border-white/10 md:max-w-[350px] focus-within:bg-white/15 focus-within:border-[#ec1d24]/50 focus-within:shadow-[0_0_0_2px_rgba(236,29,36,0.25)]">
 						<input
 							type="text"
 							placeholder="Search projects..."
 							value={searchQuery}
 							onChange={handleSearchChange}
-							className="search-input"
+							className="w-full bg-transparent border-none py-3 text-white font-[BentonSansRegular] text-base placeholder:text-white/50 focus:outline-none max-[480px]:text-sm"
 							aria-label="Search projects"
 						/>
 						<svg
-							className="search-icon"
+							className="w-6 h-6 text-white/50 ml-2"
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 0 24 24"
 						>
@@ -125,9 +129,10 @@ export default function ProjectsPage({ projects }: ProjectsPageProps) {
 						</svg>
 					</div>
 
-					<div className="phase-filters">
+					{/* Phase filters */}
+					<div className="flex flex-wrap gap-2">
 						<button
-							className={`phase-filter-button ${selectedPhase === null ? "active" : ""}`}
+							className={`bg-white/10 border border-white/20 text-white py-2 px-4 rounded-md font-[BentonSansRegular] text-sm cursor-pointer transition-all duration-200 hover:bg-[#ec1d24]/30 hover:border-[#ec1d24]/50 max-[480px]:text-xs max-[480px]:py-1.5 max-[480px]:px-3 ${selectedPhase === null ? "bg-[#ec1d24]! border-[#ec1d24]!" : ""}`}
 							onClick={() => handlePhaseChange(null)}
 							type="button"
 							aria-label="All Phases"
@@ -137,7 +142,7 @@ export default function ProjectsPage({ projects }: ProjectsPageProps) {
 						{allPhases.map((phase) => (
 							<button
 								key={`filter-phase-${phase}`}
-								className={`phase-filter-button ${selectedPhase === phase ? "active" : ""}`}
+								className={`bg-white/10 border border-white/20 text-white py-2 px-4 rounded-md font-[BentonSansRegular] text-sm cursor-pointer transition-all duration-200 hover:bg-[#ec1d24]/30 hover:border-[#ec1d24]/50 max-[480px]:text-xs max-[480px]:py-1.5 max-[480px]:px-3 ${selectedPhase === phase ? "bg-[#ec1d24]! border-[#ec1d24]!" : ""}`}
 								onClick={() => handlePhaseChange(phase)}
 								type="button"
 								aria-label={`Phase ${phase}`}
@@ -148,12 +153,15 @@ export default function ProjectsPage({ projects }: ProjectsPageProps) {
 					</div>
 				</div>
 
+				{/* No results state for search */}
 				{searchQuery && filteredProjects.length === 0 && (
-					<div className="no-results">
-						<p>No projects found matching &quot;{searchQuery}&quot;</p>
+					<div className="flex flex-col items-center p-12 bg-white/3 rounded-lg my-4">
+						<p className="text-white/70 font-[BentonSansRegular] text-lg mb-4">
+							No projects found matching &quot;{searchQuery}&quot;
+						</p>
 						{selectedPhase !== null && (
 							<button
-								className="clear-filter-button"
+								className="bg-transparent border border-white/30 text-white py-2 px-4 rounded-md font-[BentonSansRegular] text-sm cursor-pointer transition-all duration-200 hover:bg-white/10 hover:border-white/50"
 								onClick={() => setSelectedPhase(null)}
 								type="button"
 							>
@@ -164,42 +172,52 @@ export default function ProjectsPage({ projects }: ProjectsPageProps) {
 				)}
 			</div>
 
-			<div className="projects-container">
+			{/* Projects container */}
+			<div className="w-[90%] max-w-[1200px] mx-auto">
 				{visiblePhases.length > 0 ? (
 					visiblePhases.map((phase) => (
-						<div key={`phase-${phase}`} className="phase-section">
-							<div className="section-title">
-								<span className="title-text">Phase {phase}</span>
-								<div className="title-line" />
+						<div key={`phase-${phase}`} className="mb-12">
+							{/* Section title */}
+							<div className="flex items-center mb-6 font-[BentonSansBold] text-white max-[480px]:mb-4">
+								<span className="text-[28px] max-[480px]:text-[22px] mr-4 whitespace-nowrap">
+									Phase {phase}
+								</span>
+								<div className="grow h-[3px] bg-linear-to-r from-[#ec1d24] to-transparent" />
 							</div>
 
-							<div className="projects-grid">
+							{/* Projects grid */}
+							<div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] max-lg:grid-cols-[repeat(auto-fill,minmax(160px,1fr))] max-md:grid-cols-[repeat(auto-fill,minmax(140px,1fr))] max-[480px]:grid-cols-2 gap-5 max-md:gap-4 max-[480px]:gap-2.5 justify-center">
 								{projectsByPhase[phase].map((project) => (
 									<Link
 										href={`/release-slate/${project.id}`}
-										className="project-card"
+										className="group bg-white/3 rounded-[10px] overflow-hidden shadow-[0_4px_6px_rgba(0,0,0,0.1)] transition-all duration-300 no-underline flex flex-col h-full hover:-translate-y-2 hover:shadow-[0_10px_20px_rgba(0,0,0,0.2)] hover:bg-white/5"
 										key={project.id}
 									>
-										<div className="project-poster-container">
+										{/* Poster container */}
+										<div className="relative w-full overflow-hidden rounded-t-lg">
 											<Image
 												src={formatPosterPath(
 													project.posterpath,
 													project.phase,
 												)}
 												alt={`${project.name} - Phase ${project.phase}`}
-												className="project-poster"
+												className="w-full aspect-2/3 object-cover transition-transform duration-400 group-hover:scale-105"
 												width={200}
 												height={300}
 												style={{ objectFit: "cover" }}
 											/>
-											<div className="poster-overlay">
-												<div className="project-phase-badge">
+											{/* Poster overlay */}
+											<div className="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-black/80 flex flex-col justify-end p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+												<div className="absolute top-2.5 right-2.5 bg-[#ec1d24] text-white py-1 px-2.5 rounded font-[BentonSansRegular] text-xs font-bold">
 													Phase {project.phase}
 												</div>
 											</div>
 										</div>
-										<div className="project-info">
-											<h2 className="project-title">{project.name}</h2>
+										{/* Project info */}
+										<div className="p-4 max-[480px]:p-2.5 text-center">
+											<h2 className="text-white font-[BentonSansBold] text-lg max-lg:text-base max-[480px]:text-sm m-0 transition-colors duration-300 group-hover:text-[#ec1d24]">
+												{project.name}
+											</h2>
 										</div>
 									</Link>
 								))}
@@ -207,10 +225,12 @@ export default function ProjectsPage({ projects }: ProjectsPageProps) {
 						</div>
 					))
 				) : (
-					<div className="no-results">
-						<p>No projects found</p>
+					<div className="flex flex-col items-center p-12 bg-white/3 rounded-lg my-4">
+						<p className="text-white/70 font-[BentonSansRegular] text-lg mb-4">
+							No projects found
+						</p>
 						<button
-							className="clear-filters-button"
+							className="bg-transparent border border-white/30 text-white py-2 px-4 rounded-md font-[BentonSansRegular] text-sm cursor-pointer transition-all duration-200 hover:bg-white/10 hover:border-white/50"
 							onClick={() => {
 								setSearchQuery("");
 								setSelectedPhase(null);
