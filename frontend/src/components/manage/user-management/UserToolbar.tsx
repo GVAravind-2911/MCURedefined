@@ -72,13 +72,13 @@ export default function UserToolbar({
 	};
 
 	return (
-		<div className="flex flex-wrap gap-4 mb-6 p-6 bg-[rgba(18,18,18,0.95)] rounded-[14px] border border-white/10 backdrop-blur-[20px] shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
-			<form onSubmit={onSearch} className="flex items-center gap-3 flex-1 min-w-[300px]">
+		<div className="flex flex-col lg:flex-row flex-wrap gap-4 mb-6 p-4 sm:p-6 bg-[rgba(18,18,18,0.95)] rounded-[14px] border border-white/10 backdrop-blur-[20px] shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
+			<form onSubmit={onSearch} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1 min-w-0">
 				{/* Custom Search Field Dropdown */}
-				<div className="relative min-w-[120px]" ref={searchFieldRef}>
+				<div className="relative w-full sm:w-auto sm:min-w-[120px]" ref={searchFieldRef}>
 					<button
 						type="button"
-						className="flex items-center justify-between gap-3 py-3.5 px-4 bg-black/40 border border-white/10 rounded-[10px] text-white text-[0.9rem] cursor-pointer transition-all duration-[0.25s] min-w-[130px] whitespace-nowrap hover:border-white/20 hover:bg-white/5"
+						className="flex items-center justify-between gap-3 py-3.5 px-4 bg-black/40 border border-white/10 rounded-[10px] text-white text-[0.9rem] cursor-pointer transition-all duration-[0.25s] w-full sm:min-w-[130px] whitespace-nowrap hover:border-white/20 hover:bg-white/5"
 						onClick={() => setSearchFieldOpen(!searchFieldOpen)}
 					>
 						<span>{getSearchFieldLabel()}</span>
@@ -145,17 +145,17 @@ export default function UserToolbar({
 						</button>
 					)}
 				</div>
-				<button type="submit" className="py-3.5 px-6 bg-linear-to-br from-[#ec1d24] to-[#c91820] text-white border-none rounded-[10px] font-semibold text-[0.95rem] cursor-pointer transition-all duration-[0.25s] whitespace-nowrap hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(236,29,36,0.4)]">
+				<button type="submit" className="py-3.5 px-6 bg-linear-to-br from-[#ec1d24] to-[#c91820] text-white border-none rounded-[10px] font-semibold text-[0.95rem] cursor-pointer transition-all duration-[0.25s] whitespace-nowrap hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(236,29,36,0.4)] w-full sm:w-auto">
 					Search
 				</button>
 			</form>
 
-			<div className="flex items-center gap-3 flex-wrap">
+			<div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-wrap">
 				{/* Role Filter Dropdown */}
-				<div className="relative min-w-[120px]" ref={roleFilterRef}>
+				<div className="relative w-full sm:w-auto sm:min-w-[120px]" ref={roleFilterRef}>
 					<button
 						type="button"
-						className="flex items-center justify-between gap-3 py-3.5 px-4 bg-black/40 border border-white/10 rounded-[10px] text-white text-[0.9rem] cursor-pointer transition-all duration-[0.25s] min-w-[130px] whitespace-nowrap hover:border-white/20 hover:bg-white/5"
+						className="flex items-center justify-between gap-3 py-3.5 px-4 bg-black/40 border border-white/10 rounded-[10px] text-white text-[0.9rem] cursor-pointer transition-all duration-[0.25s] w-full sm:min-w-[130px] whitespace-nowrap hover:border-white/20 hover:bg-white/5"
 						onClick={() => setRoleFilterOpen(!roleFilterOpen)}
 					>
 						<span>{getRoleLabel()}</span>
@@ -201,10 +201,10 @@ export default function UserToolbar({
 				</div>
 
 				{/* Status Filter Dropdown */}
-				<div className="relative min-w-[120px]" ref={statusFilterRef}>
+				<div className="relative w-full sm:w-auto sm:min-w-[120px]" ref={statusFilterRef}>
 					<button
 						type="button"
-						className="flex items-center justify-between gap-3 py-3.5 px-4 bg-black/40 border border-white/10 rounded-[10px] text-white text-[0.9rem] cursor-pointer transition-all duration-[0.25s] min-w-[130px] whitespace-nowrap hover:border-white/20 hover:bg-white/5"
+						className="flex items-center justify-between gap-3 py-3.5 px-4 bg-black/40 border border-white/10 rounded-[10px] text-white text-[0.9rem] cursor-pointer transition-all duration-[0.25s] w-full sm:min-w-[130px] whitespace-nowrap hover:border-white/20 hover:bg-white/5"
 						onClick={() => setStatusFilterOpen(!statusFilterOpen)}
 					>
 						<span>{getStatusLabel()}</span>
@@ -260,7 +260,7 @@ export default function UserToolbar({
 
 				<button
 					type="button"
-					className="flex items-center gap-2 py-3.5 px-5 bg-linear-to-br from-[#ec1d24] to-[#c91820] text-white border-none rounded-[10px] font-semibold text-[0.9rem] cursor-pointer transition-all duration-[0.25s] whitespace-nowrap hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(236,29,36,0.4)]"
+					className="flex items-center justify-center gap-2 py-3.5 px-5 bg-linear-to-br from-[#ec1d24] to-[#c91820] text-white border-none rounded-[10px] font-semibold text-[0.9rem] cursor-pointer transition-all duration-[0.25s] whitespace-nowrap hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(236,29,36,0.4)] w-full sm:w-auto"
 					onClick={onCreateUser}
 				>
 					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
