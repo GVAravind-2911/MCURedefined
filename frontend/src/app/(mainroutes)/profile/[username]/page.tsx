@@ -7,7 +7,6 @@ import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth/auth";
 import axios from "axios";
-import "@/styles/profile.css";
 import { getBackendUrl } from "@/lib/config/backend";
 import UnifiedProfileClient from "@/components/profile/UnifiedProfileClient";
 import type { Session } from 'better-auth/types';
@@ -109,7 +108,7 @@ export default async function ProfilePage({ params }: PageProps) {
 	]);
 
 	return (
-		<div className="profile-page">
+		<div className="flex flex-col w-full mx-auto min-h-screen bg-linear-to-br from-black/95 to-[#141414]/98 py-8">
 			<UnifiedProfileClient
 				profileUser={{
 					id: profileUser.id,

@@ -67,7 +67,7 @@ const ProfileClientWrapper = ({ session, activeSessions, currentSessionId }: Pro
 	];
 
 	const renderContent = () => {
-		const contentClass = `profile-tab-content ${isTransitioning ? 'switching' : ''}`;
+		const contentClass = `p-6 md:p-8 animate-[fadeInUp_0.3s_ease-out] ${isTransitioning ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'} transition-all duration-150`;
 		
 		switch (activeSection) {
 			case 'profile':
@@ -81,9 +81,9 @@ const ProfileClientWrapper = ({ session, activeSessions, currentSessionId }: Pro
 			case 'sessions':
 				return (
 					<div className={contentClass}>
-						<div className="profile-tab-header">
-							<h2 className="profile-tab-title">Session Management</h2>
-							<p className="profile-tab-description">
+						<div className="mb-6">
+							<h2 className="font-[BentonSansBold] text-xl md:text-2xl text-white mb-2">Session Management</h2>
+							<p className="font-[BentonSansRegular] text-sm text-white/70">
 								View and manage your active sessions across different devices
 							</p>
 						</div>
@@ -114,46 +114,76 @@ const ProfileClientWrapper = ({ session, activeSessions, currentSessionId }: Pro
 
 	return (
 		<ProfileProvider session={session}>
-			<div className="profile-container">
+			<div className="flex flex-col lg:flex-row gap-6">
 				{/* Sidebar Navigation */}
-				<div className="profile-sidebar">
-					<div className="sidebar-section">
-						<h3 className="sidebar-section-title">Account</h3>
-						{sidebarItems
-							.filter(item => item.section === 'account')
-							.map(item => (
-								<button
-									key={item.id}
-									className={`sidebar-item ${activeSection === item.id ? 'active' : ''}`}
-									onClick={() => handleSectionChange(item.id)}
-								>
-									<span className="sidebar-icon">{item.icon}</span>
-									{item.label}
-								</button>
-							))}
+				<aside className="lg:w-72 lg:shrink-0 bg-white/5 rounded-xl p-4 lg:p-6 h-fit border border-white/10 backdrop-blur-md">
+					<div className="mb-6 last:mb-0">
+						<h3 className="font-[BentonSansBold] text-xs text-white/70 uppercase tracking-wide mb-3 px-2">Account</h3>
+						<div className="flex flex-row lg:flex-col flex-wrap gap-1">
+							{sidebarItems
+								.filter(item => item.section === 'account')
+								.map(item => (
+									<button
+										key={item.id}
+										className={`
+											flex items-center w-full px-4 py-3 bg-transparent border-none
+											text-white/80 font-[BentonSansRegular] text-sm text-left
+											rounded-lg cursor-pointer transition-all duration-200 ease-in-out
+											relative overflow-hidden group
+											hover:bg-white/8 hover:text-white hover:translate-x-0.5
+											${activeSection === item.id 
+												? 'bg-[#ec1d24]/20 text-white! border border-[#ec1d24]/50 translate-x-1 shadow-[0_2px_8px_rgba(236,29,36,0.3)]' 
+												: 'border-transparent'
+											}
+										`}
+										onClick={() => handleSectionChange(item.id)}
+									>
+										<span className="mr-3 text-lg">{item.icon}</span>
+										{item.label}
+										{activeSection === item.id && (
+											<span className="absolute -left-4 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-[#ec1d24] rounded-r" />
+										)}
+									</button>
+								))}
+						</div>
 					</div>
 
-					<div className="sidebar-section">
-						<h3 className="sidebar-section-title">Content</h3>
-						{sidebarItems
-							.filter(item => item.section === 'content')
-							.map(item => (
-								<button
-									key={item.id}
-									className={`sidebar-item ${activeSection === item.id ? 'active' : ''}`}
-									onClick={() => handleSectionChange(item.id)}
-								>
-									<span className="sidebar-icon">{item.icon}</span>
-									{item.label}
-								</button>
-							))}
+					<div className="mb-6 last:mb-0">
+						<h3 className="font-[BentonSansBold] text-xs text-white/70 uppercase tracking-wide mb-3 px-2">Content</h3>
+						<div className="flex flex-row lg:flex-col flex-wrap gap-1">
+							{sidebarItems
+								.filter(item => item.section === 'content')
+								.map(item => (
+									<button
+										key={item.id}
+										className={`
+											flex items-center w-full px-4 py-3 bg-transparent border-none
+											text-white/80 font-[BentonSansRegular] text-sm text-left
+											rounded-lg cursor-pointer transition-all duration-200 ease-in-out
+											relative overflow-hidden group
+											hover:bg-white/8 hover:text-white hover:translate-x-0.5
+											${activeSection === item.id 
+												? 'bg-[#ec1d24]/20 text-white! border border-[#ec1d24]/50 translate-x-1 shadow-[0_2px_8px_rgba(236,29,36,0.3)]' 
+												: 'border-transparent'
+											}
+										`}
+										onClick={() => handleSectionChange(item.id)}
+									>
+										<span className="mr-3 text-lg">{item.icon}</span>
+										{item.label}
+										{activeSection === item.id && (
+											<span className="absolute -left-4 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-[#ec1d24] rounded-r" />
+										)}
+									</button>
+								))}
+						</div>
 					</div>
-				</div>
+				</aside>
 
 				{/* Main Content */}
-				<div className="profile-main-content">
+				<main className="flex-1 bg-white/5 rounded-xl border border-white/10 backdrop-blur-md overflow-hidden">
 					{renderContent()}
-				</div>
+				</main>
 			</div>
 		</ProfileProvider>
 	);

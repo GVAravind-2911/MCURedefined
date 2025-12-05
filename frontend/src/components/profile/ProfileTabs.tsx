@@ -8,23 +8,47 @@ export default function ProfileTabs({
 	onTabChange,
 }: ProfileTabsProps) {
 	return (
-		<div className="profile-tabs">
+		<div className="flex w-full mb-6 border-b border-white/10">
 			<button
-				className={`tab-button ${activeTab === "blogs" ? "active" : ""}`}
+				className={`
+					bg-transparent border-none px-4 py-3 font-[BentonSansRegular] text-base cursor-pointer 
+					transition-all duration-200 relative whitespace-nowrap
+					hover:text-white hover:bg-white/5
+					${activeTab === "blogs" 
+						? "text-white font-[BentonSansBold] after:content-[''] after:absolute after:-bottom-px after:left-0 after:w-full after:h-0.5 after:bg-[#ec1d24] after:rounded-t" 
+						: "text-white/70"
+					}
+				`}
 				onClick={() => onTabChange("blogs")}
 				type="button"
 			>
 				Liked Blogs
 			</button>
 			<button
-				className={`tab-button ${activeTab === "reviews" ? "active" : ""}`}
+				className={`
+					bg-transparent border-none px-4 py-3 font-[BentonSansRegular] text-base cursor-pointer 
+					transition-all duration-200 relative whitespace-nowrap
+					hover:text-white hover:bg-white/5
+					${activeTab === "reviews" 
+						? "text-white font-[BentonSansBold] after:content-[''] after:absolute after:-bottom-px after:left-0 after:w-full after:h-0.5 after:bg-[#ec1d24] after:rounded-t" 
+						: "text-white/70"
+					}
+				`}
 				onClick={() => onTabChange("reviews")}
 				type="button"
 			>
 				Liked Reviews
 			</button>
 			<button
-				className={`tab-button ${activeTab === "projects" ? "active" : ""}`}
+				className={`
+					bg-transparent border-none px-4 py-3 font-[BentonSansRegular] text-base cursor-pointer 
+					transition-all duration-200 relative whitespace-nowrap
+					hover:text-white hover:bg-white/5
+					${activeTab === "projects" 
+						? "text-white font-[BentonSansBold] after:content-[''] after:absolute after:-bottom-px after:left-0 after:w-full after:h-0.5 after:bg-[#ec1d24] after:rounded-t" 
+						: "text-white/70"
+					}
+				`}
 				onClick={() => onTabChange("projects")}
 				type="button"
 			>

@@ -198,17 +198,17 @@ export default function ProfileContent({
 	}, [initialMetadata]);
 
 	return (
-		<div className="blogs-container">
-			<div className="section-title">
-				<span className="title-text">Your Liked Content</span>
-				<div className="title-line" />
+		<div className="w-full">
+			<div className="flex items-center font-[BentonSansBold] text-white mb-6">
+				<span className="text-xl md:text-2xl mr-4 whitespace-nowrap">Your Liked Content</span>
+				<div className="grow h-[3px] bg-linear-to-r from-[#ec1d24] to-transparent" />
 			</div>
 
 			<ProfileTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
 			{(loading[activeTab] || contextLoading) ? (
-				<div className="loading-wrapper">
-					<div className="loading-spinner" />
+				<div className="flex justify-center items-center min-h-[200px] relative">
+					<div className="w-10 h-10 border-3 border-white/10 border-t-[#ec1d24] rounded-full animate-spin" />
 				</div>
 			) : errors[activeTab] ? (
 				<ErrorMessage
@@ -221,7 +221,7 @@ export default function ProfileContent({
 					onReload={handleReload}
 				/>
 			) : (
-				<div className="liked-content fade-in">
+				<div className="animate-[fadeIn_0.3s_ease-in-out]">
 					{activeTab === "blogs" &&
 						(content.blogs.blogs && content.blogs.blogs.length > 0 ? (
 							<BlogProvider
@@ -240,10 +240,10 @@ export default function ProfileContent({
 								/>
 							</BlogProvider>
 						) : (
-							<div className="no-results">
-								<div className="no-results-content">
-									<h3>No liked blogs found</h3>
-									<p>Blogs you like will appear here</p>
+							<div className="flex flex-col items-center justify-center py-12 px-6 bg-white/5 rounded-xl border border-white/10">
+								<div className="text-center">
+									<h3 className="text-white/70 font-[BentonSansBold] text-lg mb-2">No liked blogs found</h3>
+									<p className="text-white/50 font-[BentonSansRegular] text-sm">Blogs you like will appear here</p>
 								</div>
 							</div>
 						))}
@@ -266,10 +266,10 @@ export default function ProfileContent({
 								/>
 							</BlogProvider>
 						) : (
-							<div className="no-results">
-								<div className="no-results-content">
-									<h3>No liked reviews found</h3>
-									<p>Reviews you like will appear here</p>
+							<div className="flex flex-col items-center justify-center py-12 px-6 bg-white/5 rounded-xl border border-white/10">
+								<div className="text-center">
+									<h3 className="text-white/70 font-[BentonSansBold] text-lg mb-2">No liked reviews found</h3>
+									<p className="text-white/50 font-[BentonSansRegular] text-sm">Reviews you like will appear here</p>
 								</div>
 							</div>
 						))}
@@ -279,10 +279,10 @@ export default function ProfileContent({
 						content.projects.projects.length > 0 ? (
 							<ProjectsGrid projects={content.projects.projects} />
 						) : (
-							<div className="no-results">
-								<div className="no-results-content">
-									<h3>No liked projects found</h3>
-									<p>Projects you like will appear here</p>
+							<div className="flex flex-col items-center justify-center py-12 px-6 bg-white/5 rounded-xl border border-white/10">
+								<div className="text-center">
+									<h3 className="text-white/70 font-[BentonSansBold] text-lg mb-2">No liked projects found</h3>
+									<p className="text-white/50 font-[BentonSansRegular] text-sm">Projects you like will appear here</p>
 								</div>
 							</div>
 						))}

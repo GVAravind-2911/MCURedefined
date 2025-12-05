@@ -137,53 +137,51 @@ export default function ProfileInfo({
 
 	if (isLoading) {
 		return (
-			<div className="profile-info">
-				<div className="profile-avatar-container">
-					<div className="profile-avatar-placeholder loading-animation">
-						<span />
-					</div>
+			<div className="flex items-center bg-white/5 rounded-xl p-6 md:p-8 border border-white/10 transition-all duration-300">
+				<div className="mr-6 md:mr-8 shrink-0">
+					<div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-linear-to-r from-white/5 via-white/10 to-white/5 bg-size-[200%_100%] animate-[shimmer_1.5s_infinite]" />
 				</div>
-				<div className="profile-details loading-animation">
-					<div className="loading-text-block" />
-					<div className="loading-text-line" />
-					<div className="loading-text-line" />
+				<div className="flex-1 space-y-3">
+					<div className="h-7 w-3/5 rounded bg-linear-to-r from-white/5 via-white/10 to-white/5 bg-size-[200%_100%] animate-[shimmer_1.5s_infinite]" />
+					<div className="h-4 w-4/5 rounded bg-linear-to-r from-white/5 via-white/10 to-white/5 bg-size-[200%_100%] animate-[shimmer_1.5s_infinite]" />
+					<div className="h-4 w-1/2 rounded bg-linear-to-r from-white/5 via-white/10 to-white/5 bg-size-[200%_100%] animate-[shimmer_1.5s_infinite]" />
 				</div>
 			</div>
 		);
 	}
 
 	return (
-		<div className="profile-info">
-			<div className="profile-avatar-container">
+		<div className="flex flex-col md:flex-row items-center md:items-start bg-white/5 rounded-xl p-6 md:p-8 border border-white/10 transition-all duration-300 hover:bg-white/8 hover:border-white/20">
+			<div className="mr-0 md:mr-8 mb-6 md:mb-0 shrink-0">
 				{user?.image ? (
 					<Image
 						src={user.image}
 						alt="Profile picture"
 						width={120}
 						height={120}
-						className="profile-avatar"
+						className="w-24 h-24 md:w-28 md:h-28 rounded-full border-3 border-[#ec1d24] object-cover"
 					/>
 				) : (
-					<div className="profile-avatar-placeholder">
-						<span>{firstLetter}</span>
+					<div className="w-24 h-24 md:w-28 md:h-28 rounded-full border-3 border-[#ec1d24] bg-linear-to-br from-[#ec1d24] to-[#ff7f50] flex items-center justify-center">
+						<span className="font-[BentonSansBold] text-4xl text-white">{firstLetter}</span>
 					</div>
 				)}
 			</div>
 
 			{!isEditing ? (
-				<div className="profile-details">
-					<div className="profile-header">
-						<h2>{user?.name || "User"}</h2>
+				<div className="flex-1 text-center md:text-left text-white">
+					<div className="flex flex-col md:flex-row items-center md:items-start md:justify-between mb-2">
+						<h2 className="font-[BentonSansBold] text-2xl md:text-3xl m-0">{user?.name || "User"}</h2>
 						<button
-							className="edit-profile-button"
+							className="mt-2 md:mt-0 p-2 bg-transparent border-none text-white/50 cursor-pointer transition-all duration-200 flex items-center justify-center hover:text-[#ec1d24] hover:scale-110"
 							onClick={() => setIsEditing(true)}
 							aria-label="Edit profile"
 							type="button"
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
-								width="16"
-								height="16"
+								width="18"
+								height="18"
 								fill="currentColor"
 								viewBox="0 0 16 16"
 							>
@@ -192,25 +190,25 @@ export default function ProfileInfo({
 							</svg>
 						</button>
 					</div>
-					<p className="username">
-						@
-						{user?.name?.toLowerCase().replace(/\s+/g, "") ||
-							"user"}
+					<p className="text-[#ec1d24] font-[BentonSansRegular] text-base md:text-lg m-0 mb-1">
+						@{user?.name?.toLowerCase().replace(/\s+/g, "") || "user"}
 					</p>
 
-					<div className="profile-description">
+					<div className="mt-4 text-white/80 leading-relaxed text-sm md:text-base max-w-lg">
 						{userProfile?.description ? (
 							<p>{userProfile.description}</p>
 						) : (
-							<p className="no-description">No description added yet</p>
+							<p className="text-white/50 italic">No description added yet</p>
 						)}
 					</div>
 				</div>
 			) : (
-				<div className="profile-edit-form">
-					<form onSubmit={handleSubmit}>
-						<div className="form-group">
-							<label htmlFor="name">Name</label>
+				<div className="flex-1 w-full">
+					<form onSubmit={handleSubmit} className="space-y-5">
+						<div>
+							<label htmlFor="name" className="block mb-2 text-white/80 font-[BentonSansRegular] text-sm">
+								Name
+							</label>
 							<input
 								type="text"
 								id="name"
@@ -219,12 +217,15 @@ export default function ProfileInfo({
 								onChange={handleChange}
 								placeholder="Your name"
 								required
+								className="w-full bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-white font-[BentonSansRegular] text-base transition-all duration-200 focus:bg-white/10 focus:border-[#ec1d24] focus:outline-none placeholder:text-white/40"
 							/>
-							{errors.name && <div className="form-error">{errors.name}</div>}
+							{errors.name && <div className="text-red-400 text-sm mt-1">{errors.name}</div>}
 						</div>
 
-						<div className="form-group">
-							<label htmlFor="description">About me</label>
+						<div>
+							<label htmlFor="description" className="block mb-2 text-white/80 font-[BentonSansRegular] text-sm">
+								About me
+							</label>
 							<textarea
 								id="description"
 								name="description"
@@ -233,19 +234,20 @@ export default function ProfileInfo({
 								placeholder="Tell us about yourself..."
 								rows={4}
 								maxLength={2000}
+								className="w-full bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-white font-[BentonSansRegular] text-base transition-all duration-200 focus:bg-white/10 focus:border-[#ec1d24] focus:outline-none resize-y min-h-[100px] placeholder:text-white/40"
 							/>
-							<div className="character-count">
+							<div className="text-right text-xs text-white/70 mt-1">
 								{formData.description.length}/2000
 							</div>
 							{errors.description && (
-								<div className="form-error">{errors.description}</div>
+								<div className="text-red-400 text-sm mt-1">{errors.description}</div>
 							)}
 						</div>
 
-						<div className="form-actions">
+						<div className="flex gap-3 justify-end pt-2">
 							<button
 								type="button"
-								className="cancel-button"
+								className="px-5 py-2.5 rounded-lg font-[BentonSansRegular] cursor-pointer transition-all duration-300 border-none bg-white/10 text-white/80 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed"
 								onClick={() => setIsEditing(false)}
 								disabled={isSubmitting}
 							>
@@ -253,7 +255,7 @@ export default function ProfileInfo({
 							</button>
 							<button
 								type="submit"
-								className="save-button"
+								className="px-5 py-2.5 rounded-lg font-[BentonSansBold] cursor-pointer transition-all duration-300 border-none bg-[#ec1d24] text-white hover:bg-[#ff2c33] hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
 								disabled={isSubmitting}
 							>
 								{isSubmitting ? "Saving..." : "Save Changes"}

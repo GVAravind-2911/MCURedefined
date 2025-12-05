@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import type { EmbedBlockProps } from "@/types/BlockTypes";
 import parse from "html-react-parser";
 
 const EmbedBlock: React.FC<EmbedBlockProps> = ({ url, onChange, onDelete }) => {
+	const lastProcessedUrlRef = useRef<string>("");
+
 	useEffect(() => {
 		if (url) {
 			if (url.includes("script async")) {
@@ -20,12 +22,18 @@ const EmbedBlock: React.FC<EmbedBlockProps> = ({ url, onChange, onDelete }) => {
 					};
 				}
 			}
-			if (url.includes("www.youtube.com")) {
+			// Only process YouTube URLs that haven't been processed yet
+			// Check if url contains youtube but is not already a processed iframe
+			if (url.includes("www.youtube.com") && !url.startsWith("<iframe")) {
 				const regex = /^.*src="(https:\/\/www.youtube.com.+?)"/;
 				const match = url.match(regex);
 				if (match) {
 					const embedUrl = `<iframe src="${match[1]}" frameborder="0" allowfullscreen class="absolute top-0 left-0 w-full h-full rounded-lg"></iframe>`;
-					onChange(embedUrl);
+					// Prevent infinite loop by checking if we already processed this
+					if (lastProcessedUrlRef.current !== embedUrl) {
+						lastProcessedUrlRef.current = embedUrl;
+						onChange(embedUrl);
+					}
 				}
 			}
 		}

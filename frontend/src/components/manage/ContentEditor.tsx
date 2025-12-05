@@ -541,7 +541,7 @@ export default function ContentEditor({
 						onChange={(e) => setDescription(e.target.value)}
 						placeholder={`Brief description of your ${placeholderPrefix}...`}
 						rows={3}
-						className="w-full py-3 md:py-4 px-4 md:px-5 bg-[rgba(30,30,30,0.8)] border border-white/10 rounded-lg text-white/90 text-sm md:text-base transition-all duration-300 outline-none placeholder:text-white/50 focus:border-[#ec1d24] focus:shadow-[0_0_0_3px_rgba(236,29,36,0.15)] focus:bg-[rgba(40,40,40,0.6)] resize-none"
+						className="w-full py-3 md:py-4 px-4 md:px-5 bg-[rgba(30,30,30,0.8)] border border-white/10 rounded-lg text-white/90 text-sm md:text-base font-[BentonSansRegular] leading-relaxed transition-all duration-300 outline-none placeholder:text-white/50 focus:border-[#ec1d24] focus:shadow-[0_0_0_3px_rgba(236,29,36,0.15)] focus:bg-[rgba(40,40,40,0.6)] resize-none"
 					/>
 					<p className="mt-2 text-xs text-white/40">{getWordCount(description)} words</p>
 				</section>

@@ -41,15 +41,15 @@ const LikedContentTab = ({ session }: LikedContentTabProps) => {
 
 	return (
 		<>
-			<div className="profile-tab-header">
-				<h2 className="profile-tab-title">Liked Content</h2>
-				<p className="profile-tab-description">
+			<div className="mb-8 border-b border-white/10 pb-6">
+				<h2 className="font-[BentonSansBold] text-2xl md:text-3xl text-white mb-2">Liked Content</h2>
+				<p className="font-[BentonSansRegular] text-base text-white/70 leading-relaxed">
 					View and manage your liked blogs, reviews, and projects
 				</p>
 			</div>
 			
 			{error && (
-				<div className="error-message">
+				<div className="flex justify-between items-center bg-red-500/10 border border-red-500/25 rounded-lg p-4 text-red-400 text-sm mb-4">
 					<span>{error}</span>
 				</div>
 			)}

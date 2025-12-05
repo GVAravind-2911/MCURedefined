@@ -124,30 +124,36 @@ const SessionManageTab = memo(function SessionManageTab({
     }, []);
 
     return (
-        <div className={`session-manage-tab ${className}`}>
-            <div className="session-header">
-                <h2 className="session-title">Active Sessions</h2>
+        <div className={`mt-4 ${className}`}>
+            <div className="mb-6 text-left">
+                <h2 className="font-[BentonSansBold] text-xl md:text-2xl text-white m-0 mb-2">Active Sessions</h2>
                 {error && (
-                    <div className="error-message">
+                    <div className="flex justify-between items-center bg-red-500/10 border border-red-500/25 rounded-lg p-4 text-red-400 text-sm mb-4">
                         {error}
-                        <button onClick={() => setError(null)} aria-label="Close error">×</button>
+                        <button 
+                            onClick={() => setError(null)} 
+                            aria-label="Close error"
+                            className="bg-transparent border-none text-red-400 cursor-pointer text-lg p-0 w-5 h-5 flex items-center justify-center transition-all duration-200 hover:text-red-300 hover:scale-110"
+                        >
+                            ×
+                        </button>
                     </div>
                 )}
             </div>
 
             {loading ? (
-                <div className="sessions-list">
+                <div className="flex flex-col gap-3">
                     {[1, 2].map((i) => (
-                        <div key={i} className="session-item loading-animation">
-                            <div className="session-info">
-                                <div className="loading-text-block" />
-                                <div className="loading-text-line" />
+                        <div key={i} className="flex justify-between items-center bg-white/5 border border-white/10 rounded-lg p-5">
+                            <div className="flex flex-col gap-2">
+                                <div className="h-5 w-32 rounded bg-linear-to-r from-white/5 via-white/10 to-white/5 bg-size-[200%_100%] animate-[shimmer_1.5s_infinite]" />
+                                <div className="h-3.5 w-20 rounded bg-linear-to-r from-white/5 via-white/10 to-white/5 bg-size-[200%_100%] animate-[shimmer_1.5s_infinite]" />
                             </div>
                         </div>
                     ))}
                 </div>
             ) : sessions.length > 0 ? (
-                <div className="sessions-list">
+                <div className="flex flex-col gap-3">
                     {sessions.map((session) => {
                         const deviceType = getDeviceType(session.userAgent);
                         const isRevoking = revokingSessionId === session.id;
@@ -156,14 +162,24 @@ const SessionManageTab = memo(function SessionManageTab({
                         return (
                             <div 
                                 key={session.id} 
-                                className={`session-item ${isCurrent ? 'current' : ''} ${isRevoking ? 'revoking' : ''}`}
+                                className={`
+                                    flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0
+                                    bg-white/5 border rounded-lg p-4 sm:p-5 transition-all duration-200
+                                    hover:bg-white/8 hover:border-white/20
+                                    ${isCurrent ? 'border-[#ec1d24] bg-[#ec1d24]/8' : 'border-white/10'}
+                                    ${isRevoking ? 'opacity-60 pointer-events-none' : ''}
+                                `}
                             >
-                                <div className="session-info">
-                                    <div className="device-type">
+                                <div className="flex flex-col gap-1 w-full sm:w-auto">
+                                    <div className="font-[BentonSansBold] text-base text-white flex items-center gap-3 justify-between sm:justify-start w-full">
                                         {deviceType}
-                                        {isCurrent && <span className="current-badge">Current</span>}
+                                        {isCurrent && (
+                                            <span className="bg-linear-to-r from-green-500 to-emerald-500 text-white px-2 py-0.5 rounded-full text-xs font-[BentonSansRegular] uppercase tracking-wide">
+                                                Current
+                                            </span>
+                                        )}
                                     </div>
-                                    <div className="session-time">
+                                    <div className="font-[BentonSansRegular] text-sm text-white/70">
                                         {getRelativeTime(session.createdAt)}
                                     </div>
                                 </div>
@@ -171,7 +187,7 @@ const SessionManageTab = memo(function SessionManageTab({
                                 {!isCurrent && (
                                     <button
                                         onClick={() => handleRevokeSession(session.id)}
-                                        className="revoke-btn"
+                                        className="bg-transparent text-red-400 border border-red-400/40 px-4 py-2 rounded-lg font-[BentonSansRegular] text-sm cursor-pointer transition-all duration-200 whitespace-nowrap self-end sm:self-auto hover:bg-red-500 hover:text-white hover:border-red-500 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
                                         disabled={isRevoking}
                                         aria-label={`Revoke ${deviceType} session`}
                                     >
@@ -183,9 +199,13 @@ const SessionManageTab = memo(function SessionManageTab({
                     })}
                 </div>
             ) : (
-                <div className="empty-sessions">
-                    <p>No active sessions found</p>
-                    <button onClick={refreshSessions} disabled={loading}>
+                <div className="text-center py-12 px-4 text-white/70 font-[BentonSansRegular]">
+                    <p className="m-0 mb-6 text-lg">No active sessions found</p>
+                    <button 
+                        onClick={refreshSessions} 
+                        disabled={loading}
+                        className="bg-[#ec1d24] text-white border-none px-6 py-3 rounded-lg font-[BentonSansRegular] text-sm cursor-pointer transition-all duration-200 hover:bg-[#d11920] hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
                         {loading ? 'Loading...' : 'Refresh'}
                     </button>
                 </div>

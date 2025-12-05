@@ -55,8 +55,8 @@ const BlogFilters = memo(({
 	}, []);
 
 	return (
-		<div className="search-filters">
-			<div className="search-bar">
+		<div className="mb-6 animate-[fadeIn_0.5s_ease]">
+			<div className="relative flex mb-4 rounded-[30px] overflow-hidden bg-white/10 border border-white/20 transition-shadow duration-300 focus-within:shadow-[0_0_0_2px_rgba(236,29,36,0.5)]">
 				<input
 					type="text"
 					value={searchQuery}
@@ -64,12 +64,12 @@ const BlogFilters = memo(({
 					onFocus={() => setIsSearchFocused(true)}
 					onBlur={() => setIsSearchFocused(false)}
 					placeholder="Search by title or description..."
-					className="search-input"
+					className="grow py-3 px-5 border-none bg-transparent text-white text-base font-[BentonSansRegular] w-full outline-none placeholder:text-white/60"
 					aria-label="Search blogs"
 				/>
 				{searchQuery && (
 					<button
-						className="search-clear-button"
+						className="absolute right-[50px] top-1/2 -translate-y-1/2 bg-transparent border-none text-white/60 cursor-pointer flex items-center justify-center p-0 w-6 h-6 mr-[1.5%] hover:text-white"
 						onClick={() => handleSearch("", selectedTags, selectedAuthor)}
 						type="button"
 						aria-label="Clear search"
@@ -89,7 +89,7 @@ const BlogFilters = memo(({
 					</button>
 				)}
 				<button
-					className="search-button"
+					className="bg-transparent text-white/70 border-none py-2.5 px-5 cursor-pointer flex items-center justify-center transition-all duration-200 border-l border-l-white/20 hover:bg-[#ec1d24]/20 hover:text-white"
 					onClick={() =>
 						handleSearch(searchQuery, selectedTags, selectedAuthor)
 					}
@@ -111,7 +111,7 @@ const BlogFilters = memo(({
 				</button>
 			</div>
 
-			<div className="filter-controls">
+			<div className="flex gap-4 flex-wrap mt-4 max-md:flex-col max-md:gap-2">
 				<TagMultiSelect
 					selectedTags={selectedTags}
 					availableTags={tags}
@@ -120,9 +120,9 @@ const BlogFilters = memo(({
 					}
 				/>
 
-				<div className="filter-dropdown" ref={authorDropdownRef}>
+				<div className="relative z-10 max-md:w-full" ref={authorDropdownRef}>
 					<button
-						className={`filter-button ${selectedAuthor ? "filter-active" : ""}`}
+						className={`bg-white/10 border border-white/20 text-white py-2.5 px-5 rounded-[20px] cursor-pointer flex items-center gap-2 font-[BentonSansRegular] transition-all duration-200 hover:bg-white/15 max-md:w-full max-md:justify-between ${selectedAuthor ? "bg-[#ec1d24]/20 border-[#ec1d24]/60" : ""}`}
 						onClick={() => setShowAuthorFilter(!showAuthorFilter)}
 						type="button"
 						aria-haspopup="true"
@@ -130,7 +130,7 @@ const BlogFilters = memo(({
 					>
 						{selectedAuthor || "Filter by Author"}
 						<svg
-							className={`dropdown-icon ${showAuthorFilter ? "rotated" : ""}`}
+							className={`transition-transform duration-200 ${showAuthorFilter ? "rotate-180" : ""}`}
 							xmlns="http://www.w3.org/2000/svg"
 							width="12"
 							height="12"
@@ -141,7 +141,7 @@ const BlogFilters = memo(({
 						</svg>
 					</button>
 					{showAuthorFilter && (
-						<div className="dropdown-menu" role="menu">
+						<div className="absolute top-full left-0 mt-2 bg-[#1a1a1a] border border-white/20 rounded-xl overflow-hidden min-w-[200px] max-h-[300px] overflow-y-auto scrollbar-thin z-20 shadow-lg max-md:w-full" role="menu">
 							{authors.length > 0 ? (
 								authors.map((author) => (
 									<button
@@ -150,7 +150,7 @@ const BlogFilters = memo(({
 											handleSearch(searchQuery, selectedTags, author);
 											setShowAuthorFilter(false);
 										}}
-										className={`dropdown-item ${selectedAuthor === author ? "selected" : ""}`}
+										className={`w-full text-left py-3 px-4 border-none bg-transparent text-white/80 font-[BentonSansRegular] cursor-pointer transition-all duration-200 hover:bg-white/10 hover:text-white ${selectedAuthor === author ? "bg-[#ec1d24]/20 text-white" : ""}`}
 										type="button"
 										role="menuitem"
 									>
@@ -158,7 +158,7 @@ const BlogFilters = memo(({
 									</button>
 								))
 							) : (
-								<div className="dropdown-empty">No authors available</div>
+								<div className="py-3 px-4 text-white/50 font-[BentonSansRegular] text-sm">No authors available</div>
 							)}
 						</div>
 					)}
@@ -166,7 +166,7 @@ const BlogFilters = memo(({
 
 				{activeFilters.length > 0 && (
 					<button
-						className="reset-button"
+						className="bg-transparent border border-red-500/50 text-red-400 py-2 px-4 rounded-[20px] cursor-pointer font-[BentonSansRegular] text-sm transition-all duration-200 hover:bg-red-500/20 hover:text-red-300 max-md:w-full"
 						onClick={resetFilters}
 						type="button"
 						aria-label="Clear all filters"
@@ -177,15 +177,15 @@ const BlogFilters = memo(({
 			</div>
 
 			{activeFilters.length > 0 && (
-				<div className="active-filters">
-					<span className="active-filters-label">Active filters:</span>
-					<div className="filter-tags">
+				<div className="flex flex-wrap items-center gap-3 mt-4 pt-4 border-t border-white/10">
+					<span className="text-white/60 font-[BentonSansRegular] text-sm">Active filters:</span>
+					<div className="flex flex-wrap gap-2">
 						{activeFilters.map((filter) => (
 							<span
 								key={`${filter.type}-${filter.value}`}
-								className="filter-tag"
+								className="inline-flex items-center gap-2 bg-[#ec1d24]/20 border border-[#ec1d24]/40 text-white py-1.5 px-3 rounded-full text-sm font-[BentonSansRegular]"
 							>
-								<span className="filter-tag-type">
+								<span className="text-[#ec1d24] font-[BentonSansBold]">
 									{filter.type === "query"
 										? "Search"
 										: filter.type === "tag"
@@ -207,7 +207,7 @@ const BlogFilters = memo(({
 											handleSearch(searchQuery, selectedTags, "");
 										}
 									}}
-									className="filter-tag-remove"
+									className="bg-transparent border-none text-white/60 cursor-pointer p-0 flex items-center justify-center hover:text-white transition-colors duration-200"
 									aria-label={`Remove ${filter.type} filter: ${filter.value}`}
 									type="button"
 								>
