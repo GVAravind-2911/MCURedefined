@@ -42,8 +42,8 @@ export default async function IndividualProject({
 	return (
 		<div className="flex flex-col w-full items-center animate-[fadeInSimple_0.5s_ease-in]">
 			{/* Hero section */}
-			<div className="relative w-full h-80 max-lg:h-[280px] max-md:h-60 max-[480px]:h-[200px] bg-linear-to-r from-black/90 to-[#ec1d24]/60 bg-cover bg-center mb-8 flex items-center justify-center overflow-hidden">
-				<div className="absolute inset-0 bg-linear-to-b from-black/70 to-black/90 z-1" />
+			<div className="relative w-[92%] max-w-[1400px] h-80 max-lg:h-[280px] max-md:h-60 max-[480px]:h-[200px] bg-linear-to-r from-[#ec1d24]/60 to-black/90 bg-cover bg-center mb-8 flex items-center justify-center overflow-hidden rounded-lg mt-4">
+				<div className="absolute inset-0 bg-linear-to-b from-black/70 to-black/90 z-1 rounded-lg" />
 				<div className="relative z-2 text-center px-8 max-[480px]:px-4 max-w-[1000px]">
 					<h1 className="font-[BentonSansBold] text-[clamp(32px,6vw,56px)] max-md:text-[28px] max-[480px]:text-2xl text-white m-0 mb-4 uppercase tracking-[1px] [text-shadow:2px_2px_4px_rgba(0,0,0,0.7)] after:content-[''] after:block after:w-[100px] after:h-1 after:bg-[#ec1d24] after:mx-auto after:mt-3">
 						{project.name}
