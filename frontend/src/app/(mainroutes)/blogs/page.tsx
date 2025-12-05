@@ -9,7 +9,7 @@ export default async function Blogs(): Promise<React.ReactElement> {
 	return (
 		<ContentListPage
 			config={BLOGS_CONFIG}
-			heroTitle="Redefined Blog"
+			heroTitle="Redefined Blogs"
 			heroDescription="Explore articles, insights, and the latest news about the Marvel Cinematic Universe. Dive into fan theories, character analyses, and behind-the-scenes information."
 		/>
 	);
