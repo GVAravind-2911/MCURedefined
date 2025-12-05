@@ -80,7 +80,8 @@ const useBlogSearch = ({
 
 			try {
 				const response = await axios.get(url);
-				const newBlogs = response.data.blogs;
+				// Handle both 'blogs' and 'reviews' keys from API response
+				const newBlogs = response.data.blogs || response.data.reviews || [];
 				const newTotalPages =
 					response.data.total_pages || Math.ceil(response.data.total / 5);
 

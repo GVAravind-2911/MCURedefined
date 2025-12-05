@@ -67,13 +67,13 @@ const BlogFilters: React.FC<BlogFiltersProps> = memo(({
 	}, [selectedTags, handleSearch, searchQuery, selectedAuthor]);
 
 	return (
-		<div className="search-filters">
-			<h2 className="section-title">
-				<span className="title-text">Explore Posts</span>
-				<div className="title-line" />
+		<div className="mb-8 animate-[fadeIn_0.5s_ease]">
+			<h2 className="flex items-center mb-8 font-[BentonSansBold] text-white">
+				<span className="text-[28px] mr-4 whitespace-nowrap">Explore Posts</span>
+				<div className="grow h-[3px] bg-linear-to-r from-[#ec1d24] to-transparent" />
 			</h2>
 
-			<div className="search-bar">
+			<div className="relative flex mb-4 rounded-[30px] overflow-hidden bg-white/10 border border-white/20 transition-shadow duration-300 focus-within:shadow-[0_0_0_2px_rgba(236,29,36,0.5)]">
 				<input
 					type="text"
 					value={searchQuery}
@@ -81,12 +81,12 @@ const BlogFilters: React.FC<BlogFiltersProps> = memo(({
 					onFocus={() => setIsSearchFocused(true)}
 					onBlur={() => setIsSearchFocused(false)}
 					placeholder="Search by title or description..."
-					className="search-input"
+							className="grow py-3 px-5 border-none bg-transparent text-white text-base font-[BentonSansRegular] w-full outline-none placeholder:text-white/60"
 					aria-label="Search blogs"
 				/>
 				{searchQuery && (
 					<button
-						className="search-clear-button"
+						className="absolute right-[50px] top-1/2 -translate-y-1/2 bg-transparent border-none text-white/60 cursor-pointer flex items-center justify-center p-0 w-6 h-6 mr-[1.5%] hover:text-white"
 						onClick={() => handleSearch("", selectedTags, selectedAuthor)}
 						type="button"
 						aria-label="Clear search"
@@ -106,7 +106,7 @@ const BlogFilters: React.FC<BlogFiltersProps> = memo(({
 					</button>
 				)}
 				<button
-					className="search-button"
+					className="bg-transparent text-white/70 border-none py-2.5 px-5 cursor-pointer flex items-center justify-center transition-all duration-200 border-l border-l-white/20 hover:bg-[#ec1d24]/20 hover:text-white"
 					onClick={() =>
 						handleSearch(searchQuery, selectedTags, selectedAuthor)
 					}
@@ -128,7 +128,7 @@ const BlogFilters: React.FC<BlogFiltersProps> = memo(({
 				</button>
 			</div>
 
-			<div className="filter-controls">
+			<div className="flex gap-4 flex-wrap mt-4 max-md:flex-col max-md:gap-2">
 				<TagMultiSelect
 					selectedTags={selectedTags}
 					tags={tags}
@@ -138,9 +138,9 @@ const BlogFilters: React.FC<BlogFiltersProps> = memo(({
 					handleSearch={handleSearch}
 				/>
 
-				<div className="filter-dropdown" ref={authorDropdownRef}>
+				<div className="relative z-10 max-md:w-full" ref={authorDropdownRef}>
 					<button
-						className={`filter-button ${selectedAuthor ? "filter-active" : ""}`}
+						className={`bg-white/10 border border-white/20 text-white py-2.5 px-5 rounded-[20px] cursor-pointer flex items-center gap-2 font-[BentonSansRegular] transition-all duration-200 hover:bg-white/15 ${selectedAuthor ? "bg-[#ec1d24]/20 border-[#ec1d24]/60" : ""}`}
 						onClick={() => setShowAuthorFilter(!showAuthorFilter)}
 						type="button"
 						aria-haspopup="true"
@@ -148,7 +148,7 @@ const BlogFilters: React.FC<BlogFiltersProps> = memo(({
 					>
 						{selectedAuthor || "Filter by Author"}
 						<svg
-							className={`dropdown-icon ${showAuthorFilter ? "rotated" : ""}`}
+							className={`transition-transform duration-300 ${showAuthorFilter ? "rotate-180" : ""}`}
 							xmlns="http://www.w3.org/2000/svg"
 							width="12"
 							height="12"
@@ -159,7 +159,7 @@ const BlogFilters: React.FC<BlogFiltersProps> = memo(({
 						</svg>
 					</button>
 					{showAuthorFilter && (
-						<div className="dropdown-menu" role="menu">
+						<div className="absolute top-[calc(100%+8px)] left-0 min-w-[220px] max-h-[300px] overflow-y-auto bg-[#0d0d0d] border border-white/20 rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.8)] z-100 animate-[dropdownFade_0.2s_ease] scrollbar-thin scrollbar-thumb-[#ec1d24]/60 scrollbar-track-[#1a1a1a] max-md:w-full max-md:left-0 max-md:right-0" role="menu">
 							{authors.length > 0 ? (
 								authors.map((author) => (
 									<button
@@ -168,7 +168,7 @@ const BlogFilters: React.FC<BlogFiltersProps> = memo(({
 											handleSearch(searchQuery, selectedTags, author);
 											setShowAuthorFilter(false);
 										}}
-										className={`dropdown-item ${selectedAuthor === author ? "selected" : ""}`}
+										className={`block w-full text-left py-3 px-4 border-none cursor-pointer border-b border-b-white/10 transition-all duration-200 ${selectedAuthor === author ? "bg-[#ec1d24] text-white font-[BentonSansBold]" : "bg-transparent text-white/90 hover:bg-white/10 hover:text-white"}`}
 										type="button"
 										role="menuitem"
 									>
@@ -176,7 +176,7 @@ const BlogFilters: React.FC<BlogFiltersProps> = memo(({
 									</button>
 								))
 							) : (
-								<div className="dropdown-empty">No authors available</div>
+								<div className="py-3 px-4 text-white/50 text-center italic">No authors available</div>
 							)}
 						</div>
 					)}
@@ -184,7 +184,7 @@ const BlogFilters: React.FC<BlogFiltersProps> = memo(({
 
 				{activeFilters.length > 0 && (
 					<button
-						className="reset-button"
+						className="bg-transparent border border-[#ec1d24]/70 text-[#ec1d24]/90 py-2.5 px-5 rounded-[20px] cursor-pointer font-[BentonSansRegular] transition-all duration-200 hover:bg-[#ec1d24]/10 hover:text-[#ec1d24]"
 						onClick={resetFilters}
 						type="button"
 						aria-label="Clear all filters"
@@ -195,15 +195,15 @@ const BlogFilters: React.FC<BlogFiltersProps> = memo(({
 			</div>
 
 			{activeFilters.length > 0 && (
-				<div className="active-filters">
-					<span className="active-filters-label">Active filters:</span>
-					<div className="filter-tags">
+				<div className="flex flex-wrap items-center my-3 py-2 px-3 bg-white/5 rounded-lg max-md:flex-col max-md:items-start">
+					<span className="font-bold mr-2.5 text-white/70 text-sm max-md:mb-2">Active filters:</span>
+					<div className="flex flex-wrap gap-2 max-md:w-full">
 						{activeFilters.map((filter) => (
 							<span
 								key={`${filter.type}-${filter.value}`}
-								className="filter-tag"
+								className="flex items-center bg-[#ec1d24]/20 border border-[#ec1d24]/40 text-white text-sm py-1.5 px-2.5 rounded-[20px] font-[BentonSansRegular]"
 							>
-								<span className="filter-tag-type">
+								<span className="font-bold mr-1.5 text-[#ec1d24]/90">
 									{filter.type === "query"
 										? "Search"
 										: filter.type === "tag"
@@ -225,7 +225,7 @@ const BlogFilters: React.FC<BlogFiltersProps> = memo(({
 											handleSearch(searchQuery, selectedTags, "");
 										}
 									}}
-									className="filter-tag-remove"
+									className="flex items-center justify-center bg-transparent border-none text-white/60 ml-2 cursor-pointer p-0 rounded-full w-5 h-5 hover:text-white hover:bg-white/10"
 									aria-label={`Remove ${filter.type} filter: ${filter.value}`}
 									type="button"
 								>

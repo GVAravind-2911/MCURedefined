@@ -60,7 +60,7 @@ async def search_reviews(
             page=page,
             limit=limit
         )
-        # ReviewService.search already returns 'reviews' key
+        # ReviewService.search returns 'reviews' key
         return result
     
     return await run_sync(_search)

@@ -130,14 +130,13 @@ export default function StepThreeSetPassword({
 	return (
 		<form
 			onSubmit={handleSubmit}
-			className="auth-form"
-			style={{ maxHeight: "90vh", overflowY: "auto" }}
+			className="flex flex-col gap-5 relative z-1 max-h-[90vh] overflow-y-auto"
 		>
-			<h2 className="step-title">Set Password</h2>
+			<h2 className="text-center text-2xl font-bold text-white mb-6 uppercase tracking-wide [text-shadow:2px_2px_4px_rgba(0,0,0,0.5)]">Set Password</h2>
 
-			<div className="form-group">
-				<label htmlFor="password">Password</label>
-				<div className="password-input-wrapper password-suggestion-wrapper">
+			<div className="flex flex-col gap-2">
+				<label htmlFor="password" className="text-sm text-white font-medium font-[BentonSansRegular,Arial,sans-serif]">Password</label>
+				<div className="relative w-full">
 					<input
 						id="password"
 						name="password"
@@ -148,12 +147,12 @@ export default function StepThreeSetPassword({
 						autoComplete="new-password"
 						minLength={8}
 						placeholder="Create a strong password"
-						className="password-input"
+						className="w-full p-3 pr-24 bg-[rgba(255,255,255,0.05)] border border-solid border-[rgba(255,255,255,0.1)] rounded-md text-base text-white transition-all duration-300 ease-in-out placeholder:text-[rgba(255,255,255,0.4)] placeholder:[-webkit-text-fill-color:rgba(255,255,255,0.4)] focus:outline-none focus:border-[#ec1d24] focus:shadow-[0_0_0_2px_rgba(236,29,36,0.25)] [-webkit-text-fill-color:white] [&:-webkit-autofill]:shadow-[0_0_0_1000px_#1a1a1a_inset]"
 					/>
 					<button
 						type="button"
 						onClick={generatePassword}
-						className="suggest-password-btn"
+						className="absolute right-16 top-1/2 -translate-y-1/2 bg-transparent border-none p-1.5 text-[rgba(255,255,255,0.7)] cursor-pointer text-sm transition-colors duration-200 flex items-center hover:text-[#ec1d24]"
 						tabIndex={-1}
 						aria-label="Generate strong password"
 						title="Generate strong password"
@@ -178,7 +177,7 @@ export default function StepThreeSetPassword({
 					<button
 						type="button"
 						onClick={() => setShowPassword((prev) => !prev)}
-						className="password-toggle-btn"
+						className="absolute right-2.5 top-1/2 -translate-y-1/2 bg-transparent border-none py-1 px-2 text-[#ec1d24] cursor-pointer text-sm font-medium flex items-center rounded transition-all duration-200 ease-in-out hover:bg-[rgba(236,29,36,0.1)] focus:outline-none focus:shadow-[0_0_0_2px_rgba(236,29,36,0.25)]"
 						tabIndex={-1}
 						aria-label={showPassword ? "Hide password" : "Show password"}
 					>
@@ -188,84 +187,67 @@ export default function StepThreeSetPassword({
 
 				{/* Password strength indicator */}
 				{data.password && (
-					<div
-						className={`password-strength strength-${passwordStrength.label.toLowerCase()}`}
-					>
-						<div
-							className="strength-label"
-							style={{ marginTop: "8px", fontWeight: "500" }}
-						>
+					<div className="mt-2 text-sm">
+						<div className="mt-2 font-medium flex items-center">
 							{passwordStrength.label && (
 								<>
 									<span
-										style={{
-											display: "inline-block",
-											width: "12px",
-											height: "12px",
-											borderRadius: "50%",
-											backgroundColor:
-												passwordStrength.label === "Weak"
-													? "#ef4444"
-													: passwordStrength.label === "Fair"
-														? "#f59e0b"
-														: passwordStrength.label === "Good"
-															? "#22c55e"
-															: "#10b981",
-											marginRight: "6px",
-										}}
+										className={`inline-block w-3 h-3 rounded-full mr-1.5 ${
+											passwordStrength.label === "Weak"
+												? "bg-[#ef4444]"
+												: passwordStrength.label === "Fair"
+													? "bg-[#f59e0b]"
+													: passwordStrength.label === "Good"
+														? "bg-[#22c55e]"
+														: "bg-[#10b981]"
+										}`}
 									/>
-									{`${passwordStrength.label} password`}
+									<span className="text-white">{`${passwordStrength.label} password`}</span>
 								</>
 							)}
 						</div>
-						<div className="strength-bar" style={{ margin: "8px 0" }}>
-							<div className="strength-bar-fill" />
-						</div>
-						<div
-							className="password-requirements"
-							style={{
-								display: "grid",
-								gridTemplateColumns: "1fr 1fr",
-								gap: "8px",
-							}}
-						>
+						<div className="h-1 w-full bg-[rgba(255,255,255,0.1)] rounded my-2 overflow-hidden">
 							<div
-								className={`requirement ${passwordStrength.requirements.length ? "met" : "not-met"}`}
-							>
-								<span className="requirement-icon">
+								className={`h-full rounded transition-all duration-300 ${
+									passwordStrength.label === "Weak"
+										? "w-1/4 bg-[#ef4444]"
+										: passwordStrength.label === "Fair"
+											? "w-1/2 bg-[#f59e0b]"
+											: passwordStrength.label === "Good"
+												? "w-3/4 bg-[#22c55e]"
+												: passwordStrength.label === "Strong"
+													? "w-full bg-[#10b981]"
+													: "w-0"
+								}`}
+							/>
+						</div>
+						<div className="grid grid-cols-2 gap-2">
+							<div className={`flex items-center ${passwordStrength.requirements.length ? "text-[#22c55e]" : "text-[rgba(255,255,255,0.5)]"}`}>
+								<span className="mr-1 inline-flex items-center justify-center">
 									{passwordStrength.requirements.length ? "✓" : "○"}
 								</span>
 								<span>At least 8 characters</span>
 							</div>
-							<div
-								className={`requirement ${passwordStrength.requirements.uppercase ? "met" : "not-met"}`}
-							>
-								<span className="requirement-icon">
+							<div className={`flex items-center ${passwordStrength.requirements.uppercase ? "text-[#22c55e]" : "text-[rgba(255,255,255,0.5)]"}`}>
+								<span className="mr-1 inline-flex items-center justify-center">
 									{passwordStrength.requirements.uppercase ? "✓" : "○"}
 								</span>
 								<span>Uppercase letter</span>
 							</div>
-							<div
-								className={`requirement ${passwordStrength.requirements.lowercase ? "met" : "not-met"}`}
-							>
-								<span className="requirement-icon">
+							<div className={`flex items-center ${passwordStrength.requirements.lowercase ? "text-[#22c55e]" : "text-[rgba(255,255,255,0.5)]"}`}>
+								<span className="mr-1 inline-flex items-center justify-center">
 									{passwordStrength.requirements.lowercase ? "✓" : "○"}
 								</span>
 								<span>Lowercase letter</span>
 							</div>
-							<div
-								className={`requirement ${passwordStrength.requirements.number ? "met" : "not-met"}`}
-							>
-								<span className="requirement-icon">
+							<div className={`flex items-center ${passwordStrength.requirements.number ? "text-[#22c55e]" : "text-[rgba(255,255,255,0.5)]"}`}>
+								<span className="mr-1 inline-flex items-center justify-center">
 									{passwordStrength.requirements.number ? "✓" : "○"}
 								</span>
 								<span>Number</span>
 							</div>
-							<div
-								className={`requirement ${passwordStrength.requirements.special ? "met" : "not-met"}`}
-								style={{ gridColumn: "1 / -1" }}
-							>
-								<span className="requirement-icon">
+							<div className={`flex items-center col-span-2 ${passwordStrength.requirements.special ? "text-[#22c55e]" : "text-[rgba(255,255,255,0.5)]"}`}>
+								<span className="mr-1 inline-flex items-center justify-center">
 									{passwordStrength.requirements.special ? "✓" : "○"}
 								</span>
 								<span>Special character (!@#$%^&*)</span>
@@ -275,9 +257,9 @@ export default function StepThreeSetPassword({
 				)}
 			</div>
 
-			<div className="form-group">
-				<label htmlFor="confirmPassword">Confirm Password</label>
-				<div className="password-input-wrapper">
+			<div className="flex flex-col gap-2">
+				<label htmlFor="confirmPassword" className="text-sm text-white font-medium font-[BentonSansRegular,Arial,sans-serif]">Confirm Password</label>
+				<div className="relative w-full">
 					<input
 						id="confirmPassword"
 						name="confirmPassword"
@@ -288,12 +270,12 @@ export default function StepThreeSetPassword({
 						autoComplete="new-password"
 						minLength={8}
 						placeholder="Confirm your password"
-						className="password-input"
+						className="w-full p-3 pr-20 bg-[rgba(255,255,255,0.05)] border border-solid border-[rgba(255,255,255,0.1)] rounded-md text-base text-white transition-all duration-300 ease-in-out placeholder:text-[rgba(255,255,255,0.4)] placeholder:[-webkit-text-fill-color:rgba(255,255,255,0.4)] focus:outline-none focus:border-[#ec1d24] focus:shadow-[0_0_0_2px_rgba(236,29,36,0.25)] [-webkit-text-fill-color:white] [&:-webkit-autofill]:shadow-[0_0_0_1000px_#1a1a1a_inset]"
 					/>
 					<button
 						type="button"
 						onClick={() => setShowConfirmPassword((prev) => !prev)}
-						className="password-toggle-btn"
+						className="absolute right-2.5 top-1/2 -translate-y-1/2 bg-transparent border-none py-1 px-2 text-[#ec1d24] cursor-pointer text-sm font-medium flex items-center rounded transition-all duration-200 ease-in-out hover:bg-[rgba(236,29,36,0.1)] focus:outline-none focus:shadow-[0_0_0_2px_rgba(236,29,36,0.25)]"
 						tabIndex={-1}
 						aria-label={showConfirmPassword ? "Hide password" : "Show password"}
 					>
@@ -303,14 +285,7 @@ export default function StepThreeSetPassword({
 				{data.password &&
 					data.confirmPassword &&
 					data.password !== data.confirmPassword && (
-						<div
-							className="password-mismatch"
-							style={{
-								color: "#ef4444",
-								fontSize: "0.85rem",
-								marginTop: "0.5rem",
-							}}
-						>
+						<div className="text-[#ef4444] text-sm mt-2 flex items-center">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								width="14"
@@ -321,7 +296,7 @@ export default function StepThreeSetPassword({
 								strokeWidth="2"
 								strokeLinecap="round"
 								strokeLinejoin="round"
-								style={{ marginRight: "4px", verticalAlign: "middle" }}
+								className="mr-1 align-middle"
 							>
 								<title>Password Mismatch</title>
 								<circle cx="12" cy="12" r="10" />
@@ -333,10 +308,10 @@ export default function StepThreeSetPassword({
 					)}
 			</div>
 
-			{error && <div className="error-message">{error}</div>}
+			{error && <div className="p-3 bg-[rgba(239,68,68,0.1)] border border-solid border-[rgba(239,68,68,0.3)] rounded-md text-[#ef4444] text-sm">{error}</div>}
 
-			<div className="form-buttons" style={{ marginTop: "1.5rem" }}>
-				<button onClick={onBack} className="back-button" type="button">
+			<div className="flex gap-4 mt-6">
+				<button onClick={onBack} className="flex-[0.4] block w-full bg-transparent border border-solid border-[rgba(255,255,255,0.3)] text-white py-2.5 rounded-md cursor-pointer transition-all duration-300 hover:bg-[rgba(255,255,255,0.1)] hover:-translate-y-0.5" type="button">
 					Back
 				</button>
 				<button
@@ -346,9 +321,16 @@ export default function StepThreeSetPassword({
 						data.password !== data.confirmPassword ||
 						!data.password
 					}
-					className={isLoading ? "loading" : ""}
+					className="flex-[0.6] p-3 bg-[#ec1d24] text-white border-none rounded-md text-base font-medium cursor-pointer transition-all duration-300 relative overflow-hidden hover:enabled:bg-[#d81921] hover:enabled:-translate-y-0.5 hover:enabled:shadow-[0_6px_12px_rgba(0,0,0,0.15)] disabled:opacity-70 disabled:cursor-not-allowed"
 				>
-					{isLoading ? "Creating Account..." : "Create Account"}
+					<span className={isLoading ? "opacity-0" : ""}>
+						{isLoading ? "Creating Account..." : "Create Account"}
+					</span>
+					{isLoading && (
+						<span className="absolute inset-0 flex items-center justify-center">
+							<span className="w-5 h-5 border-2 border-transparent border-t-white rounded-full animate-spin" />
+						</span>
+					)}
 				</button>
 			</div>
 		</form>

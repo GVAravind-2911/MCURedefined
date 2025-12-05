@@ -15,14 +15,15 @@ const EmptyState: React.FC<EmptyStateProps> = ({
 	showIcon = true 
 }) => {
 	return (
-		<div className="no-results">
-			<div className="no-results-content">
+		<div className="flex justify-center items-center min-h-[300px] text-white/70 animate-[fadeIn_0.5s_ease]">
+			<div className="text-center">
 				{showIcon && (
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						viewBox="0 0 24 24"
 						width="48"
 						height="48"
+						className="opacity-50 mb-4 mx-auto"
 					>
 						<title>No Results</title>
 						<path
@@ -31,10 +32,10 @@ const EmptyState: React.FC<EmptyStateProps> = ({
 						/>
 					</svg>
 				)}
-				<h3>{title}</h3>
-				<p>{description}</p>
+				<h3 className="font-[BentonSansBold] text-2xl mb-2.5">{title}</h3>
+				<p className="font-[BentonSansRegular] mb-5 text-white/50">{description}</p>
 				{resetFilters && (
-					<button onClick={resetFilters} className="reset-button" type="button">
+					<button onClick={resetFilters} className="bg-transparent border border-[#ec1d24]/70 text-[#ec1d24]/90 py-2.5 px-5 rounded-[20px] cursor-pointer font-[BentonSansRegular] transition-all duration-200 hover:bg-[#ec1d24]/10 hover:text-[#ec1d24]" type="button">
 						Reset Filters
 					</button>
 				)}

@@ -84,9 +84,9 @@ export default function ContentLikeButton({
 
   if (!isLoggedIn) {
     return (
-      <div className="likes">
+      <div className="flex flex-col items-center mx-[5px]">
         <motion.div
-          className="like-button disabled"
+          className="flex items-center justify-center gap-2.5 py-2.5 px-5 rounded-[30px] border-none cursor-not-allowed font-[BentonSansRegular] text-base min-w-[130px] h-[42px] shadow-[0_4px_12px_rgba(0,0,0,0.15)] relative overflow-hidden bg-[#777] text-[#ddd] opacity-80"
           title={`${count} likes`}
           initial={{ opacity: 0.9 }}
           animate={{ opacity: 1 }}
@@ -101,22 +101,25 @@ export default function ContentLikeButton({
             fill="currentColor"
             width={iconSize}
             height={iconSize}
-            className="heart-icon"
+            className="transition-all duration-400 fill-current opacity-60"
           >
             <title>Like</title>
             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
           </svg>
-          <span className="button-text">{formatNumber(count)}</span>
+          <span className="flex items-center gap-1.5 relative h-[22px] tracking-[0.02em]">{formatNumber(count)}</span>
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="likes">
+    <div className="flex flex-col items-center mx-[5px]">
       <motion.button
         type="button"
-        className={liked ? "liked-button" : "like-button"}
+        className={liked 
+          ? "flex items-center justify-center gap-2.5 py-2.5 px-5 rounded-[30px] border-2 border-[#ec1d24] cursor-pointer font-[BentonSansRegular] text-base min-w-[130px] h-[42px] shadow-[0_4px_12px_rgba(0,0,0,0.15)] relative overflow-hidden bg-white/95 text-[#ec1d24] font-bold transition-all duration-300" 
+          : "flex items-center justify-center gap-2.5 py-2.5 px-5 rounded-[30px] border-2 border-transparent cursor-pointer font-[BentonSansRegular] text-base min-w-[130px] h-[42px] shadow-[0_4px_12px_rgba(0,0,0,0.15)] relative overflow-hidden bg-[#ec1d24] text-white font-medium transition-all duration-300"
+        }
         onClick={liked ? handleUnlike : handleLike}
         disabled={isPending}
         whileTap={{ scale: 0.9 }}
@@ -140,7 +143,7 @@ export default function ContentLikeButton({
           strokeWidth={liked ? "0" : "2"}
           width={iconSize}
           height={iconSize}
-          className="heart-icon"
+          className={liked ? "transition-all duration-400 fill-[#ec1d24] drop-shadow-[0_0_2px_rgba(236,29,36,0.3)]" : "transition-all duration-400 fill-current"}
           animate={
             liked
               ? {
@@ -158,7 +161,7 @@ export default function ContentLikeButton({
           <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
         </motion.svg>
 
-        <div className="button-text">
+        <div className="flex items-center gap-1.5 relative h-[22px] tracking-[0.02em]">
           <AnimatePresence mode="wait">
             <motion.span
               key={liked ? "liked" : "like"}
@@ -172,7 +175,10 @@ export default function ContentLikeButton({
           </AnimatePresence>
 
           <motion.span
-            className="like-count-wrapper"
+            className={liked 
+              ? "inline-flex items-center ml-1.5 text-[0.9em] font-normal opacity-95 bg-[#ec1d24]/10 py-0.5 px-2 rounded-[10px]" 
+              : "inline-flex items-center ml-1.5 text-[0.9em] font-normal opacity-95 bg-white/15 py-0.5 px-2 rounded-[10px]"
+            }
             animate={
               animateCount
                 ? {
@@ -192,7 +198,7 @@ export default function ContentLikeButton({
 
         {isPending && (
           <motion.span
-            className="loading-indicator"
+            className="absolute"
             animate={{ rotate: 360 }}
             transition={{
               repeat: Number.POSITIVE_INFINITY,
