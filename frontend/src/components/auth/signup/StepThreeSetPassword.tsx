@@ -132,10 +132,17 @@ export default function StepThreeSetPassword({
 			onSubmit={handleSubmit}
 			className="flex flex-col gap-5 relative z-1 max-h-[90vh] overflow-y-auto"
 		>
-			<h2 className="text-center text-2xl font-bold text-white mb-6 uppercase tracking-wide [text-shadow:2px_2px_4px_rgba(0,0,0,0.5)]">Set Password</h2>
+			<h2 className="text-center text-2xl font-bold text-white mb-6 uppercase tracking-wide [text-shadow:2px_2px_4px_rgba(0,0,0,0.5)]">
+				Set Password
+			</h2>
 
 			<div className="flex flex-col gap-2">
-				<label htmlFor="password" className="text-sm text-white font-medium font-[BentonSansRegular,Arial,sans-serif]">Password</label>
+				<label
+					htmlFor="password"
+					className="text-sm text-white font-medium font-[BentonSansRegular,Arial,sans-serif]"
+				>
+					Password
+				</label>
 				<div className="relative w-full">
 					<input
 						id="password"
@@ -222,31 +229,41 @@ export default function StepThreeSetPassword({
 							/>
 						</div>
 						<div className="grid grid-cols-2 gap-2">
-							<div className={`flex items-center ${passwordStrength.requirements.length ? "text-[#22c55e]" : "text-[rgba(255,255,255,0.5)]"}`}>
+							<div
+								className={`flex items-center ${passwordStrength.requirements.length ? "text-[#22c55e]" : "text-[rgba(255,255,255,0.5)]"}`}
+							>
 								<span className="mr-1 inline-flex items-center justify-center">
 									{passwordStrength.requirements.length ? "✓" : "○"}
 								</span>
 								<span>At least 8 characters</span>
 							</div>
-							<div className={`flex items-center ${passwordStrength.requirements.uppercase ? "text-[#22c55e]" : "text-[rgba(255,255,255,0.5)]"}`}>
+							<div
+								className={`flex items-center ${passwordStrength.requirements.uppercase ? "text-[#22c55e]" : "text-[rgba(255,255,255,0.5)]"}`}
+							>
 								<span className="mr-1 inline-flex items-center justify-center">
 									{passwordStrength.requirements.uppercase ? "✓" : "○"}
 								</span>
 								<span>Uppercase letter</span>
 							</div>
-							<div className={`flex items-center ${passwordStrength.requirements.lowercase ? "text-[#22c55e]" : "text-[rgba(255,255,255,0.5)]"}`}>
+							<div
+								className={`flex items-center ${passwordStrength.requirements.lowercase ? "text-[#22c55e]" : "text-[rgba(255,255,255,0.5)]"}`}
+							>
 								<span className="mr-1 inline-flex items-center justify-center">
 									{passwordStrength.requirements.lowercase ? "✓" : "○"}
 								</span>
 								<span>Lowercase letter</span>
 							</div>
-							<div className={`flex items-center ${passwordStrength.requirements.number ? "text-[#22c55e]" : "text-[rgba(255,255,255,0.5)]"}`}>
+							<div
+								className={`flex items-center ${passwordStrength.requirements.number ? "text-[#22c55e]" : "text-[rgba(255,255,255,0.5)]"}`}
+							>
 								<span className="mr-1 inline-flex items-center justify-center">
 									{passwordStrength.requirements.number ? "✓" : "○"}
 								</span>
 								<span>Number</span>
 							</div>
-							<div className={`flex items-center col-span-2 ${passwordStrength.requirements.special ? "text-[#22c55e]" : "text-[rgba(255,255,255,0.5)]"}`}>
+							<div
+								className={`flex items-center col-span-2 ${passwordStrength.requirements.special ? "text-[#22c55e]" : "text-[rgba(255,255,255,0.5)]"}`}
+							>
 								<span className="mr-1 inline-flex items-center justify-center">
 									{passwordStrength.requirements.special ? "✓" : "○"}
 								</span>
@@ -258,7 +275,12 @@ export default function StepThreeSetPassword({
 			</div>
 
 			<div className="flex flex-col gap-2">
-				<label htmlFor="confirmPassword" className="text-sm text-white font-medium font-[BentonSansRegular,Arial,sans-serif]">Confirm Password</label>
+				<label
+					htmlFor="confirmPassword"
+					className="text-sm text-white font-medium font-[BentonSansRegular,Arial,sans-serif]"
+				>
+					Confirm Password
+				</label>
 				<div className="relative w-full">
 					<input
 						id="confirmPassword"
@@ -308,10 +330,18 @@ export default function StepThreeSetPassword({
 					)}
 			</div>
 
-			{error && <div className="p-3 bg-[rgba(239,68,68,0.1)] border border-solid border-[rgba(239,68,68,0.3)] rounded-md text-[#ef4444] text-sm">{error}</div>}
+			{error && (
+				<div className="p-3 bg-[rgba(239,68,68,0.1)] border border-solid border-[rgba(239,68,68,0.3)] rounded-md text-[#ef4444] text-sm">
+					{error}
+				</div>
+			)}
 
 			<div className="flex gap-4 mt-6">
-				<button onClick={onBack} className="flex-[0.4] block w-full bg-transparent border border-solid border-[rgba(255,255,255,0.3)] text-white py-2.5 rounded-md cursor-pointer transition-all duration-300 hover:bg-[rgba(255,255,255,0.1)] hover:-translate-y-0.5" type="button">
+				<button
+					onClick={onBack}
+					className="flex-[0.4] block w-full bg-transparent border border-solid border-[rgba(255,255,255,0.3)] text-white py-2.5 rounded-md cursor-pointer transition-all duration-300 hover:bg-[rgba(255,255,255,0.1)] hover:-translate-y-0.5"
+					type="button"
+				>
 					Back
 				</button>
 				<button

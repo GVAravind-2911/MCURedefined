@@ -28,8 +28,9 @@ export default memo(function BanUserModal({
 		<>
 			<h3 className="text-2xl font-bold text-white mb-3 pr-8">Ban User</h3>
 			<p className="text-white/70 text-[0.95rem] mb-6 leading-relaxed">
-				Are you sure you want to ban <strong className="text-white">{user.name}</strong>?
-				This will prevent them from signing in and revoke all their sessions.
+				Are you sure you want to ban{" "}
+				<strong className="text-white">{user.name}</strong>? This will prevent
+				them from signing in and revoke all their sessions.
 			</p>
 			<div className="flex flex-col gap-5 mb-6">
 				<label className="flex flex-col gap-2 text-white/70 text-[0.9rem] font-medium">
@@ -47,7 +48,11 @@ export default memo(function BanUserModal({
 					<input
 						type="number"
 						value={banDuration || ""}
-						onChange={(e) => setBanDuration(e.target.value ? Number(e.target.value) : undefined)}
+						onChange={(e) =>
+							setBanDuration(
+								e.target.value ? Number(e.target.value) : undefined,
+							)
+						}
 						placeholder="e.g., 24 for 1 day"
 						min="1"
 						className="py-3.5 px-4 bg-black/40 border border-white/10 rounded-[10px] text-white text-[0.95rem] transition-all duration-[0.25s] focus:outline-none focus:border-[#ec1d24] focus:shadow-[0_0_0_3px_rgba(236,29,36,0.15)] placeholder:text-white/30 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"

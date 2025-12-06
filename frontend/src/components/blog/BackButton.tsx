@@ -15,7 +15,7 @@ export default function BackButton({ href, label }: BackButtonProps) {
 
 	useEffect(() => {
 		// Find the hero section to track when we've scrolled past it
-		const heroSection = document.querySelector('[data-hero-section]');
+		const heroSection = document.querySelector("[data-hero-section]");
 		if (heroSection) {
 			heroRef.current = heroSection as HTMLDivElement;
 		}
@@ -23,18 +23,19 @@ export default function BackButton({ href, label }: BackButtonProps) {
 		const handleScroll = () => {
 			const currentScrollY = window.scrollY;
 			const heroHeight = heroRef.current?.offsetHeight || 500;
-			
+
 			// Start fading when 80% through the hero, fully hidden when hitting main content
 			const fadeStartPoint = heroHeight * 0.6;
 			const fadeEndPoint = heroHeight;
-			
+
 			if (currentScrollY <= fadeStartPoint) {
 				setOpacity(1);
 			} else if (currentScrollY >= fadeEndPoint) {
 				setOpacity(0);
 			} else {
 				// Gradual fade between start and end points
-				const fadeProgress = (currentScrollY - fadeStartPoint) / (fadeEndPoint - fadeStartPoint);
+				const fadeProgress =
+					(currentScrollY - fadeStartPoint) / (fadeEndPoint - fadeStartPoint);
 				setOpacity(1 - fadeProgress);
 			}
 		};

@@ -41,15 +41,18 @@ const RedditComment = memo(function RedditComment({
 	// Determine if this deleted comment should start collapsed
 	const isDeletedContent = comment.deleted || comment.content === "[deleted]";
 	const hasNoReplies = replies.length === 0;
-	const shouldStartCollapsed = hideDeletedWithoutReplies && isDeletedContent && hasNoReplies;
+	const shouldStartCollapsed =
+		hideDeletedWithoutReplies && isDeletedContent && hasNoReplies;
 
 	const [showReplyForm, setShowReplyForm] = useState(false);
 	const [isLiking, setIsLiking] = useState(false);
 	const [collapsed, setCollapsed] = useState(shouldStartCollapsed);
-	
+
 	// Local state for optimistic updates
 	const [localLikeCount, setLocalLikeCount] = useState(comment.likeCount || 0);
-	const [localUserHasLiked, setLocalUserHasLiked] = useState(comment.userHasLiked || false);
+	const [localUserHasLiked, setLocalUserHasLiked] = useState(
+		comment.userHasLiked || false,
+	);
 	const [replyContent, setReplyContent] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
@@ -73,10 +76,16 @@ const RedditComment = memo(function RedditComment({
 	const canDelete = isAuthor || isAdmin;
 	const canEdit = comment.canEdit && isAuthor && contentType === "forum";
 	const maxDepth = 5;
-	const isDeleted = comment.deleted || comment.content === "[deleted]" || localContent === "[deleted]";
+	const isDeleted =
+		comment.deleted ||
+		comment.content === "[deleted]" ||
+		localContent === "[deleted]";
 
 	// Check if spoiler has expired
-	const isSpoilerActive = comment.isSpoiler && comment.spoilerExpiresAt && new Date(comment.spoilerExpiresAt) > new Date();
+	const isSpoilerActive =
+		comment.isSpoiler &&
+		comment.spoilerExpiresAt &&
+		new Date(comment.spoilerExpiresAt) > new Date();
 
 	const formatDate = (dateString: string) => {
 		return formatRelativeTime(dateString);
@@ -99,7 +108,7 @@ const RedditComment = memo(function RedditComment({
 		// Optimistic update
 		const wasLiked = localUserHasLiked;
 		const previousCount = localLikeCount;
-		
+
 		setLocalUserHasLiked(!wasLiked);
 		setLocalLikeCount(wasLiked ? previousCount - 1 : previousCount + 1);
 		setIsLiking(true);
@@ -107,7 +116,7 @@ const RedditComment = memo(function RedditComment({
 		try {
 			// Use the standard like endpoint pattern for all content types
 			const response = await axios.post(`${apiPath}/${comment.id}/like`);
-			
+
 			// Update parent state to keep it in sync
 			onCommentLikeToggle(comment.id, response.data.liked);
 		} catch (err) {
@@ -127,7 +136,7 @@ const RedditComment = memo(function RedditComment({
 
 		try {
 			setIsDeleting(true);
-			
+
 			// For forum comments, use the specific delete endpoint
 			if (contentType === "forum") {
 				await axios.delete(`/api/forum/comments/${comment.id}`);
@@ -135,7 +144,7 @@ const RedditComment = memo(function RedditComment({
 				// For blog and review comments, use the old pattern
 				await axios.delete(`${apiPath}/${comment.id}`);
 			}
-			
+
 			refreshComments();
 		} catch (err) {
 			console.error("Error deleting comment:", err);
@@ -198,12 +207,12 @@ const RedditComment = memo(function RedditComment({
 		try {
 			setIsSubmitting(true);
 
-			const paramName = 
-				contentType === "blog" 
-					? "blogId" 
-					: contentType === "review" 
-					? "reviewId" 
-					: "topicId";
+			const paramName =
+				contentType === "blog"
+					? "blogId"
+					: contentType === "review"
+						? "reviewId"
+						: "topicId";
 
 			const requestBody: Record<string, any> = {
 				[paramName]: contentId,
@@ -215,7 +224,9 @@ const RedditComment = memo(function RedditComment({
 			if (contentType === "forum") {
 				requestBody.isSpoiler = replyIsSpoiler;
 				requestBody.spoilerFor = replyIsSpoiler ? replySpoilerFor : null;
-				requestBody.spoilerDuration = replyIsSpoiler ? replySpoilerDuration : null;
+				requestBody.spoilerDuration = replyIsSpoiler
+					? replySpoilerDuration
+					: null;
 			}
 
 			const response = await axios.post(apiPath, requestBody);
@@ -242,7 +253,9 @@ const RedditComment = memo(function RedditComment({
 	};
 
 	return (
-		<div className={`relative border-l-2 ${depth === 0 ? 'border-l-[#ec1d24]/30' : depth === 1 ? 'border-l-[#7289da]/30' : depth === 2 ? 'border-l-[#43b581]/30' : depth === 3 ? 'border-l-[#faa61a]/30' : depth === 4 ? 'border-l-[#f47fff]/30' : 'border-l-white/20'} ${depth > 0 ? 'ml-4' : ''} py-2`}>
+		<div
+			className={`relative border-l-2 ${depth === 0 ? "border-l-[#ec1d24]/30" : depth === 1 ? "border-l-[#7289da]/30" : depth === 2 ? "border-l-[#43b581]/30" : depth === 3 ? "border-l-[#faa61a]/30" : depth === 4 ? "border-l-[#f47fff]/30" : "border-l-white/20"} ${depth > 0 ? "ml-4" : ""} py-2`}
+		>
 			<div className="pl-3">
 				<div className="flex items-center gap-2 text-xs text-white/60">
 					<button
@@ -252,14 +265,16 @@ const RedditComment = memo(function RedditComment({
 					>
 						{collapsed ? "+" : "−"}
 					</button>
-					
+
 					<div className="flex items-center gap-1.5">
 						{isDeleted ? (
 							<>
 								<div className="w-5 h-5 rounded-full bg-[#666] flex items-center justify-center text-[0.7rem]">
 									❌
 								</div>
-								<span className="font-[BentonSansBook] text-[#666]">[deleted]</span>
+								<span className="font-[BentonSansBook] text-[#666]">
+									[deleted]
+								</span>
 							</>
 						) : (
 							<>
@@ -276,8 +291,14 @@ const RedditComment = memo(function RedditComment({
 										{getUserInitials(comment.username)}
 									</div>
 								)}
-								<span className="font-[BentonSansBook] text-white/90">{comment.username}</span>
-								{isAuthor && <span className="bg-[#ec1d24] text-white text-[0.65rem] px-1.5 py-0.5 rounded font-[BentonSansBold]">OP</span>}
+								<span className="font-[BentonSansBook] text-white/90">
+									{comment.username}
+								</span>
+								{isAuthor && (
+									<span className="bg-[#ec1d24] text-white text-[0.65rem] px-1.5 py-0.5 rounded font-[BentonSansBold]">
+										OP
+									</span>
+								)}
 							</>
 						)}
 					</div>
@@ -317,8 +338,16 @@ const RedditComment = memo(function RedditComment({
 										<button
 											className="py-1.5 px-3 bg-[#ec1d24] text-white text-xs font-[BentonSansBold] rounded cursor-pointer transition-all duration-200 border-none disabled:opacity-50 disabled:cursor-not-allowed hover:not-disabled:bg-[#d01c22]"
 											onClick={handleSaveEdit}
-											disabled={isSavingEdit || !editContent.trim() || editContent.trim() === localContent.trim()}
-											title={editContent.trim() === localContent.trim() ? "No changes to save" : ""}
+											disabled={
+												isSavingEdit ||
+												!editContent.trim() ||
+												editContent.trim() === localContent.trim()
+											}
+											title={
+												editContent.trim() === localContent.trim()
+													? "No changes to save"
+													: ""
+											}
 										>
 											{isSavingEdit ? "Saving..." : "Save"}
 										</button>
@@ -341,17 +370,29 @@ const RedditComment = memo(function RedditComment({
 							) : isSpoilerActive && !spoilerRevealed ? (
 								<div className="bg-[rgba(255,165,0,0.1)] border border-[rgba(255,165,0,0.3)] rounded-lg p-4 text-center">
 									<div className="flex flex-col items-center gap-2">
-										<span className="bg-[#ffa500] text-black text-xs px-2 py-1 rounded font-[BentonSansBold]">⚠️ SPOILER</span>
-										<p className="text-white/80 text-sm m-0">This comment contains spoilers for: <strong>{comment.spoilerFor}</strong></p>
-										<button className="bg-[rgba(255,165,0,0.2)] text-[#ffa500] border border-[rgba(255,165,0,0.4)] py-2 px-4 rounded-lg text-sm cursor-pointer transition-all duration-200 hover:bg-[rgba(255,165,0,0.3)]" onClick={handleSpoilerReveal}>
+										<span className="bg-[#ffa500] text-black text-xs px-2 py-1 rounded font-[BentonSansBold]">
+											⚠️ SPOILER
+										</span>
+										<p className="text-white/80 text-sm m-0">
+											This comment contains spoilers for:{" "}
+											<strong>{comment.spoilerFor}</strong>
+										</p>
+										<button
+											className="bg-[rgba(255,165,0,0.2)] text-[#ffa500] border border-[rgba(255,165,0,0.4)] py-2 px-4 rounded-lg text-sm cursor-pointer transition-all duration-200 hover:bg-[rgba(255,165,0,0.3)]"
+											onClick={handleSpoilerReveal}
+										>
 											Click to reveal spoiler
 										</button>
 									</div>
 								</div>
 							) : (
-								<div className={`${spoilerRevealed ? 'bg-[rgba(255,165,0,0.05)] border border-[rgba(255,165,0,0.2)] rounded-lg p-3' : ''}`}>
+								<div
+									className={`${spoilerRevealed ? "bg-[rgba(255,165,0,0.05)] border border-[rgba(255,165,0,0.2)] rounded-lg p-3" : ""}`}
+								>
 									{comment.isSpoiler && (
-										<span className="text-[#ffa500] text-xs mr-2">🔍 Spoiler</span>
+										<span className="text-[#ffa500] text-xs mr-2">
+											🔍 Spoiler
+										</span>
 									)}
 									{localContent}
 								</div>
@@ -362,14 +403,15 @@ const RedditComment = memo(function RedditComment({
 							<div className="flex items-center gap-1">
 								{!isDeleted && !isEditing && (
 									<>
-								<button
-									className={`flex items-center gap-1 py-1 px-2 bg-transparent border-none text-white/60 text-xs cursor-pointer transition-all duration-200 rounded hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed ${localUserHasLiked ? 'text-[#ec1d24]' : ''}`}
-									onClick={handleLike}
-									disabled={!currentUser || isLiking}
-								>
-									<span>{localUserHasLiked ? "❤️" : "🤍"}</span>
-									<span>{localLikeCount}</span>
-								</button>										{currentUser && depth < maxDepth && !disabled && (
+										<button
+											className={`flex items-center gap-1 py-1 px-2 bg-transparent border-none text-white/60 text-xs cursor-pointer transition-all duration-200 rounded hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed ${localUserHasLiked ? "text-[#ec1d24]" : ""}`}
+											onClick={handleLike}
+											disabled={!currentUser || isLiking}
+										>
+											<span>{localUserHasLiked ? "❤️" : "🤍"}</span>
+											<span>{localLikeCount}</span>
+										</button>{" "}
+										{currentUser && depth < maxDepth && !disabled && (
 											<button
 												className="flex items-center gap-1 py-1 px-2 bg-transparent border-none text-white/60 text-xs cursor-pointer transition-all duration-200 rounded hover:bg-white/10 hover:text-white"
 												onClick={() => setShowReplyForm(!showReplyForm)}
@@ -377,7 +419,6 @@ const RedditComment = memo(function RedditComment({
 												Reply
 											</button>
 										)}
-
 										{canEdit && (
 											<button
 												className="flex items-center gap-1 py-1 px-2 bg-transparent border-none text-white/60 text-xs cursor-pointer transition-all duration-200 rounded hover:bg-white/10 hover:text-white"
@@ -386,7 +427,6 @@ const RedditComment = memo(function RedditComment({
 												Edit
 											</button>
 										)}
-
 										{canDelete && (
 											<button
 												className="flex items-center gap-1 py-1 px-2 bg-transparent border-none text-[#dc3545] text-xs cursor-pointer transition-all duration-200 rounded hover:bg-[rgba(220,53,69,0.1)] disabled:opacity-50 disabled:cursor-not-allowed"
@@ -402,7 +442,10 @@ const RedditComment = memo(function RedditComment({
 						</div>
 
 						{showReplyForm && currentUser && (
-							<form className="bg-white/5 rounded-lg p-3 mt-3 border border-white/10" onSubmit={handleReplySubmit}>
+							<form
+								className="bg-white/5 rounded-lg p-3 mt-3 border border-white/10"
+								onSubmit={handleReplySubmit}
+							>
 								<textarea
 									className="w-full min-h-20 p-3 bg-white/5 border border-white/20 rounded-lg text-white font-[BentonSansRegular] text-sm resize-y transition-all duration-300 ease-in-out focus:outline-none focus:border-[#ec1d24] focus:bg-white/10"
 									value={replyContent}
@@ -411,7 +454,7 @@ const RedditComment = memo(function RedditComment({
 									disabled={isSubmitting}
 									maxLength={2000}
 								/>
-								
+
 								{/* Spoiler fields for forum reply comments */}
 								{contentType === "forum" && (
 									<div className="mt-3 p-3 bg-[rgba(255,165,0,0.05)] border border-[rgba(255,165,0,0.2)] rounded-lg">
@@ -422,9 +465,11 @@ const RedditComment = memo(function RedditComment({
 												onChange={(e) => setReplyIsSpoiler(e.target.checked)}
 												className="accent-[#ffa500] scale-[1.2] cursor-pointer"
 											/>
-											<span className="text-white/80 text-sm font-[BentonSansBook]">Mark as spoiler</span>
+											<span className="text-white/80 text-sm font-[BentonSansBook]">
+												Mark as spoiler
+											</span>
 										</label>
-										
+
 										{replyIsSpoiler && (
 											<div className="mt-3 flex flex-col gap-3 pl-6 border-l-2 border-[rgba(255,165,0,0.3)]">
 												<div className="flex flex-col gap-1.5">
@@ -433,7 +478,9 @@ const RedditComment = memo(function RedditComment({
 														<input
 															type="text"
 															value={replySpoilerFor}
-															onChange={(e) => setReplySpoilerFor(e.target.value)}
+															onChange={(e) =>
+																setReplySpoilerFor(e.target.value)
+															}
 															placeholder="e.g., Spider-Man: No Way Home"
 															className="mt-1.5 w-full py-2 px-3 bg-white/5 border border-[rgba(255,165,0,0.2)] rounded-lg text-white text-sm font-[BentonSansRegular] transition-all duration-300 ease-in-out focus:outline-none focus:border-[#ffa500] focus:bg-[rgba(255,165,0,0.05)]"
 															required
@@ -446,7 +493,9 @@ const RedditComment = memo(function RedditComment({
 														<input
 															type="number"
 															value={replySpoilerDuration}
-															onChange={(e) => setReplySpoilerDuration(Number(e.target.value))}
+															onChange={(e) =>
+																setReplySpoilerDuration(Number(e.target.value))
+															}
 															min="1"
 															max="365"
 															className="mt-1.5 w-full py-2 px-3 bg-white/5 border border-[rgba(255,165,0,0.2)] rounded-lg text-white text-sm font-[BentonSansRegular] transition-all duration-300 ease-in-out focus:outline-none focus:border-[#ffa500] focus:bg-[rgba(255,165,0,0.05)]"
@@ -457,7 +506,7 @@ const RedditComment = memo(function RedditComment({
 										)}
 									</div>
 								)}
-								
+
 								<div className="flex justify-end gap-2 mt-3">
 									<button
 										type="button"
@@ -476,7 +525,11 @@ const RedditComment = memo(function RedditComment({
 									<button
 										type="submit"
 										className="py-2 px-5 bg-[#ec1d24] border-none rounded-full text-white text-sm font-[BentonSansBold] cursor-pointer transition-all duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed hover:not-disabled:bg-[#d01c22]"
-										disabled={!replyContent.trim() || isSubmitting || (replyIsSpoiler && !replySpoilerFor.trim())}
+										disabled={
+											!replyContent.trim() ||
+											isSubmitting ||
+											(replyIsSpoiler && !replySpoilerFor.trim())
+										}
 									>
 										{isSubmitting ? "Posting..." : "Reply"}
 									</button>

@@ -20,8 +20,8 @@ export default memo(function DeleteUserModal({
 		<>
 			<h3 className="text-2xl font-bold text-white mb-3 pr-8">Delete User</h3>
 			<p className="text-red-300 text-[0.95rem] mb-6 leading-relaxed bg-red-500/10 p-4 rounded-[10px] border border-red-500/30">
-				⚠️ This action cannot be undone! Are you sure you want to permanently delete{" "}
-				<strong className="text-white">{user.name}</strong>?
+				⚠️ This action cannot be undone! Are you sure you want to permanently
+				delete <strong className="text-white">{user.name}</strong>?
 			</p>
 			<div className="flex gap-3 justify-end pt-2 border-t border-white/10 mt-2">
 				<button

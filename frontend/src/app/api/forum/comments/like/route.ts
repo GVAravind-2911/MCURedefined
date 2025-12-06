@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
 		if (!session?.user) {
 			return NextResponse.json(
 				{ error: "Authentication required" },
-				{ status: 401 }
+				{ status: 401 },
 			);
 		}
 
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
 		if (!commentId) {
 			return NextResponse.json(
 				{ error: "Comment ID is required" },
-				{ status: 400 }
+				{ status: 400 },
 			);
 		}
 
@@ -32,8 +32,8 @@ export async function POST(req: NextRequest) {
 			.where(
 				and(
 					eq(forumCommentLike.commentId, commentId),
-					eq(forumCommentLike.userId, session.user.id)
-				)
+					eq(forumCommentLike.userId, session.user.id),
+				),
 			)
 			.limit(1);
 
@@ -44,8 +44,8 @@ export async function POST(req: NextRequest) {
 				.where(
 					and(
 						eq(forumCommentLike.commentId, commentId),
-						eq(forumCommentLike.userId, session.user.id)
-					)
+						eq(forumCommentLike.userId, session.user.id),
+					),
 				);
 
 			return NextResponse.json({ liked: false });
@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
 		console.error("Error toggling forum comment like:", error);
 		return NextResponse.json(
 			{ error: "Failed to toggle like" },
-			{ status: 500 }
+			{ status: 500 },
 		);
 	}
 }

@@ -30,17 +30,19 @@ const BlockWrapper: React.FC<BlockWrapperProps> = ({
 	} = useSortable({ id });
 
 	// Constrain horizontal transform to prevent infinite scrolling
-	const constrainedTransform = transform ? {
-		...transform,
-		x: 0, // Prevent horizontal movement
-	} : null;
+	const constrainedTransform = transform
+		? {
+				...transform,
+				x: 0, // Prevent horizontal movement
+			}
+		: null;
 
 	const style: React.CSSProperties = {
 		transform: CSS.Transform.toString(constrainedTransform),
 		transition,
 		opacity: isDragging ? 0.4 : 1,
-		zIndex: isDragging ? 0 : 'auto',
-		position: 'relative',
+		zIndex: isDragging ? 0 : "auto",
+		position: "relative",
 	};
 
 	const toggleAddBlock = useCallback(() => {
@@ -66,12 +68,16 @@ const BlockWrapper: React.FC<BlockWrapperProps> = ({
 	);
 
 	return (
-		<div ref={setNodeRef} style={style} className={`relative mb-6 group/block ${isDragging ? 'pointer-events-none' : ''}`}>
+		<div
+			ref={setNodeRef}
+			style={style}
+			className={`relative mb-6 group/block ${isDragging ? "pointer-events-none" : ""}`}
+		>
 			{/* Drag Handle */}
 			<div
 				{...attributes}
 				{...listeners}
-				className={`absolute -left-11 top-1/2 -translate-y-1/2 w-8 h-12 hidden md:flex flex-col items-center justify-center gap-0.5 cursor-grab active:cursor-grabbing transition-opacity duration-200 touch-none z-10 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 hover:border-white/20 ${isDragging ? 'opacity-0' : 'opacity-0 group-hover/block:opacity-100'}`}
+				className={`absolute -left-11 top-1/2 -translate-y-1/2 w-8 h-12 hidden md:flex flex-col items-center justify-center gap-0.5 cursor-grab active:cursor-grabbing transition-opacity duration-200 touch-none z-10 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 hover:border-white/20 ${isDragging ? "opacity-0" : "opacity-0 group-hover/block:opacity-100"}`}
 				title="Drag to reorder"
 			>
 				<span className="w-4 h-0.5 bg-white/40 rounded-full" />

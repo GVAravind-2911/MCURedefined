@@ -14,8 +14,12 @@ export const user = pgTable("user", {
 	email: text("email").notNull().unique(),
 	emailVerified: boolean("email_verified").notNull().default(false),
 	image: text("image"),
-	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
-	updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+	createdAt: timestamp("created_at", { withTimezone: true })
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`),
+	updatedAt: timestamp("updated_at", { withTimezone: true })
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`),
 	username: text("username").notNull().unique(),
 	displayUsername: text("display_name").notNull().unique(),
 	role: text("role").notNull().default("user"),
@@ -36,7 +40,9 @@ export const session = pgTable("session", {
 	expiresAt: timestamp("expires_at").notNull(),
 	ipAddress: text("ip_address"),
 	userAgent: text("user_agent"),
-	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+	createdAt: timestamp("created_at", { withTimezone: true })
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 	impersonatedBy: text("impersonated_by"),
 });
@@ -58,7 +64,9 @@ export const account = pgTable("account", {
 	scope: text("scope"),
 	idToken: text("id_token"),
 	password: text("password"),
-	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+	createdAt: timestamp("created_at", { withTimezone: true })
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
@@ -70,7 +78,9 @@ export const verification = pgTable("verification", {
 	identifier: text("identifier").notNull(),
 	value: text("value").notNull(),
 	expiresAt: timestamp("expires_at").notNull(),
-	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+	createdAt: timestamp("created_at", { withTimezone: true })
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
@@ -104,7 +114,9 @@ export const interaction = pgTable("blog_interaction", {
 	lastUpdated: timestamp("last_updated")
 		.notNull()
 		.default(sql`CURRENT_TIMESTAMP`),
-	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+	createdAt: timestamp("created_at", { withTimezone: true })
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`),
 });
 
 export type Interaction = typeof interaction.$inferSelect;
@@ -138,7 +150,9 @@ export const projectInteraction = pgTable("project_interaction", {
 	lastUpdated: timestamp("last_updated")
 		.notNull()
 		.default(sql`CURRENT_TIMESTAMP`),
-	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+	createdAt: timestamp("created_at", { withTimezone: true })
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`),
 });
 
 export type ProjectInteraction = typeof projectInteraction.$inferSelect;
@@ -172,7 +186,9 @@ export const reviewInteraction = pgTable("review_interaction", {
 	lastUpdated: timestamp("last_updated")
 		.notNull()
 		.default(sql`CURRENT_TIMESTAMP`),
-	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+	createdAt: timestamp("created_at", { withTimezone: true })
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`),
 });
 
 export type ReviewInteraction = typeof reviewInteraction.$inferSelect;
@@ -191,7 +207,9 @@ export const blogComment = pgTable("blog_comment", {
 		onDelete: "cascade",
 	}),
 	content: text("content").notNull(),
-	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+	createdAt: timestamp("created_at", { withTimezone: true })
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 	deleted: boolean("deleted").notNull().default(false),
 });
@@ -229,7 +247,9 @@ export const reviewComment = pgTable("review_comment", {
 		onDelete: "cascade",
 	}),
 	content: text("content").notNull(),
-	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+	createdAt: timestamp("created_at", { withTimezone: true })
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 	deleted: boolean("deleted").notNull().default(false),
 });
@@ -262,7 +282,9 @@ export const userProfile = pgTable("user_profile", {
 		.notNull()
 		.references(() => user.id, { onDelete: "cascade" }),
 	description: text("description"),
-	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+	createdAt: timestamp("created_at", { withTimezone: true })
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
@@ -277,7 +299,9 @@ export const forumTopic = pgTable("forum_topic", {
 	userId: text("user_id")
 		.notNull()
 		.references(() => user.id, { onDelete: "cascade" }),
-	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+	createdAt: timestamp("created_at", { withTimezone: true })
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 	deleted: boolean("deleted").notNull().default(false),
 	pinned: boolean("pinned").notNull().default(false),
@@ -326,7 +350,9 @@ export const forumComment = pgTable("forum_comment", {
 		onDelete: "cascade",
 	}),
 	content: text("content").notNull(),
-	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+	createdAt: timestamp("created_at", { withTimezone: true })
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 	deleted: boolean("deleted").notNull().default(false),
 	isSpoiler: boolean("is_spoiler").notNull().default(false),
@@ -366,12 +392,15 @@ export const forumTopicEditHistory = pgTable("forum_topic_edit_history", {
 		.references(() => forumTopic.id, { onDelete: "cascade" }),
 	previousTitle: text("previous_title").notNull(),
 	previousContent: text("previous_content").notNull(),
-	editedAt: timestamp("edited_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+	editedAt: timestamp("edited_at", { withTimezone: true })
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`),
 	editNumber: integer("edit_number").notNull(), // Which edit this was (1-5)
 });
 
 export type ForumTopicEditHistory = typeof forumTopicEditHistory.$inferSelect;
-export type NewForumTopicEditHistory = typeof forumTopicEditHistory.$inferInsert;
+export type NewForumTopicEditHistory =
+	typeof forumTopicEditHistory.$inferInsert;
 
 // Forum Comment Edit History Table
 export const forumCommentEditHistory = pgTable("forum_comment_edit_history", {
@@ -380,9 +409,13 @@ export const forumCommentEditHistory = pgTable("forum_comment_edit_history", {
 		.notNull()
 		.references(() => forumComment.id, { onDelete: "cascade" }),
 	previousContent: text("previous_content").notNull(),
-	editedAt: timestamp("edited_at", { withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+	editedAt: timestamp("edited_at", { withTimezone: true })
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`),
 	editNumber: integer("edit_number").notNull(), // Which edit this was (1-5)
 });
 
-export type ForumCommentEditHistory = typeof forumCommentEditHistory.$inferSelect;
-export type NewForumCommentEditHistory = typeof forumCommentEditHistory.$inferInsert;
+export type ForumCommentEditHistory =
+	typeof forumCommentEditHistory.$inferSelect;
+export type NewForumCommentEditHistory =
+	typeof forumCommentEditHistory.$inferInsert;

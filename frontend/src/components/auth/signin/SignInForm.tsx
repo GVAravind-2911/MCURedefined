@@ -65,9 +65,15 @@ export default function SignInForm({ onSignUp, onForgotPassword }) {
 
 	return (
 		<>
-			<form onSubmit={handleSignIn} className="flex flex-col gap-5 relative z-1">
+			<form
+				onSubmit={handleSignIn}
+				className="flex flex-col gap-5 relative z-1"
+			>
 				<div className="flex flex-col gap-2">
-					<label htmlFor="identifier" className="text-sm text-white font-medium font-[BentonSansRegular,Arial,sans-serif]">
+					<label
+						htmlFor="identifier"
+						className="text-sm text-white font-medium font-[BentonSansRegular,Arial,sans-serif]"
+					>
 						Email or Username
 					</label>
 					<input
@@ -82,7 +88,10 @@ export default function SignInForm({ onSignUp, onForgotPassword }) {
 				</div>
 
 				<div className="flex flex-col gap-2">
-					<label htmlFor="password" className="text-sm text-white font-medium font-[BentonSansRegular,Arial,sans-serif]">
+					<label
+						htmlFor="password"
+						className="text-sm text-white font-medium font-[BentonSansRegular,Arial,sans-serif]"
+					>
 						Password
 					</label>
 					<div className="relative w-full">

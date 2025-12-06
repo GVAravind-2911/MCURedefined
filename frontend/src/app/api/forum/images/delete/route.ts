@@ -6,7 +6,7 @@ const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:4000";
 
 /**
  * Delete a topic image from the backend storage service.
- * 
+ *
  * This route acts as a proxy to the backend image service, adding authentication.
  * When moving to a separate image service, update the BACKEND_URL accordingly.
  */
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
 		if (!session?.user) {
 			return NextResponse.json(
 				{ error: "Authentication required" },
-				{ status: 401 }
+				{ status: 401 },
 			);
 		}
 
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 		if (!key) {
 			return NextResponse.json(
 				{ error: "Image key is required" },
-				{ status: 400 }
+				{ status: 400 },
 			);
 		}
 
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
 		if (!key.startsWith("topic-images/")) {
 			return NextResponse.json(
 				{ error: "Invalid image key format" },
-				{ status: 400 }
+				{ status: 400 },
 			);
 		}
 
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
 			console.error("Backend image delete failed:", errorData);
 			return NextResponse.json(
 				{ error: errorData.detail || "Failed to delete image" },
-				{ status: response.status }
+				{ status: response.status },
 			);
 		}
 
@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
 		console.error("Error in topic image delete:", error);
 		return NextResponse.json(
 			{ error: "Failed to delete image" },
-			{ status: 500 }
+			{ status: 500 },
 		);
 	}
 }

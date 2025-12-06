@@ -6,7 +6,11 @@ import { isTopicDeleted } from "./TopicPost";
 
 const RedditCommentSection = dynamic(
 	() => import("@/components/forum/RedditCommentSection"),
-	{ loading: () => <div className="py-8 text-center text-white/60">Loading comments...</div> }
+	{
+		loading: () => (
+			<div className="py-8 text-center text-white/60">Loading comments...</div>
+		),
+	},
 );
 
 interface ForumTopic {
@@ -34,7 +38,10 @@ interface TopicCommentsProps {
 	topicId: string;
 }
 
-export default function TopicComments({ topic, topicId }: TopicCommentsProps): React.ReactElement {
+export default function TopicComments({
+	topic,
+	topicId,
+}: TopicCommentsProps): React.ReactElement {
 	const isDeleted = isTopicDeleted(topic);
 
 	return (
@@ -42,18 +49,21 @@ export default function TopicComments({ topic, topicId }: TopicCommentsProps): R
 			{topic.locked && !isDeleted ? (
 				<div className="text-center p-8 bg-[rgba(40,40,40,0.3)] border border-white/10 rounded-lg mt-4">
 					<h3 className="text-white/60 mb-2">🔒 This topic is locked</h3>
-					<p className="text-white/40">Comments have been disabled for this topic.</p>
+					<p className="text-white/40">
+						Comments have been disabled for this topic.
+					</p>
 				</div>
 			) : (
 				<>
 					{isDeleted && (
 						<div className="py-3 px-4 bg-[rgba(220,53,69,0.1)] rounded-lg mb-4 text-[#dc3545] text-sm">
-							⚠️ This topic has been deleted. You can still view existing comments but cannot add new ones.
+							⚠️ This topic has been deleted. You can still view existing
+							comments but cannot add new ones.
 						</div>
 					)}
-					<RedditCommentSection 
-						contentId={topicId} 
-						contentType="forum" 
+					<RedditCommentSection
+						contentId={topicId}
+						contentType="forum"
 						disabled={isDeleted}
 					/>
 				</>

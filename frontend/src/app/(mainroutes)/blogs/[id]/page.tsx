@@ -77,15 +77,12 @@ const handleApiError = (error: unknown): ErrorState => {
 
 async function getBlogData(id: number): Promise<BlogData | ErrorState> {
 	try {
-		const response = await axios.get<BlogData>(
-			getBackendUrl(`blogs/${id}`),
-			{
-				timeout: 10000, // 10 second timeout
-				headers: {
-					"Cache-Control": "no-cache",
-				},
+		const response = await axios.get<BlogData>(getBackendUrl(`blogs/${id}`), {
+			timeout: 10000, // 10 second timeout
+			headers: {
+				"Cache-Control": "no-cache",
 			},
-		);
+		});
 		return response.data;
 	} catch (error) {
 		return handleApiError(error);
@@ -94,15 +91,12 @@ async function getBlogData(id: number): Promise<BlogData | ErrorState> {
 
 async function getLatestBlogs(): Promise<Article[] | null> {
 	try {
-		const response = await axios.get<Article[]>(
-			getBackendUrl("blogs/latest"),
-			{
-				timeout: 5000,
-				headers: {
-					"Cache-Control": "no-cache",
-				},
+		const response = await axios.get<Article[]>(getBackendUrl("blogs/latest"), {
+			timeout: 5000,
+			headers: {
+				"Cache-Control": "no-cache",
 			},
-		);
+		});
 		return response.data;
 	} catch (error) {
 		return null;
@@ -126,22 +120,26 @@ const loadScript = (url: string): JSX.Element => {
 			);
 		}
 	}
-	return <div className="text-[#ec1d24] text-center py-4">Invalid embed URL</div>;
+	return (
+		<div className="text-[#ec1d24] text-center py-4">Invalid embed URL</div>
+	);
 };
 
 // Calculate estimated reading time
 const calculateReadingTime = (content: ContentBlock[]): number => {
 	const wordsPerMinute = 200;
 	let totalWords = 0;
-	
+
 	for (const block of content) {
 		if (block.type === "text" && typeof block.content === "string") {
 			// Strip HTML tags and count words
 			const plainText = block.content.replace(/<[^>]*>/g, " ");
-			totalWords += plainText.split(/\s+/).filter(word => word.length > 0).length;
+			totalWords += plainText
+				.split(/\s+/)
+				.filter((word) => word.length > 0).length;
 		}
 	}
-	
+
 	return Math.max(1, Math.ceil(totalWords / wordsPerMinute));
 };
 
@@ -181,13 +179,19 @@ export default async function BlogPage(props: PageProps): Promise<JSX.Element> {
 			switch (block.type) {
 				case "text":
 					return (
-						<div key={uniqueKey} className="w-full prose prose-invert prose-lg max-w-none [&_i]:text-[#ec1d24] [&_b_i]:text-[#ec1d24] [&_p]:text-white/85 [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_h4]:text-white [&_a]:text-[#ec1d24] [&_a:hover]:text-[#ff3d44] [&_blockquote]:border-l-[#ec1d24] [&_blockquote]:bg-white/5 [&_blockquote]:py-2 [&_blockquote]:px-4 [&_blockquote]:rounded-r-lg">
+						<div
+							key={uniqueKey}
+							className="w-full prose prose-invert prose-lg max-w-none [&_i]:text-[#ec1d24] [&_b_i]:text-[#ec1d24] [&_p]:text-white/85 [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_h4]:text-white [&_a]:text-[#ec1d24] [&_a:hover]:text-[#ff3d44] [&_blockquote]:border-l-[#ec1d24] [&_blockquote]:bg-white/5 [&_blockquote]:py-2 [&_blockquote]:px-4 [&_blockquote]:rounded-r-lg"
+						>
 							{parse(block.content)}
 						</div>
 					);
 				case "image":
 					return (
-						<figure key={uniqueKey} className="w-full flex flex-col items-center my-6 sm:my-8">
+						<figure
+							key={uniqueKey}
+							className="w-full flex flex-col items-center my-6 sm:my-8"
+						>
 							<div className="relative w-full max-w-[600px] flex justify-center overflow-hidden rounded-xl shadow-2xl bg-black/20">
 								<Image
 									src={block.content.link}
@@ -195,7 +199,12 @@ export default async function BlogPage(props: PageProps): Promise<JSX.Element> {
 									className="w-full h-auto object-contain max-h-[60vh]"
 									width={600}
 									height={400}
-									style={{ width: '100%', height: 'auto', maxHeight: '60vh', objectFit: 'contain' }}
+									style={{
+										width: "100%",
+										height: "auto",
+										maxHeight: "60vh",
+										objectFit: "contain",
+									}}
 								/>
 							</div>
 						</figure>
@@ -203,7 +212,10 @@ export default async function BlogPage(props: PageProps): Promise<JSX.Element> {
 				case "embed":
 					if (block.content.includes("www.youtube.com")) {
 						return (
-							<div key={uniqueKey} className="w-full my-6 sm:my-8 flex justify-center">
+							<div
+								key={uniqueKey}
+								className="w-full my-6 sm:my-8 flex justify-center"
+							>
 								<div className="relative w-full max-w-[600px] aspect-video rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10">
 									{loadScript(block.content)}
 								</div>
@@ -245,7 +257,9 @@ export default async function BlogPage(props: PageProps): Promise<JSX.Element> {
 					{/* Blog Badge */}
 					<div className="absolute top-24 right-4 sm:top-28 sm:right-8 flex items-center gap-2 px-4 py-2 bg-[#ec1d24]/90 backdrop-blur-sm rounded-full">
 						<Newspaper className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-						<span className="text-sm sm:text-base font-[BentonSansBold] text-white">Blog</span>
+						<span className="text-sm sm:text-base font-[BentonSansBold] text-white">
+							Blog
+						</span>
 					</div>
 				</div>
 
@@ -261,7 +275,8 @@ export default async function BlogPage(props: PageProps): Promise<JSX.Element> {
 									className="text-xs sm:text-sm text-white font-[BentonSansRegular] bg-[#ec1d24] border-none rounded-full py-1 sm:py-1.5 px-3 sm:px-4 transition-all duration-300 inline-flex items-center hover:bg-[#ff3d44] hover:shadow-lg hover:shadow-[#ec1d24]/30 active:scale-95"
 									prefetch={false}
 								>
-									<span className="opacity-70 mr-1">#</span>{tag}
+									<span className="opacity-70 mr-1">#</span>
+									{tag}
 								</Link>
 							))}
 							{blog.tags.length > 4 && (
@@ -280,7 +295,7 @@ export default async function BlogPage(props: PageProps): Promise<JSX.Element> {
 						<div className="flex flex-wrap items-center gap-3 sm:gap-4 md:gap-6 text-white/80">
 							{/* Author */}
 							{blog.author_info ? (
-								<Link 
+								<Link
 									href={`/profile/${blog.author_info.username}`}
 									className="flex items-center gap-2 sm:gap-3 no-underline transition-all duration-200 hover:opacity-80 group"
 									prefetch={false}
@@ -373,8 +388,13 @@ export default async function BlogPage(props: PageProps): Promise<JSX.Element> {
 					</div>
 
 					{/* Tags Section at Bottom */}
-					<div data-tags-section className="mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-white/10">
-						<h3 className="text-sm font-[BentonSansBold] text-white/50 uppercase tracking-wider mb-4">Tags</h3>
+					<div
+						data-tags-section
+						className="mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-white/10"
+					>
+						<h3 className="text-sm font-[BentonSansBold] text-white/50 uppercase tracking-wider mb-4">
+							Tags
+						</h3>
 						<div className="flex flex-wrap gap-2">
 							{blog.tags.map((tag: string) => (
 								<Link
@@ -383,7 +403,8 @@ export default async function BlogPage(props: PageProps): Promise<JSX.Element> {
 									className="text-sm text-white/70 font-[BentonSansRegular] bg-white/5 border border-white/10 rounded-full py-2 px-4 transition-all duration-300 inline-flex items-center hover:bg-[#ec1d24]/10 hover:text-[#ec1d24] hover:border-[#ec1d24]/30 active:scale-95"
 									prefetch={false}
 								>
-									<span className="opacity-50 mr-1">#</span>{tag}
+									<span className="opacity-50 mr-1">#</span>
+									{tag}
 								</Link>
 							))}
 						</div>

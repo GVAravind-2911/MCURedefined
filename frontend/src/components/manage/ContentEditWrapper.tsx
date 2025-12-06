@@ -4,8 +4,16 @@ import type { JSX } from "react";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import axios from "axios";
-import type { ContentConfig, ContentData, ErrorState } from "@/types/ContentTypes";
-import { getDraftStorageKey, handleApiError, normalizeContentBlocks } from "@/lib/content/utils";
+import type {
+	ContentConfig,
+	ContentData,
+	ErrorState,
+} from "@/types/ContentTypes";
+import {
+	getDraftStorageKey,
+	handleApiError,
+	normalizeContentBlocks,
+} from "@/lib/content/utils";
 import { getProxyUrl } from "@/lib/config/backend";
 import ContentEditor from "./ContentEditor";
 import LoadingSpinner from "@/components/main/LoadingSpinner";
@@ -41,7 +49,9 @@ export default function ContentEditWrapper({
 				if (storedContent) {
 					const contentData = JSON.parse(storedContent) as ContentData;
 					// Normalize content blocks
-					contentData.content = normalizeContentBlocks(contentData.content || []);
+					contentData.content = normalizeContentBlocks(
+						contentData.content || [],
+					);
 					setInitialData(contentData);
 				} else {
 					// If not in localStorage, try to fetch from server
@@ -52,7 +62,9 @@ export default function ContentEditWrapper({
 						);
 						const contentData = response.data;
 						// Normalize content blocks
-						contentData.content = normalizeContentBlocks(contentData.content || []);
+						contentData.content = normalizeContentBlocks(
+							contentData.content || [],
+						);
 						setInitialData(contentData);
 					} catch (serverError) {
 						setError(handleApiError(serverError, config.singularName));

@@ -13,14 +13,14 @@ const EDIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour in milliseconds
 // Edit a forum comment
 export async function PUT(
 	req: NextRequest,
-	{ params }: { params: Promise<{ id: string }> }
+	{ params }: { params: Promise<{ id: string }> },
 ) {
 	try {
 		const session = await auth.api.getSession({ headers: await headers() });
 		if (!session?.user) {
 			return NextResponse.json(
 				{ error: "Authentication required" },
-				{ status: 401 }
+				{ status: 401 },
 			);
 		}
 
@@ -31,7 +31,7 @@ export async function PUT(
 		if (!content || !content.trim()) {
 			return NextResponse.json(
 				{ error: "Content is required" },
-				{ status: 400 }
+				{ status: 400 },
 			);
 		}
 
@@ -43,35 +43,32 @@ export async function PUT(
 			.limit(1);
 
 		if (!existingComment) {
-			return NextResponse.json(
-				{ error: "Comment not found" },
-				{ status: 404 }
-			);
+			return NextResponse.json({ error: "Comment not found" }, { status: 404 });
 		}
 
 		if (existingComment.userId !== session.user.id) {
 			return NextResponse.json(
 				{ error: "You can only edit your own comments" },
-				{ status: 403 }
+				{ status: 403 },
 			);
 		}
 
 		if (existingComment.content === "[deleted]") {
 			return NextResponse.json(
 				{ error: "Cannot edit a deleted comment" },
-				{ status: 403 }
+				{ status: 403 },
 			);
 		}
 
 		// Check edit restrictions
 		const createdAt = new Date(existingComment.createdAt).getTime();
 		const now = Date.now();
-		const withinEditWindow = (now - createdAt) <= EDIT_WINDOW_MS;
+		const withinEditWindow = now - createdAt <= EDIT_WINDOW_MS;
 
 		if (!withinEditWindow) {
 			return NextResponse.json(
 				{ error: "Comments can only be edited within 1 hour of creation" },
-				{ status: 403 }
+				{ status: 403 },
 			);
 		}
 
@@ -79,7 +76,7 @@ export async function PUT(
 		if (currentEditCount >= MAX_EDITS) {
 			return NextResponse.json(
 				{ error: "Maximum number of edits (5) reached" },
-				{ status: 403 }
+				{ status: 403 },
 			);
 		}
 
@@ -87,7 +84,7 @@ export async function PUT(
 		if (existingComment.content.trim() === content.trim()) {
 			return NextResponse.json(
 				{ error: "No changes detected" },
-				{ status: 400 }
+				{ status: 400 },
 			);
 		}
 
@@ -143,7 +140,7 @@ export async function PUT(
 		console.error("Error editing comment:", error);
 		return NextResponse.json(
 			{ error: "Failed to edit comment" },
-			{ status: 500 }
+			{ status: 500 },
 		);
 	}
 }
@@ -151,14 +148,14 @@ export async function PUT(
 // Soft delete a forum comment
 export async function DELETE(
 	req: NextRequest,
-	{ params }: { params: Promise<{ id: string }> }
+	{ params }: { params: Promise<{ id: string }> },
 ) {
 	try {
 		const session = await auth.api.getSession({ headers: await headers() });
 		if (!session?.user) {
 			return NextResponse.json(
 				{ error: "Authentication required" },
-				{ status: 401 }
+				{ status: 401 },
 			);
 		}
 
@@ -176,10 +173,7 @@ export async function DELETE(
 			.limit(1);
 
 		if (!existingComment) {
-			return NextResponse.json(
-				{ error: "Comment not found" },
-				{ status: 404 }
-			);
+			return NextResponse.json({ error: "Comment not found" }, { status: 404 });
 		}
 
 		// Check if user owns the comment or is admin
@@ -189,7 +183,7 @@ export async function DELETE(
 		if (!isOwner && !isAdmin) {
 			return NextResponse.json(
 				{ error: "You can only delete your own comments" },
-				{ status: 403 }
+				{ status: 403 },
 			);
 		}
 
@@ -208,7 +202,7 @@ export async function DELETE(
 		console.error("Error deleting comment:", error);
 		return NextResponse.json(
 			{ error: "Failed to delete comment" },
-			{ status: 500 }
+			{ status: 500 },
 		);
 	}
 }

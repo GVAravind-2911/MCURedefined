@@ -52,14 +52,16 @@ interface ProfileContentProps {
 	onRefresh?: () => Promise<void>;
 }
 
-export default function ProfileContent({ 
-	session, 
+export default function ProfileContent({
+	session,
 	likedContent: initialLikedContent,
 	metadata: initialMetadata,
 	isLoading: contextLoading = false,
-	onRefresh
+	onRefresh,
 }: ProfileContentProps) {
-	const [activeTab, setActiveTab] = useState<"blogs" | "reviews" | "projects">("blogs");
+	const [activeTab, setActiveTab] = useState<"blogs" | "reviews" | "projects">(
+		"blogs",
+	);
 	const [loading, setLoading] = useState<{ [key: string]: boolean }>({
 		blogs: false,
 		reviews: false,
@@ -68,9 +70,18 @@ export default function ProfileContent({
 	const [content, setContent] = useState<{
 		[key: string]: LikedContentResponse;
 	}>({
-		blogs: { blogs: initialLikedContent?.blogs.items || [], total: initialLikedContent?.blogs.total || 0 },
-		reviews: { reviews: initialLikedContent?.reviews.items || [], total: initialLikedContent?.reviews.total || 0 },
-		projects: { projects: initialLikedContent?.projects.items || [], total: initialLikedContent?.projects.total || 0 },
+		blogs: {
+			blogs: initialLikedContent?.blogs.items || [],
+			total: initialLikedContent?.blogs.total || 0,
+		},
+		reviews: {
+			reviews: initialLikedContent?.reviews.items || [],
+			total: initialLikedContent?.reviews.total || 0,
+		},
+		projects: {
+			projects: initialLikedContent?.projects.items || [],
+			total: initialLikedContent?.projects.total || 0,
+		},
 	});
 	const [tags, setTags] = useState<{ [key: string]: string[] }>({
 		blogs: initialMetadata?.blogs.tags || [],
@@ -112,7 +123,9 @@ export default function ProfileContent({
 			setErrors((prev) => ({ ...prev, [tabType]: false }));
 
 			// Fetch content data
-			const contentRes = await fetch(`/api/user/liked?type=${tabType}&page=1&limit=10`);
+			const contentRes = await fetch(
+				`/api/user/liked?type=${tabType}&page=1&limit=10`,
+			);
 			if (!contentRes.ok) {
 				throw new Error(`Failed to fetch ${tabType} content`);
 			}
@@ -127,13 +140,13 @@ export default function ProfileContent({
 			if (tabType === "blogs" || tabType === "reviews") {
 				const [tagsRes, authorsRes] = await Promise.all([
 					fetch(`/api/user/liked/tags?type=${tabType}`),
-					fetch(`/api/user/liked/authors?type=${tabType}`)
+					fetch(`/api/user/liked/authors?type=${tabType}`),
 				]);
 
 				if (tagsRes.ok && authorsRes.ok) {
 					const [tagsData, authorsData] = await Promise.all([
 						tagsRes.json(),
-						authorsRes.json()
+						authorsRes.json(),
 					]);
 
 					setTags((prev) => ({
@@ -164,20 +177,20 @@ export default function ProfileContent({
 	useEffect(() => {
 		if (initialLikedContent) {
 			setContent({
-				blogs: { 
-					blogs: initialLikedContent.blogs.items || [], 
+				blogs: {
+					blogs: initialLikedContent.blogs.items || [],
 					total: initialLikedContent.blogs.total || 0,
-					total_pages: Math.ceil((initialLikedContent.blogs.total || 0) / 5)
+					total_pages: Math.ceil((initialLikedContent.blogs.total || 0) / 5),
 				},
-				reviews: { 
-					reviews: initialLikedContent.reviews.items || [], 
+				reviews: {
+					reviews: initialLikedContent.reviews.items || [],
 					total: initialLikedContent.reviews.total || 0,
-					total_pages: Math.ceil((initialLikedContent.reviews.total || 0) / 5)
+					total_pages: Math.ceil((initialLikedContent.reviews.total || 0) / 5),
 				},
-				projects: { 
-					projects: initialLikedContent.projects.items || [], 
+				projects: {
+					projects: initialLikedContent.projects.items || [],
 					total: initialLikedContent.projects.total || 0,
-					total_pages: Math.ceil((initialLikedContent.projects.total || 0) / 5)
+					total_pages: Math.ceil((initialLikedContent.projects.total || 0) / 5),
 				},
 			});
 		}
@@ -200,13 +213,15 @@ export default function ProfileContent({
 	return (
 		<div className="w-full">
 			<div className="flex items-center font-[BentonSansBold] text-white mb-6">
-				<span className="text-xl md:text-2xl mr-4 whitespace-nowrap">Your Liked Content</span>
+				<span className="text-xl md:text-2xl mr-4 whitespace-nowrap">
+					Your Liked Content
+				</span>
 				<div className="grow h-[3px] bg-linear-to-r from-[#ec1d24] to-transparent" />
 			</div>
 
 			<ProfileTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
-			{(loading[activeTab] || contextLoading) ? (
+			{loading[activeTab] || contextLoading ? (
 				<div className="flex justify-center items-center min-h-[200px] relative">
 					<div className="w-10 h-10 border-3 border-white/10 border-t-[#ec1d24] rounded-full animate-spin" />
 				</div>
@@ -242,8 +257,12 @@ export default function ProfileContent({
 						) : (
 							<div className="flex flex-col items-center justify-center py-12 px-6 bg-white/5 rounded-xl border border-white/10">
 								<div className="text-center">
-									<h3 className="text-white/70 font-[BentonSansBold] text-lg mb-2">No liked blogs found</h3>
-									<p className="text-white/50 font-[BentonSansRegular] text-sm">Blogs you like will appear here</p>
+									<h3 className="text-white/70 font-[BentonSansBold] text-lg mb-2">
+										No liked blogs found
+									</h3>
+									<p className="text-white/50 font-[BentonSansRegular] text-sm">
+										Blogs you like will appear here
+									</p>
 								</div>
 							</div>
 						))}
@@ -268,8 +287,12 @@ export default function ProfileContent({
 						) : (
 							<div className="flex flex-col items-center justify-center py-12 px-6 bg-white/5 rounded-xl border border-white/10">
 								<div className="text-center">
-									<h3 className="text-white/70 font-[BentonSansBold] text-lg mb-2">No liked reviews found</h3>
-									<p className="text-white/50 font-[BentonSansRegular] text-sm">Reviews you like will appear here</p>
+									<h3 className="text-white/70 font-[BentonSansBold] text-lg mb-2">
+										No liked reviews found
+									</h3>
+									<p className="text-white/50 font-[BentonSansRegular] text-sm">
+										Reviews you like will appear here
+									</p>
 								</div>
 							</div>
 						))}
@@ -281,8 +304,12 @@ export default function ProfileContent({
 						) : (
 							<div className="flex flex-col items-center justify-center py-12 px-6 bg-white/5 rounded-xl border border-white/10">
 								<div className="text-center">
-									<h3 className="text-white/70 font-[BentonSansBold] text-lg mb-2">No liked projects found</h3>
-									<p className="text-white/50 font-[BentonSansRegular] text-sm">Projects you like will appear here</p>
+									<h3 className="text-white/70 font-[BentonSansBold] text-lg mb-2">
+										No liked projects found
+									</h3>
+									<p className="text-white/50 font-[BentonSansRegular] text-sm">
+										Projects you like will appear here
+									</p>
 								</div>
 							</div>
 						))}

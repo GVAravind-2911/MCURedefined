@@ -45,12 +45,12 @@ const CommentForm: React.FC<CommentFormProps> = ({
 			setIsSubmitting(true);
 
 			// Get parameter name based on content type
-			const paramName = 
-				contentType === "blog" 
-					? "blogId" 
-					: contentType === "review" 
-					? "reviewId" 
-					: "topicId";
+			const paramName =
+				contentType === "blog"
+					? "blogId"
+					: contentType === "review"
+						? "reviewId"
+						: "topicId";
 
 			// Prepare request body
 			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -82,7 +82,10 @@ const CommentForm: React.FC<CommentFormProps> = ({
 	};
 
 	return (
-		<form className="mb-8 bg-[rgba(40,40,40,0.3)] p-4 rounded-lg transition-all duration-300 focus-within:bg-[rgba(50,50,50,0.5)]" onSubmit={handleSubmit}>
+		<form
+			className="mb-8 bg-[rgba(40,40,40,0.3)] p-4 rounded-lg transition-all duration-300 focus-within:bg-[rgba(50,50,50,0.5)]"
+			onSubmit={handleSubmit}
+		>
 			<textarea
 				ref={textareaRef}
 				value={content}

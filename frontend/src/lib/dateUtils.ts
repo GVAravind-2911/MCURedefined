@@ -12,7 +12,7 @@ export const formatRelativeTime = (dateString: string | Date): string => {
 
 		// Convert the input to a proper date
 		let date: Date;
-		
+
 		// If it's already a Date object, use it directly
 		if (dateString instanceof Date) {
 			date = dateString;
@@ -20,16 +20,16 @@ export const formatRelativeTime = (dateString: string | Date): string => {
 			// Parse as string
 			date = new Date(dateString);
 		}
-		
+
 		// Check if the date is valid
 		if (isNaN(date.getTime())) {
 			return "Recently";
 		}
-		
+
 		const now = new Date();
 		const diffInMilliseconds = date.getTime() - now.getTime();
 		const diffInMinutes = diffInMilliseconds / (1000 * 60);
-		
+
 		// If the date is significantly in the future (more than 1 hour),
 		// assume it's a timezone parsing issue and treat it as current time
 		if (diffInMinutes > 60) {
@@ -37,16 +37,16 @@ export const formatRelativeTime = (dateString: string | Date): string => {
 			// Assume it should be "recently" instead of showing a future time
 			return "Recently";
 		}
-		
+
 		// If it's slightly in the future (less than 5 minutes), it might be server clock skew
 		if (diffInMinutes > 0 && diffInMinutes <= 5) {
 			return "Just now";
 		}
-		
+
 		// Use formatDistanceToNow for normal cases
-		return formatDistanceToNow(date, { 
+		return formatDistanceToNow(date, {
 			addSuffix: true,
-			includeSeconds: false
+			includeSeconds: false,
 		});
 	} catch (error) {
 		console.error("Error formatting date:", error, dateString);
@@ -63,14 +63,14 @@ export const formatFullDate = (dateString: string | Date): string => {
 		if (isNaN(date.getTime())) {
 			return "Invalid date";
 		}
-		
+
 		return date.toLocaleDateString("en-US", {
 			year: "numeric",
 			month: "short",
 			day: "numeric",
 			hour: "numeric",
 			minute: "2-digit",
-			hour12: true
+			hour12: true,
 		});
 	} catch {
 		return "Invalid date";

@@ -10,7 +10,7 @@ import TopicComments from "@/components/forum/TopicComments";
 
 const EditHistoryModal = dynamic(
 	() => import("@/components/forum/EditHistoryModal"),
-	{ ssr: false }
+	{ ssr: false },
 );
 
 interface ForumTopic {
@@ -62,7 +62,7 @@ export default function ForumTopicPage(): React.ReactElement {
 			setError("");
 
 			const response = await fetch(`/api/forum/topics/${topicId}`);
-			
+
 			if (!response.ok) {
 				if (response.status === 404) {
 					setError("Topic not found");
@@ -101,8 +101,8 @@ export default function ForumTopicPage(): React.ReactElement {
 								...prevTopic,
 								userHasLiked: result.liked,
 								likeCount: prevTopic.likeCount + (result.liked ? 1 : -1),
-						  }
-						: null
+							}
+						: null,
 				);
 			}
 		} catch (err) {
@@ -150,7 +150,7 @@ export default function ForumTopicPage(): React.ReactElement {
 
 			if (response.ok) {
 				const updatedTopic = await response.json();
-				setTopic((prev) => prev ? { ...prev, ...updatedTopic } : null);
+				setTopic((prev) => (prev ? { ...prev, ...updatedTopic } : null));
 				setIsEditing(false);
 			} else {
 				const errorData = await response.json();
@@ -166,16 +166,16 @@ export default function ForumTopicPage(): React.ReactElement {
 
 	const handleDeleteTopic = async () => {
 		if (!session?.user || !topic || isDeleting) return;
-		
+
 		const confirmDelete = window.confirm(
-			"Are you sure you want to delete this topic? This action cannot be undone."
+			"Are you sure you want to delete this topic? This action cannot be undone.",
 		);
-		
+
 		if (!confirmDelete) return;
 
 		try {
 			setIsDeleting(true);
-			
+
 			const response = await fetch(`/api/forum/topics/${topic.id}`, {
 				method: "DELETE",
 				headers: {
@@ -211,10 +211,9 @@ export default function ForumTopicPage(): React.ReactElement {
 							{error || "Topic not found"}
 						</h3>
 						<p className="text-white/70 mb-8 text-lg leading-relaxed">
-							{error === "Topic not found" 
+							{error === "Topic not found"
 								? "This topic may have been deleted or moved."
-								: "Something went wrong while loading the topic."
-							}
+								: "Something went wrong while loading the topic."}
 						</p>
 					</div>
 				</div>
@@ -260,7 +259,9 @@ export default function ForumTopicPage(): React.ReactElement {
 	);
 }
 
-function BackToForumButton({ onClick }: { onClick: () => void }): React.ReactElement {
+function BackToForumButton({
+	onClick,
+}: { onClick: () => void }): React.ReactElement {
 	return (
 		<button
 			className="bg-[rgba(236,29,36,0.1)] border border-[rgba(236,29,36,0.3)] text-[#ec1d24] py-3 px-6 rounded-lg cursor-pointer transition-all duration-300 ease-in-out flex items-center gap-2 font-[BentonSansRegular] text-[0.95rem] font-medium mb-8 backdrop-blur-[5px] hover:bg-[rgba(236,29,36,0.2)] hover:border-[#ec1d24] hover:text-white hover:-translate-x-1"

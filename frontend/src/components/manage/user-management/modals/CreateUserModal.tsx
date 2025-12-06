@@ -21,14 +21,18 @@ export default memo(function CreateUserModal({
 }: CreateUserModalProps) {
 	return (
 		<>
-			<h3 className="text-2xl font-bold text-white mb-3 pr-8">Create New User</h3>
+			<h3 className="text-2xl font-bold text-white mb-3 pr-8">
+				Create New User
+			</h3>
 			<div className="flex flex-col gap-5 mb-6">
 				<label className="flex flex-col gap-2 text-white/70 text-[0.9rem] font-medium">
 					Name *
 					<input
 						type="text"
 						value={newUserData.name}
-						onChange={(e) => setNewUserData((prev) => ({ ...prev, name: e.target.value }))}
+						onChange={(e) =>
+							setNewUserData((prev) => ({ ...prev, name: e.target.value }))
+						}
 						placeholder="Enter full name"
 						required
 						className="py-3.5 px-4 bg-black/40 border border-white/10 rounded-[10px] text-white text-[0.95rem] transition-all duration-[0.25s] focus:outline-none focus:border-[#ec1d24] focus:shadow-[0_0_0_3px_rgba(236,29,36,0.15)] placeholder:text-white/30"
@@ -39,7 +43,9 @@ export default memo(function CreateUserModal({
 					<input
 						type="email"
 						value={newUserData.email}
-						onChange={(e) => setNewUserData((prev) => ({ ...prev, email: e.target.value }))}
+						onChange={(e) =>
+							setNewUserData((prev) => ({ ...prev, email: e.target.value }))
+						}
 						placeholder="Enter email address"
 						required
 						className="py-3.5 px-4 bg-black/40 border border-white/10 rounded-[10px] text-white text-[0.95rem] transition-all duration-[0.25s] focus:outline-none focus:border-[#ec1d24] focus:shadow-[0_0_0_3px_rgba(236,29,36,0.15)] placeholder:text-white/30"
@@ -50,7 +56,9 @@ export default memo(function CreateUserModal({
 					<input
 						type="password"
 						value={newUserData.password}
-						onChange={(e) => setNewUserData((prev) => ({ ...prev, password: e.target.value }))}
+						onChange={(e) =>
+							setNewUserData((prev) => ({ ...prev, password: e.target.value }))
+						}
 						placeholder="Enter password"
 						required
 						className="py-3.5 px-4 bg-black/40 border border-white/10 rounded-[10px] text-white text-[0.95rem] transition-all duration-[0.25s] focus:outline-none focus:border-[#ec1d24] focus:shadow-[0_0_0_3px_rgba(236,29,36,0.15)] placeholder:text-white/30"
@@ -64,11 +72,13 @@ export default memo(function CreateUserModal({
 								type="button"
 								key={key}
 								className={`flex items-center gap-2 py-3 px-4 bg-black/30 border rounded-[10px] text-[0.9rem] cursor-pointer transition-all duration-[0.25s] ${
-									newUserData.role === key 
-										? "border-[#ec1d24] bg-[rgba(236,29,36,0.15)] text-white" 
+									newUserData.role === key
+										? "border-[#ec1d24] bg-[rgba(236,29,36,0.15)] text-white"
 										: "border-white/10 text-white/70 hover:border-white/20 hover:bg-white/10"
 								}`}
-								onClick={() => setNewUserData((prev) => ({ ...prev, role: key }))}
+								onClick={() =>
+									setNewUserData((prev) => ({ ...prev, role: key }))
+								}
 							>
 								<span className={`w-2.5 h-2.5 rounded-full ${value.color}`} />
 								{value.label}

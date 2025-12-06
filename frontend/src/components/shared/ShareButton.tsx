@@ -76,9 +76,10 @@ export default function ShareButton({
 				rounded-full
 				transition-all duration-200
 				cursor-pointer
-				${copied 
-					? "bg-green-500/20 text-green-400" 
-					: "bg-white/10 text-white/70 hover:bg-white/15 hover:text-white"
+				${
+					copied
+						? "bg-green-500/20 text-green-400"
+						: "bg-white/10 text-white/70 hover:bg-white/15 hover:text-white"
 				}
 			`}
 			whileTap={{ scale: 0.9 }}

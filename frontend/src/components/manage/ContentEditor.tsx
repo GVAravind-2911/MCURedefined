@@ -14,7 +14,10 @@ import {
 	type DragStartEvent,
 	DragOverlay,
 } from "@dnd-kit/core";
-import { restrictToVerticalAxis, restrictToWindowEdges } from "@dnd-kit/modifiers";
+import {
+	restrictToVerticalAxis,
+	restrictToWindowEdges,
+} from "@dnd-kit/modifiers";
 import {
 	arrayMove,
 	SortableContext,
@@ -27,7 +30,11 @@ import ImageBlock from "@/components/edit/ImageBlock";
 import TextBlock from "@/components/edit/TextBlock";
 import ThumbnailBlock from "@/components/edit/ThumbnailBlock";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
-import type { ContentBlock, ContentConfig, ContentData } from "@/types/ContentTypes";
+import type {
+	ContentBlock,
+	ContentConfig,
+	ContentData,
+} from "@/types/ContentTypes";
 import {
 	readFileAsDataURL,
 	getDraftStorageKey,
@@ -45,74 +52,80 @@ interface ContentEditorProps {
 }
 
 // Undo/Redo floating controls - only shows for structural block changes (add/delete/reorder)
-const UndoRedoControls = memo(({ 
-	canUndo, 
-	canRedo, 
-	onUndo, 
-	onRedo 
-}: { 
-	canUndo: boolean; 
-	canRedo: boolean; 
-	onUndo: () => void; 
-	onRedo: () => void; 
-}) => {
-	if (!canUndo && !canRedo) return null;
-	
-	return (
-		<div className="fixed bottom-6 left-6 z-40 flex items-center gap-1 py-1 px-2 bg-linear-to-br from-[rgba(50,50,50,0.95)] to-[rgba(30,30,30,0.95)] border border-white/20 rounded-lg shadow-lg backdrop-blur-sm">
-			<button
-				type="button"
-				onClick={onUndo}
-				disabled={!canUndo}
-				className={`p-2 rounded transition-all duration-200 ${
-					canUndo 
-						? "text-white/80 hover:bg-white/10 hover:text-white" 
-						: "text-white/30 cursor-not-allowed"
-				}`}
-				title="Undo block add/delete/move"
-			>
-				<span className="text-lg">↩</span>
-			</button>
-			<button
-				type="button"
-				onClick={onRedo}
-				disabled={!canRedo}
-				className={`p-2 rounded transition-all duration-200 ${
-					canRedo 
-						? "text-white/80 hover:bg-white/10 hover:text-white" 
-						: "text-white/30 cursor-not-allowed"
-				}`}
-				title="Redo block add/delete/move"
-			>
-				<span className="text-lg">↪</span>
-			</button>
-			<span className="text-xs text-white/40 px-2 border-l border-white/10">Block Structure</span>
-		</div>
-	);
-});
+const UndoRedoControls = memo(
+	({
+		canUndo,
+		canRedo,
+		onUndo,
+		onRedo,
+	}: {
+		canUndo: boolean;
+		canRedo: boolean;
+		onUndo: () => void;
+		onRedo: () => void;
+	}) => {
+		if (!canUndo && !canRedo) return null;
+
+		return (
+			<div className="fixed bottom-6 left-6 z-40 flex items-center gap-1 py-1 px-2 bg-linear-to-br from-[rgba(50,50,50,0.95)] to-[rgba(30,30,30,0.95)] border border-white/20 rounded-lg shadow-lg backdrop-blur-sm">
+				<button
+					type="button"
+					onClick={onUndo}
+					disabled={!canUndo}
+					className={`p-2 rounded transition-all duration-200 ${
+						canUndo
+							? "text-white/80 hover:bg-white/10 hover:text-white"
+							: "text-white/30 cursor-not-allowed"
+					}`}
+					title="Undo block add/delete/move"
+				>
+					<span className="text-lg">↩</span>
+				</button>
+				<button
+					type="button"
+					onClick={onRedo}
+					disabled={!canRedo}
+					className={`p-2 rounded transition-all duration-200 ${
+						canRedo
+							? "text-white/80 hover:bg-white/10 hover:text-white"
+							: "text-white/30 cursor-not-allowed"
+					}`}
+					title="Redo block add/delete/move"
+				>
+					<span className="text-lg">↪</span>
+				</button>
+				<span className="text-xs text-white/40 px-2 border-l border-white/10">
+					Block Structure
+				</span>
+			</div>
+		);
+	},
+);
 
 UndoRedoControls.displayName = "UndoRedoControls";
 
 // Auto-save status indicator
-const AutoSaveIndicator = memo(({ status }: { status: "idle" | "saving" | "saved" }) => {
-	if (status === "idle") return null;
-	
-	return (
-		<div className="fixed bottom-6 right-6 z-40 flex items-center gap-2 py-2 px-4 bg-linear-to-br from-[rgba(50,50,50,0.95)] to-[rgba(30,30,30,0.95)] border border-white/20 rounded-full shadow-lg backdrop-blur-sm">
-			{status === "saving" ? (
-				<>
-					<span className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" />
-					<span className="text-sm text-white/70">Saving draft...</span>
-				</>
-			) : (
-				<>
-					<span className="w-2 h-2 bg-green-400 rounded-full" />
-					<span className="text-sm text-white/70">Draft saved</span>
-				</>
-			)}
-		</div>
-	);
-});
+const AutoSaveIndicator = memo(
+	({ status }: { status: "idle" | "saving" | "saved" }) => {
+		if (status === "idle") return null;
+
+		return (
+			<div className="fixed bottom-6 right-6 z-40 flex items-center gap-2 py-2 px-4 bg-linear-to-br from-[rgba(50,50,50,0.95)] to-[rgba(30,30,30,0.95)] border border-white/20 rounded-full shadow-lg backdrop-blur-sm">
+				{status === "saving" ? (
+					<>
+						<span className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" />
+						<span className="text-sm text-white/70">Saving draft...</span>
+					</>
+				) : (
+					<>
+						<span className="w-2 h-2 bg-green-400 rounded-full" />
+						<span className="text-sm text-white/70">Draft saved</span>
+					</>
+				)}
+			</div>
+		);
+	},
+);
 
 AutoSaveIndicator.displayName = "AutoSaveIndicator";
 
@@ -166,7 +179,10 @@ export default function ContentEditor({
 	initialData,
 }: ContentEditorProps): React.ReactElement {
 	const router = useRouter();
-	const storageKey = getDraftStorageKey(config, mode === "edit" ? id : undefined);
+	const storageKey = getDraftStorageKey(
+		config,
+		mode === "edit" ? id : undefined,
+	);
 	const { data: session } = authClient.useSession();
 
 	// Use undo/redo for content blocks
@@ -184,12 +200,19 @@ export default function ContentEditor({
 	const [author, setAuthor] = useState("");
 	const [authorId, setAuthorId] = useState<string | undefined>(undefined);
 	const [description, setDescription] = useState("");
-	const [thumbnail, setThumbnail] = useState<{ link: string; key?: string }>({ link: "", key: "" });
-	
+	const [thumbnail, setThumbnail] = useState<{ link: string; key?: string }>({
+		link: "",
+		key: "",
+	});
+
 	// UI state
 	const [showDiscardModal, setShowDiscardModal] = useState(false);
-	const [autoSaveStatus, setAutoSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
-	const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+	const [autoSaveStatus, setAutoSaveStatus] = useState<
+		"idle" | "saving" | "saved"
+	>("idle");
+	const [validationErrors, setValidationErrors] = useState<
+		Record<string, string>
+	>({});
 	const [activeId, setActiveId] = useState<string | null>(null);
 	const autoSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const initialLoadDoneRef = useRef(false);
@@ -211,8 +234,11 @@ export default function ContentEditor({
 		const handleGlobalKeyDown = (e: KeyboardEvent) => {
 			// Only handle if not in a text input/textarea
 			const target = e.target as HTMLElement;
-			const isTextInput = target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable;
-			
+			const isTextInput =
+				target.tagName === "INPUT" ||
+				target.tagName === "TEXTAREA" ||
+				target.isContentEditable;
+
 			if ((e.ctrlKey || e.metaKey) && !isTextInput) {
 				if (e.key === "z" && e.shiftKey) {
 					e.preventDefault();
@@ -243,7 +269,7 @@ export default function ContentEditor({
 	// Load data on mount
 	useEffect(() => {
 		if (initialLoadDoneRef.current) return;
-		
+
 		// If we have initial data (edit mode with fetched data), use it
 		if (initialData) {
 			setTitle(initialData.title || "");
@@ -252,7 +278,7 @@ export default function ContentEditor({
 			setDescription(initialData.description || "");
 			setThumbnail({
 				link: initialData.thumbnail_path?.link || "",
-				key: initialData.thumbnail_path?.key || ""
+				key: initialData.thumbnail_path?.key || "",
 			});
 			setTags(initialData.tags || []);
 			// Skip history for initial load
@@ -275,11 +301,14 @@ export default function ContentEditor({
 				setDescription(storedData?.description || "");
 				setThumbnail({
 					link: storedData?.thumbnail_path?.link || "",
-					key: storedData?.thumbnail_path?.key || ""
+					key: storedData?.thumbnail_path?.key || "",
 				});
 				setTags(storedData?.tags || []);
 				// Skip history for localStorage load
-				setContentBlocks(normalizeContentBlocks(storedData?.content || []), true);
+				setContentBlocks(
+					normalizeContentBlocks(storedData?.content || []),
+					true,
+				);
 			} catch (error) {
 				console.error("Error loading draft:", error);
 			}
@@ -289,18 +318,15 @@ export default function ContentEditor({
 
 	// Block-level undo/redo is only for structural changes (add, delete, reorder)
 	// Content edits within blocks (text, embed URL) are handled by each block's internal undo/redo
-	const addBlock = useCallback(
-		(type: ContentBlock["type"], index: number) => {
-			const newBlock = createContentBlock(type);
-			// Structural change - push to block history
-			setContentBlocks((prev) => {
-				const newBlocks = [...prev];
-				newBlocks.splice(index + 1, 0, newBlock);
-				return newBlocks;
-			});
-		},
-		[],
-	);
+	const addBlock = useCallback((type: ContentBlock["type"], index: number) => {
+		const newBlock = createContentBlock(type);
+		// Structural change - push to block history
+		setContentBlocks((prev) => {
+			const newBlocks = [...prev];
+			newBlocks.splice(index + 1, 0, newBlock);
+			return newBlocks;
+		});
+	}, []);
 
 	const updateBlock = useCallback(
 		(index: number, content: string | { link: string }) => {
@@ -320,7 +346,10 @@ export default function ContentEditor({
 	}, []);
 
 	const handleImageUpload = useCallback(
-		async (index: number, event: ChangeEvent<HTMLInputElement>): Promise<void> => {
+		async (
+			index: number,
+			event: ChangeEvent<HTMLInputElement>,
+		): Promise<void> => {
 			const file = event.target.files?.[0];
 			if (!file) return;
 
@@ -345,7 +374,9 @@ export default function ContentEditor({
 	);
 
 	const handleThumbnailUpload = useCallback(
-		async (event: ChangeEvent<HTMLInputElement> | { target: { files: File[] } }) => {
+		async (
+			event: ChangeEvent<HTMLInputElement> | { target: { files: File[] } },
+		) => {
 			const target = event.target as { files?: File[] | FileList | null };
 			const file = target.files?.[0];
 			if (!file) return;
@@ -397,7 +428,15 @@ export default function ContentEditor({
 				clearTimeout(autoSaveTimeoutRef.current);
 			}
 		};
-	}, [title, description, contentBlocks, tags, thumbnail, storageKey, getContentData]);
+	}, [
+		title,
+		description,
+		contentBlocks,
+		tags,
+		thumbnail,
+		storageKey,
+		getContentData,
+	]);
 
 	// Validate required fields
 	const validateFields = useCallback(() => {
@@ -436,7 +475,15 @@ export default function ContentEditor({
 		} else {
 			router.push(`${config.managePath}/create/preview`);
 		}
-	}, [getContentData, router, storageKey, mode, id, config.managePath, validateFields]);
+	}, [
+		getContentData,
+		router,
+		storageKey,
+		mode,
+		id,
+		config.managePath,
+		validateFields,
+	]);
 
 	const handleSaveDraft = useCallback(() => {
 		localStorage.setItem(storageKey, JSON.stringify(getContentData()));
@@ -509,7 +556,9 @@ export default function ContentEditor({
 							<span>⚠️</span> {validationErrors.title}
 						</p>
 					)}
-					<p className="mt-2 text-xs text-white/40">{title.length} characters</p>
+					<p className="mt-2 text-xs text-white/40">
+						{title.length} characters
+					</p>
 				</section>
 
 				{/* Author Section */}
@@ -519,13 +568,15 @@ export default function ContentEditor({
 					</h3>
 					<div className="flex items-center gap-3 py-3 md:py-4 px-4 md:px-5 bg-[rgba(30,30,30,0.8)] border border-white/10 rounded-lg max-w-full md:max-w-[700px]">
 						{session?.user?.image && (
-							<img 
-								src={session.user.image} 
-								alt={author} 
+							<img
+								src={session.user.image}
+								alt={author}
 								className="w-8 h-8 md:w-9 md:h-9 rounded-full border-2 border-[#ec1d24] object-cover"
 							/>
 						)}
-						<span className="text-base md:text-lg text-white/90">{author || "Loading..."}</span>
+						<span className="text-base md:text-lg text-white/90">
+							{author || "Loading..."}
+						</span>
 					</div>
 				</section>
 
@@ -543,7 +594,9 @@ export default function ContentEditor({
 						rows={3}
 						className="w-full py-3 md:py-4 px-4 md:px-5 bg-[rgba(30,30,30,0.8)] border border-white/10 rounded-lg text-white/90 text-sm md:text-base font-[BentonSansRegular] leading-relaxed transition-all duration-300 outline-none placeholder:text-white/50 focus:border-[#ec1d24] focus:shadow-[0_0_0_3px_rgba(236,29,36,0.15)] focus:bg-[rgba(40,40,40,0.6)] resize-none"
 					/>
-					<p className="mt-2 text-xs text-white/40">{getWordCount(description)} words</p>
+					<p className="mt-2 text-xs text-white/40">
+						{getWordCount(description)} words
+					</p>
 				</section>
 
 				{/* Thumbnail Section */}
@@ -551,9 +604,18 @@ export default function ContentEditor({
 					<h3 className="text-white/90 mb-3 font-bold text-base md:text-lg tracking-wide flex items-center gap-2 before:content-[''] before:w-1 before:h-[1.2em] before:bg-linear-to-b before:from-[#ec1d24] before:to-[#d01c22] before:rounded-sm">
 						Thumbnail <span className="text-[#ec1d24]">*</span>
 					</h3>
-					<p className="text-xs text-white/50 mb-3">Recommended size: 1200 × 630 pixels (16:9 ratio)</p>
-					<div className={validationErrors.thumbnail ? "ring-2 ring-red-500 rounded-xl" : ""}>
-						<ThumbnailBlock src={thumbnail.link} onChange={handleThumbnailUpload} />
+					<p className="text-xs text-white/50 mb-3">
+						Recommended size: 1200 × 630 pixels (16:9 ratio)
+					</p>
+					<div
+						className={
+							validationErrors.thumbnail ? "ring-2 ring-red-500 rounded-xl" : ""
+						}
+					>
+						<ThumbnailBlock
+							src={thumbnail.link}
+							onChange={handleThumbnailUpload}
+						/>
 					</div>
 					{validationErrors.thumbnail && (
 						<p className="mt-2 text-sm text-red-400 flex items-center gap-1">
@@ -578,24 +640,26 @@ export default function ContentEditor({
 						<div className="flex flex-col gap-6">
 							{contentBlocks.length === 0 ? (
 								<div className="p-8 md:p-12 bg-[rgba(40,40,40,0.4)] border border-white/10 rounded-xl">
-									<p className="text-center text-white/50 mb-6 text-sm">Start building your content by adding blocks</p>
+									<p className="text-center text-white/50 mb-6 text-sm">
+										Start building your content by adding blocks
+									</p>
 									<div className="flex justify-center items-center gap-3 md:gap-4 flex-wrap">
-										<button 
-											type="button" 
+										<button
+											type="button"
 											onClick={() => addBlock("text", -1)}
 											className="py-3 md:py-4 px-6 md:px-8 bg-white/5 border border-white/10 rounded-lg text-white/70 text-sm md:text-base cursor-pointer transition-all duration-300 flex items-center gap-2 hover:bg-[rgba(236,29,36,0.15)] hover:border-[#ec1d24] hover:text-white hover:-translate-y-0.5"
 										>
 											📝 Add Text
 										</button>
-										<button 
-											type="button" 
+										<button
+											type="button"
 											onClick={() => addBlock("image", -1)}
 											className="py-3 md:py-4 px-6 md:px-8 bg-white/5 border border-white/10 rounded-lg text-white/70 text-sm md:text-base cursor-pointer transition-all duration-300 flex items-center gap-2 hover:bg-[rgba(236,29,36,0.15)] hover:border-[#ec1d24] hover:text-white hover:-translate-y-0.5"
 										>
 											🖼️ Add Image
 										</button>
-										<button 
-											type="button" 
+										<button
+											type="button"
 											onClick={() => addBlock("embed", -1)}
 											className="py-3 md:py-4 px-6 md:px-8 bg-white/5 border border-white/10 rounded-lg text-white/70 text-sm md:text-base cursor-pointer transition-all duration-300 flex items-center gap-2 hover:bg-[rgba(236,29,36,0.15)] hover:border-[#ec1d24] hover:text-white hover:-translate-y-0.5"
 										>
@@ -612,58 +676,69 @@ export default function ContentEditor({
 										onDragEnd={handleDragEnd}
 										modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
 									>
-									<SortableContext
-										items={contentBlocks.map((block) => block.id)}
-										strategy={verticalListSortingStrategy}
-									>
-										{contentBlocks.map((block, index) => (
-											<BlockWrapper
-												key={block.id}
-												id={block.id}
-												onAddBlock={(type) => addBlock(type, index)}
-												isDragOverlay={false}
-											>
-												{block.type === "text" && (
-													<TextBlock
-														content={block.content}
-														onChange={(content) => updateBlock(index, content)}
-														onDelete={() => deleteBlock(index)}
-													/>
-												)}
-												{block.type === "image" && (
-													<ImageBlock
-														index={index}
-														src={block.content}
-														onDelete={() => deleteBlock(index)}
-														onChange={(e) => handleImageUpload(index, e)}
-													/>
-												)}
-												{block.type === "embed" && (
-													<EmbedBlock
-														url={block.content}
-														onChange={(content) => updateBlock(index, content)}
-														onDelete={() => deleteBlock(index)}
-													/>
-												)}
-											</BlockWrapper>
-										))}
-									</SortableContext>
-									<DragOverlay dropAnimation={null}>
-										{activeId ? (() => {
-											const activeBlock = contentBlocks.find(b => b.id === activeId);
-											if (!activeBlock) return null;
-											return (
-												<div className="bg-[rgba(40,40,40,0.95)] border-2 border-[#ec1d24] rounded-xl p-4 shadow-2xl opacity-90">
-													<div className="text-white/70 text-sm font-medium uppercase tracking-wide">
-														{activeBlock.type === "text" && "📝 Text Block"}
-														{activeBlock.type === "image" && "🖼️ Image Block"}
-														{activeBlock.type === "embed" && "🔗 Embed Block"}
-													</div>
-												</div>
-											);
-										})() : null}
-									</DragOverlay>
-								</DndContext>
+										<SortableContext
+											items={contentBlocks.map((block) => block.id)}
+											strategy={verticalListSortingStrategy}
+										>
+											{contentBlocks.map((block, index) => (
+												<BlockWrapper
+													key={block.id}
+													id={block.id}
+													onAddBlock={(type) => addBlock(type, index)}
+													isDragOverlay={false}
+												>
+													{block.type === "text" && (
+														<TextBlock
+															content={block.content}
+															onChange={(content) =>
+																updateBlock(index, content)
+															}
+															onDelete={() => deleteBlock(index)}
+														/>
+													)}
+													{block.type === "image" && (
+														<ImageBlock
+															index={index}
+															src={block.content}
+															onDelete={() => deleteBlock(index)}
+															onChange={(e) => handleImageUpload(index, e)}
+														/>
+													)}
+													{block.type === "embed" && (
+														<EmbedBlock
+															url={block.content}
+															onChange={(content) =>
+																updateBlock(index, content)
+															}
+															onDelete={() => deleteBlock(index)}
+														/>
+													)}
+												</BlockWrapper>
+											))}
+										</SortableContext>
+										<DragOverlay dropAnimation={null}>
+											{activeId
+												? (() => {
+														const activeBlock = contentBlocks.find(
+															(b) => b.id === activeId,
+														);
+														if (!activeBlock) return null;
+														return (
+															<div className="bg-[rgba(40,40,40,0.95)] border-2 border-[#ec1d24] rounded-xl p-4 shadow-2xl opacity-90">
+																<div className="text-white/70 text-sm font-medium uppercase tracking-wide">
+																	{activeBlock.type === "text" &&
+																		"📝 Text Block"}
+																	{activeBlock.type === "image" &&
+																		"🖼️ Image Block"}
+																	{activeBlock.type === "embed" &&
+																		"🔗 Embed Block"}
+																</div>
+															</div>
+														);
+													})()
+												: null}
+										</DragOverlay>
+									</DndContext>
 								</div>
 							)}
 						</div>
@@ -675,7 +750,9 @@ export default function ContentEditor({
 					<h3 className="text-white/90 mb-2 font-bold text-base md:text-lg tracking-wide flex items-center gap-2 before:content-[''] before:w-1 before:h-[1.2em] before:bg-linear-to-b before:from-[#ec1d24] before:to-[#d01c22] before:rounded-sm">
 						Tags
 					</h3>
-					<p className="text-xs text-white/50 mb-3">Add tags to help readers find your content</p>
+					<p className="text-xs text-white/50 mb-3">
+						Add tags to help readers find your content
+					</p>
 					<div className="flex flex-wrap gap-3 items-center">
 						{tags.map((tag, index) => (
 							<TagItem
@@ -707,8 +784,8 @@ export default function ContentEditor({
 						Preview
 					</button>
 					{mode === "create" ? (
-						<button 
-							type="button" 
+						<button
+							type="button"
 							onClick={handleSaveDraft}
 							className="py-3 md:py-4 px-8 md:px-10 bg-white/5 border border-white/20 rounded-lg text-white font-bold text-base md:text-lg cursor-pointer transition-all duration-300 uppercase tracking-wider hover:bg-white/10 hover:border-white/50 hover:shadow-[0_4px_20px_rgba(0,0,0,0.4)] focus-visible:outline-2 focus-visible:outline-[#ec1d24] focus-visible:outline-offset-2"
 						>

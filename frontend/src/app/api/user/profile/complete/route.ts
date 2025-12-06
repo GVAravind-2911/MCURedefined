@@ -45,26 +45,32 @@ export async function GET(req: Request) {
 			try {
 				// Fetch counts and preview data for all content types in parallel
 				const [blogsData, reviewsData, projectsData] = await Promise.all([
-					axios.post(getBackendUrl("user/liked"), {
-						user_id: userId,
-						type: "blogs",
-						page: 1,
-						limit: 3, // Small preview
-					}).catch(() => ({ data: { blogs: [], total: 0 } })),
-					
-					axios.post(getBackendUrl("user/liked"), {
-						user_id: userId,
-						type: "reviews",
-						page: 1,
-						limit: 3, // Small preview
-					}).catch(() => ({ data: { reviews: [], total: 0 } })),
-					
-					axios.post(getBackendUrl("user/liked"), {
-						user_id: userId,
-						type: "projects",
-						page: 1,
-						limit: 3, // Small preview
-					}).catch(() => ({ data: { projects: [], total: 0 } })),
+					axios
+						.post(getBackendUrl("user/liked"), {
+							user_id: userId,
+							type: "blogs",
+							page: 1,
+							limit: 3, // Small preview
+						})
+						.catch(() => ({ data: { blogs: [], total: 0 } })),
+
+					axios
+						.post(getBackendUrl("user/liked"), {
+							user_id: userId,
+							type: "reviews",
+							page: 1,
+							limit: 3, // Small preview
+						})
+						.catch(() => ({ data: { reviews: [], total: 0 } })),
+
+					axios
+						.post(getBackendUrl("user/liked"), {
+							user_id: userId,
+							type: "projects",
+							page: 1,
+							limit: 3, // Small preview
+						})
+						.catch(() => ({ data: { projects: [], total: 0 } })),
 				]);
 
 				responseData.likedContent = {
@@ -84,23 +90,44 @@ export async function GET(req: Request) {
 
 				// Fetch tags and authors for blogs and reviews in parallel if there's content
 				if (blogsData.data.total > 0 || reviewsData.data.total > 0) {
-					const [blogTags, blogAuthors, reviewTags, reviewAuthors] = await Promise.all([
-						blogsData.data.total > 0 ? 
-							axios.post(getBackendUrl("user/liked/tags"), { user_id: userId, type: "blogs" })
-								.catch(() => ({ data: { tags: [] } })) : { data: { tags: [] } },
-						
-						blogsData.data.total > 0 ? 
-							axios.post(getBackendUrl("user/liked/authors"), { user_id: userId, type: "blogs" })
-								.catch(() => ({ data: { authors: [] } })) : { data: { authors: [] } },
-						
-						reviewsData.data.total > 0 ? 
-							axios.post(getBackendUrl("user/liked/tags"), { user_id: userId, type: "reviews" })
-								.catch(() => ({ data: { tags: [] } })) : { data: { tags: [] } },
-						
-						reviewsData.data.total > 0 ? 
-							axios.post(getBackendUrl("user/liked/authors"), { user_id: userId, type: "reviews" })
-								.catch(() => ({ data: { authors: [] } })) : { data: { authors: [] } },
-					]);
+					const [blogTags, blogAuthors, reviewTags, reviewAuthors] =
+						await Promise.all([
+							blogsData.data.total > 0
+								? axios
+										.post(getBackendUrl("user/liked/tags"), {
+											user_id: userId,
+											type: "blogs",
+										})
+										.catch(() => ({ data: { tags: [] } }))
+								: { data: { tags: [] } },
+
+							blogsData.data.total > 0
+								? axios
+										.post(getBackendUrl("user/liked/authors"), {
+											user_id: userId,
+											type: "blogs",
+										})
+										.catch(() => ({ data: { authors: [] } }))
+								: { data: { authors: [] } },
+
+							reviewsData.data.total > 0
+								? axios
+										.post(getBackendUrl("user/liked/tags"), {
+											user_id: userId,
+											type: "reviews",
+										})
+										.catch(() => ({ data: { tags: [] } }))
+								: { data: { tags: [] } },
+
+							reviewsData.data.total > 0
+								? axios
+										.post(getBackendUrl("user/liked/authors"), {
+											user_id: userId,
+											type: "reviews",
+										})
+										.catch(() => ({ data: { authors: [] } }))
+								: { data: { authors: [] } },
+						]);
 
 					responseData.metadata = {
 						blogs: {
@@ -126,8 +153,8 @@ export async function GET(req: Request) {
 
 		return new Response(JSON.stringify(responseData), {
 			status: 200,
-			headers: { 
-				"Content-Type": "application/json"
+			headers: {
+				"Content-Type": "application/json",
 			},
 		});
 	} catch (error) {

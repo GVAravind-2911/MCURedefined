@@ -129,7 +129,9 @@ const BlogComponent = ({
 			/>
 
 			{loading ? (
-				<div className="flex justify-center items-center min-h-[200px] text-white/70">Loading...</div>
+				<div className="flex justify-center items-center min-h-[200px] text-white/70">
+					Loading...
+				</div>
 			) : blogs.length > 0 ? (
 				<>
 					<div className="flex flex-col gap-4">

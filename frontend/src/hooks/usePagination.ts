@@ -71,7 +71,7 @@ export function usePagination({
 				onPageChange?.(page);
 			}
 		},
-		[totalPages, currentPage, onPageChange]
+		[totalPages, currentPage, onPageChange],
 	);
 
 	const nextPage = useCallback(() => {
@@ -94,15 +94,12 @@ export function usePagination({
 		goToPage(totalPages);
 	}, [totalPages, goToPage]);
 
-	const setPaginationData = useCallback(
-		(data: Partial<PaginationState>) => {
-			if (data.currentPage !== undefined) setCurrentPage(data.currentPage);
-			if (data.totalPages !== undefined) setTotalPages(data.totalPages);
-			if (data.total !== undefined) setTotal(data.total);
-			if (data.limit !== undefined) setLimitState(data.limit);
-		},
-		[]
-	);
+	const setPaginationData = useCallback((data: Partial<PaginationState>) => {
+		if (data.currentPage !== undefined) setCurrentPage(data.currentPage);
+		if (data.totalPages !== undefined) setTotalPages(data.totalPages);
+		if (data.total !== undefined) setTotal(data.total);
+		if (data.limit !== undefined) setLimitState(data.limit);
+	}, []);
 
 	const setLimit = useCallback((newLimit: number) => {
 		setLimitState(newLimit);

@@ -23,7 +23,9 @@ export default memo(function RoleModal({
 }: RoleModalProps) {
 	return (
 		<>
-			<h3 className="text-2xl font-bold text-white mb-3 pr-8">Change User Role</h3>
+			<h3 className="text-2xl font-bold text-white mb-3 pr-8">
+				Change User Role
+			</h3>
 			<p className="text-white/70 text-[0.95rem] mb-6 leading-relaxed">
 				Change the role for <strong className="text-white">{user.name}</strong>
 			</p>
@@ -36,8 +38,8 @@ export default memo(function RoleModal({
 								type="button"
 								key={key}
 								className={`flex items-center gap-2 py-3 px-4 bg-black/30 border rounded-[10px] text-[0.9rem] cursor-pointer transition-all duration-[0.25s] ${
-									selectedRole === key 
-										? "border-[#ec1d24] bg-[rgba(236,29,36,0.15)] text-white" 
+									selectedRole === key
+										? "border-[#ec1d24] bg-[rgba(236,29,36,0.15)] text-white"
 										: "border-white/10 text-white/70 hover:border-white/20 hover:bg-white/10"
 								}`}
 								onClick={() => setSelectedRole(key)}

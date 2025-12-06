@@ -72,7 +72,7 @@ export interface CreateUserParams {
 	data?: Record<string, unknown>;
 }
 
-export type UserAction = 
+export type UserAction =
 	| "view"
 	| "edit"
 	| "ban"

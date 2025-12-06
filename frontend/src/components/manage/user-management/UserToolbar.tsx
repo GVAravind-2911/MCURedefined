@@ -2,6 +2,15 @@
 
 import { useRef, useEffect, useState } from "react";
 import { USER_ROLES } from "@/types/UserManagementTypes";
+import {
+	Search,
+	ChevronDown,
+	UserPlus,
+	X,
+	Filter,
+	Mail,
+	User,
+} from "lucide-react";
 
 interface UserToolbarProps {
 	searchValue: string;
@@ -33,7 +42,8 @@ export default function UserToolbar({
 	const [searchFieldOpen, setSearchFieldOpen] = useState(false);
 	const [roleFilterOpen, setRoleFilterOpen] = useState(false);
 	const [statusFilterOpen, setStatusFilterOpen] = useState(false);
-	
+	const [showMobileFilters, setShowMobileFilters] = useState(false);
+
 	const searchFieldRef = useRef<HTMLDivElement>(null);
 	const roleFilterRef = useRef<HTMLDivElement>(null);
 	const statusFilterRef = useRef<HTMLDivElement>(null);
@@ -41,13 +51,22 @@ export default function UserToolbar({
 	// Close dropdowns when clicking outside
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
-			if (searchFieldRef.current && !searchFieldRef.current.contains(event.target as Node)) {
+			if (
+				searchFieldRef.current &&
+				!searchFieldRef.current.contains(event.target as Node)
+			) {
 				setSearchFieldOpen(false);
 			}
-			if (roleFilterRef.current && !roleFilterRef.current.contains(event.target as Node)) {
+			if (
+				roleFilterRef.current &&
+				!roleFilterRef.current.contains(event.target as Node)
+			) {
 				setRoleFilterOpen(false);
 			}
-			if (statusFilterRef.current && !statusFilterRef.current.contains(event.target as Node)) {
+			if (
+				statusFilterRef.current &&
+				!statusFilterRef.current.contains(event.target as Node)
+			) {
 				setStatusFilterOpen(false);
 			}
 		};
@@ -68,209 +87,280 @@ export default function UserToolbar({
 
 	const getRoleLabel = () => {
 		if (!filterRole) return "All Roles";
-		return USER_ROLES[filterRole as keyof typeof USER_ROLES]?.label || filterRole;
+		return (
+			USER_ROLES[filterRole as keyof typeof USER_ROLES]?.label || filterRole
+		);
 	};
 
-	return (
-		<div className="flex flex-col lg:flex-row flex-wrap gap-4 mb-6 p-4 sm:p-6 bg-[rgba(18,18,18,0.95)] rounded-[14px] border border-white/10 backdrop-blur-[20px] shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
-			<form onSubmit={onSearch} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1 min-w-0">
-				{/* Custom Search Field Dropdown */}
-				<div className="relative w-full sm:w-auto sm:min-w-[120px]" ref={searchFieldRef}>
+	const hasActiveFilters = filterRole || filterBanned;
+
+	const SearchFieldDropdown = () => (
+		<div className="relative" ref={searchFieldRef}>
+			<button
+				type="button"
+				className="flex items-center gap-2 h-12 px-4 bg-white/5 border border-white/10 rounded-xl text-white text-sm cursor-pointer transition-all duration-300 min-w-[100px] hover:bg-white/10 hover:border-white/20"
+				onClick={() => setSearchFieldOpen(!searchFieldOpen)}
+			>
+				{searchField === "email" ? (
+					<Mail className="w-4 h-4 text-white/50" />
+				) : (
+					<User className="w-4 h-4 text-white/50" />
+				)}
+				<span className="hidden sm:inline">{getSearchFieldLabel()}</span>
+				<ChevronDown
+					className={`w-4 h-4 text-white/50 transition-transform duration-300 ${searchFieldOpen ? "rotate-180" : ""}`}
+				/>
+			</button>
+			{searchFieldOpen && (
+				<div className="absolute top-full left-0 mt-2 min-w-full bg-[rgba(24,24,24,0.98)] backdrop-blur-xl border border-white/15 rounded-xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
 					<button
 						type="button"
-						className="flex items-center justify-between gap-3 py-3.5 px-4 bg-black/40 border border-white/10 rounded-[10px] text-white text-[0.9rem] cursor-pointer transition-all duration-[0.25s] w-full sm:min-w-[130px] whitespace-nowrap hover:border-white/20 hover:bg-white/5"
-						onClick={() => setSearchFieldOpen(!searchFieldOpen)}
+						className={`flex items-center gap-3 w-full py-3 px-4 text-sm text-left transition-all duration-200 ${searchField === "email" ? "bg-[#ec1d24]/15 text-[#ec1d24]" : "text-white/70 hover:bg-white/5 hover:text-white"}`}
+						onClick={() => {
+							setSearchField("email");
+							setSearchFieldOpen(false);
+						}}
 					>
-						<span>{getSearchFieldLabel()}</span>
-						<svg
-							className={`transition-transform duration-200 opacity-60 ${searchFieldOpen ? "rotate-180" : ""}`}
-							width="12"
-							height="12"
-							viewBox="0 0 12 12"
-						>
-							<path d="M2 4L6 8L10 4" stroke="currentColor" strokeWidth="2" fill="none" />
-						</svg>
+						<Mail className="w-4 h-4" />
+						Email
 					</button>
-					{searchFieldOpen && (
-						<div className="absolute top-[calc(100%+6px)] left-0 min-w-full bg-[rgba(30,30,30,0.95)] border border-white/20 rounded-[10px] shadow-[0_10px_40px_rgba(0,0,0,0.5)] z-100 overflow-hidden animate-[dropdownFadeIn_0.2s_ease]">
-							<button
-								type="button"
-								className={`flex items-center gap-2 w-full py-3 px-4 bg-transparent border-none text-white/70 text-[0.9rem] text-left cursor-pointer transition-all duration-[0.25s] hover:bg-white/5 hover:text-white ${searchField === "email" ? "bg-[#ec1d24]/15 text-[#ec1d24]" : ""}`}
-								onClick={() => {
-									setSearchField("email");
-									setSearchFieldOpen(false);
-								}}
-							>
-								Email
-							</button>
-							<button
-								type="button"
-								className={`flex items-center gap-2 w-full py-3 px-4 bg-transparent border-none text-white/70 text-[0.9rem] text-left cursor-pointer transition-all duration-[0.25s] hover:bg-white/5 hover:text-white ${searchField === "name" ? "bg-[#ec1d24]/15 text-[#ec1d24]" : ""}`}
-								onClick={() => {
-									setSearchField("name");
-									setSearchFieldOpen(false);
-								}}
-							>
-								Name
-							</button>
-						</div>
-					)}
+					<button
+						type="button"
+						className={`flex items-center gap-3 w-full py-3 px-4 text-sm text-left transition-all duration-200 ${searchField === "name" ? "bg-[#ec1d24]/15 text-[#ec1d24]" : "text-white/70 hover:bg-white/5 hover:text-white"}`}
+						onClick={() => {
+							setSearchField("name");
+							setSearchFieldOpen(false);
+						}}
+					>
+						<User className="w-4 h-4" />
+						Name
+					</button>
 				</div>
+			)}
+		</div>
+	);
 
-				<div className="relative flex-1 flex items-center">
-					<svg className="absolute left-3.5 text-white/50 pointer-events-none z-1" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-						<circle cx="11" cy="11" r="8" />
-						<line x1="21" y1="21" x2="16.65" y2="16.65" />
-					</svg>
-					<input
-						type="text"
-						placeholder={`Search by ${searchField}...`}
-						value={searchValue}
-						onChange={(e) => setSearchValue(e.target.value)}
-						className="w-full py-3.5 pr-10 pl-12 bg-black/40 border border-white/10 rounded-[10px] text-white text-[0.95rem] transition-all duration-[0.25s] placeholder:text-white/50 focus:outline-none focus:border-[#ec1d24] focus:shadow-[0_0_0_3px_rgba(236,29,36,0.15)] focus:bg-black/60"
-					/>
-					{searchValue && (
+	const RoleFilterDropdown = ({
+		fullWidth = false,
+	}: { fullWidth?: boolean }) => (
+		<div
+			className={`relative ${fullWidth ? "w-full" : ""}`}
+			ref={fullWidth ? undefined : roleFilterRef}
+		>
+			<button
+				type="button"
+				className={`flex items-center justify-between gap-2 h-12 px-4 bg-white/5 border border-white/10 rounded-xl text-white text-sm cursor-pointer transition-all duration-300 hover:bg-white/10 hover:border-white/20 ${fullWidth ? "w-full" : "min-w-[130px]"} ${filterRole ? "border-[#ec1d24]/50 bg-[#ec1d24]/10" : ""}`}
+				onClick={() => setRoleFilterOpen(!roleFilterOpen)}
+			>
+				<span className="truncate">{getRoleLabel()}</span>
+				<ChevronDown
+					className={`w-4 h-4 text-white/50 transition-transform duration-300 shrink-0 ${roleFilterOpen ? "rotate-180" : ""}`}
+				/>
+			</button>
+			{roleFilterOpen && (
+				<div className="absolute top-full left-0 right-0 mt-2 min-w-full bg-[rgba(24,24,24,0.98)] backdrop-blur-xl border border-white/15 rounded-xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+					<button
+						type="button"
+						className={`flex items-center gap-3 w-full py-3 px-4 text-sm text-left transition-all duration-200 ${!filterRole ? "bg-[#ec1d24]/15 text-[#ec1d24]" : "text-white/70 hover:bg-white/5 hover:text-white"}`}
+						onClick={() => {
+							setFilterRole("");
+							setCurrentPage(1);
+							setRoleFilterOpen(false);
+						}}
+					>
+						All Roles
+					</button>
+					{Object.entries(USER_ROLES).map(([key, value]) => (
 						<button
 							type="button"
-							className="absolute right-3 p-1 bg-transparent border-none text-white/50 cursor-pointer rounded-full flex items-center justify-center transition-all duration-[0.25s] hover:text-white hover:bg-white/5"
+							key={key}
+							className={`flex items-center gap-3 w-full py-3 px-4 text-sm text-left transition-all duration-200 ${filterRole === key ? "bg-[#ec1d24]/15 text-[#ec1d24]" : "text-white/70 hover:bg-white/5 hover:text-white"}`}
 							onClick={() => {
-								setSearchValue("");
+								setFilterRole(key);
 								setCurrentPage(1);
+								setRoleFilterOpen(false);
 							}}
 						>
-							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-								<line x1="18" y1="6" x2="6" y2="18" />
-								<line x1="6" y1="6" x2="18" y2="18" />
-							</svg>
+							<span
+								className={`w-2 h-2 rounded-full shrink-0 ${value.color}`}
+							/>
+							{value.label}
 						</button>
-					)}
+					))}
 				</div>
-				<button type="submit" className="py-3.5 px-6 bg-linear-to-br from-[#ec1d24] to-[#c91820] text-white border-none rounded-[10px] font-semibold text-[0.95rem] cursor-pointer transition-all duration-[0.25s] whitespace-nowrap hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(236,29,36,0.4)] w-full sm:w-auto">
-					Search
-				</button>
-			</form>
+			)}
+		</div>
+	);
 
-			<div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-wrap">
-				{/* Role Filter Dropdown */}
-				<div className="relative w-full sm:w-auto sm:min-w-[120px]" ref={roleFilterRef}>
+	const StatusFilterDropdown = ({
+		fullWidth = false,
+	}: { fullWidth?: boolean }) => (
+		<div
+			className={`relative ${fullWidth ? "w-full" : ""}`}
+			ref={fullWidth ? undefined : statusFilterRef}
+		>
+			<button
+				type="button"
+				className={`flex items-center justify-between gap-2 h-12 px-4 bg-white/5 border border-white/10 rounded-xl text-white text-sm cursor-pointer transition-all duration-300 hover:bg-white/10 hover:border-white/20 ${fullWidth ? "w-full" : "min-w-[130px]"} ${filterBanned ? "border-[#ec1d24]/50 bg-[#ec1d24]/10" : ""}`}
+				onClick={() => setStatusFilterOpen(!statusFilterOpen)}
+			>
+				<span className="truncate">{getStatusLabel()}</span>
+				<ChevronDown
+					className={`w-4 h-4 text-white/50 transition-transform duration-300 shrink-0 ${statusFilterOpen ? "rotate-180" : ""}`}
+				/>
+			</button>
+			{statusFilterOpen && (
+				<div className="absolute top-full left-0 right-0 mt-2 min-w-full bg-[rgba(24,24,24,0.98)] backdrop-blur-xl border border-white/15 rounded-xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
 					<button
 						type="button"
-						className="flex items-center justify-between gap-3 py-3.5 px-4 bg-black/40 border border-white/10 rounded-[10px] text-white text-[0.9rem] cursor-pointer transition-all duration-[0.25s] w-full sm:min-w-[130px] whitespace-nowrap hover:border-white/20 hover:bg-white/5"
-						onClick={() => setRoleFilterOpen(!roleFilterOpen)}
+						className={`flex items-center gap-3 w-full py-3 px-4 text-sm text-left transition-all duration-200 ${!filterBanned ? "bg-[#ec1d24]/15 text-[#ec1d24]" : "text-white/70 hover:bg-white/5 hover:text-white"}`}
+						onClick={() => {
+							setFilterBanned("");
+							setCurrentPage(1);
+							setStatusFilterOpen(false);
+						}}
 					>
-						<span>{getRoleLabel()}</span>
-						<svg
-							className={`transition-transform duration-200 opacity-60 ${roleFilterOpen ? "rotate-180" : ""}`}
-							width="12"
-							height="12"
-							viewBox="0 0 12 12"
-						>
-							<path d="M2 4L6 8L10 4" stroke="currentColor" strokeWidth="2" fill="none" />
-						</svg>
+						All Status
 					</button>
-					{roleFilterOpen && (
-						<div className="absolute top-[calc(100%+6px)] left-0 min-w-full bg-[rgba(30,30,30,0.95)] border border-white/20 rounded-[10px] shadow-[0_10px_40px_rgba(0,0,0,0.5)] z-100 overflow-hidden animate-[dropdownFadeIn_0.2s_ease]">
-							<button
-								type="button"
-								className={`flex items-center gap-2 w-full py-3 px-4 bg-transparent border-none text-white/70 text-[0.9rem] text-left cursor-pointer transition-all duration-[0.25s] hover:bg-white/5 hover:text-white ${!filterRole ? "bg-[#ec1d24]/15 text-[#ec1d24]" : ""}`}
-								onClick={() => {
-									setFilterRole("");
-									setCurrentPage(1);
-									setRoleFilterOpen(false);
-								}}
-							>
-								All Roles
-							</button>
-							{Object.entries(USER_ROLES).map(([key, value]) => (
+					<button
+						type="button"
+						className={`flex items-center gap-3 w-full py-3 px-4 text-sm text-left transition-all duration-200 ${filterBanned === "false" ? "bg-[#ec1d24]/15 text-[#ec1d24]" : "text-white/70 hover:bg-white/5 hover:text-white"}`}
+						onClick={() => {
+							setFilterBanned("false");
+							setCurrentPage(1);
+							setStatusFilterOpen(false);
+						}}
+					>
+						<span className="w-2 h-2 rounded-full shrink-0 bg-green-500" />
+						Active
+					</button>
+					<button
+						type="button"
+						className={`flex items-center gap-3 w-full py-3 px-4 text-sm text-left transition-all duration-200 ${filterBanned === "true" ? "bg-[#ec1d24]/15 text-[#ec1d24]" : "text-white/70 hover:bg-white/5 hover:text-white"}`}
+						onClick={() => {
+							setFilterBanned("true");
+							setCurrentPage(1);
+							setStatusFilterOpen(false);
+						}}
+					>
+						<span className="w-2 h-2 rounded-full shrink-0 bg-red-500" />
+						Banned
+					</button>
+				</div>
+			)}
+		</div>
+	);
+
+	return (
+		<div className="space-y-4 mb-6 sm:mb-8">
+			{/* Main Toolbar */}
+			<div className="bg-white/2 backdrop-blur-sm border border-white/10 rounded-2xl p-4 sm:p-5">
+				<div className="flex flex-col lg:flex-row gap-4">
+					{/* Search Section */}
+					<form onSubmit={onSearch} className="flex-1 flex gap-2">
+						<SearchFieldDropdown />
+
+						{/* Search Input */}
+						<div className="flex-1 relative">
+							<Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 pointer-events-none" />
+							<input
+								type="text"
+								placeholder={`Search by ${searchField}...`}
+								value={searchValue}
+								onChange={(e) => setSearchValue(e.target.value)}
+								className="w-full h-12 pl-12 pr-10 bg-white/5 border border-white/10 rounded-xl text-white text-sm placeholder:text-white/40 transition-all duration-300 focus:outline-none focus:border-[#ec1d24]/50 focus:ring-2 focus:ring-[#ec1d24]/20 focus:bg-white/8"
+							/>
+							{searchValue && (
 								<button
 									type="button"
-									key={key}
-									className={`flex items-center gap-2 w-full py-3 px-4 bg-transparent border-none text-white/70 text-[0.9rem] text-left cursor-pointer transition-all duration-[0.25s] hover:bg-white/5 hover:text-white ${filterRole === key ? "bg-[#ec1d24]/15 text-[#ec1d24]" : ""}`}
+									className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full text-white/40 hover:text-white hover:bg-white/10 transition-all duration-200"
 									onClick={() => {
-										setFilterRole(key);
+										setSearchValue("");
 										setCurrentPage(1);
-										setRoleFilterOpen(false);
 									}}
 								>
-									<span className={`w-2 h-2 rounded-full shrink-0 ${value.color}`} />
-									{value.label}
+									<X className="w-4 h-4" />
 								</button>
-							))}
+							)}
 						</div>
-					)}
+
+						{/* Search Button */}
+						<button
+							type="submit"
+							className="h-12 px-6 bg-linear-to-br from-[#ec1d24] to-[#c91820] text-white font-medium rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-[#ec1d24]/25 hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-2"
+						>
+							<Search className="w-4 h-4" />
+							<span className="hidden sm:inline">Search</span>
+						</button>
+					</form>
+
+					{/* Desktop Filters & Actions */}
+					<div
+						className="hidden lg:flex items-center gap-3"
+						ref={roleFilterRef}
+					>
+						<RoleFilterDropdown />
+						<div ref={statusFilterRef}>
+							<StatusFilterDropdown />
+						</div>
+
+						{/* Create User Button */}
+						<button
+							type="button"
+							className="h-12 px-5 bg-linear-to-br from-[#ec1d24] to-[#c91820] text-white font-medium rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-[#ec1d24]/25 hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-2 whitespace-nowrap"
+							onClick={onCreateUser}
+						>
+							<UserPlus className="w-4 h-4" />
+							Create User
+						</button>
+					</div>
+
+					{/* Mobile Filter Toggle & Create Button */}
+					<div className="flex lg:hidden items-center gap-2">
+						<button
+							type="button"
+							className={`flex-1 h-12 px-4 bg-white/5 border border-white/10 rounded-xl text-white text-sm transition-all duration-300 flex items-center justify-center gap-2 ${hasActiveFilters ? "border-[#ec1d24]/50 bg-[#ec1d24]/10" : "hover:bg-white/10"}`}
+							onClick={() => setShowMobileFilters(!showMobileFilters)}
+						>
+							<Filter className="w-4 h-4" />
+							Filters
+							{hasActiveFilters && (
+								<span className="w-2 h-2 rounded-full bg-[#ec1d24]" />
+							)}
+						</button>
+						<button
+							type="button"
+							className="h-12 px-4 bg-linear-to-br from-[#ec1d24] to-[#c91820] text-white font-medium rounded-xl transition-all duration-300 flex items-center gap-2"
+							onClick={onCreateUser}
+						>
+							<UserPlus className="w-4 h-4" />
+							<span className="hidden xs:inline">Create</span>
+						</button>
+					</div>
 				</div>
 
-				{/* Status Filter Dropdown */}
-				<div className="relative w-full sm:w-auto sm:min-w-[120px]" ref={statusFilterRef}>
-					<button
-						type="button"
-						className="flex items-center justify-between gap-3 py-3.5 px-4 bg-black/40 border border-white/10 rounded-[10px] text-white text-[0.9rem] cursor-pointer transition-all duration-[0.25s] w-full sm:min-w-[130px] whitespace-nowrap hover:border-white/20 hover:bg-white/5"
-						onClick={() => setStatusFilterOpen(!statusFilterOpen)}
-					>
-						<span>{getStatusLabel()}</span>
-						<svg
-							className={`transition-transform duration-200 opacity-60 ${statusFilterOpen ? "rotate-180" : ""}`}
-							width="12"
-							height="12"
-							viewBox="0 0 12 12"
-						>
-							<path d="M2 4L6 8L10 4" stroke="currentColor" strokeWidth="2" fill="none" />
-						</svg>
-					</button>
-					{statusFilterOpen && (
-						<div className="absolute top-[calc(100%+6px)] left-0 min-w-full bg-[rgba(30,30,30,0.95)] border border-white/20 rounded-[10px] shadow-[0_10px_40px_rgba(0,0,0,0.5)] z-100 overflow-hidden animate-[dropdownFadeIn_0.2s_ease]">
+				{/* Mobile Filters Panel */}
+				{showMobileFilters && (
+					<div className="lg:hidden mt-4 pt-4 border-t border-white/10 grid grid-cols-2 gap-3 animate-in fade-in slide-in-from-top-2 duration-200">
+						<RoleFilterDropdown fullWidth />
+						<StatusFilterDropdown fullWidth />
+
+						{hasActiveFilters && (
 							<button
 								type="button"
-								className={`flex items-center gap-2 w-full py-3 px-4 bg-transparent border-none text-white/70 text-[0.9rem] text-left cursor-pointer transition-all duration-[0.25s] hover:bg-white/5 hover:text-white ${!filterBanned ? "bg-[#ec1d24]/15 text-[#ec1d24]" : ""}`}
+								className="col-span-2 h-10 bg-white/5 border border-white/10 rounded-xl text-white/60 text-sm transition-all duration-300 hover:bg-white/10 flex items-center justify-center gap-2"
 								onClick={() => {
+									setFilterRole("");
 									setFilterBanned("");
 									setCurrentPage(1);
-									setStatusFilterOpen(false);
 								}}
 							>
-								All Status
+								<X className="w-4 h-4" />
+								Clear Filters
 							</button>
-							<button
-								type="button"
-								className={`flex items-center gap-2 w-full py-3 px-4 bg-transparent border-none text-white/70 text-[0.9rem] text-left cursor-pointer transition-all duration-[0.25s] hover:bg-white/5 hover:text-white ${filterBanned === "false" ? "bg-[#ec1d24]/15 text-[#ec1d24]" : ""}`}
-								onClick={() => {
-									setFilterBanned("false");
-									setCurrentPage(1);
-									setStatusFilterOpen(false);
-								}}
-							>
-								<span className="w-2 h-2 rounded-full shrink-0 bg-green-500" />
-								Active
-							</button>
-							<button
-								type="button"
-								className={`flex items-center gap-2 w-full py-3 px-4 bg-transparent border-none text-white/70 text-[0.9rem] text-left cursor-pointer transition-all duration-[0.25s] hover:bg-white/5 hover:text-white ${filterBanned === "true" ? "bg-[#ec1d24]/15 text-[#ec1d24]" : ""}`}
-								onClick={() => {
-									setFilterBanned("true");
-									setCurrentPage(1);
-									setStatusFilterOpen(false);
-								}}
-							>
-								<span className="w-2 h-2 rounded-full shrink-0 bg-red-500" />
-								Banned
-							</button>
-						</div>
-					)}
-				</div>
-
-				<button
-					type="button"
-					className="flex items-center justify-center gap-2 py-3.5 px-5 bg-linear-to-br from-[#ec1d24] to-[#c91820] text-white border-none rounded-[10px] font-semibold text-[0.9rem] cursor-pointer transition-all duration-[0.25s] whitespace-nowrap hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(236,29,36,0.4)] w-full sm:w-auto"
-					onClick={onCreateUser}
-				>
-					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-						<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-						<circle cx="9" cy="7" r="4" />
-						<line x1="19" y1="8" x2="19" y2="14" />
-						<line x1="22" y1="11" x2="16" y2="11" />
-					</svg>
-					<span>Create User</span>
-				</button>
+						)}
+					</div>
+				)}
 			</div>
 		</div>
 	);

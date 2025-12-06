@@ -10,7 +10,11 @@ import moment from "moment";
 import Image from "next/image";
 import parse from "html-react-parser";
 import Link from "next/link";
-import type { ContentBlock, ContentConfig, ContentData } from "@/types/ContentTypes";
+import type {
+	ContentBlock,
+	ContentConfig,
+	ContentData,
+} from "@/types/ContentTypes";
 import { getDraftStorageKey } from "@/lib/content/utils";
 import { getProxyUrl } from "@/lib/config/backend";
 import { authClient } from "@/lib/auth/auth-client";
@@ -67,7 +71,10 @@ export default function ContentPreview({
 	const session = authClient.useSession();
 	const token = session?.data?.session?.token || null;
 
-	const storageKey = getDraftStorageKey(config, mode === "edit" ? id : undefined);
+	const storageKey = getDraftStorageKey(
+		config,
+		mode === "edit" ? id : undefined,
+	);
 
 	useEffect(() => {
 		const storedContent = localStorage.getItem(storageKey);
@@ -82,18 +89,19 @@ export default function ContentPreview({
 		const handleScroll = () => {
 			const scrollY = window.scrollY;
 			const heroHeight = window.innerHeight * 0.7; // Approximate hero height
-			
+
 			// Start fading when 60% through the hero, fully hidden when hitting main content
 			const fadeStartPoint = heroHeight * 0.6;
 			const fadeEndPoint = heroHeight;
-			
+
 			if (scrollY <= fadeStartPoint) {
 				setBackButtonOpacity(1);
 			} else if (scrollY >= fadeEndPoint) {
 				setBackButtonOpacity(0);
 			} else {
 				// Gradual fade between start and end points
-				const fadeProgress = (scrollY - fadeStartPoint) / (fadeEndPoint - fadeStartPoint);
+				const fadeProgress =
+					(scrollY - fadeStartPoint) / (fadeEndPoint - fadeStartPoint);
 				setBackButtonOpacity(1 - fadeProgress);
 			}
 		};
@@ -174,11 +182,12 @@ export default function ContentPreview({
 	};
 
 	if (loading) return <LoadingSpinner />;
-	if (!content) return (
-		<div className="flex justify-center items-center min-h-[50vh] text-xl text-[#ec1d24] font-[BentonSansRegular]">
-			No {config.singularName} data found
-		</div>
-	);
+	if (!content)
+		return (
+			<div className="flex justify-center items-center min-h-[50vh] text-xl text-[#ec1d24] font-[BentonSansRegular]">
+				No {config.singularName} data found
+			</div>
+		);
 
 	const isReview = config.singularName === "review";
 	const readingTime = calculateReadingTime(content.content || []);
@@ -191,13 +200,19 @@ export default function ContentPreview({
 			switch (block.type) {
 				case "text":
 					return (
-						<div key={uniqueKey} className="w-full prose prose-invert prose-lg max-w-none [&_i]:text-[#ec1d24] [&_b_i]:text-[#ec1d24] [&_p]:text-white/85 [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_h4]:text-white [&_a]:text-[#ec1d24] [&_a:hover]:text-[#ff3d44] [&_blockquote]:border-l-[#ec1d24] [&_blockquote]:bg-white/5 [&_blockquote]:py-2 [&_blockquote]:px-4 [&_blockquote]:rounded-r-lg">
+						<div
+							key={uniqueKey}
+							className="w-full prose prose-invert prose-lg max-w-none [&_i]:text-[#ec1d24] [&_b_i]:text-[#ec1d24] [&_p]:text-white/85 [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_h4]:text-white [&_a]:text-[#ec1d24] [&_a:hover]:text-[#ff3d44] [&_blockquote]:border-l-[#ec1d24] [&_blockquote]:bg-white/5 [&_blockquote]:py-2 [&_blockquote]:px-4 [&_blockquote]:rounded-r-lg"
+						>
 							{parse(block.content)}
 						</div>
 					);
 				case "image":
 					return (
-						<figure key={uniqueKey} className="w-full flex flex-col items-center my-6 sm:my-8">
+						<figure
+							key={uniqueKey}
+							className="w-full flex flex-col items-center my-6 sm:my-8"
+						>
 							<div className="relative w-full max-w-[600px] flex justify-center overflow-hidden rounded-xl shadow-2xl bg-black/20">
 								<Image
 									src={block.content.link}
@@ -205,7 +220,12 @@ export default function ContentPreview({
 									className="w-full h-auto object-contain max-h-[60vh]"
 									width={600}
 									height={400}
-									style={{ width: '100%', height: 'auto', maxHeight: '60vh', objectFit: 'contain' }}
+									style={{
+										width: "100%",
+										height: "auto",
+										maxHeight: "60vh",
+										objectFit: "contain",
+									}}
 								/>
 							</div>
 						</figure>
@@ -213,7 +233,10 @@ export default function ContentPreview({
 				case "embed":
 					if (block.content.includes("www.youtube.com")) {
 						return (
-							<div key={uniqueKey} className="w-full my-6 sm:my-8 flex justify-center">
+							<div
+								key={uniqueKey}
+								className="w-full my-6 sm:my-8 flex justify-center"
+							>
 								<div className="relative w-full max-w-[600px] aspect-video rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10">
 									{loadScript(block.content)}
 								</div>
@@ -223,7 +246,11 @@ export default function ContentPreview({
 					if (block.content.includes("script async")) {
 						return <ScriptEmbed key={uniqueKey} content={block.content} />;
 					}
-					return <div key={uniqueKey} className="text-[#ec1d24] text-center py-4">{block.content}</div>;
+					return (
+						<div key={uniqueKey} className="text-[#ec1d24] text-center py-4">
+							{block.content}
+						</div>
+					);
 				default:
 					return <div key={uniqueKey} />;
 			}
@@ -251,7 +278,10 @@ export default function ContentPreview({
 						hover:border-white/30
 						group
 						${backButtonOpacity === 0 ? "pointer-events-none" : ""}`}
-				style={{ opacity: backButtonOpacity, transform: `translateX(${(1 - backButtonOpacity) * -16}px)` }}
+					style={{
+						opacity: backButtonOpacity,
+						transform: `translateX(${(1 - backButtonOpacity) * -16}px)`,
+					}}
 				>
 					<ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
 					<span className="hidden sm:inline">Back to Edit</span>
@@ -274,19 +304,25 @@ export default function ContentPreview({
 					<div className="absolute top-24 right-4 sm:top-28 sm:right-8 flex items-center gap-2">
 						{/* Preview Badge */}
 						<div className="flex items-center gap-2 px-4 py-2 bg-amber-500/90 backdrop-blur-sm rounded-full">
-							<span className="text-sm sm:text-base font-[BentonSansBold] text-white">Preview</span>
+							<span className="text-sm sm:text-base font-[BentonSansBold] text-white">
+								Preview
+							</span>
 						</div>
 
 						{/* Content Type Badge */}
 						{isReview ? (
 							<div className="flex items-center gap-2 px-4 py-2 bg-[#ec1d24]/90 backdrop-blur-sm rounded-full">
 								<Star className="w-4 h-4 sm:w-5 sm:h-5 text-white fill-white" />
-								<span className="text-sm sm:text-base font-[BentonSansBold] text-white">Review</span>
+								<span className="text-sm sm:text-base font-[BentonSansBold] text-white">
+									Review
+								</span>
 							</div>
 						) : (
 							<div className="flex items-center gap-2 px-4 py-2 bg-[#ec1d24]/90 backdrop-blur-sm rounded-full">
 								<Newspaper className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-								<span className="text-sm sm:text-base font-[BentonSansBold] text-white">Blog</span>
+								<span className="text-sm sm:text-base font-[BentonSansBold] text-white">
+									Blog
+								</span>
 							</div>
 						)}
 					</div>
@@ -302,7 +338,8 @@ export default function ContentPreview({
 									key={tag}
 									className="text-xs sm:text-sm text-white/90 font-[BentonSansRegular] bg-[#ec1d24]/80 rounded-full py-1.5 px-3 sm:px-4 transition-all duration-300 inline-flex items-center"
 								>
-									<span className="opacity-70 mr-1">#</span>{tag}
+									<span className="opacity-70 mr-1">#</span>
+									{tag}
 								</span>
 							))}
 						</div>
@@ -325,7 +362,9 @@ export default function ContentPreview({
 							<div className="flex items-center gap-1.5 text-white/70">
 								<Calendar className="w-4 h-4" />
 								<span className="text-sm font-[BentonSansRegular]">
-									{moment(content.created_at || new Date()).format("MMM D, YYYY")}
+									{moment(content.created_at || new Date()).format(
+										"MMM D, YYYY",
+									)}
 								</span>
 							</div>
 
@@ -355,15 +394,21 @@ export default function ContentPreview({
 					</div>
 
 					{/* Tags Section at Bottom */}
-					<div ref={sentinelRef} className="mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-white/10">
-						<h3 className="text-sm font-[BentonSansBold] text-white/50 uppercase tracking-wider mb-4">Tags</h3>
+					<div
+						ref={sentinelRef}
+						className="mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-white/10"
+					>
+						<h3 className="text-sm font-[BentonSansBold] text-white/50 uppercase tracking-wider mb-4">
+							Tags
+						</h3>
 						<div className="flex flex-wrap gap-2">
 							{(content.tags || []).map((tag: string) => (
 								<span
 									key={tag}
 									className="text-sm text-white/70 font-[BentonSansRegular] bg-white/5 border border-white/10 rounded-full py-2 px-4 transition-all duration-300 inline-flex items-center hover:bg-[#ec1d24]/10 hover:text-[#ec1d24] hover:border-[#ec1d24]/30"
 								>
-									<span className="opacity-50 mr-1">#</span>{tag}
+									<span className="opacity-50 mr-1">#</span>
+									{tag}
 								</span>
 							))}
 						</div>
@@ -372,7 +417,7 @@ export default function ContentPreview({
 			</div>
 
 			{/* Floating Action Bar - Liquid Glass Effect */}
-			<div 
+			<div
 				className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center justify-center gap-4 py-3 px-6
 					bg-linear-to-br from-white/10 via-white/5 to-transparent
 					backdrop-blur-xl backdrop-saturate-150

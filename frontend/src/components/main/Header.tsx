@@ -8,7 +8,6 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 interface HeaderProps {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	session: any;
 }
 
@@ -32,41 +31,92 @@ const Icons = {
 		<svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
 			<title>User</title>
 			<circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2" />
-			<path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+			<path
+				d="M4 20c0-4 4-6 8-6s8 2 8 6"
+				stroke="currentColor"
+				strokeWidth="2"
+				strokeLinecap="round"
+			/>
 		</svg>
 	),
 	chevronDown: (
 		<svg viewBox="0 0 24 24" fill="none" className="w-4 h-4">
 			<title>Expand</title>
-			<path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+			<path
+				d="M6 9l6 6 6-6"
+				stroke="currentColor"
+				strokeWidth="2"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
 		</svg>
 	),
 	signOut: (
 		<svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
 			<title>Sign Out</title>
-			<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-			<polyline points="16,17 21,12 16,7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-			<line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+			<path
+				d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"
+				stroke="currentColor"
+				strokeWidth="2"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
+			<polyline
+				points="16,17 21,12 16,7"
+				stroke="currentColor"
+				strokeWidth="2"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
+			<line
+				x1="21"
+				y1="12"
+				x2="9"
+				y2="12"
+				stroke="currentColor"
+				strokeWidth="2"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
 		</svg>
 	),
 	profile: (
 		<svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
 			<title>Profile</title>
 			<circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2" />
-			<path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+			<path
+				d="M4 20c0-4 4-6 8-6s8 2 8 6"
+				stroke="currentColor"
+				strokeWidth="2"
+				strokeLinecap="round"
+			/>
 		</svg>
 	),
 	admin: (
 		<svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
 			<title>Admin</title>
-			<path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" strokeWidth="2" />
-			<path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" strokeWidth="2" />
+			<path
+				d="M12 15a3 3 0 100-6 3 3 0 000 6z"
+				stroke="currentColor"
+				strokeWidth="2"
+			/>
+			<path
+				d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"
+				stroke="currentColor"
+				strokeWidth="2"
+			/>
 		</svg>
 	),
 	close: (
 		<svg viewBox="0 0 24 24" fill="none" className="w-6 h-6">
 			<title>Close</title>
-			<path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+			<path
+				d="M18 6L6 18M6 6l12 12"
+				stroke="currentColor"
+				strokeWidth="2"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
 		</svg>
 	),
 };
@@ -90,13 +140,18 @@ function Header({ session }: HeaderProps): ReactNode {
 	// Lock body scroll when mobile menu is open
 	useEffect(() => {
 		document.body.style.overflow = isMobileMenuOpen ? "hidden" : "";
-		return () => { document.body.style.overflow = ""; };
+		return () => {
+			document.body.style.overflow = "";
+		};
 	}, [isMobileMenuOpen]);
 
 	// Close dropdown when clicking outside
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
-			if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+			if (
+				dropdownRef.current &&
+				!dropdownRef.current.contains(event.target as Node)
+			) {
 				setIsDropdownOpen(false);
 			}
 		};
@@ -125,11 +180,15 @@ function Header({ session }: HeaderProps): ReactNode {
 		<>
 			{/* Main Header */}
 			<header
-				className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+				className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
 					isScrolled
-						? "bg-black/95 backdrop-blur-md shadow-lg shadow-black/20"
-						: "bg-black"
+						? "bg-white/8 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.1)] border-b border-white/10"
+						: "bg-white/3 backdrop-blur-md border-b border-white/5"
 				}`}
+				style={{
+					backdropFilter: "blur(20px) saturate(180%)",
+					WebkitBackdropFilter: "blur(20px) saturate(180%)",
+				}}
 			>
 				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 					<div className="flex items-center justify-between h-16 lg:h-20">
@@ -153,9 +212,10 @@ function Header({ session }: HeaderProps): ReactNode {
 									href={link.href}
 									style={{ fontFamily: '"BentonSansBook", sans-serif' }}
 									className={`relative px-4 py-2 text-base tracking-wide transition-colors duration-200 rounded-lg
-										${isActive(link.href)
-											? "text-[#ec1d24]"
-											: "text-white/90 hover:text-white hover:bg-white/5"
+										${
+											isActive(link.href)
+												? "text-[#ec1d24]"
+												: "text-white/90 hover:text-white hover:bg-white/5"
 										}
 									`}
 								>
@@ -196,26 +256,34 @@ function Header({ session }: HeaderProps): ReactNode {
 										<span className="max-w-[100px] truncate text-sm font-medium text-white">
 											{session.user?.name}
 										</span>
-										<span className={`transition-transform duration-200 text-white/60 ${isDropdownOpen ? "rotate-180" : ""}`}>
+										<span
+											className={`transition-transform duration-200 text-white/60 ${isDropdownOpen ? "rotate-180" : ""}`}
+										>
 											{Icons.chevronDown}
 										</span>
 									</button>
 
-											{/* Dropdown Menu */}
-											{isDropdownOpen && (
-												<div className="absolute top-full right-0 mt-2 w-60 bg-[#141414] border border-[#ec1d24]/20 rounded-xl shadow-2xl shadow-black/50 overflow-hidden z-50">
-													{/* User Info Header */}
-													<div className="px-4 py-4 border-b border-white/10 bg-linear-to-r from-[#ec1d24]/10 to-transparent">
-														<div className="flex items-center gap-3">
-															<div className="w-10 h-10 rounded-full bg-linear-to-br from-[#ec1d24] to-[#ff6b6b] flex items-center justify-center text-white font-semibold shadow-md shadow-[#ec1d24]/30">
-																{session.user?.name?.charAt(0)?.toUpperCase() || "U"}
-															</div>
-															<div className="flex-1 min-w-0">
-																<p className="text-sm font-semibold text-white truncate">{session.user?.name}</p>
-																<p className="text-xs text-white/50 truncate">@{session.user?.username}</p>
-															</div>
-														</div>
-													</div>											{/* Profile Link */}
+									{/* Dropdown Menu */}
+									{isDropdownOpen && (
+										<div className="absolute top-full right-0 mt-2 w-60 bg-[#141414] border border-[#ec1d24]/20 rounded-xl shadow-2xl shadow-black/50 overflow-hidden z-50">
+											{/* User Info Header */}
+											<div className="px-4 py-4 border-b border-white/10 bg-linear-to-r from-[#ec1d24]/10 to-transparent">
+												<div className="flex items-center gap-3">
+													<div className="w-10 h-10 rounded-full bg-linear-to-br from-[#ec1d24] to-[#ff6b6b] flex items-center justify-center text-white font-semibold shadow-md shadow-[#ec1d24]/30">
+														{session.user?.name?.charAt(0)?.toUpperCase() ||
+															"U"}
+													</div>
+													<div className="flex-1 min-w-0">
+														<p className="text-sm font-semibold text-white truncate">
+															{session.user?.name}
+														</p>
+														<p className="text-xs text-white/50 truncate">
+															@{session.user?.username}
+														</p>
+													</div>
+												</div>
+											</div>{" "}
+											{/* Profile Link */}
 											<Link
 												href={`/profile/${session.user?.username}`}
 												onClick={() => setIsDropdownOpen(false)}
@@ -224,7 +292,6 @@ function Header({ session }: HeaderProps): ReactNode {
 												{Icons.profile}
 												<span>Your Profile</span>
 											</Link>
-
 											{/* Admin Section */}
 											{isAdmin && (
 												<>
@@ -247,7 +314,6 @@ function Header({ session }: HeaderProps): ReactNode {
 													))}
 												</>
 											)}
-
 											{/* Sign Out */}
 											<div className="border-t border-white/10 mt-1">
 												<button
@@ -266,26 +332,39 @@ function Header({ session }: HeaderProps): ReactNode {
 								<Link
 									href="/auth"
 									style={{ fontFamily: '"BentonSansBook", sans-serif' }}
-									className="flex items-center gap-2 px-5 py-2.5 bg-[#ec1d24] text-white text-base rounded-lg hover:bg-[#d01920] transition-colors duration-200 shadow-lg shadow-[#ec1d24]/20"
+									className="flex items-center gap-2.5 pl-3 pr-4 py-2 bg-linear-to-r from-[#ec1d24] to-[#ff4147] text-white text-sm font-medium rounded-full hover:from-[#ff4147] hover:to-[#ec1d24] transition-all duration-300 shadow-lg shadow-[#ec1d24]/30 ring-1 ring-[#ec1d24]/50 hover:ring-white/30 hover:shadow-[#ec1d24]/40 hover:scale-[1.02]"
 								>
-									Sign In
+									{Icons.user}
+									<span>Sign In</span>
 								</Link>
 							)}
 						</div>
 
 						{/* Mobile Right Section */}
-						<div className="flex lg:hidden items-center gap-3">
-								{session ? (
-									<div className="w-8 h-8 rounded-full bg-linear-to-br from-[#ec1d24] to-[#ff6b6b] flex items-center justify-center text-white font-semibold text-sm shadow-md shadow-[#ec1d24]/30 ring-2 ring-[#ec1d24]/20">
-										{session.user?.name?.charAt(0)?.toUpperCase() || "U"}
-									</div>
+						<div className="flex lg:hidden items-center gap-2 xs:gap-3">
+							{session ? (
+								<div className="w-8 h-8 rounded-full bg-linear-to-br from-[#ec1d24] to-[#ff6b6b] flex items-center justify-center text-white font-semibold text-sm shadow-md shadow-[#ec1d24]/30 ring-2 ring-[#ec1d24]/20">
+									{session.user?.name?.charAt(0)?.toUpperCase() || "U"}
+								</div>
 							) : (
-								<Link
-									href="/auth"
-									className="px-4 py-2 bg-[#ec1d24] text-white font-medium text-sm rounded-lg hover:bg-[#d01920] transition-colors"
-								>
-									Sign In
-								</Link>
+								<>
+									{/* Icon-only button for extra small screens */}
+									<Link
+										href="/auth"
+										className="flex xs:hidden items-center justify-center w-9 h-9 bg-linear-to-r from-[#ec1d24] to-[#ff4147] text-white rounded-full shadow-md shadow-[#ec1d24]/30 ring-1 ring-[#ec1d24]/50"
+										aria-label="Sign In"
+									>
+										{Icons.user}
+									</Link>
+									{/* Full button for small screens and up */}
+									<Link
+										href="/auth"
+										className="hidden xs:flex items-center gap-2 pl-2.5 pr-3.5 py-1.5 bg-linear-to-r from-[#ec1d24] to-[#ff4147] text-white font-medium text-sm rounded-full shadow-md shadow-[#ec1d24]/30 ring-1 ring-[#ec1d24]/50"
+									>
+										{Icons.user}
+										<span>Sign In</span>
+									</Link>
+								</>
 							)}
 
 							{/* Mobile Menu Toggle */}
@@ -296,9 +375,15 @@ function Header({ session }: HeaderProps): ReactNode {
 								aria-label="Toggle menu"
 								aria-expanded={isMobileMenuOpen}
 							>
-								<span className={`block w-5 h-0.5 bg-white transition-all duration-300 ${isMobileMenuOpen ? "rotate-45 translate-y-1" : ""}`} />
-								<span className={`block w-5 h-0.5 bg-white my-1 transition-all duration-300 ${isMobileMenuOpen ? "opacity-0 scale-0" : ""}`} />
-								<span className={`block w-5 h-0.5 bg-white transition-all duration-300 ${isMobileMenuOpen ? "-rotate-45 -translate-y-1" : ""}`} />
+								<span
+									className={`block w-5 h-0.5 bg-white transition-all duration-300 ${isMobileMenuOpen ? "rotate-45 translate-y-1" : ""}`}
+								/>
+								<span
+									className={`block w-5 h-0.5 bg-white my-1 transition-all duration-300 ${isMobileMenuOpen ? "opacity-0 scale-0" : ""}`}
+								/>
+								<span
+									className={`block w-5 h-0.5 bg-white transition-all duration-300 ${isMobileMenuOpen ? "-rotate-45 -translate-y-1" : ""}`}
+								/>
 							</button>
 						</div>
 					</div>
@@ -350,14 +435,18 @@ function Header({ session }: HeaderProps): ReactNode {
 
 					{/* User Info (if logged in) */}
 					{session && (
-							<div className="px-4 py-4 border-b border-white/10 bg-linear-to-r from-[#ec1d24]/10 to-transparent">
-								<div className="flex items-center gap-3">
-									<div className="w-11 h-11 rounded-full bg-linear-to-br from-[#ec1d24] to-[#ff6b6b] flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-[#ec1d24]/30">
-										{session.user?.name?.charAt(0)?.toUpperCase() || "U"}
-									</div>
+						<div className="px-4 py-4 border-b border-white/10 bg-linear-to-r from-[#ec1d24]/10 to-transparent">
+							<div className="flex items-center gap-3">
+								<div className="w-11 h-11 rounded-full bg-linear-to-br from-[#ec1d24] to-[#ff6b6b] flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-[#ec1d24]/30">
+									{session.user?.name?.charAt(0)?.toUpperCase() || "U"}
+								</div>
 								<div className="flex-1 min-w-0">
-									<p className="text-sm font-medium text-white truncate">{session.user?.name}</p>
-									<p className="text-xs text-white/50 truncate">@{session.user?.username}</p>
+									<p className="text-sm font-medium text-white truncate">
+										{session.user?.name}
+									</p>
+									<p className="text-xs text-white/50 truncate">
+										@{session.user?.username}
+									</p>
 								</div>
 								{isAdmin && (
 									<span className="px-2 py-0.5 text-[10px] font-semibold uppercase text-[#ec1d24] bg-[#ec1d24]/10 rounded border border-[#ec1d24]/20">

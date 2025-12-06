@@ -25,11 +25,11 @@ export default function FloatingActionBar({
 	useEffect(() => {
 		const handleScroll = () => {
 			// Find the tags section which marks the end of main content
-			const tagsSection = document.querySelector('[data-tags-section]');
+			const tagsSection = document.querySelector("[data-tags-section]");
 			if (!tagsSection || !barRef.current) return;
 
 			const tagsSectionRect = tagsSection.getBoundingClientRect();
-			
+
 			// Hide when the tags section is about to enter the viewport
 			// Show when we're above the tags section with some buffer
 			if (tagsSectionRect.top < 150) {
@@ -41,7 +41,7 @@ export default function FloatingActionBar({
 
 		window.addEventListener("scroll", handleScroll, { passive: true });
 		handleScroll(); // Check initial state
-		
+
 		return () => window.removeEventListener("scroll", handleScroll);
 	}, []);
 
@@ -57,9 +57,11 @@ export default function FloatingActionBar({
 				before:absolute before:inset-0 before:rounded-2xl before:bg-linear-to-b before:from-white/10 before:to-transparent before:opacity-50 before:pointer-events-none
 				transition-all duration-500 ease-in-out
 				hover:shadow-[0_8px_40px_rgba(236,29,36,0.15),inset_0_1px_0_rgba(255,255,255,0.15)] hover:border-white/30
-				${isVisible 
-					? "opacity-100 translate-y-0 scale-100" 
-					: "opacity-0 -translate-y-4 scale-95 pointer-events-none"}`}
+				${
+					isVisible
+						? "opacity-100 translate-y-0 scale-100"
+						: "opacity-0 -translate-y-4 scale-95 pointer-events-none"
+				}`}
 		>
 			<LikeButton
 				contentId={contentId}
@@ -70,11 +72,7 @@ export default function FloatingActionBar({
 				size="md"
 			/>
 			<div className="w-px h-6 bg-linear-to-b from-transparent via-white/30 to-transparent" />
-			<ShareButton
-				contentId={contentId}
-				contentType={contentType}
-				size="md"
-			/>
+			<ShareButton contentId={contentId} contentType={contentType} size="md" />
 		</div>
 	);
 }

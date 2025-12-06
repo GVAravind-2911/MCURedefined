@@ -67,7 +67,9 @@ const ThumbnailBlock: React.FC<ThumbnailBlockProps> = ({ src, onChange }) => {
 							height={1000}
 						/>
 						<div className="absolute top-0 left-0 right-0 bottom-0 bg-linear-to-b from-transparent to-black/80 flex justify-center items-end pb-6 opacity-0 transition-all duration-300 group-hover:opacity-100">
-							<p className="text-white font-medium py-2 px-4 bg-black/50 rounded-full text-sm">Click or drag to replace image</p>
+							<p className="text-white font-medium py-2 px-4 bg-black/50 rounded-full text-sm">
+								Click or drag to replace image
+							</p>
 						</div>
 					</>
 				) : (

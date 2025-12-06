@@ -67,7 +67,9 @@ const ImageBlock: React.FC<ImageBlockProps> = ({
 
 	return (
 		<div className="relative bg-[rgba(40,40,40,0.4)] border border-white/10 rounded-xl overflow-visible transition-all duration-300 animate-[fadeInBlock_0.3s_ease-out] hover:border-white/20 hover:shadow-[0_4px_20px_rgba(0,0,0,0.4)] flex justify-center items-center pt-10 px-4 md:px-6 pb-4 md:pb-6 min-h-[200px]">
-			<div className="absolute top-0 left-0 bg-linear-to-br from-[rgba(60,60,60,0.95)] to-[rgba(40,40,40,0.95)] py-1.5 px-4 rounded-tl-xl rounded-br-lg text-xs text-white/70 uppercase tracking-wider border-b border-r border-white/10 z-5">Image</div>
+			<div className="absolute top-0 left-0 bg-linear-to-br from-[rgba(60,60,60,0.95)] to-[rgba(40,40,40,0.95)] py-1.5 px-4 rounded-tl-xl rounded-br-lg text-xs text-white/70 uppercase tracking-wider border-b border-r border-white/10 z-5">
+				Image
+			</div>
 			<div className="absolute top-0 right-0 flex gap-1 p-1.5 bg-linear-to-br from-[rgba(60,60,60,0.95)] to-[rgba(40,40,40,0.95)] rounded-tr-xl rounded-bl-lg border-b border-l border-white/10 z-5 opacity-70 transition-all duration-300 hover:opacity-100">
 				{image.link && (
 					<button
@@ -79,9 +81,9 @@ const ImageBlock: React.FC<ImageBlockProps> = ({
 						🔄
 					</button>
 				)}
-				<button 
-					type="button" 
-					onClick={onDelete} 
+				<button
+					type="button"
+					onClick={onDelete}
 					className="py-1 px-2 border border-[rgba(220,53,69,0.3)] rounded bg-[rgba(220,53,69,0.2)] text-[#ff6b6b] text-sm cursor-pointer transition-all duration-300 hover:bg-[rgba(220,53,69,0.4)] hover:border-[#dc3545]"
 					title="Delete block"
 				>
@@ -103,7 +105,9 @@ const ImageBlock: React.FC<ImageBlockProps> = ({
 							height={1000}
 						/>
 						<div className="absolute top-0 left-0 right-0 bottom-0 bg-linear-to-b from-transparent to-black/80 flex justify-center items-end pb-6 opacity-0 transition-all duration-300 group-hover:opacity-100">
-							<p className="text-white font-medium py-2 px-4 bg-black/50 rounded-full text-sm">Click or drag to replace image</p>
+							<p className="text-white font-medium py-2 px-4 bg-black/50 rounded-full text-sm">
+								Click or drag to replace image
+							</p>
 						</div>
 					</>
 				) : (

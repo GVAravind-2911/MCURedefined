@@ -1,7 +1,14 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import HeroSection from "../home/HeroSection";
+import {
+	Newspaper,
+	Star,
+	Calendar,
+	MessageSquare,
+	BookOpen,
+	ArrowRight,
+} from "lucide-react";
 
 interface HomeProps {
 	latestBlog: {
@@ -17,86 +24,142 @@ interface HomeProps {
 
 function Home({ latestBlog }: HomeProps): ReactNode {
 	return (
-		<div>
-			<div className="animate-[fadeIn_1s_ease]">
-				<HeroSection />
-
-				{/* Description Section */}
-				<section className="w-full flex py-20 px-8 items-center flex-col bg-[#0a0a0a] relative overflow-hidden before:content-[''] before:absolute before:top-0 before:left-0 before:w-full before:h-px before:bg-linear-to-r before:from-transparent before:via-[#ec1d24] before:to-transparent max-md:py-8 max-md:px-6">
-					<div className="w-full flex max-w-[1200px] items-center flex-col relative">
-						<p className="text-white w-full font-[BentonSansBook] text-center leading-[1.8] py-8 px-6 mb-8 bg-[#0a0a0a]/50 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.2)] backdrop-blur-md border border-[#ec1d24]/10 transform translate-y-[30px] opacity-0 animate-[fadeUp_1s_forwards_0.3s_ease-out] text-[clamp(1.125rem,2vw,1.25rem)] max-sm:text-base max-sm:leading-normal">
-							<span>Welcome to </span>
-							<span className="text-[#ec1d24] font-[BentonSansBold] relative inline-block">
-								MCU REDEFINED
-							</span>
-							<span>
-								, the fanpage dedicated to all Marvel enthusiasts! Immerse
-								yourself in a world where heroes and villains collide, as we
-								bring you the latest updates, news, and exclusive content
-								straight from the Marvel Universe. From epic battles to
-								heartwarming moments, we are committed to delivering a
-								fan-centric experience like no other. Join us as we celebrate
-								the iconic characters, unravel hidden secrets, and delve deep
-								into the cinematic marvels that have redefined the superhero
-								genre. Be part of our vibrant community and let the Marvel
-								fandom thrive at MCU Redefined!
-							</span>
-						</p>
+		<div className="flex flex-col w-full min-h-screen">
+			{/* Hero Section - Optimized for mobile */}
+			<div className="relative w-full" data-hero-section>
+				<div className="relative w-full h-[85vh] min-h-[500px] max-h-[800px] overflow-hidden">
+					{/* Background Image */}
+					<div className="absolute inset-0">
+						<Image
+							alt="MCU Heroes"
+							src="/images/marvel/marvel-class-photo-1920x1080-1500w.jpg"
+							className="w-full h-full object-cover object-top opacity-40"
+							width={1920}
+							height={1080}
+							priority
+						/>
 					</div>
-				</section>
 
-				{/* Latest Blog Card Section */}
-				<section className="w-full flex py-12 px-8 items-center flex-col bg-[#0a0a0a] max-md:py-8 max-md:px-6">
-					<div className="w-full flex max-w-[1200px] bg-[#ec1d24]/10 rounded-xl py-12 px-8 shadow-[0_10px_30px_rgba(0,0,0,0.3)] backdrop-blur-md border border-[#ec1d24]/10 mb-12 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_15px_40px_rgba(236,29,36,0.2)] max-md:py-8 max-md:px-6 max-sm:py-6 max-sm:px-4">
-						<div className="w-full flex items-center justify-between gap-8 max-md:flex-col">
-							<div className="flex-1 flex flex-col gap-6">
-								<div className="flex flex-col gap-4">
-									<h2 className="text-white font-[BentonSansBold] leading-[1.2] text-[clamp(2rem,3vw,3rem)] max-sm:text-[1.75rem]">
-										Latest Blog Post
-									</h2>
-									{latestBlog.id === 0 ? (
-										<p className="text-white/80 font-[BentonSansBook] leading-[1.6] text-[clamp(1rem,1.5vw,1.125rem)] max-sm:text-sm">
-											Stay up-to-date with the latest news from the Marvel
-											Cinematic Universe. Explore our blog for insights on
-											upcoming releases, production updates, and
-											behind-the-scenes content from your favorite MCU projects.
-										</p>
-									) : (
-										<div>
-											<h3 className="text-white font-[BentonSansBold] text-xl mb-2">
-												{latestBlog.title}
-											</h3>
-											<p className="text-white/60 font-[BentonSansRegular] text-sm">
-												By {latestBlog.author} •{" "}
-												{new Date(latestBlog.created_at).toLocaleDateString()}
-											</p>
-										</div>
-									)}
-								</div>
-								<Link
-									href={
-										latestBlog.id === 0 ? "/blogs" : `/blogs/${latestBlog.id}`
-									}
-								>
+					{/* Gradient Overlays */}
+					<div className="absolute inset-0 bg-linear-to-b from-black/60 via-black/40 to-[#0a0a0a]" />
+					<div className="absolute inset-0 bg-linear-to-r from-black/50 via-transparent to-transparent" />
+
+					{/* Hero Content - Centered on mobile */}
+					<div className="absolute inset-0 flex flex-col justify-center px-5 sm:px-8 md:px-12">
+						<div className="max-w-[1200px] mx-auto w-full">
+							{/* Title */}
+							<h1 className="text-[2.5rem] sm:text-5xl md:text-6xl lg:text-7xl text-white font-[BentonSansBold] leading-[1.1] mb-4 sm:mb-6 uppercase">
+								<span className="font-[BentonSansRegular] tracking-wide block">
+									Redefine Your
+								</span>
+								<span className="text-[#ec1d24]">MCU</span>
+								<span className="font-[BentonSansRegular]"> Experience</span>
+							</h1>
+
+							{/* Description */}
+							<p className="text-base sm:text-lg md:text-xl text-white/70 font-[BentonSansRegular] max-w-lg mb-8">
+								Your ultimate destination for Marvel news, reviews, and
+								community discussions
+							</p>
+
+							{/* CTA Buttons - Stack on mobile */}
+							<div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+								<Link href="/blogs" className="w-full sm:w-auto">
 									<button
 										type="button"
-										className="flex items-center p-0 bg-transparent text-[#ec1d24] font-[BentonSansRegular] text-lg transition-transform duration-300 border-none mt-4 cursor-pointer hover:translate-x-2"
-										name="button"
+										className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-3.5 px-6 sm:px-8 bg-[#ec1d24] text-white font-[BentonSansBold] text-sm sm:text-base rounded-xl transition-all duration-300 uppercase tracking-wide shadow-lg shadow-[#ec1d24]/30 active:scale-[0.98]"
 									>
-										<span className="mr-2">
-											{latestBlog.id === 0 ? "Browse Blogs" : "Read More"}
-										</span>
-										<Image
-											alt="arrowsvg"
-											src="/images/Icons/arrow-2.svg"
-											className="w-4 h-4 object-contain filter-[invert(21%)_sepia(100%)_saturate(5281%)_hue-rotate(349deg)_brightness(94%)_contrast(103%)]"
-											width={30}
-											height={30}
-										/>
+										<Newspaper className="w-5 h-5" />
+										Explore Blogs
+									</button>
+								</Link>
+								<Link href="/reviews" className="w-full sm:w-auto">
+									<button
+										type="button"
+										className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-3.5 px-6 sm:px-8 bg-white/10 backdrop-blur-sm text-white font-[BentonSansBold] text-sm sm:text-base border border-white/20 rounded-xl transition-all duration-300 uppercase tracking-wide active:scale-[0.98]"
+									>
+										<Star className="w-5 h-5" />
+										Read Reviews
 									</button>
 								</Link>
 							</div>
-							<div className="w-[300px] h-[200px] flex justify-center items-center relative overflow-hidden rounded-xl bg-white/5 shrink-0 max-md:w-full max-md:h-[180px]">
+						</div>
+					</div>
+				</div>
+			</div>
+
+			{/* Main Content */}
+			<div className="flex-1 w-full max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-10">
+				{/* Quick Links Grid - Mobile optimized */}
+				<section className="mb-8 sm:mb-12">
+					<div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+						{[
+							{
+								href: "/reviews",
+								icon: Star,
+								label: "Reviews",
+								desc: "Film & show reviews",
+							},
+							{
+								href: "/forum",
+								icon: MessageSquare,
+								label: "Forum",
+								desc: "Join discussions",
+							},
+							{
+								href: "/blogs",
+								icon: BookOpen,
+								label: "Blogs",
+								desc: "Latest articles",
+							},
+							{
+								href: "/release-slate",
+								icon: Calendar,
+								label: "Timeline",
+								desc: "MCU chronology",
+							},
+						].map((item) => (
+							<Link key={item.href} href={item.href} className="group">
+								<div className="p-4 sm:p-5 bg-white/5 rounded-xl border border-white/10 transition-all duration-300 active:scale-[0.98] hover:border-[#ec1d24]/30 hover:bg-white/[0.07]">
+									<div className="p-2.5 bg-[#ec1d24]/20 rounded-lg w-fit mb-3">
+										<item.icon className="w-5 h-5 text-[#ec1d24]" />
+									</div>
+									<h3 className="text-base sm:text-lg text-white font-[BentonSansBold] mb-1 group-hover:text-[#ec1d24] transition-colors">
+										{item.label}
+									</h3>
+									<p className="text-white/50 font-[BentonSansRegular] text-xs sm:text-sm hidden sm:block">
+										{item.desc}
+									</p>
+								</div>
+							</Link>
+						))}
+					</div>
+				</section>
+
+				{/* Latest Blog Section - Compact on mobile */}
+				<section className="mb-8 sm:mb-12">
+					<div className="flex items-center justify-between mb-4">
+						<div className="flex items-center gap-2">
+							<Newspaper className="w-5 h-5 text-[#ec1d24]" />
+							<h2 className="text-lg sm:text-xl text-white font-[BentonSansBold]">
+								Latest Post
+							</h2>
+						</div>
+						<Link
+							href="/blogs"
+							className="text-[#ec1d24] text-sm font-[BentonSansBold] flex items-center gap-1 hover:gap-2 transition-all"
+						>
+							View All <ArrowRight className="w-4 h-4" />
+						</Link>
+					</div>
+
+					<Link
+						href={latestBlog.id === 0 ? "/blogs" : `/blogs/${latestBlog.id}`}
+						className="block group"
+					>
+						<div className="relative overflow-hidden rounded-xl bg-white/5 border border-white/10 transition-all duration-300 active:scale-[0.99] hover:border-[#ec1d24]/30">
+							{/* Thumbnail */}
+							<div className="relative w-full aspect-video sm:aspect-21/9 overflow-hidden">
 								<Image
 									alt="blog thumbnail"
 									src={
@@ -105,102 +168,103 @@ function Home({ latestBlog }: HomeProps): ReactNode {
 											: latestBlog.thumbnail_path.link ||
 												"/images/DailyBugle.svg"
 									}
-									className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
-									width={240}
-									height={180}
+									className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+									width={800}
+									height={400}
 								/>
+								<div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
+
+								{/* Content overlay */}
+								<div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
+									<h3 className="text-lg sm:text-xl md:text-2xl text-white font-[BentonSansBold] mb-2 line-clamp-2 group-hover:text-[#ec1d24] transition-colors">
+										{latestBlog.id === 0
+											? "Stay Updated with Marvel News"
+											: latestBlog.title}
+									</h3>
+									{latestBlog.id !== 0 && (
+										<p className="text-white/60 font-[BentonSansRegular] text-sm">
+											By {latestBlog.author} •{" "}
+											{new Date(latestBlog.created_at).toLocaleDateString()}
+										</p>
+									)}
+								</div>
 							</div>
 						</div>
-					</div>
+					</Link>
 				</section>
 
-				{/* MCU Timeline Section */}
-				<section className="w-full flex py-12 px-8 items-center flex-col bg-[#0a0a0a] max-md:py-8 max-md:px-6">
-					<div className="w-full flex max-w-[1200px] bg-linear-to-br from-[#ec1d24]/5 to-black/30 rounded-xl flex-col py-12 px-8 shadow-[0_10px_30px_rgba(0,0,0,0.3)] overflow-hidden relative group max-md:py-8 max-md:px-6 max-sm:py-6 max-sm:px-4">
-						<div className="flex flex-col items-center gap-8 z-2">
-							<div className="flex flex-col items-center text-center gap-4">
-								<h2 className="text-white font-[BentonSansBold] leading-[1.2] text-[clamp(2.5rem,4vw,3.5rem)] max-sm:text-[1.75rem]">
-									MCU Timeline
-								</h2>
-								<p className="text-white/80 font-[BentonSansBook] max-w-[800px] leading-[1.6] text-[clamp(1rem,1.5vw,1.25rem)] max-sm:text-sm">
-									Follow the Marvel Cinematic Universe Timeline: Unveil the Epic
-									Saga in Chronological Order
-								</p>
+				{/* MCU Timeline Section - Simplified */}
+				<section className="mb-8 sm:mb-12">
+					<div className="relative p-5 sm:p-8 bg-linear-to-br from-[#ec1d24]/15 via-black/50 to-black/70 rounded-xl border border-white/10 overflow-hidden">
+						{/* Background blur */}
+						<div className="absolute -top-20 -right-20 w-40 h-40 bg-[#ec1d24]/20 rounded-full blur-3xl" />
+
+						<div className="relative z-10">
+							<div className="flex items-center gap-2 mb-3">
+								<Calendar className="w-5 h-5 text-[#ec1d24]" />
+								<span className="text-white/50 font-[BentonSansRegular] text-xs uppercase tracking-wider">
+									Chronological Journey
+								</span>
 							</div>
+
+							<h2 className="text-2xl sm:text-3xl text-white font-[BentonSansBold] mb-3">
+								MCU Timeline
+							</h2>
+							<p className="text-white/60 font-[BentonSansBook] text-sm sm:text-base mb-5 max-w-md">
+								Experience the Marvel saga in chronological order — every phase,
+								every hero, every moment.
+							</p>
+
 							<Link href="/release-slate">
 								<button
 									type="button"
-									className="inline-flex items-center justify-center py-3.5 px-8 bg-[#ec1d24] text-white font-[BentonSansRegular] text-base border-none rounded-md cursor-pointer transition-all duration-300 uppercase tracking-[0.5px] mt-4 shadow-[0_4px_10px_rgba(236,29,36,0.4)] hover:bg-[#d01c22] hover:-translate-y-[3px] hover:shadow-[0_6px_15px_rgba(236,29,36,0.5)]"
-									name="button"
+									className="inline-flex items-center gap-2 py-3 px-6 bg-[#ec1d24] text-white font-[BentonSansBold] text-sm rounded-lg transition-all duration-300 uppercase tracking-wide shadow-lg shadow-[#ec1d24]/30 active:scale-[0.98]"
 								>
-									Unveil MCU Timeline
+									<Calendar className="w-4 h-4" />
+									Explore Timeline
 								</button>
 							</Link>
 						</div>
-						<Image
-							alt="timelineimage"
-							src="/images/Timeline.png"
-							className="w-full h-full object-cover mt-12 transition-transform duration-300 group-hover:translate-x-5"
-							width={2300}
-							height={238}
-							style={{ objectFit: "contain" }}
-						/>
+
+						{/* Timeline image - hidden on very small screens */}
+						<div className="hidden sm:block mt-6 overflow-hidden rounded-lg">
+							<Image
+								alt="MCU Timeline"
+								src="/images/Timeline.png"
+								className="w-full h-auto object-contain"
+								width={600}
+								height={150}
+							/>
+						</div>
 					</div>
 				</section>
 
-				{/* Community Section */}
-				<section className="w-full flex py-12 px-8 items-stretch flex-row justify-center bg-[#0a0a0a] gap-8 max-w-[1200px] mx-auto max-xl:flex-col max-md:py-8 max-md:gap-4">
-					<div className="flex flex-1 gap-8 h-full max-md:flex-row max-md:h-auto max-md:gap-4">
-						{/* Avengers Card */}
-						<div className="flex-1 flex flex-col">
-							<div className="bg-linear-to-br from-black/30 to-[#ec1d24]/5 rounded-xl p-8 h-full flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.3)] border border-[#ec1d24]/10 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_15px_40px_rgba(236,29,36,0.2)] group max-md:p-6">
-								<Image
-									alt="avengerslogo"
-									src="/images/AvengersLogo.png"
-									className="w-full max-w-[200px] h-auto object-contain transition-transform duration-300 group-hover:scale-110"
-									width={300}
-									height={300}
-									style={{ objectFit: "contain" }}
-								/>
-							</div>
-						</div>
-						{/* Guardians Card */}
-						<div className="flex-1 flex flex-col">
-							<div className="bg-linear-to-br from-black/30 to-[#ec1d24]/5 rounded-xl p-8 h-full flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.3)] border border-[#ec1d24]/10 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_15px_40px_rgba(236,29,36,0.2)] group max-md:p-6">
-								<Image
-									alt="guardianslogo"
-									src="/images/GuardiansLogo.png"
-									className="w-full max-w-[200px] h-auto object-contain transition-transform duration-300 group-hover:scale-110"
-									width={300}
-									height={320}
-									style={{ objectFit: "contain" }}
-								/>
-							</div>
-						</div>
-					</div>
-					{/* Forum Card */}
-					<div className="flex-2 flex flex-col max-xl:w-full">
-						<div className="bg-linear-to-br from-[#ec1d24]/10 to-black/30 rounded-xl py-12 px-8 h-full flex flex-col gap-8 shadow-[0_10px_30px_rgba(0,0,0,0.3)] border border-[#ec1d24]/10 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_15px_40px_rgba(236,29,36,0.2)] max-sm:py-6 max-sm:px-4">
-							<div className="flex flex-col gap-6">
-								<h2 className="text-white font-[BentonSansBold] leading-[1.2] text-[clamp(2rem,3vw,2.5rem)] max-sm:text-[1.75rem]">
-									Community Forum
+				{/* Community CTA - Compact */}
+				<section>
+					<div className="relative p-5 sm:p-8 bg-linear-to-r from-[#ec1d24]/20 to-transparent rounded-xl border border-[#ec1d24]/20 overflow-hidden">
+						<div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+							<div className="flex-1">
+								<div className="flex items-center gap-2 mb-2">
+									<MessageSquare className="w-5 h-5 text-[#ec1d24]" />
+									<span className="text-white/50 font-[BentonSansRegular] text-xs uppercase tracking-wider">
+										Community
+									</span>
+								</div>
+								<h2 className="text-xl sm:text-2xl text-white font-[BentonSansBold] mb-2">
+									Join the Discussion
 								</h2>
-								<p className="text-white/80 font-[BentonSansBook] leading-[1.6] text-[clamp(1rem,1.5vw,1.125rem)] max-sm:text-sm">
-									Join the conversation with fellow Marvel enthusiasts! Share
-									your theories, discuss the latest releases, and connect with
-									a vibrant community of fans. Whether you want to debate plot
-									twists or speculate about what&apos;s coming next, the MCU
-									Redefined forum is your place to engage and be heard.
+								<p className="text-white/60 font-[BentonSansBook] text-sm">
+									Share theories and connect with Marvel fans
 								</p>
 							</div>
-							<Link href="/forum">
+
+							<Link href="/forum" className="w-full sm:w-auto">
 								<button
 									type="button"
-									className="inline-flex items-center justify-center py-3.5 px-8 bg-[#ec1d24] text-white font-[BentonSansRegular] text-base border-none rounded-md cursor-pointer transition-all duration-300 uppercase tracking-[0.5px] mt-auto self-start shadow-[0_4px_10px_rgba(236,29,36,0.4)] hover:bg-[#d01c22] hover:-translate-y-[3px] hover:shadow-[0_6px_15px_rgba(236,29,36,0.5)]"
-									value="cardforumredir"
-									name="button"
+									className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-3 px-6 bg-[#ec1d24] text-white font-[BentonSansBold] text-sm rounded-lg transition-all duration-300 uppercase tracking-wide shadow-lg shadow-[#ec1d24]/30 active:scale-[0.98]"
 								>
-									Join The Discussion
+									<MessageSquare className="w-4 h-4" />
+									Join Forum
 								</button>
 							</Link>
 						</div>

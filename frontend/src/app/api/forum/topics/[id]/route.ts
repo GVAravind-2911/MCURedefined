@@ -1,7 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/auth";
 import { db } from "@/db";
-import { forumTopic, user, forumTopicLike, forumTopicEditHistory } from "@/db/schema";
+import {
+	forumTopic,
+	user,
+	forumTopicLike,
+	forumTopicEditHistory,
+} from "@/db/schema";
 import { and, eq, sql, desc } from "drizzle-orm";
 import { headers } from "next/headers";
 import { v4 as uuidv4 } from "uuid";
@@ -17,7 +22,7 @@ const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:4000";
  */
 async function deleteTopicImage(imageKey: string): Promise<boolean> {
 	if (!imageKey) return false;
-	
+
 	try {
 		const response = await fetch(`${BACKEND_URL}/topic-images/delete`, {
 			method: "DELETE",
@@ -26,12 +31,12 @@ async function deleteTopicImage(imageKey: string): Promise<boolean> {
 			},
 			body: JSON.stringify({ key: imageKey }),
 		});
-		
+
 		if (!response.ok) {
 			console.error("Failed to delete topic image:", imageKey);
 			return false;
 		}
-		
+
 		return true;
 	} catch (error) {
 		console.error("Error deleting topic image:", error);
@@ -42,7 +47,7 @@ async function deleteTopicImage(imageKey: string): Promise<boolean> {
 // Get a single forum topic by ID
 export async function GET(
 	req: NextRequest,
-	{ params }: { params: Promise<{ id: string }> }
+	{ params }: { params: Promise<{ id: string }> },
 ) {
 	try {
 		const { id } = await params;
@@ -64,7 +69,10 @@ export async function GET(
 				imageKey: forumTopic.imageKey,
 				username: user.displayUsername,
 				userImage: user.image,
-				likeCount: sql<number>`COALESCE(COUNT(DISTINCT ${forumTopicLike.userId}), 0)`.mapWith(Number),
+				likeCount:
+					sql<number>`COALESCE(COUNT(DISTINCT ${forumTopicLike.userId}), 0)`.mapWith(
+						Number,
+					),
 			})
 			.from(forumTopic)
 			.leftJoin(user, eq(forumTopic.userId, user.id))
@@ -84,13 +92,13 @@ export async function GET(
 				forumTopic.imageUrl,
 				forumTopic.imageKey,
 				user.displayUsername,
-				user.image
+				user.image,
 			);
 
 		if (!topic) {
 			return NextResponse.json(
 				{ error: "Forum topic not found" },
-				{ status: 404 }
+				{ status: 404 },
 			);
 		}
 
@@ -106,8 +114,8 @@ export async function GET(
 				.where(
 					and(
 						eq(forumTopicLike.topicId, id),
-						eq(forumTopicLike.userId, session.user.id)
-					)
+						eq(forumTopicLike.userId, session.user.id),
+					),
 				)
 				.limit(1);
 
@@ -117,7 +125,7 @@ export async function GET(
 			if (topic.userId === session.user.id && !topic.deleted && !topic.locked) {
 				const createdAt = new Date(topic.createdAt).getTime();
 				const now = Date.now();
-				const withinEditWindow = (now - createdAt) <= EDIT_WINDOW_MS;
+				const withinEditWindow = now - createdAt <= EDIT_WINDOW_MS;
 				canEdit = withinEditWindow && (topic.editCount || 0) < MAX_EDITS;
 			}
 		}
@@ -131,7 +139,7 @@ export async function GET(
 		console.error("Error fetching forum topic:", error);
 		return NextResponse.json(
 			{ error: "Failed to fetch forum topic" },
-			{ status: 500 }
+			{ status: 500 },
 		);
 	}
 }
@@ -139,14 +147,14 @@ export async function GET(
 // Update a forum topic
 export async function PUT(
 	req: NextRequest,
-	{ params }: { params: Promise<{ id: string }> }
+	{ params }: { params: Promise<{ id: string }> },
 ) {
 	try {
 		const session = await auth.api.getSession({ headers: await headers() });
 		if (!session?.user) {
 			return NextResponse.json(
 				{ error: "Authentication required" },
-				{ status: 401 }
+				{ status: 401 },
 			);
 		}
 
@@ -157,7 +165,7 @@ export async function PUT(
 		if (!title || !content) {
 			return NextResponse.json(
 				{ error: "Title and content are required" },
-				{ status: 400 }
+				{ status: 400 },
 			);
 		}
 
@@ -171,33 +179,33 @@ export async function PUT(
 		if (!existingTopic) {
 			return NextResponse.json(
 				{ error: "Forum topic not found" },
-				{ status: 404 }
+				{ status: 404 },
 			);
 		}
 
 		if (existingTopic.userId !== session.user.id) {
 			return NextResponse.json(
 				{ error: "You can only edit your own topics" },
-				{ status: 403 }
+				{ status: 403 },
 			);
 		}
 
 		if (existingTopic.locked) {
 			return NextResponse.json(
 				{ error: "This topic is locked and cannot be edited" },
-				{ status: 403 }
+				{ status: 403 },
 			);
 		}
 
 		// Check edit restrictions: within 1 hour and max 5 edits
 		const createdAt = new Date(existingTopic.createdAt).getTime();
 		const now = Date.now();
-		const withinEditWindow = (now - createdAt) <= EDIT_WINDOW_MS;
+		const withinEditWindow = now - createdAt <= EDIT_WINDOW_MS;
 
 		if (!withinEditWindow) {
 			return NextResponse.json(
 				{ error: "Topics can only be edited within 1 hour of creation" },
-				{ status: 403 }
+				{ status: 403 },
 			);
 		}
 
@@ -205,7 +213,7 @@ export async function PUT(
 		if (currentEditCount >= MAX_EDITS) {
 			return NextResponse.json(
 				{ error: "Maximum number of edits (5) reached" },
-				{ status: 403 }
+				{ status: 403 },
 			);
 		}
 
@@ -216,7 +224,7 @@ export async function PUT(
 		if (!titleChanged && !contentChanged) {
 			return NextResponse.json(
 				{ error: "No changes detected" },
-				{ status: 400 }
+				{ status: 400 },
 			);
 		}
 
@@ -284,7 +292,7 @@ export async function PUT(
 		console.error("Error updating forum topic:", error);
 		return NextResponse.json(
 			{ error: "Failed to update forum topic" },
-			{ status: 500 }
+			{ status: 500 },
 		);
 	}
 }
@@ -292,14 +300,14 @@ export async function PUT(
 // Delete a forum topic (soft delete)
 export async function DELETE(
 	req: NextRequest,
-	{ params }: { params: Promise<{ id: string }> }
+	{ params }: { params: Promise<{ id: string }> },
 ) {
 	try {
 		const session = await auth.api.getSession({ headers: await headers() });
 		if (!session?.user) {
 			return NextResponse.json(
 				{ error: "Authentication required" },
-				{ status: 401 }
+				{ status: 401 },
 			);
 		}
 
@@ -315,14 +323,14 @@ export async function DELETE(
 		if (!existingTopic) {
 			return NextResponse.json(
 				{ error: "Forum topic not found" },
-				{ status: 404 }
+				{ status: 404 },
 			);
 		}
 
 		if (existingTopic.userId !== session.user.id) {
 			return NextResponse.json(
 				{ error: "You can only delete your own topics" },
-				{ status: 403 }
+				{ status: 403 },
 			);
 		}
 
@@ -350,7 +358,7 @@ export async function DELETE(
 		console.error("Error deleting forum topic:", error);
 		return NextResponse.json(
 			{ error: "Failed to delete forum topic" },
-			{ status: 500 }
+			{ status: 500 },
 		);
 	}
 }

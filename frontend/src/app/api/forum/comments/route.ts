@@ -36,8 +36,8 @@ export async function GET(req: NextRequest) {
 				.where(
 					and(
 						eq(forumComment.isSpoiler, true),
-						sql`${forumComment.spoilerExpiresAt} < NOW()`
-					)
+						sql`${forumComment.spoilerExpiresAt} < NOW()`,
+					),
 				);
 		} catch (error) {
 			console.warn("Failed to clean up expired comment spoilers:", error);
@@ -69,7 +69,7 @@ export async function GET(req: NextRequest) {
 			.offset(offset);
 
 		// Apply Reddit-style masking for deleted comments
-		const comments = rawComments.map(c => {
+		const comments = rawComments.map((c) => {
 			if (c.deleted || c.content === "[deleted]") {
 				return {
 					...c,
@@ -105,9 +105,7 @@ export async function GET(req: NextRequest) {
 			likesCount = await db
 				.select({
 					commentId: forumCommentLike.commentId,
-					count: sql<number>`count(${forumCommentLike.userId})`.mapWith(
-						Number,
-					),
+					count: sql<number>`count(${forumCommentLike.userId})`.mapWith(Number),
 				})
 				.from(forumCommentLike)
 				.where(inArray(forumCommentLike.commentId, commentIds))
@@ -124,9 +122,10 @@ export async function GET(req: NextRequest) {
 		const now = Date.now();
 		const enhancedComments = comments.map((c) => {
 			const createdAt = new Date(c.createdAt).getTime();
-			const withinEditWindow = (now - createdAt) <= EDIT_WINDOW_MS;
-			const canEdit = currentUserId === c.userId && 
-				withinEditWindow && 
+			const withinEditWindow = now - createdAt <= EDIT_WINDOW_MS;
+			const canEdit =
+				currentUserId === c.userId &&
+				withinEditWindow &&
 				(c.editCount || 0) < MAX_EDITS &&
 				c.content !== "[deleted]";
 
@@ -174,7 +173,14 @@ export async function POST(req: NextRequest) {
 		}
 
 		const body = await req.json();
-		const { topicId, content, parentId, isSpoiler, spoilerFor, spoilerDuration } = body;
+		const {
+			topicId,
+			content,
+			parentId,
+			isSpoiler,
+			spoilerFor,
+			spoilerDuration,
+		} = body;
 
 		if (!topicId || !content) {
 			return NextResponse.json(

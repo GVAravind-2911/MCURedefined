@@ -46,14 +46,24 @@ export default function ForgotPasswordForm({ onBack, onSuccess }) {
 
 	return (
 		<div className="transition-all duration-300 ease-in-out opacity-100 translate-y-0">
-			<h2 className="text-center text-2xl font-bold text-white mb-2.5 uppercase tracking-wide [text-shadow:2px_2px_4px_rgba(0,0,0,0.5)] after:content-[''] after:block after:w-20 after:h-1 after:bg-[#ec1d24] after:mx-auto after:mt-3">Reset Your Password</h2>
+			<h2 className="text-center text-2xl font-bold text-white mb-2.5 uppercase tracking-wide [text-shadow:2px_2px_4px_rgba(0,0,0,0.5)] after:content-[''] after:block after:w-20 after:h-1 after:bg-[#ec1d24] after:mx-auto after:mt-3">
+				Reset Your Password
+			</h2>
 			<p className="text-center text-sm text-[rgba(255,255,255,0.7)] mb-5">
 				Enter your email address and we&apos;ll send you a reset link.
 			</p>
 
-			<form onSubmit={handleForgotPassword} className="flex flex-col gap-5 relative z-1">
+			<form
+				onSubmit={handleForgotPassword}
+				className="flex flex-col gap-5 relative z-1"
+			>
 				<div className="flex flex-col gap-2">
-					<label htmlFor="email" className="text-sm text-white font-medium font-[BentonSansRegular,Arial,sans-serif]">Email Address</label>
+					<label
+						htmlFor="email"
+						className="text-sm text-white font-medium font-[BentonSansRegular,Arial,sans-serif]"
+					>
+						Email Address
+					</label>
 					<input
 						id="email"
 						name="email"
@@ -65,7 +75,11 @@ export default function ForgotPasswordForm({ onBack, onSuccess }) {
 					/>
 				</div>
 
-				{error && <div className="p-3 bg-[rgba(239,68,68,0.1)] border border-solid border-[rgba(239,68,68,0.3)] rounded-md text-[#ef4444] text-sm">{error}</div>}
+				{error && (
+					<div className="p-3 bg-[rgba(239,68,68,0.1)] border border-solid border-[rgba(239,68,68,0.3)] rounded-md text-[#ef4444] text-sm">
+						{error}
+					</div>
+				)}
 
 				<button
 					type="submit"

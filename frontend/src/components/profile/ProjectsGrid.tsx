@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useMemo } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
+import { Search, Film } from "lucide-react";
 
 const formatPosterPath = (path: string, phase: number): string => {
 	// Extract filename from path
@@ -57,29 +58,17 @@ export default function ProjectsGrid({ projects }: ProjectsGridProps) {
 	return (
 		<div className="w-full">
 			{/* Search filters */}
-			<div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 w-full mb-6">
-				<div className="flex items-center bg-white/10 rounded-lg px-4 transition-all duration-300 border border-white/10 focus-within:bg-white/15 focus-within:border-[#ec1d24]/50 focus-within:shadow-[0_0_0_2px_rgba(236,29,36,0.25)]">
+			<div className="mb-8">
+				<div className="relative max-w-md">
+					<Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
 					<input
 						type="text"
 						placeholder="Search your liked projects..."
 						value={searchQuery}
 						onChange={(e) => setSearchQuery(e.target.value)}
-						className="w-full bg-transparent border-none py-3 text-white font-[BentonSansRegular] text-base placeholder:text-white/50 focus:outline-none"
+						className="w-full bg-white/5 border border-white/10 rounded-xl pl-12 pr-4 py-3.5 text-white font-[BentonSansRegular] text-base placeholder:text-white/40 focus:outline-none focus:border-[#ec1d24]/50 focus:bg-white/[0.07] focus:ring-2 focus:ring-[#ec1d24]/20 transition-all duration-300"
 						aria-label="Search projects"
 					/>
-					<svg
-						className="w-5 h-5 text-white/50 ml-2"
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 24 24"
-						width="20"
-						height="20"
-					>
-						<title>Search</title>
-						<path
-							fill="currentColor"
-							d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
-						/>
-					</svg>
 				</div>
 			</div>
 
@@ -87,43 +76,58 @@ export default function ProjectsGrid({ projects }: ProjectsGridProps) {
 				visiblePhases.map((phase) => (
 					<div key={`phase-${phase}`} className="mb-12">
 						{/* Section title */}
-						<div className="flex items-center mb-6 font-[BentonSansBold] text-white">
-							<span className="text-[28px] max-[480px]:text-[22px] mr-4 whitespace-nowrap">
-								Phase {phase}
+						<div className="flex items-center gap-4 mb-6">
+							<div className="flex items-center gap-3">
+								<div className="w-10 h-10 rounded-xl bg-[#ec1d24]/20 flex items-center justify-center">
+									<Film className="w-5 h-5 text-[#ec1d24]" />
+								</div>
+								<h2 className="text-xl sm:text-2xl font-[BentonSansBold] text-white">
+									Phase {phase}
+								</h2>
+							</div>
+							<div className="flex-1 h-px bg-linear-to-r from-[#ec1d24]/50 to-transparent" />
+							<span className="text-sm text-white/40 font-[BentonSansRegular]">
+								{projectsByPhase[phase].length}{" "}
+								{projectsByPhase[phase].length === 1 ? "project" : "projects"}
 							</span>
-							<div className="grow h-[3px] bg-linear-to-r from-[#ec1d24] to-transparent" />
 						</div>
 
 						{/* Projects grid */}
-						<div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] max-lg:grid-cols-[repeat(auto-fill,minmax(160px,1fr))] max-md:grid-cols-[repeat(auto-fill,minmax(140px,1fr))] max-[480px]:grid-cols-2 gap-5 max-md:gap-4 max-[480px]:gap-2.5 justify-center">
+						<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-5">
 							{projectsByPhase[phase].map((project) => (
 								<Link
 									href={`/release-slate/${project.id}`}
-									className="group bg-white/3 rounded-[10px] overflow-hidden shadow-[0_4px_6px_rgba(0,0,0,0.1)] transition-all duration-300 no-underline flex flex-col h-full hover:-translate-y-2 hover:shadow-[0_10px_20px_rgba(0,0,0,0.2)] hover:bg-white/5"
+									className="group relative bg-white/2 rounded-xl overflow-hidden border border-white/5 transition-all duration-300 no-underline flex flex-col hover:-translate-y-1 hover:border-[#ec1d24]/30 hover:shadow-xl hover:shadow-[#ec1d24]/10"
 									key={project.id}
 								>
 									{/* Poster container */}
-									<div className="relative w-full overflow-hidden rounded-t-lg">
+									<div className="relative w-full overflow-hidden">
 										<Image
 											src={formatPosterPath(project.posterpath, project.phase)}
 											alt={`${project.name} - Phase ${project.phase}`}
-											className="w-full aspect-2/3 object-cover transition-transform duration-400 group-hover:scale-105"
+											className="w-full aspect-2/3 object-cover transition-transform duration-500 group-hover:scale-110"
 											width={200}
 											height={300}
 											style={{ objectFit: "cover" }}
 										/>
-										{/* Poster overlay */}
-										<div className="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-black/80 flex flex-col justify-end p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-											<div className="absolute top-2.5 right-2.5 bg-[#ec1d24] text-white py-1 px-2.5 rounded font-[BentonSansRegular] text-xs font-bold">
-												Phase {project.phase}
-											</div>
+										{/* Hover overlay */}
+										<div className="absolute inset-0 bg-linear-to-t from-black via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+										{/* Phase badge */}
+										<div className="absolute top-2 right-2 bg-[#ec1d24]/90 backdrop-blur-sm text-white py-1 px-2.5 rounded-lg font-[BentonSansBold] text-xs shadow-lg">
+											Phase {project.phase}
+										</div>
+										{/* View indicator on hover */}
+										<div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+											<span className="text-xs font-[BentonSansBold] text-white">
+												View Details
+											</span>
 										</div>
 									</div>
 									{/* Project info */}
-									<div className="p-4 max-[480px]:p-2.5 text-center">
-										<h2 className="text-white font-[BentonSansBold] text-lg max-lg:text-base max-[480px]:text-sm m-0 transition-colors duration-300 group-hover:text-[#ec1d24]">
+									<div className="p-3 sm:p-4 text-center">
+										<h3 className="text-white font-[BentonSansBold] text-sm sm:text-base leading-tight transition-colors duration-300 group-hover:text-[#ec1d24] line-clamp-2">
 											{project.name}
-										</h2>
+										</h3>
 									</div>
 								</Link>
 							))}
@@ -131,21 +135,23 @@ export default function ProjectsGrid({ projects }: ProjectsGridProps) {
 					</div>
 				))
 			) : (
-				<div className="flex flex-col items-center p-12 bg-white/3 rounded-lg my-4">
-					<div className="text-center">
-						<h3 className="text-white/70 font-[BentonSansRegular] text-lg mb-4">
-							No projects found matching &quot;{searchQuery}&quot;
-						</h3>
-						{searchQuery && (
-							<button
-								className="bg-transparent border border-white/30 text-white py-2 px-4 rounded-md font-[BentonSansRegular] text-sm cursor-pointer transition-all duration-200 hover:bg-white/10 hover:border-white/50"
-								onClick={() => setSearchQuery("")}
-								type="button"
-							>
-								Clear search
-							</button>
-						)}
-					</div>
+				<div className="flex flex-col items-center p-10 sm:p-16 bg-white/2 rounded-2xl border border-white/5">
+					<Search className="w-12 h-12 text-white/20 mb-4" />
+					<p className="text-white/70 font-[BentonSansRegular] text-lg mb-2 text-center">
+						No projects found matching &quot;{searchQuery}&quot;
+					</p>
+					<p className="text-white/40 font-[BentonSansRegular] text-sm mb-6 text-center">
+						Try adjusting your search
+					</p>
+					{searchQuery && (
+						<button
+							className="bg-white/5 border border-white/20 text-white py-2.5 px-5 rounded-xl font-[BentonSansRegular] text-sm cursor-pointer transition-all duration-300 hover:bg-[#ec1d24]/20 hover:border-[#ec1d24]/50 hover:text-white"
+							onClick={() => setSearchQuery("")}
+							type="button"
+						>
+							Clear search
+						</button>
+					)}
 				</div>
 			)}
 		</div>

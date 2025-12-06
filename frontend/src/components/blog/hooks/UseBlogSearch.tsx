@@ -35,7 +35,7 @@ const useBlogSearch = ({
 	initialTags,
 	initialAuthors,
 	path,
-	basePath = '',
+	basePath = "",
 	containerRef,
 }: UseBlogSearchProps) => {
 	const searchParams = useSearchParams();

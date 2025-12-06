@@ -153,7 +153,6 @@ export default function ResetPasswordPage() {
 			setTimeout(() => {
 				router.push("/auth");
 			}, 3000);
-
 		} catch (err: any) {
 			console.error("Reset password error:", err);
 			setError(
@@ -165,12 +164,26 @@ export default function ResetPasswordPage() {
 	};
 
 	const getStrengthColor = (score: number) => {
-		const colors = ["transparent", "bg-red-500", "bg-orange-500", "bg-yellow-500", "bg-green-500", "bg-green-600"];
+		const colors = [
+			"transparent",
+			"bg-red-500",
+			"bg-orange-500",
+			"bg-yellow-500",
+			"bg-green-500",
+			"bg-green-600",
+		];
 		return colors[score] || "transparent";
 	};
 
 	const getStrengthText = (score: number) => {
-		const texts = ["No password", "Very weak", "Weak", "Medium", "Strong", "Very strong"];
+		const texts = [
+			"No password",
+			"Very weak",
+			"Weak",
+			"Medium",
+			"Strong",
+			"Very strong",
+		];
 		return texts[score] || "";
 	};
 
@@ -196,10 +209,14 @@ export default function ResetPasswordPage() {
 
 						<div className="mt-8 relative z-10">
 							<div className="text-sm text-red-400 p-3 bg-red-500/10 rounded-md border border-red-500/30 mb-4">
-								{error || "Missing or invalid reset token. Please request a new password reset link."}
+								{error ||
+									"Missing or invalid reset token. Please request a new password reset link."}
 							</div>
 
-							<a href="/auth" className="block text-center mt-5 text-white/70 font-['BentonSansRegular'] text-sm no-underline transition-colors duration-200 hover:text-[#ec1d24]">
+							<a
+								href="/auth"
+								className="block text-center mt-5 text-white/70 font-['BentonSansRegular'] text-sm no-underline transition-colors duration-200 hover:text-[#ec1d24]"
+							>
 								Back to login
 							</a>
 						</div>
@@ -231,7 +248,8 @@ export default function ResetPasswordPage() {
 
 						<div className="mt-8 relative z-10">
 							<div className="text-sm text-emerald-500 p-4 bg-emerald-500/10 rounded-md border border-emerald-500/30">
-								Your password has been successfully reset. You will be redirected to the login page.
+								Your password has been successfully reset. You will be
+								redirected to the login page.
 							</div>
 						</div>
 					</div>
@@ -267,7 +285,10 @@ export default function ResetPasswordPage() {
 							<div className="mb-6">
 								<div className="mb-4">
 									<div className="flex justify-between items-center mb-2">
-										<label htmlFor="password" className="block font-['BentonSansRegular'] text-sm text-white/80">
+										<label
+											htmlFor="password"
+											className="block font-['BentonSansRegular'] text-sm text-white/80"
+										>
 											New Password
 										</label>
 										<button
@@ -294,9 +315,12 @@ export default function ResetPasswordPage() {
 											type="button"
 											className="absolute right-3 bg-transparent border-none text-white/50 text-xs cursor-pointer transition-colors duration-200 p-0 hover:text-white/80"
 											onClick={() => {
-												const input = document.getElementById("password") as HTMLInputElement;
+												const input = document.getElementById(
+													"password",
+												) as HTMLInputElement;
 												if (input) {
-													input.type = input.type === "password" ? "text" : "password";
+													input.type =
+														input.type === "password" ? "text" : "password";
 												}
 											}}
 										>
@@ -317,20 +341,34 @@ export default function ResetPasswordPage() {
 									</div>
 
 									<div className="grid grid-cols-2 gap-1.5 mt-2 mb-3 text-xs text-white/60 sm:grid-cols-1">
-										<div className={`flex items-center gap-1 transition-colors duration-300 ${passwordStrength.hasLength ? "text-green-500" : ""}`}>
-											{passwordStrength.hasLength ? "✓" : "○"} At least 8 characters
+										<div
+											className={`flex items-center gap-1 transition-colors duration-300 ${passwordStrength.hasLength ? "text-green-500" : ""}`}
+										>
+											{passwordStrength.hasLength ? "✓" : "○"} At least 8
+											characters
 										</div>
-										<div className={`flex items-center gap-1 transition-colors duration-300 ${passwordStrength.hasUppercase ? "text-green-500" : ""}`}>
-											{passwordStrength.hasUppercase ? "✓" : "○"} Uppercase letter
+										<div
+											className={`flex items-center gap-1 transition-colors duration-300 ${passwordStrength.hasUppercase ? "text-green-500" : ""}`}
+										>
+											{passwordStrength.hasUppercase ? "✓" : "○"} Uppercase
+											letter
 										</div>
-										<div className={`flex items-center gap-1 transition-colors duration-300 ${passwordStrength.hasLowercase ? "text-green-500" : ""}`}>
-											{passwordStrength.hasLowercase ? "✓" : "○"} Lowercase letter
+										<div
+											className={`flex items-center gap-1 transition-colors duration-300 ${passwordStrength.hasLowercase ? "text-green-500" : ""}`}
+										>
+											{passwordStrength.hasLowercase ? "✓" : "○"} Lowercase
+											letter
 										</div>
-										<div className={`flex items-center gap-1 transition-colors duration-300 ${passwordStrength.hasNumber ? "text-green-500" : ""}`}>
+										<div
+											className={`flex items-center gap-1 transition-colors duration-300 ${passwordStrength.hasNumber ? "text-green-500" : ""}`}
+										>
 											{passwordStrength.hasNumber ? "✓" : "○"} Number
 										</div>
-										<div className={`flex items-center gap-1 transition-colors duration-300 ${passwordStrength.hasSpecial ? "text-green-500" : ""}`}>
-											{passwordStrength.hasSpecial ? "✓" : "○"} Special character
+										<div
+											className={`flex items-center gap-1 transition-colors duration-300 ${passwordStrength.hasSpecial ? "text-green-500" : ""}`}
+										>
+											{passwordStrength.hasSpecial ? "✓" : "○"} Special
+											character
 										</div>
 									</div>
 
@@ -342,7 +380,10 @@ export default function ResetPasswordPage() {
 								</div>
 
 								<div className="mb-4">
-									<label htmlFor="confirmPassword" className="block mb-2 font-['BentonSansRegular'] text-sm text-white/80">
+									<label
+										htmlFor="confirmPassword"
+										className="block mb-2 font-['BentonSansRegular'] text-sm text-white/80"
+									>
 										Confirm Password
 									</label>
 									<div className="relative flex items-center">
@@ -361,9 +402,12 @@ export default function ResetPasswordPage() {
 											type="button"
 											className="absolute right-3 bg-transparent border-none text-white/50 text-xs cursor-pointer transition-colors duration-200 p-0 hover:text-white/80"
 											onClick={() => {
-												const input = document.getElementById("confirmPassword") as HTMLInputElement;
+												const input = document.getElementById(
+													"confirmPassword",
+												) as HTMLInputElement;
 												if (input) {
-													input.type = input.type === "password" ? "text" : "password";
+													input.type =
+														input.type === "password" ? "text" : "password";
 												}
 											}}
 										>
@@ -401,7 +445,10 @@ export default function ResetPasswordPage() {
 							</button>
 						</form>
 
-						<a href="/auth" className="block text-center mt-5 text-white/70 font-['BentonSansRegular'] text-sm no-underline transition-colors duration-200 hover:text-[#ec1d24]">
+						<a
+							href="/auth"
+							className="block text-center mt-5 text-white/70 font-['BentonSansRegular'] text-sm no-underline transition-colors duration-200 hover:text-[#ec1d24]"
+						>
 							Back to login
 						</a>
 					</div>

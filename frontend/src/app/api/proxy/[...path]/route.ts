@@ -48,17 +48,19 @@ async function proxyRequest(
 		}
 
 		const response = await fetch(targetUrl, fetchOptions);
-		
+
 		// Get response as text first to handle non-JSON responses
 		const responseText = await response.text();
-		
+
 		// Try to parse as JSON
 		try {
 			const data = JSON.parse(responseText);
 			return NextResponse.json(data, { status: response.status });
 		} catch {
 			// If not JSON, return the text as an error
-			console.error(`Backend returned non-JSON response: ${responseText.substring(0, 200)}`);
+			console.error(
+				`Backend returned non-JSON response: ${responseText.substring(0, 200)}`,
+			);
 			return NextResponse.json(
 				{ error: "Backend error", details: responseText.substring(0, 500) },
 				{ status: response.status || 500 },

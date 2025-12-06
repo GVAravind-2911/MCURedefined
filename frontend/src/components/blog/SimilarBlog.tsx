@@ -11,11 +11,13 @@ interface SimilarBlogProps {
 	isReview?: boolean;
 }
 
-const SimilarBlog = ({ articles, isReview = false }: SimilarBlogProps): JSX.Element => {
+const SimilarBlog = ({
+	articles,
+	isReview = false,
+}: SimilarBlogProps): JSX.Element => {
 	// Determine if this is a blog or review based on URL structure or prop
-	const contentType = isReview || articles.id.toString().startsWith("r-")
-		? "reviews"
-		: "blogs";
+	const contentType =
+		isReview || articles.id.toString().startsWith("r-") ? "reviews" : "blogs";
 	const contentId = articles.id.toString().startsWith("r-")
 		? articles.id.toString().substring(2)
 		: articles.id;
@@ -24,7 +26,7 @@ const SimilarBlog = ({ articles, isReview = false }: SimilarBlogProps): JSX.Elem
 	const formattedDate = moment(articles.created_at).format("MMM D, YYYY");
 
 	return (
-		<Link 
+		<Link
 			href={`/${contentType}/${contentId}`}
 			className="group flex gap-4 p-4 transition-all duration-300 hover:bg-white/3 no-underline"
 		>

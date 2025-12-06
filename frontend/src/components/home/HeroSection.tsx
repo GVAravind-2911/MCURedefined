@@ -35,7 +35,8 @@ const HeroSection: React.FC = () => {
 					<br />
 					<span className="text-[#EC1D24]">MCU</span>
 					<span className="font-[BentonSansRegular] tracking-[1px]">
-						{" "}EXPERIENCE
+						{" "}
+						EXPERIENCE
 					</span>
 					<br />
 				</h1>

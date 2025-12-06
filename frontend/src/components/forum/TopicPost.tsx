@@ -44,7 +44,11 @@ interface TopicPostProps {
 }
 
 export function isTopicDeleted(topic: ForumTopic): boolean {
-	return topic.deleted || topic.title === "[DELETED]" || topic.content.includes("[This topic has been deleted");
+	return (
+		topic.deleted ||
+		topic.title === "[DELETED]" ||
+		topic.content.includes("[This topic has been deleted")
+	);
 }
 
 function getUserInitials(username: string): string {
@@ -80,11 +84,13 @@ export default function TopicPost({
 	const isAuthor = currentUserId === topic.userId;
 
 	return (
-		<div className={`bg-[rgba(40,40,40,0.3)] border rounded-lg mb-8 overflow-hidden backdrop-blur-[10px] relative before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-[3px] before:bg-[linear-gradient(90deg,transparent,#ec1d24,transparent)] ${
-			isDeleted 
-				? 'bg-[rgba(220,53,69,0.05)] border-[rgba(220,53,69,0.2)] before:bg-[#dc3545]' 
-				: 'border-white/10'
-		}`}>
+		<div
+			className={`bg-[rgba(40,40,40,0.3)] border rounded-lg mb-8 overflow-hidden backdrop-blur-[10px] relative before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-[3px] before:bg-[linear-gradient(90deg,transparent,#ec1d24,transparent)] ${
+				isDeleted
+					? "bg-[rgba(220,53,69,0.05)] border-[rgba(220,53,69,0.2)] before:bg-[#dc3545]"
+					: "border-white/10"
+			}`}
+		>
 			<div className="p-8">
 				{isDeleted ? (
 					<DeletedTopicView topic={topic} />
@@ -114,7 +120,9 @@ export default function TopicPost({
 	);
 }
 
-function DeletedTopicView({ topic }: { topic: ForumTopic }): React.ReactElement {
+function DeletedTopicView({
+	topic,
+}: { topic: ForumTopic }): React.ReactElement {
 	return (
 		<>
 			<div className="flex items-center gap-3 mb-4 text-[0.95rem] text-white/80">
@@ -235,7 +243,8 @@ function ActiveTopicView({
 			{/* Image will be removed warning when editing */}
 			{isEditing && topic.imageUrl && (
 				<div className="bg-[rgba(255,165,0,0.15)] border border-[rgba(255,165,0,0.3)] text-[#ffa500] py-3 px-4 rounded-lg my-4 text-sm">
-					⚠️ The attached image will be removed when you save your edit. Images cannot be edited.
+					⚠️ The attached image will be removed when you save your edit. Images
+					cannot be edited.
 				</div>
 			)}
 
@@ -272,7 +281,9 @@ function TopicHeader({ topic }: { topic: ForumTopic }): React.ReactElement {
 						{getUserInitials(topic.username)}
 					</div>
 				)}
-				<span className="font-[BentonSansBold] text-[#ec1d24] text-[0.9rem]">{topic.username}</span>
+				<span className="font-[BentonSansBold] text-[#ec1d24] text-[0.9rem]">
+					{topic.username}
+				</span>
 			</div>
 			<span>{formatRelativeTime(topic.createdAt)}</span>
 			{topic.updatedAt !== topic.createdAt && (
@@ -284,10 +295,14 @@ function TopicHeader({ topic }: { topic: ForumTopic }): React.ReactElement {
 			{/* Status badges */}
 			<div className="flex items-center gap-2">
 				{topic.pinned && (
-					<span className="text-[0.8rem] py-1 px-2 rounded bg-[rgba(255,193,7,0.2)] text-[#ffc107]">📌 Pinned</span>
+					<span className="text-[0.8rem] py-1 px-2 rounded bg-[rgba(255,193,7,0.2)] text-[#ffc107]">
+						📌 Pinned
+					</span>
 				)}
 				{topic.locked && (
-					<span className="text-[0.8rem] py-1 px-2 rounded bg-[rgba(220,53,69,0.2)] text-[#dc3545]">🔒 Locked</span>
+					<span className="text-[0.8rem] py-1 px-2 rounded bg-[rgba(220,53,69,0.2)] text-[#dc3545]">
+						🔒 Locked
+					</span>
 				)}
 			</div>
 		</div>
@@ -323,7 +338,9 @@ function TopicEditForm({
 				maxLength={10000}
 			/>
 			{editError && (
-				<div className="text-[#dc3545] text-sm mt-2 p-2 bg-[rgba(220,53,69,0.1)] rounded">{editError}</div>
+				<div className="text-[#dc3545] text-sm mt-2 p-2 bg-[rgba(220,53,69,0.1)] rounded">
+					{editError}
+				</div>
 			)}
 			<div className="flex items-center gap-3 mt-4">
 				<button
@@ -378,18 +395,18 @@ function TopicFooter({
 			<div className="flex items-center gap-2">
 				<button
 					className={`bg-[rgba(236,29,36,0.05)] border border-[rgba(236,29,36,0.3)] text-white/80 py-2 px-4 rounded-lg cursor-pointer transition-all duration-300 ease-in-out flex items-center gap-2 text-[0.95rem] font-medium hover:bg-[rgba(236,29,36,0.15)] hover:border-[#ec1d24] hover:text-white hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none ${
-						topic.userHasLiked 
-							? 'bg-[linear-gradient(135deg,#ec1d24,#d01c22)] border-[#ec1d24] text-white shadow-[0_4px_15px_rgba(236,29,36,0.3)]' 
-							: ''
+						topic.userHasLiked
+							? "bg-[linear-gradient(135deg,#ec1d24,#d01c22)] border-[#ec1d24] text-white shadow-[0_4px_15px_rgba(236,29,36,0.3)]"
+							: ""
 					}`}
 					onClick={onLikeToggle}
 					disabled={!hasSession || isDeleted}
 					title={
-						isDeleted 
+						isDeleted
 							? "Cannot like deleted topics"
-							: hasSession 
-							? "Like this topic" 
-							: "Sign in to like"
+							: hasSession
+								? "Like this topic"
+								: "Sign in to like"
 					}
 				>
 					<span>{topic.userHasLiked ? "❤️" : "🤍"}</span>
@@ -402,11 +419,11 @@ function TopicFooter({
 						onClick={onShowEditHistory}
 						title="View edit history"
 					>
-						📝 {topic.editCount} edit{(topic.editCount || 0) > 1 ? 's' : ''}
+						📝 {topic.editCount} edit{(topic.editCount || 0) > 1 ? "s" : ""}
 					</button>
 				)}
 			</div>
-			
+
 			{/* Topic actions for author */}
 			{isAuthor && !isDeleted && !isEditing && (
 				<div className="flex items-center gap-2 ml-auto">

@@ -6,7 +6,7 @@ import { eq, desc } from "drizzle-orm";
 // Get edit history for a comment
 export async function GET(
 	req: NextRequest,
-	{ params }: { params: Promise<{ id: string }> }
+	{ params }: { params: Promise<{ id: string }> },
 ) {
 	try {
 		const { id } = await params;
@@ -19,10 +19,7 @@ export async function GET(
 			.limit(1);
 
 		if (!comment) {
-			return NextResponse.json(
-				{ error: "Comment not found" },
-				{ status: 404 }
-			);
+			return NextResponse.json({ error: "Comment not found" }, { status: 404 });
 		}
 
 		// Get edit history
@@ -42,7 +39,7 @@ export async function GET(
 		console.error("Error fetching comment edit history:", error);
 		return NextResponse.json(
 			{ error: "Failed to fetch edit history" },
-			{ status: 500 }
+			{ status: 500 },
 		);
 	}
 }

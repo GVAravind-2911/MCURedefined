@@ -13,7 +13,13 @@ const DURATION_OPTIONS = [
 ];
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
-const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"];
+const ALLOWED_IMAGE_TYPES = [
+	"image/jpeg",
+	"image/jpg",
+	"image/png",
+	"image/gif",
+	"image/webp",
+];
 
 interface ImageData {
 	url: string;
@@ -23,11 +29,16 @@ interface ImageData {
 interface CreateTopicModalProps {
 	isOpen: boolean;
 	onClose: () => void;
-	onSubmit: (title: string, content: string, spoilerData?: {
-		isSpoiler: boolean;
-		spoilerFor?: string;
-		spoilerExpiresAt?: Date;
-	}, imageData?: ImageData) => Promise<void>;
+	onSubmit: (
+		title: string,
+		content: string,
+		spoilerData?: {
+			isSpoiler: boolean;
+			spoilerFor?: string;
+			spoilerExpiresAt?: Date;
+		},
+		imageData?: ImageData,
+	) => Promise<void>;
 }
 
 const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
@@ -44,7 +55,7 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 	const [spoilerDuration, setSpoilerDuration] = useState("1"); // Duration in months
 	const [durationDropdownOpen, setDurationDropdownOpen] = useState(false);
 	const durationDropdownRef = useRef<HTMLDivElement>(null);
-	
+
 	// Image state
 	const [imagePreview, setImagePreview] = useState<string | null>(null);
 	const [imageFile, setImageFile] = useState<File | null>(null);
@@ -55,7 +66,10 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 	// Close dropdown when clicking outside
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
-			if (durationDropdownRef.current && !durationDropdownRef.current.contains(event.target as Node)) {
+			if (
+				durationDropdownRef.current &&
+				!durationDropdownRef.current.contains(event.target as Node)
+			) {
 				setDurationDropdownOpen(false);
 			}
 		};
@@ -65,7 +79,9 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 	}, []);
 
 	const getDurationLabel = () => {
-		const option = DURATION_OPTIONS.find(opt => opt.value === spoilerDuration);
+		const option = DURATION_OPTIONS.find(
+			(opt) => opt.value === spoilerDuration,
+		);
 		return option?.label || "1 month (default)";
 	};
 
@@ -78,32 +94,35 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 		});
 	};
 
-	const handleImageSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target.files?.[0];
-		if (!file) return;
+	const handleImageSelect = useCallback(
+		async (e: React.ChangeEvent<HTMLInputElement>) => {
+			const file = e.target.files?.[0];
+			if (!file) return;
 
-		// Validate file type
-		if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-			setError("Please select a valid image file (JPEG, PNG, GIF, or WebP)");
-			return;
-		}
+			// Validate file type
+			if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+				setError("Please select a valid image file (JPEG, PNG, GIF, or WebP)");
+				return;
+			}
 
-		// Validate file size
-		if (file.size > MAX_IMAGE_SIZE) {
-			setError("Image must be less than 5MB");
-			return;
-		}
+			// Validate file size
+			if (file.size > MAX_IMAGE_SIZE) {
+				setError("Image must be less than 5MB");
+				return;
+			}
 
-		setError("");
-		setImageFile(file);
+			setError("");
+			setImageFile(file);
 
-		try {
-			const dataUrl = await readFileAsDataURL(file);
-			setImagePreview(dataUrl);
-		} catch {
-			setError("Failed to read image file");
-		}
-	}, []);
+			try {
+				const dataUrl = await readFileAsDataURL(file);
+				setImagePreview(dataUrl);
+			} catch {
+				setError("Failed to read image file");
+			}
+		},
+		[],
+	);
 
 	const handleRemoveImage = useCallback(() => {
 		setImagePreview(null);
@@ -157,7 +176,7 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 		}
 
 		setIsSubmitting(true);
-		
+
 		try {
 			let imageData: ImageData | undefined;
 
@@ -168,7 +187,9 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 					imageData = await uploadImage(imagePreview);
 					setUploadedImage(imageData);
 				} catch (err) {
-					setError(err instanceof Error ? err.message : "Failed to upload image");
+					setError(
+						err instanceof Error ? err.message : "Failed to upload image",
+					);
 					setIsSubmitting(false);
 					setIsUploadingImage(false);
 					return;
@@ -178,14 +199,19 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 				imageData = uploadedImage;
 			}
 
-			const spoilerData = isSpoiler ? {
-				isSpoiler: true,
-				spoilerFor: spoilerFor.trim(),
-				spoilerExpiresAt: new Date(Date.now() + (parseFloat(spoilerDuration) * 30 * 24 * 60 * 60 * 1000)) // Convert months to milliseconds
-			} : { isSpoiler: false };
+			const spoilerData = isSpoiler
+				? {
+						isSpoiler: true,
+						spoilerFor: spoilerFor.trim(),
+						spoilerExpiresAt: new Date(
+							Date.now() +
+								parseFloat(spoilerDuration) * 30 * 24 * 60 * 60 * 1000,
+						), // Convert months to milliseconds
+					}
+				: { isSpoiler: false };
 
 			await onSubmit(title.trim(), content.trim(), spoilerData, imageData);
-			
+
 			// Reset form on success
 			setTitle("");
 			setContent("");
@@ -259,7 +285,10 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 	if (!isOpen) return null;
 
 	return (
-		<div className="fixed inset-0 bg-black/85 flex items-center justify-center z-1000 p-4" onClick={handleOverlayClick}>
+		<div
+			className="fixed inset-0 bg-black/85 flex items-center justify-center z-1000 p-4"
+			onClick={handleOverlayClick}
+		>
 			<div className="bg-[linear-gradient(135deg,rgba(12,12,12,0.98)_0%,rgba(26,26,26,0.98)_100%)] border border-[rgba(236,29,36,0.5)] rounded-xl p-8 w-full max-w-[700px] max-h-[90vh] overflow-y-auto backdrop-blur-[20px] shadow-[0_20px_40px_rgba(0,0,0,0.5),0_0_0_1px_rgba(236,29,36,0.1)] relative animate-[modalSlideIn_0.3s_ease] before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-[3px] before:bg-[linear-gradient(90deg,transparent,#ec1d24,transparent)] before:rounded-t-xl max-md:m-4 max-md:p-6 max-md:max-w-[calc(100vw-2rem)]">
 				<div className="flex justify-between items-center mb-8 pb-6 border-b border-white/10">
 					<h2 className="font-[BentonSansBold] text-[1.75rem] max-md:text-2xl text-white m-0 flex items-center gap-2 uppercase tracking-[0.5px] after:content-[''] after:block after:w-10 after:h-[3px] after:bg-[#ec1d24] after:ml-3">
@@ -277,7 +306,10 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 
 				<form className="flex flex-col gap-6" onSubmit={handleSubmit}>
 					<div className="flex flex-col gap-3">
-						<label htmlFor="topic-title" className="font-[BentonSansBold] text-white/80 text-[0.95rem] uppercase tracking-[0.5px]">
+						<label
+							htmlFor="topic-title"
+							className="font-[BentonSansBold] text-white/80 text-[0.95rem] uppercase tracking-[0.5px]"
+						>
 							Topic Title
 						</label>
 						<input
@@ -297,7 +329,10 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 					</div>
 
 					<div className="flex flex-col gap-3">
-						<label htmlFor="topic-content" className="font-[BentonSansBold] text-white/80 text-[0.95rem] uppercase tracking-[0.5px]">
+						<label
+							htmlFor="topic-content"
+							className="font-[BentonSansBold] text-white/80 text-[0.95rem] uppercase tracking-[0.5px]"
+						>
 							Content
 						</label>
 						<textarea
@@ -321,9 +356,11 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 							📷 Attach Image (optional)
 						</label>
 						<div className="mb-2 text-white/70">
-							<small className="text-[#ffa500]">⚠️ Images cannot be edited after posting. Max size: 5MB</small>
+							<small className="text-[#ffa500]">
+								⚠️ Images cannot be edited after posting. Max size: 5MB
+							</small>
 						</div>
-						
+
 						{imagePreview ? (
 							<div className="flex flex-col items-center gap-4 p-4 bg-white/5 rounded-lg border border-white/10">
 								<div className="max-w-full flex justify-center">
@@ -363,7 +400,9 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 								<div className="flex flex-col items-center gap-2 text-white/70">
 									<span className="text-4xl">🖼️</span>
 									<span>Click or drag an image here</span>
-									<small className="text-white/50">JPEG, PNG, GIF, WebP • Max 5MB</small>
+									<small className="text-white/50">
+										JPEG, PNG, GIF, WebP • Max 5MB
+									</small>
 								</div>
 							</div>
 						)}
@@ -380,7 +419,10 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 								onChange={(e) => setIsSpoiler(e.target.checked)}
 								disabled={isSubmitting}
 							/>
-							<label htmlFor="is-spoiler" className="m-0 cursor-pointer flex items-center gap-2 text-base text-white/90 font-[BentonSansBold]">
+							<label
+								htmlFor="is-spoiler"
+								className="m-0 cursor-pointer flex items-center gap-2 text-base text-white/90 font-[BentonSansBold]"
+							>
 								⚠️ This topic contains spoilers
 							</label>
 						</div>
@@ -388,7 +430,10 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 						{isSpoiler && (
 							<div className="ml-0 p-6 border-l-[3px] border-[rgba(255,165,0,0.4)] bg-[linear-gradient(135deg,rgba(255,165,0,0.03)_0%,rgba(255,107,53,0.03)_100%)] rounded-r-lg flex flex-col gap-5 mt-4 animate-[slideDown_0.3s_ease] max-md:pl-4 max-[480px]:ml-0 max-[480px]:pl-4">
 								<div className="flex flex-col gap-2">
-									<label htmlFor="spoiler-for" className="text-sm text-white/80 font-[BentonSansBold]">
+									<label
+										htmlFor="spoiler-for"
+										className="text-sm text-white/80 font-[BentonSansBold]"
+									>
 										Spoiler for:
 									</label>
 									<input
@@ -403,14 +448,20 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 									/>
 								</div>
 								<div className="flex flex-col gap-2">
-									<label htmlFor="spoiler-duration" className="text-sm text-white/80 font-[BentonSansBold]">
+									<label
+										htmlFor="spoiler-duration"
+										className="text-sm text-white/80 font-[BentonSansBold]"
+									>
 										Spoiler protection duration:
 									</label>
 									<div className="relative" ref={durationDropdownRef}>
 										<button
 											type="button"
 											className="flex items-center justify-between gap-3 w-full py-3.5 px-4 bg-white/5 border border-[rgba(255,165,0,0.2)] rounded-lg text-white/90 text-[0.95rem] cursor-pointer transition-all duration-300 ease-in-out text-left hover:border-[rgba(255,165,0,0.4)] hover:bg-[rgba(255,165,0,0.05)] focus:outline-none focus:border-[#ffa500] focus:bg-[rgba(255,165,0,0.08)] focus:shadow-[0_0_0_3px_rgba(255,165,0,0.15)] disabled:opacity-60 disabled:cursor-not-allowed"
-											onClick={() => !isSubmitting && setDurationDropdownOpen(!durationDropdownOpen)}
+											onClick={() =>
+												!isSubmitting &&
+												setDurationDropdownOpen(!durationDropdownOpen)
+											}
 											disabled={isSubmitting}
 										>
 											<span>{getDurationLabel()}</span>
@@ -420,7 +471,12 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 												height="12"
 												viewBox="0 0 12 12"
 											>
-												<path d="M2 4L6 8L10 4" stroke="currentColor" strokeWidth="2" fill="none" />
+												<path
+													d="M2 4L6 8L10 4"
+													stroke="currentColor"
+													strokeWidth="2"
+													fill="none"
+												/>
 											</svg>
 										</button>
 										{durationDropdownOpen && (
@@ -429,7 +485,7 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 													<button
 														key={option.value}
 														type="button"
-														className={`flex items-center w-full py-3 px-4 bg-transparent border-none text-white/70 text-[0.95rem] text-left cursor-pointer transition-all duration-300 ease-in-out hover:bg-[rgba(255,165,0,0.1)] hover:text-white/90 ${spoilerDuration === option.value ? 'bg-[rgba(255,165,0,0.15)] text-[#ffa500] font-medium' : ''}`}
+														className={`flex items-center w-full py-3 px-4 bg-transparent border-none text-white/70 text-[0.95rem] text-left cursor-pointer transition-all duration-300 ease-in-out hover:bg-[rgba(255,165,0,0.1)] hover:text-white/90 ${spoilerDuration === option.value ? "bg-[rgba(255,165,0,0.15)] text-[#ffa500] font-medium" : ""}`}
 														onClick={() => {
 															setSpoilerDuration(option.value);
 															setDurationDropdownOpen(false);
@@ -442,7 +498,8 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 										)}
 									</div>
 									<div className="text-[0.8rem] text-white/50 mt-1 italic">
-										Spoiler protection will automatically expire after this duration
+										Spoiler protection will automatically expire after this
+										duration
 									</div>
 								</div>
 							</div>
@@ -469,7 +526,11 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({
 							className="py-3.5 px-7 border-none rounded-lg font-[BentonSansBold] text-base cursor-pointer transition-all duration-300 ease-in-out relative overflow-hidden uppercase tracking-[0.5px] bg-[linear-gradient(135deg,#ec1d24,#d01c22)] text-white shadow-[0_4px_15px_rgba(236,29,36,0.3)] hover:not-disabled:bg-[linear-gradient(135deg,#ff3a3a,#ec1d24)] hover:not-disabled:-translate-y-0.5 hover:not-disabled:shadow-[0_6px_20px_rgba(236,29,36,0.4)] disabled:bg-[rgba(236,29,36,0.4)] disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none max-md:w-full"
 							disabled={isSubmitting || !title.trim() || !content.trim()}
 						>
-							{isUploadingImage ? "Uploading Image..." : isSubmitting ? "Creating..." : "Create Topic"}
+							{isUploadingImage
+								? "Uploading Image..."
+								: isSubmitting
+									? "Creating..."
+									: "Create Topic"}
 						</button>
 					</div>
 				</form>

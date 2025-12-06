@@ -80,7 +80,9 @@ const Comment = memo(function Comment({
 		if (!replyItems || replyItems.length === 0) return null;
 
 		return (
-			<div className={`mt-2.5 ml-4 pl-3 border-l-2 border-[rgba(236,29,36,0.5)] ${currentDepth > 0 ? "nested" : ""}`}>
+			<div
+				className={`mt-2.5 ml-4 pl-3 border-l-2 border-[rgba(236,29,36,0.5)] ${currentDepth > 0 ? "nested" : ""}`}
+			>
 				{replyItems.map((reply) => (
 					<Comment
 						key={reply.id}
@@ -115,7 +117,9 @@ const Comment = memo(function Comment({
 
 	return (
 		<div className="relative">
-			<div className={`${getDepthBgClass()} rounded-lg p-4 transition-all duration-300 mb-1 hover:bg-[rgba(50,50,50,0.4)] ${comment.deleted ? "comment-deleted" : ""}`}>
+			<div
+				className={`${getDepthBgClass()} rounded-lg p-4 transition-all duration-300 mb-1 hover:bg-[rgba(50,50,50,0.4)] ${comment.deleted ? "comment-deleted" : ""}`}
+			>
 				<div className="flex justify-between items-center mb-3 flex-wrap gap-2 md:items-start">
 					<div className="flex items-center gap-2 flex-wrap md:w-full">
 						{comment.userImage ? (
@@ -151,7 +155,9 @@ const Comment = memo(function Comment({
 					)}
 				</div>
 
-				<div className={`text-white font-['BentonSansRegular'] leading-relaxed mb-4 wrap-break-word whitespace-pre-wrap ${comment.deleted ? "text-white/50 italic" : ""}`}>
+				<div
+					className={`text-white font-['BentonSansRegular'] leading-relaxed mb-4 wrap-break-word whitespace-pre-wrap ${comment.deleted ? "text-white/50 italic" : ""}`}
+				>
 					{comment.content}
 				</div>
 
@@ -174,7 +180,11 @@ const Comment = memo(function Comment({
 								<title>Like</title>
 								<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
 							</svg>
-							{comment.likes > 0 && <span className="inline m-0 text-[0.85rem]">{comment.likes}</span>}
+							{comment.likes > 0 && (
+								<span className="inline m-0 text-[0.85rem]">
+									{comment.likes}
+								</span>
+							)}
 						</button>
 					)}
 

@@ -23,7 +23,7 @@ export default function ImpersonationBanner() {
 		const checkImpersonation = async () => {
 			try {
 				const session = await authClient.getSession();
-				
+
 				if (session?.data?.session?.impersonatedBy) {
 					setState({
 						isImpersonating: true,
@@ -52,7 +52,7 @@ export default function ImpersonationBanner() {
 		setStopping(true);
 		try {
 			const result = await authClient.admin.stopImpersonating();
-			
+
 			if (result.error) {
 				throw new Error(result.error.message || "Failed to stop impersonating");
 			}
@@ -60,7 +60,9 @@ export default function ImpersonationBanner() {
 			// Redirect back to admin panel
 			window.location.href = "/manage/users";
 		} catch (error) {
-			alert(error instanceof Error ? error.message : "Failed to stop impersonating");
+			alert(
+				error instanceof Error ? error.message : "Failed to stop impersonating",
+			);
 			setStopping(false);
 		}
 	};
@@ -104,7 +106,8 @@ export default function ImpersonationBanner() {
 							Impersonation Mode
 						</span>
 						<span className="text-sm text-white font-medium md:text-xs md:truncate">
-							You are viewing the site as <strong className="font-bold">{state.impersonatedUser}</strong>
+							You are viewing the site as{" "}
+							<strong className="font-bold">{state.impersonatedUser}</strong>
 						</span>
 					</div>
 					<button

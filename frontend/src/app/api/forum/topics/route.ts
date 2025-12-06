@@ -33,8 +33,8 @@ export async function GET(req: NextRequest) {
 				.where(
 					and(
 						eq(forumTopic.isSpoiler, true),
-						sql`${forumTopic.spoilerExpiresAt} < NOW()`
-					)
+						sql`${forumTopic.spoilerExpiresAt} < NOW()`,
+					),
 				);
 		} catch (error) {
 			console.warn("Failed to clean up expired topic spoilers:", error);
@@ -45,7 +45,7 @@ export async function GET(req: NextRequest) {
 		if (search) {
 			whereClause = and(
 				eq(forumTopic.deleted, false),
-				sql`LOWER(${forumTopic.title}) LIKE LOWER(${'%' + search + '%'})`
+				sql`LOWER(${forumTopic.title}) LIKE LOWER(${"%" + search + "%"})`,
 			);
 		}
 
@@ -53,7 +53,9 @@ export async function GET(req: NextRequest) {
 		let orderBy;
 		switch (sortBy) {
 			case "popular":
-				orderBy = desc(sql`COALESCE(COUNT(DISTINCT ${forumTopicLike.userId}), 0)`);
+				orderBy = desc(
+					sql`COALESCE(COUNT(DISTINCT ${forumTopicLike.userId}), 0)`,
+				);
 				break;
 			case "oldest":
 				orderBy = forumTopic.createdAt;
@@ -82,16 +84,25 @@ export async function GET(req: NextRequest) {
 				imageUrl: forumTopic.imageUrl,
 				username: user.displayUsername,
 				userImage: user.image,
-				likeCount: sql<number>`COALESCE(COUNT(DISTINCT ${forumTopicLike.userId}), 0)`.mapWith(Number),
-				commentCount: sql<number>`COALESCE(COUNT(DISTINCT ${forumComment.id}), 0)`.mapWith(Number),
+				likeCount:
+					sql<number>`COALESCE(COUNT(DISTINCT ${forumTopicLike.userId}), 0)`.mapWith(
+						Number,
+					),
+				commentCount:
+					sql<number>`COALESCE(COUNT(DISTINCT ${forumComment.id}), 0)`.mapWith(
+						Number,
+					),
 			})
 			.from(forumTopic)
 			.leftJoin(user, eq(forumTopic.userId, user.id))
 			.leftJoin(forumTopicLike, eq(forumTopic.id, forumTopicLike.topicId))
-			.leftJoin(forumComment, and(
-				eq(forumTopic.id, forumComment.topicId),
-				eq(forumComment.deleted, false)
-			))
+			.leftJoin(
+				forumComment,
+				and(
+					eq(forumTopic.id, forumComment.topicId),
+					eq(forumComment.deleted, false),
+				),
+			)
 			.where(whereClause)
 			.groupBy(
 				forumTopic.id,
@@ -108,7 +119,7 @@ export async function GET(req: NextRequest) {
 				forumTopic.spoilerExpiresAt,
 				forumTopic.imageUrl,
 				user.displayUsername,
-				user.image
+				user.image,
 			)
 			.orderBy(desc(forumTopic.pinned), orderBy)
 			.limit(limit)
@@ -123,21 +134,21 @@ export async function GET(req: NextRequest) {
 		// Get user's likes for these topics if logged in
 		let userLikedTopicIds: string[] = [];
 		if (currentUserId && topics.length > 0) {
-			const topicIds = topics.map(t => t.id);
+			const topicIds = topics.map((t) => t.id);
 			const userLikes = await db
 				.select({ topicId: forumTopicLike.topicId })
 				.from(forumTopicLike)
 				.where(
 					and(
 						eq(forumTopicLike.userId, currentUserId),
-						inArray(forumTopicLike.topicId, topicIds)
-					)
+						inArray(forumTopicLike.topicId, topicIds),
+					),
 				);
-			userLikedTopicIds = userLikes.map(l => l.topicId);
+			userLikedTopicIds = userLikes.map((l) => l.topicId);
 		}
 
 		// Add userHasLiked to each topic
-		const topicsWithLikeStatus = topics.map(topic => ({
+		const topicsWithLikeStatus = topics.map((topic) => ({
 			...topic,
 			userHasLiked: userLikedTopicIds.includes(topic.id),
 		}));
@@ -155,7 +166,7 @@ export async function GET(req: NextRequest) {
 		console.error("Error fetching forum topics:", error);
 		return NextResponse.json(
 			{ error: "Failed to fetch forum topics" },
-			{ status: 500 }
+			{ status: 500 },
 		);
 	}
 }
@@ -167,38 +178,46 @@ export async function POST(req: NextRequest) {
 		if (!session?.user) {
 			return NextResponse.json(
 				{ error: "Authentication required" },
-				{ status: 401 }
+				{ status: 401 },
 			);
 		}
 
 		const body = await req.json();
-		const { title, content, isSpoiler, spoilerFor, spoilerExpiresAt, imageUrl, imageKey } = body;
+		const {
+			title,
+			content,
+			isSpoiler,
+			spoilerFor,
+			spoilerExpiresAt,
+			imageUrl,
+			imageKey,
+		} = body;
 
 		if (!title || !content) {
 			return NextResponse.json(
 				{ error: "Title and content are required" },
-				{ status: 400 }
+				{ status: 400 },
 			);
 		}
 
 		if (title.length > 200) {
 			return NextResponse.json(
 				{ error: "Title must be 200 characters or less" },
-				{ status: 400 }
+				{ status: 400 },
 			);
 		}
 
 		if (content.length > 10000) {
 			return NextResponse.json(
 				{ error: "Content must be 10,000 characters or less" },
-				{ status: 400 }
+				{ status: 400 },
 			);
 		}
 
 		if (isSpoiler && !spoilerFor) {
 			return NextResponse.json(
 				{ error: "Spoiler description is required when marking as spoiler" },
-				{ status: 400 }
+				{ status: 400 },
 			);
 		}
 
@@ -262,7 +281,7 @@ export async function POST(req: NextRequest) {
 		console.error("Error creating forum topic:", error);
 		return NextResponse.json(
 			{ error: "Failed to create forum topic" },
-			{ status: 500 }
+			{ status: 500 },
 		);
 	}
 }

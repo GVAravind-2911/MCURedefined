@@ -14,9 +14,10 @@ export default function ProfileTabs({
 					bg-transparent border-none px-4 py-3 font-[BentonSansRegular] text-base cursor-pointer 
 					transition-all duration-200 relative whitespace-nowrap
 					hover:text-white hover:bg-white/5
-					${activeTab === "blogs" 
-						? "text-white font-[BentonSansBold] after:content-[''] after:absolute after:-bottom-px after:left-0 after:w-full after:h-0.5 after:bg-[#ec1d24] after:rounded-t" 
-						: "text-white/70"
+					${
+						activeTab === "blogs"
+							? "text-white font-[BentonSansBold] after:content-[''] after:absolute after:-bottom-px after:left-0 after:w-full after:h-0.5 after:bg-[#ec1d24] after:rounded-t"
+							: "text-white/70"
 					}
 				`}
 				onClick={() => onTabChange("blogs")}
@@ -29,9 +30,10 @@ export default function ProfileTabs({
 					bg-transparent border-none px-4 py-3 font-[BentonSansRegular] text-base cursor-pointer 
 					transition-all duration-200 relative whitespace-nowrap
 					hover:text-white hover:bg-white/5
-					${activeTab === "reviews" 
-						? "text-white font-[BentonSansBold] after:content-[''] after:absolute after:-bottom-px after:left-0 after:w-full after:h-0.5 after:bg-[#ec1d24] after:rounded-t" 
-						: "text-white/70"
+					${
+						activeTab === "reviews"
+							? "text-white font-[BentonSansBold] after:content-[''] after:absolute after:-bottom-px after:left-0 after:w-full after:h-0.5 after:bg-[#ec1d24] after:rounded-t"
+							: "text-white/70"
 					}
 				`}
 				onClick={() => onTabChange("reviews")}
@@ -44,9 +46,10 @@ export default function ProfileTabs({
 					bg-transparent border-none px-4 py-3 font-[BentonSansRegular] text-base cursor-pointer 
 					transition-all duration-200 relative whitespace-nowrap
 					hover:text-white hover:bg-white/5
-					${activeTab === "projects" 
-						? "text-white font-[BentonSansBold] after:content-[''] after:absolute after:-bottom-px after:left-0 after:w-full after:h-0.5 after:bg-[#ec1d24] after:rounded-t" 
-						: "text-white/70"
+					${
+						activeTab === "projects"
+							? "text-white font-[BentonSansBold] after:content-[''] after:absolute after:-bottom-px after:left-0 after:w-full after:h-0.5 after:bg-[#ec1d24] after:rounded-t"
+							: "text-white/70"
 					}
 				`}
 				onClick={() => onTabChange("projects")}

@@ -11,4 +11,6 @@ if (!connectionString) {
 
 // For server-side usage (Node.js environment)
 const client = postgres(connectionString);
-export const db: PostgresJsDatabase<typeof schema> = drizzle(client, { schema });
+export const db: PostgresJsDatabase<typeof schema> = drizzle(client, {
+	schema,
+});

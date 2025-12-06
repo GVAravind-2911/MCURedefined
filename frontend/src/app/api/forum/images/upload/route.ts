@@ -6,7 +6,7 @@ const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:4000";
 
 /**
  * Upload a topic image to the backend storage service.
- * 
+ *
  * This route acts as a proxy to the backend image service, adding authentication.
  * When moving to a separate image service, update the BACKEND_URL accordingly.
  */
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
 		if (!session?.user) {
 			return NextResponse.json(
 				{ error: "Authentication required" },
-				{ status: 401 }
+				{ status: 401 },
 			);
 		}
 
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 		if (!image) {
 			return NextResponse.json(
 				{ error: "Image data is required" },
-				{ status: 400 }
+				{ status: 400 },
 			);
 		}
 
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
 		if (!image.startsWith("data:image")) {
 			return NextResponse.json(
 				{ error: "Invalid image format. Must be a base64 data URI." },
-				{ status: 400 }
+				{ status: 400 },
 			);
 		}
 
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
 		if (image.length > maxBase64Size) {
 			return NextResponse.json(
 				{ error: "Image is too large. Maximum size is 5MB." },
-				{ status: 400 }
+				{ status: 400 },
 			);
 		}
 
@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
 			console.error("Backend image upload failed:", errorData);
 			return NextResponse.json(
 				{ error: errorData.detail || "Failed to upload image" },
-				{ status: response.status }
+				{ status: response.status },
 			);
 		}
 
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
 		console.error("Error in topic image upload:", error);
 		return NextResponse.json(
 			{ error: "Failed to upload image" },
-			{ status: 500 }
+			{ status: 500 },
 		);
 	}
 }

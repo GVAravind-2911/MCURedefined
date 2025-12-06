@@ -63,8 +63,8 @@ const FixedSidebar: React.FC<FixedSidebarProps> = ({
 	}
 
 	return (
-		<aside 
-			className="w-full lg:w-[340px] xl:w-[380px] lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-120px)] transition-transform duration-300 ease-out" 
+		<aside
+			className="w-full lg:w-[340px] xl:w-[380px] lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-120px)] transition-transform duration-300 ease-out"
 			ref={sidebarRef}
 		>
 			<div className="bg-white/2 backdrop-blur-sm rounded-2xl border border-white/5 overflow-hidden shadow-xl">
@@ -87,25 +87,34 @@ const FixedSidebar: React.FC<FixedSidebarProps> = ({
 				<div className="overflow-y-auto max-h-[calc(100vh-220px)] lg:max-h-[calc(100vh-200px)] scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent hover:scrollbar-thumb-white/20">
 					<div className="divide-y divide-white/5">
 						{latestBlogs.map((article) => (
-							<SimilarBlog key={article.id} articles={article} isReview={isReview} />
+							<SimilarBlog
+								key={article.id}
+								articles={article}
+								isReview={isReview}
+							/>
 						))}
 					</div>
 				</div>
 
 				{/* Footer Link */}
 				<div className="px-5 py-3 border-t border-white/5 bg-white/1">
-					<a 
+					<a
 						href={isReview ? "/reviews" : "/blogs"}
 						className="flex items-center justify-center gap-2 text-sm text-[#ec1d24] font-[BentonSansRegular] hover:text-[#ff3d44] transition-colors group"
 					>
 						<span>View all {isReview ? "reviews" : "blogs"}</span>
-						<svg 
-							className="w-4 h-4 transition-transform group-hover:translate-x-1" 
-							fill="none" 
-							viewBox="0 0 24 24" 
+						<svg
+							className="w-4 h-4 transition-transform group-hover:translate-x-1"
+							fill="none"
+							viewBox="0 0 24 24"
 							stroke="currentColor"
 						>
-							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M9 5l7 7-7 7"
+							/>
 						</svg>
 					</a>
 				</div>

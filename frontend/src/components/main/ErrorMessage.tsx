@@ -22,7 +22,7 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
 			<div className="bg-linear-to-br from-[rgba(40,40,40,0.4)] to-[rgba(25,25,25,0.6)] rounded-xl p-8 md:p-12 w-full max-w-[500px] text-center relative overflow-hidden animate-[fadeIn_0.4s_ease-out] border border-white/10 backdrop-blur-[10px] shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
 				{/* Top accent line */}
 				<div className="absolute top-0 left-0 right-0 h-[3px] bg-linear-to-r from-transparent via-[#ec1d24] to-transparent" />
-				
+
 				{/* Error Icon */}
 				<div className="flex justify-center mb-8">
 					<div className="w-20 h-20 rounded-full bg-[rgba(236,29,36,0.1)] border border-[#ec1d24]/20 flex items-center justify-center">
@@ -46,7 +46,7 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
 				<h2 className="font-[BentonSansBold] text-2xl md:text-3xl text-white mb-3">
 					{title}
 				</h2>
-				
+
 				{/* Subtitle */}
 				<p className="text-white/50 font-[BentonSansRegular] text-sm mb-8">
 					Something went wrong. Here are some possible reasons:

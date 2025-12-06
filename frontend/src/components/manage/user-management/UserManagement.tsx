@@ -3,7 +3,14 @@
 import { useState, useEffect, useCallback } from "react";
 import { authClient } from "@/lib/auth/auth-client";
 
-import type { UserListState, ModalState, UserStats, NewUserData, ManagedUser, UserSession } from "./types";
+import type {
+	UserListState,
+	ModalState,
+	UserStats,
+	NewUserData,
+	ManagedUser,
+	UserSession,
+} from "./types";
 import UserToolbar from "./UserToolbar";
 import UserStatsBar from "./UserStatsBar";
 import UserTable from "./UserTable";
@@ -100,7 +107,16 @@ export default function UserManagement() {
 				error: error instanceof Error ? error.message : "Failed to fetch users",
 			}));
 		}
-	}, [currentPage, pageSize, searchValue, searchField, sortBy, sortDirection, filterRole, filterBanned]);
+	}, [
+		currentPage,
+		pageSize,
+		searchValue,
+		searchField,
+		sortBy,
+		sortDirection,
+		filterRole,
+		filterBanned,
+	]);
 
 	useEffect(() => {
 		fetchUsers();
@@ -159,13 +175,17 @@ export default function UserManagement() {
 
 		setActionLoading(true);
 		try {
-			const result = await authClient.admin.impersonateUser({ userId: user.id });
+			const result = await authClient.admin.impersonateUser({
+				userId: user.id,
+			});
 			if (result.error) {
 				throw new Error(result.error.message || "Failed to impersonate user");
 			}
 			window.location.href = "/";
 		} catch (error) {
-			alert(error instanceof Error ? error.message : "Failed to impersonate user");
+			alert(
+				error instanceof Error ? error.message : "Failed to impersonate user",
+			);
 		} finally {
 			setActionLoading(false);
 		}
@@ -241,14 +261,18 @@ export default function UserManagement() {
 	const handleViewSessions = async (user: ManagedUser) => {
 		setActionLoading(true);
 		try {
-			const result = await authClient.admin.listUserSessions({ userId: user.id });
+			const result = await authClient.admin.listUserSessions({
+				userId: user.id,
+			});
 			if (result.error) {
 				throw new Error(result.error.message || "Failed to fetch sessions");
 			}
 			setUserSessions((result.data?.sessions as UserSession[]) || []);
 			setModal({ type: "sessions", user });
 		} catch (error) {
-			alert(error instanceof Error ? error.message : "Failed to fetch sessions");
+			alert(
+				error instanceof Error ? error.message : "Failed to fetch sessions",
+			);
 		} finally {
 			setActionLoading(false);
 		}
@@ -267,18 +291,25 @@ export default function UserManagement() {
 				handleViewSessions(modal.user);
 			}
 		} catch (error) {
-			alert(error instanceof Error ? error.message : "Failed to revoke session");
+			alert(
+				error instanceof Error ? error.message : "Failed to revoke session",
+			);
 		} finally {
 			setActionLoading(false);
 		}
 	};
 
 	const handleRevokeAllSessions = async (user: ManagedUser) => {
-		if (!confirm(`Are you sure you want to revoke all sessions for ${user.name}?`)) return;
+		if (
+			!confirm(`Are you sure you want to revoke all sessions for ${user.name}?`)
+		)
+			return;
 
 		setActionLoading(true);
 		try {
-			const result = await authClient.admin.revokeUserSessions({ userId: user.id });
+			const result = await authClient.admin.revokeUserSessions({
+				userId: user.id,
+			});
 			if (result.error) {
 				throw new Error(result.error.message || "Failed to revoke sessions");
 			}
@@ -286,7 +317,9 @@ export default function UserManagement() {
 				handleViewSessions(user);
 			}
 		} catch (error) {
-			alert(error instanceof Error ? error.message : "Failed to revoke sessions");
+			alert(
+				error instanceof Error ? error.message : "Failed to revoke sessions",
+			);
 		} finally {
 			setActionLoading(false);
 		}
@@ -297,7 +330,9 @@ export default function UserManagement() {
 
 		setActionLoading(true);
 		try {
-			const result = await authClient.admin.removeUser({ userId: modal.user.id });
+			const result = await authClient.admin.removeUser({
+				userId: modal.user.id,
+			});
 			if (result.error) {
 				throw new Error(result.error.message || "Failed to delete user");
 			}
@@ -346,7 +381,7 @@ export default function UserManagement() {
 	const totalPages = Math.ceil(userState.total / pageSize);
 
 	return (
-		<div className="w-full max-w-[1400px] mx-auto px-4 pb-8">
+		<div className="w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
 			<UserToolbar
 				searchValue={searchValue}
 				setSearchValue={setSearchValue}
@@ -365,19 +400,54 @@ export default function UserManagement() {
 
 			{/* Error State */}
 			{userState.error && (
-				<div className="flex items-center justify-between p-5 bg-red-500/15 border border-red-500/30 rounded-[10px] mb-6">
-					<p className="text-red-300 text-[0.95rem]">{userState.error}</p>
-					<button type="button" onClick={fetchUsers} className="py-3 px-6 bg-transparent text-white/70 border border-white/10 rounded-[10px] font-semibold text-[0.95rem] cursor-pointer transition-all duration-[0.25s] hover:border-white/20 hover:text-white hover:bg-white/5">
-						Retry
+				<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 bg-red-500/10 border border-red-500/30 rounded-2xl mb-6 backdrop-blur-sm">
+					<div className="flex items-start gap-3">
+						<div className="shrink-0 w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center">
+							<svg
+								className="w-5 h-5 text-red-400"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								strokeWidth="2"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+								/>
+							</svg>
+						</div>
+						<div>
+							<p className="text-red-300 font-medium">Error loading users</p>
+							<p className="text-red-300/70 text-sm mt-0.5">
+								{userState.error}
+							</p>
+						</div>
+					</div>
+					<button
+						type="button"
+						onClick={fetchUsers}
+						className="shrink-0 py-2.5 px-5 bg-white/5 text-white/80 border border-white/10 rounded-xl font-medium text-sm transition-all duration-300 hover:bg-white/10 hover:text-white hover:border-white/20"
+					>
+						Try Again
 					</button>
 				</div>
 			)}
 
 			{/* Loading State */}
 			{userState.loading && (
-				<div className="flex flex-col items-center justify-center gap-4 py-16 px-8 bg-[rgba(18,18,18,0.95)] rounded-[14px] border border-white/10">
-					<div className="w-12 h-12 border-[3px] border-white/10 border-t-[#ec1d24] rounded-full animate-spin" />
-					<p className="text-white/70 text-base">Loading users...</p>
+				<div className="flex flex-col items-center justify-center gap-5 py-20 px-8 bg-white/2 backdrop-blur-sm rounded-2xl border border-white/10">
+					<div className="relative">
+						<div className="w-14 h-14 border-3 border-white/10 border-t-[#ec1d24] rounded-full animate-spin" />
+						<div
+							className="absolute inset-0 w-14 h-14 border-3 border-transparent border-b-[#ec1d24]/30 rounded-full animate-spin animation-delay-150"
+							style={{ animationDirection: "reverse" }}
+						/>
+					</div>
+					<div className="text-center">
+						<p className="text-white/80 text-base font-medium">Loading users</p>
+						<p className="text-white/40 text-sm mt-1">Please wait...</p>
+					</div>
 				</div>
 			)}
 
@@ -471,7 +541,12 @@ export default function UserManagement() {
 							onCreateUser={handleCreateUser}
 							onClose={() => {
 								closeModal();
-								setNewUserData({ email: "", password: "", name: "", role: "user" });
+								setNewUserData({
+									email: "",
+									password: "",
+									name: "",
+									role: "user",
+								});
 							}}
 							actionLoading={actionLoading}
 						/>

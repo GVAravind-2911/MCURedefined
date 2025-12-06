@@ -118,7 +118,9 @@ export default function ProfileInfo({
 						}
 						setErrors(fieldErrors);
 					} else {
-						setErrors({ general: errorData.error || "Failed to update profile" });
+						setErrors({
+							general: errorData.error || "Failed to update profile",
+						});
 					}
 					return;
 				}
@@ -163,7 +165,9 @@ export default function ProfileInfo({
 					/>
 				) : (
 					<div className="w-24 h-24 md:w-28 md:h-28 rounded-full border-3 border-[#ec1d24] bg-linear-to-br from-[#ec1d24] to-[#ff7f50] flex items-center justify-center">
-						<span className="font-[BentonSansBold] text-4xl text-white">{firstLetter}</span>
+						<span className="font-[BentonSansBold] text-4xl text-white">
+							{firstLetter}
+						</span>
 					</div>
 				)}
 			</div>
@@ -171,7 +175,9 @@ export default function ProfileInfo({
 			{!isEditing ? (
 				<div className="flex-1 text-center md:text-left text-white">
 					<div className="flex flex-col md:flex-row items-center md:items-start md:justify-between mb-2">
-						<h2 className="font-[BentonSansBold] text-2xl md:text-3xl m-0">{user?.name || "User"}</h2>
+						<h2 className="font-[BentonSansBold] text-2xl md:text-3xl m-0">
+							{user?.name || "User"}
+						</h2>
 						<button
 							className="mt-2 md:mt-0 p-2 bg-transparent border-none text-white/50 cursor-pointer transition-all duration-200 flex items-center justify-center hover:text-[#ec1d24] hover:scale-110"
 							onClick={() => setIsEditing(true)}
@@ -206,7 +212,10 @@ export default function ProfileInfo({
 				<div className="flex-1 w-full">
 					<form onSubmit={handleSubmit} className="space-y-5">
 						<div>
-							<label htmlFor="name" className="block mb-2 text-white/80 font-[BentonSansRegular] text-sm">
+							<label
+								htmlFor="name"
+								className="block mb-2 text-white/80 font-[BentonSansRegular] text-sm"
+							>
 								Name
 							</label>
 							<input
@@ -219,11 +228,16 @@ export default function ProfileInfo({
 								required
 								className="w-full bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-white font-[BentonSansRegular] text-base transition-all duration-200 focus:bg-white/10 focus:border-[#ec1d24] focus:outline-none placeholder:text-white/40"
 							/>
-							{errors.name && <div className="text-red-400 text-sm mt-1">{errors.name}</div>}
+							{errors.name && (
+								<div className="text-red-400 text-sm mt-1">{errors.name}</div>
+							)}
 						</div>
 
 						<div>
-							<label htmlFor="description" className="block mb-2 text-white/80 font-[BentonSansRegular] text-sm">
+							<label
+								htmlFor="description"
+								className="block mb-2 text-white/80 font-[BentonSansRegular] text-sm"
+							>
 								About me
 							</label>
 							<textarea
@@ -240,7 +254,9 @@ export default function ProfileInfo({
 								{formData.description.length}/2000
 							</div>
 							{errors.description && (
-								<div className="text-red-400 text-sm mt-1">{errors.description}</div>
+								<div className="text-red-400 text-sm mt-1">
+									{errors.description}
+								</div>
 							)}
 						</div>
 

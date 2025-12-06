@@ -27,7 +27,7 @@ const AdminBlogCard: React.FC<AdminBlogCardProps> = ({
 	return (
 		<a
 			href={`/${path}/${blog.id}`}
-className="group relative flex flex-col sm:flex-row w-full bg-white/2 rounded-xl sm:rounded-2xl transition-all duration-300 no-underline overflow-hidden border border-white/5 hover:border-white/10 hover:bg-white/4 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)]"
+			className="group relative flex flex-col sm:flex-row w-full bg-white/2 rounded-xl sm:rounded-2xl transition-all duration-300 no-underline overflow-hidden border border-white/5 hover:border-white/10 hover:bg-white/4 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)]"
 			onClick={(e) => handleNavigation(e, blog.id)}
 		>
 			{/* Admin Action Buttons */}
@@ -71,7 +71,7 @@ className="group relative flex flex-col sm:flex-row w-full bg-white/2 rounded-xl
 				/>
 				{/* Gradient Overlay */}
 				<div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent sm:bg-linear-to-r sm:from-transparent sm:via-transparent sm:to-black/20" />
-				
+
 				{/* Mobile Date Badge */}
 				<div className="absolute bottom-3 left-3 sm:hidden flex items-center gap-1.5 px-2.5 py-1 bg-black/60 backdrop-blur-sm rounded-full">
 					<Calendar className="w-3 h-3 text-[#ec1d24]" />
@@ -94,7 +94,8 @@ className="group relative flex flex-col sm:flex-row w-full bg-white/2 rounded-xl
 								type="button"
 								aria-label={`Filter by tag: ${tag}`}
 							>
-								<span className="opacity-60">#</span>{tag}
+								<span className="opacity-60">#</span>
+								{tag}
 							</button>
 						))}
 						{blog.tags.length > 3 && (

@@ -190,8 +190,8 @@ export default function VerifyEmailPage() {
 							</div>
 						)}
 
-						<Link 
-							href="/" 
+						<Link
+							href="/"
 							className="block text-center mt-4 text-white/70 font-['BentonSansRegular'] text-sm no-underline transition-colors duration-200 hover:text-[#ec1d24]"
 						>
 							Back to home

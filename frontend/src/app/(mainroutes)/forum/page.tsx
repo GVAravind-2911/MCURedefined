@@ -11,7 +11,7 @@ import LoadingSpinner from "@/components/main/LoadingSpinner";
 // Lazy load the modal for better initial page load
 const CreateTopicModal = dynamic(
 	() => import("@/components/forum/CreateTopicModal"),
-	{ ssr: false }
+	{ ssr: false },
 );
 
 interface ForumTopic {
@@ -46,7 +46,7 @@ interface ForumResponse {
 export default function ForumPage(): React.ReactElement {
 	const router = useRouter();
 	const { data: session } = authClient.useSession();
-	
+
 	const [topics, setTopics] = useState<ForumTopic[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState("");
@@ -70,7 +70,10 @@ export default function ForumPage(): React.ReactElement {
 	// Close dropdown when clicking outside
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
-			if (sortDropdownRef.current && !sortDropdownRef.current.contains(event.target as Node)) {
+			if (
+				sortDropdownRef.current &&
+				!sortDropdownRef.current.contains(event.target as Node)
+			) {
 				setIsSortDropdownOpen(false);
 			}
 		};
@@ -92,7 +95,7 @@ export default function ForumPage(): React.ReactElement {
 			});
 
 			const response = await fetch(`/api/forum/topics?${params}`);
-			
+
 			if (!response.ok) {
 				throw new Error("Failed to fetch topics");
 			}
@@ -147,9 +150,9 @@ export default function ForumPage(): React.ReactElement {
 									...topic,
 									userHasLiked: result.liked,
 									likeCount: topic.likeCount + (result.liked ? 1 : -1),
-							  }
-							: topic
-					)
+								}
+							: topic,
+					),
 				);
 			}
 		} catch (err) {
@@ -157,21 +160,27 @@ export default function ForumPage(): React.ReactElement {
 		}
 	};
 
-	const handleCreateTopic = async (title: string, content: string, spoilerData?: {
-		isSpoiler: boolean;
-		spoilerFor?: string;
-		spoilerExpiresAt?: Date;
-	}, imageData?: { url: string; key: string }) => {
+	const handleCreateTopic = async (
+		title: string,
+		content: string,
+		spoilerData?: {
+			isSpoiler: boolean;
+			spoilerFor?: string;
+			spoilerExpiresAt?: Date;
+		},
+		imageData?: { url: string; key: string },
+	) => {
 		if (!session?.user) {
 			throw new Error("You must be signed in to create a topic");
 		}
 
 		const requestBody: any = { title, content };
-		
+
 		if (spoilerData?.isSpoiler) {
 			requestBody.isSpoiler = true;
 			requestBody.spoilerFor = spoilerData.spoilerFor;
-			requestBody.spoilerExpiresAt = spoilerData.spoilerExpiresAt?.toISOString();
+			requestBody.spoilerExpiresAt =
+				spoilerData.spoilerExpiresAt?.toISOString();
 		}
 
 		// Add image data if provided
@@ -221,14 +230,14 @@ export default function ForumPage(): React.ReactElement {
 				<button
 					key={i}
 					className={`py-2.5 px-4 border rounded-lg font-[BentonSansRegular] font-medium cursor-pointer transition-all duration-300 ease-in-out min-w-10 text-center ${
-						i === currentPage 
-							? 'bg-[linear-gradient(135deg,#ec1d24,#d01c22)] border-[#ec1d24] text-white font-semibold shadow-[0_4px_15px_rgba(236,29,36,0.3)]' 
-							: 'border-white/20 bg-white/5 text-white/80 hover:bg-[rgba(236,29,36,0.1)] hover:border-[rgba(236,29,36,0.5)] hover:-translate-y-0.5 hover:text-white'
+						i === currentPage
+							? "bg-[linear-gradient(135deg,#ec1d24,#d01c22)] border-[#ec1d24] text-white font-semibold shadow-[0_4px_15px_rgba(236,29,36,0.3)]"
+							: "border-white/20 bg-white/5 text-white/80 hover:bg-[rgba(236,29,36,0.1)] hover:border-[rgba(236,29,36,0.5)] hover:-translate-y-0.5 hover:text-white"
 					}`}
 					onClick={() => handlePageChange(i)}
 				>
 					{i}
-				</button>
+				</button>,
 			);
 		}
 
@@ -258,7 +267,9 @@ export default function ForumPage(): React.ReactElement {
 			<div className="max-w-[1200px] mx-auto p-8 max-md:p-4">
 				{/* Forum Header */}
 				<div className="flex justify-between items-center mb-8 p-8 max-md:p-6 bg-[linear-gradient(135deg,rgba(236,29,36,0.1)_0%,rgba(40,40,40,0.4)_100%)] border border-[rgba(236,29,36,0.5)] rounded-xl backdrop-blur-[10px] relative overflow-hidden max-md:flex-col max-md:gap-4 max-md:items-stretch before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-[3px] before:bg-[linear-gradient(90deg,transparent,#ec1d24,transparent)]">
-					<h1 className="font-[BentonSansBold] text-[2.5rem] max-md:text-[2rem] max-md:text-center text-white m-0 uppercase tracking-[1px] [text-shadow:2px_2px_4px_rgba(0,0,0,0.5)] after:content-[''] after:block after:w-[60px] after:h-[3px] after:bg-[#ec1d24] after:mt-2">Community Forum</h1>
+					<h1 className="font-[BentonSansBold] text-[2.5rem] max-md:text-[2rem] max-md:text-center text-white m-0 uppercase tracking-[1px] [text-shadow:2px_2px_4px_rgba(0,0,0,0.5)] after:content-[''] after:block after:w-[60px] after:h-[3px] after:bg-[#ec1d24] after:mt-2">
+						Community Forum
+					</h1>
 					{session?.user && (
 						<button
 							className="bg-[linear-gradient(135deg,#ec1d24,#d01c22)] text-white border-none py-3 px-6 rounded-lg font-[BentonSansBold] text-base cursor-pointer transition-all duration-300 ease-in-out no-underline inline-flex items-center gap-2 shadow-[0_4px_15px_rgba(236,29,36,0.3)] uppercase tracking-[0.5px] hover:bg-[linear-gradient(135deg,#ff3a3a,#ec1d24)] hover:-translate-y-[3px] hover:shadow-[0_6px_20px_rgba(236,29,36,0.5)]"
@@ -272,7 +283,10 @@ export default function ForumPage(): React.ReactElement {
 
 				{/* Forum Controls */}
 				<div className="flex justify-between items-center mb-8 gap-4 flex-wrap p-5 bg-[rgba(40,40,40,0.3)] border border-white/10 rounded-lg backdrop-blur-[10px] relative z-10 max-md:flex-col max-md:gap-4">
-					<form className="flex-1 max-w-[400px] max-md:max-w-none max-md:w-full" onSubmit={handleSearch}>
+					<form
+						className="flex-1 max-w-[400px] max-md:max-w-none max-md:w-full"
+						onSubmit={handleSearch}
+					>
 						<input
 							type="text"
 							className="w-full py-3 px-4 border border-white/20 rounded-lg bg-white/5 text-white font-[BentonSansRegular] text-base transition-all duration-300 ease-in-out placeholder:text-white/50 focus:outline-none focus:border-[#ec1d24] focus:bg-white/10 focus:shadow-[0_0_0_3px_rgba(236,29,36,0.15)]"
@@ -282,8 +296,13 @@ export default function ForumPage(): React.ReactElement {
 						/>
 					</form>
 
-					<div className="flex items-center gap-3 relative z-50" ref={sortDropdownRef}>
-						<label className="text-white/80 font-[BentonSansRegular] text-base font-medium">Sort by:</label>
+					<div
+						className="flex items-center gap-3 relative z-50"
+						ref={sortDropdownRef}
+					>
+						<label className="text-white/80 font-[BentonSansRegular] text-base font-medium">
+							Sort by:
+						</label>
 						<div className="relative">
 							<button
 								type="button"
@@ -291,14 +310,16 @@ export default function ForumPage(): React.ReactElement {
 								onClick={() => setIsSortDropdownOpen(!isSortDropdownOpen)}
 								aria-expanded={isSortDropdownOpen}
 							>
-								<span>{sortOptions.find(opt => opt.value === sortBy)?.label}</span>
-								<svg 
-									className={`shrink-0 transition-transform duration-200 ${isSortDropdownOpen ? 'rotate-180' : ''}`}
-									width="12" 
-									height="12" 
-									viewBox="0 0 24 24" 
-									fill="none" 
-									stroke="currentColor" 
+								<span>
+									{sortOptions.find((opt) => opt.value === sortBy)?.label}
+								</span>
+								<svg
+									className={`shrink-0 transition-transform duration-200 ${isSortDropdownOpen ? "rotate-180" : ""}`}
+									width="12"
+									height="12"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
 									strokeWidth="2"
 								>
 									<polyline points="6,9 12,15 18,9"></polyline>
@@ -310,7 +331,7 @@ export default function ForumPage(): React.ReactElement {
 										<button
 											key={option.value}
 											type="button"
-											className={`block w-full py-2.5 px-3.5 bg-transparent border-none text-white/80 font-[BentonSansRegular] text-base text-left cursor-pointer transition-all duration-150 ease-in-out hover:bg-white/10 hover:text-white ${sortBy === option.value ? 'bg-[rgba(236,29,36,0.15)] text-[#ec1d24]' : ''}`}
+											className={`block w-full py-2.5 px-3.5 bg-transparent border-none text-white/80 font-[BentonSansRegular] text-base text-left cursor-pointer transition-all duration-150 ease-in-out hover:bg-white/10 hover:text-white ${sortBy === option.value ? "bg-[rgba(236,29,36,0.15)] text-[#ec1d24]" : ""}`}
 											onClick={() => {
 												handleSortChange(option.value);
 												setIsSortDropdownOpen(false);
@@ -335,12 +356,18 @@ export default function ForumPage(): React.ReactElement {
 					<LoadingSpinner />
 				) : topics.length === 0 ? (
 					<div className="text-center py-16 px-8 bg-[rgba(40,40,40,0.3)] border border-white/10 rounded-xl backdrop-blur-[10px]">
-						<h3 className="text-[#ec1d24] mb-4 font-[BentonSansBold] text-2xl">No topics found</h3>
+						<h3 className="text-[#ec1d24] mb-4 font-[BentonSansBold] text-2xl">
+							No topics found
+						</h3>
 						{searchQuery ? (
-							<p className="text-white/70 mb-8 text-lg leading-relaxed">Try adjusting your search or clear the search to see all topics.</p>
+							<p className="text-white/70 mb-8 text-lg leading-relaxed">
+								Try adjusting your search or clear the search to see all topics.
+							</p>
 						) : (
 							<>
-								<p className="text-white/70 mb-8 text-lg leading-relaxed">Be the first to start a discussion!</p>
+								<p className="text-white/70 mb-8 text-lg leading-relaxed">
+									Be the first to start a discussion!
+								</p>
 								{session?.user && (
 									<button
 										className="bg-[linear-gradient(135deg,#ec1d24,#d01c22)] text-white border-none py-3 px-6 rounded-lg font-[BentonSansBold] text-base cursor-pointer transition-all duration-300 ease-in-out no-underline inline-flex items-center gap-2 shadow-[0_4px_15px_rgba(236,29,36,0.3)] uppercase tracking-[0.5px] hover:bg-[linear-gradient(135deg,#ff3a3a,#ec1d24)] hover:-translate-y-[3px] hover:shadow-[0_6px_20px_rgba(236,29,36,0.5)]"
@@ -371,9 +398,7 @@ export default function ForumPage(): React.ReactElement {
 
 				{!session?.user && (
 					<div className="text-center p-8 bg-white/5 rounded-lg mt-8">
-						<p className="text-white/80 mb-4">
-							Want to join the discussion?
-						</p>
+						<p className="text-white/80 mb-4">Want to join the discussion?</p>
 						<button
 							className="bg-[linear-gradient(135deg,#ec1d24,#d01c22)] text-white border-none py-3 px-6 rounded-lg font-[BentonSansBold] text-base cursor-pointer transition-all duration-300 ease-in-out no-underline inline-flex items-center gap-2 shadow-[0_4px_15px_rgba(236,29,36,0.3)] uppercase tracking-[0.5px] hover:bg-[linear-gradient(135deg,#ff3a3a,#ec1d24)] hover:-translate-y-[3px] hover:shadow-[0_6px_20px_rgba(236,29,36,0.5)]"
 							onClick={() => router.push("/auth")}

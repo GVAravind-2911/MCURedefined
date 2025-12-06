@@ -9,7 +9,7 @@ import { auth } from "@/lib/auth/auth";
 import axios from "axios";
 import { getBackendUrl } from "@/lib/config/backend";
 import UnifiedProfileClient from "@/components/profile/UnifiedProfileClient";
-import type { Session } from 'better-auth/types';
+import type { Session } from "better-auth/types";
 
 interface PageProps {
 	params: Promise<{
@@ -86,11 +86,11 @@ export default async function ProfilePage({ params }: PageProps) {
 		currentSession = await auth.api.getSession({ headers: headersList });
 		if (currentSession?.user?.id === profileUser.id) {
 			isOwnProfile = true;
-			
+
 			// Fetch active sessions for own profile
 			try {
 				const sessionsResponse = await auth.api.listSessions({
-					headers: headersList
+					headers: headersList,
 				});
 				activeSessions = sessionsResponse || [];
 			} catch {

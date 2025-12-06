@@ -1,5 +1,11 @@
 import { memo } from "react";
 import type React from "react";
+import {
+	ChevronLeft,
+	ChevronRight,
+	ChevronsLeft,
+	ChevronsRight,
+} from "lucide-react";
 
 interface BlogPaginationProps {
 	currentPage: number;
@@ -15,55 +21,36 @@ const BlogPagination: React.FC<BlogPaginationProps> = ({
 	getPaginationNumbers,
 }) => {
 	return (
-		<nav className="mt-8 sm:mt-10 md:mt-12 flex flex-col items-center px-2" aria-label="Pagination">
-			<div className="flex items-center justify-center flex-wrap gap-1.5 sm:gap-2 p-0 m-0">
+		<nav
+			className="mt-8 sm:mt-10 md:mt-12 flex flex-col items-center"
+			aria-label="Pagination"
+		>
+			{/* Pagination Container */}
+			<div className="inline-flex items-center gap-1 sm:gap-1.5 p-2 sm:p-2.5 bg-white/3 backdrop-blur-sm border border-white/10 rounded-2xl">
+				{/* First Page */}
 				<button
 					onClick={() => handlePageChange(1)}
 					disabled={currentPage <= 1}
-					className="flex items-center gap-1 sm:gap-1.5 bg-[#ec1d24]/10 text-[#ec1d24]/80 border border-[#ec1d24]/40 py-1.5 sm:py-2 px-2 sm:px-4 rounded-full cursor-pointer font-[BentonSansBold] text-xs sm:text-sm transition-all duration-200 hover:enabled:bg-[#ec1d24]/20 hover:enabled:text-[#ec1d24] disabled:opacity-40 disabled:cursor-not-allowed active:enabled:scale-95"
+					className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/5 border border-white/10 text-white/60 transition-all duration-300 hover:enabled:bg-[#ec1d24]/15 hover:enabled:border-[#ec1d24]/30 hover:enabled:text-[#ec1d24] disabled:opacity-30 disabled:cursor-not-allowed"
 					aria-label="First page"
 					type="button"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="14"
-						height="14"
-						viewBox="0 0 24 24"
-						className="sm:w-4 sm:h-4"
-					>
-						<title>First</title>
-						<path
-							fill="currentColor"
-							d="M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6 6 6 1.41-1.41zM6 6h2v12H6V6z"
-						/>
-					</svg>
-					<span className="max-md:hidden">First</span>
+					<ChevronsLeft className="w-4 h-4 sm:w-5 sm:h-5" />
 				</button>
 
+				{/* Previous Page */}
 				<button
 					onClick={() => handlePageChange(currentPage - 1)}
 					disabled={currentPage <= 1}
-					className="flex items-center gap-1 sm:gap-1.5 bg-[#ec1d24]/10 text-[#ec1d24]/80 border border-[#ec1d24]/40 py-1.5 sm:py-2 px-2 sm:px-4 rounded-full cursor-pointer font-[BentonSansBold] text-xs sm:text-sm transition-all duration-200 hover:enabled:bg-[#ec1d24]/20 hover:enabled:text-[#ec1d24] disabled:opacity-40 disabled:cursor-not-allowed active:enabled:scale-95"
+					className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/5 border border-white/10 text-white/60 transition-all duration-300 hover:enabled:bg-[#ec1d24]/15 hover:enabled:border-[#ec1d24]/30 hover:enabled:text-[#ec1d24] disabled:opacity-30 disabled:cursor-not-allowed"
 					aria-label="Previous page"
 					type="button"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="14"
-						height="14"
-						viewBox="0 0 24 24"
-						className="sm:w-4 sm:h-4"
-					>
-						<title>Previous</title>
-						<path
-							fill="currentColor"
-							d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12l4.58-4.59z"
-						/>
-					</svg>
-					<span className="hidden sm:inline-block">Previous</span>
+					<ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
 				</button>
 
-				<fieldset className="flex items-center gap-1 sm:gap-1.5 border-0 p-0 m-0" aria-label="Page navigation">
+				{/* Page Numbers */}
+				<div className="flex items-center gap-1 sm:gap-1.5 px-1 sm:px-2">
 					{getPaginationNumbers().map((page, index) => {
 						if (page === "ellipsis1" || page === "ellipsis2") {
 							return (
@@ -72,78 +59,68 @@ const BlogPagination: React.FC<BlogPaginationProps> = ({
 										// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
 										index
 									}`}
-									className="text-white/50 flex items-center justify-center h-7 sm:h-9 text-sm"
+									className="text-white/40 flex items-center justify-center w-6 sm:w-8 text-sm"
 								>
-									...
+									•••
 								</span>
 							);
 						}
 
 						const pageNumber = page as number;
+						const isActive = pageNumber === currentPage;
+
 						return (
 							<button
 								type="button"
 								key={pageNumber}
 								onClick={() => handlePageChange(pageNumber)}
-								className={`flex items-center justify-center min-w-7 sm:min-w-9 h-7 sm:h-9 text-xs sm:text-sm border-none rounded-full cursor-pointer font-[BentonSansRegular] transition-all duration-200 active:scale-95 ${pageNumber === currentPage ? "bg-[#ec1d24] text-white font-[BentonSansBold] scale-105 sm:scale-110 shadow-[0_0_15px_rgba(236,29,36,0.6)] ring-2 ring-[#ec1d24]/50 ring-offset-1 ring-offset-black" : "bg-white/10 text-white/80 hover:bg-white/20 hover:text-white"}`}
+								className={`flex items-center justify-center min-w-9 h-9 sm:min-w-10 sm:h-10 px-2 text-sm font-[BentonSansRegular] rounded-xl transition-all duration-300 ${
+									isActive
+										? "bg-linear-to-br from-[#ec1d24] to-[#c91820] text-white font-[BentonSansBold] shadow-lg shadow-[#ec1d24]/30"
+										: "bg-white/5 border border-white/10 text-white/70 hover:bg-white/10 hover:border-white/20 hover:text-white"
+								}`}
 								aria-label={`Page ${pageNumber}`}
-								aria-current={pageNumber === currentPage ? "page" : undefined}
+								aria-current={isActive ? "page" : undefined}
 							>
 								{pageNumber}
 							</button>
 						);
 					})}
-				</fieldset>
+				</div>
 
+				{/* Next Page */}
 				<button
 					onClick={() => handlePageChange(currentPage + 1)}
 					disabled={currentPage >= totalPages}
-					className="flex items-center gap-1 sm:gap-1.5 bg-[#ec1d24]/10 text-[#ec1d24]/80 border border-[#ec1d24]/40 py-1.5 sm:py-2 px-2 sm:px-4 rounded-full cursor-pointer font-[BentonSansBold] text-xs sm:text-sm transition-all duration-200 hover:enabled:bg-[#ec1d24]/20 hover:enabled:text-[#ec1d24] disabled:opacity-40 disabled:cursor-not-allowed active:enabled:scale-95"
+					className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/5 border border-white/10 text-white/60 transition-all duration-300 hover:enabled:bg-[#ec1d24]/15 hover:enabled:border-[#ec1d24]/30 hover:enabled:text-[#ec1d24] disabled:opacity-30 disabled:cursor-not-allowed"
 					aria-label="Next page"
 					type="button"
 				>
-					<span className="hidden sm:inline-block">Next</span>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="14"
-						height="14"
-						viewBox="0 0 24 24"
-						className="sm:w-4 sm:h-4"
-					>
-						<title>Next</title>
-						<path
-							fill="currentColor"
-							d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z"
-						/>
-					</svg>
+					<ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
 				</button>
 
+				{/* Last Page */}
 				<button
 					onClick={() => handlePageChange(totalPages)}
 					disabled={currentPage >= totalPages}
-					className="flex items-center gap-1 sm:gap-1.5 bg-[#ec1d24]/10 text-[#ec1d24]/80 border border-[#ec1d24]/40 py-1.5 sm:py-2 px-2 sm:px-4 rounded-full cursor-pointer font-[BentonSansBold] text-xs sm:text-sm transition-all duration-200 hover:enabled:bg-[#ec1d24]/20 hover:enabled:text-[#ec1d24] disabled:opacity-40 disabled:cursor-not-allowed active:enabled:scale-95"
+					className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/5 border border-white/10 text-white/60 transition-all duration-300 hover:enabled:bg-[#ec1d24]/15 hover:enabled:border-[#ec1d24]/30 hover:enabled:text-[#ec1d24] disabled:opacity-30 disabled:cursor-not-allowed"
 					aria-label="Last page"
 					type="button"
 				>
-					<span className="hidden sm:inline">Last</span>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="14"
-						height="14"
-						viewBox="0 0 24 24"
-						className="sm:w-4 sm:h-4"
-					>
-						<title>Last</title>
-						<path
-							fill="currentColor"
-							d="M5.59 7.41L10.18 12l-4.59 4.59L7 18l6-6-6-6-1.41 1.41zM16 6h2v12h-2V6z"
-						/>
-					</svg>
+					<ChevronsRight className="w-4 h-4 sm:w-5 sm:h-5" />
 				</button>
 			</div>
 
-			<div className="mt-2 sm:mt-2.5 text-xs sm:text-sm text-white/60">
-				Page {currentPage} of {totalPages}
+			{/* Page Info */}
+			<div className="mt-3 sm:mt-4 text-xs sm:text-sm text-white/50 font-[BentonSansRegular]">
+				Page{" "}
+				<span className="text-white/80 font-[BentonSansBold]">
+					{currentPage}
+				</span>{" "}
+				of{" "}
+				<span className="text-white/80 font-[BentonSansBold]">
+					{totalPages}
+				</span>
 			</div>
 		</nav>
 	);

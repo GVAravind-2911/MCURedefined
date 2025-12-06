@@ -2,7 +2,11 @@
  * Shared utilities for content management
  */
 
-import type { ContentBlock, ContentConfig, ErrorState } from "@/types/ContentTypes";
+import type {
+	ContentBlock,
+	ContentConfig,
+	ErrorState,
+} from "@/types/ContentTypes";
 import type { AxiosError } from "axios";
 
 /**
@@ -68,7 +72,7 @@ export function handleApiError(
 			],
 		};
 	}
-	
+
 	if (
 		axiosError.code === "ETIMEDOUT" ||
 		axiosError.message?.includes("timeout")
@@ -114,9 +118,10 @@ export function normalizeContentBlocks(blocks: ContentBlock[]): ContentBlock[] {
 	return blocks.map((block) => {
 		const id = block.id || generateBlockId();
 		if (block.type === "image") {
-			const imageContent = typeof block.content === "string"
-				? { link: block.content, key: "" }
-				: block.content as { link: string; key?: string };
+			const imageContent =
+				typeof block.content === "string"
+					? { link: block.content, key: "" }
+					: (block.content as { link: string; key?: string });
 			return {
 				id,
 				type: "image" as const,

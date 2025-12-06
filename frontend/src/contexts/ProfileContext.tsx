@@ -1,6 +1,14 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, useMemo, useCallback, type ReactNode } from "react";
+import {
+	createContext,
+	useContext,
+	useState,
+	useEffect,
+	useMemo,
+	useCallback,
+	type ReactNode,
+} from "react";
 
 interface UserProfileData {
 	id?: string;
@@ -26,20 +34,20 @@ interface ProfileContextData {
 	// Profile data
 	userProfile: UserProfileData | null;
 	profileUser: any;
-	
+
 	// Liked content overview
 	likedContent: LikedContentOverview | null;
 	metadata: ProfileMetadata | null;
-	
+
 	// Loading states
 	isLoading: boolean;
 	isUpdating: boolean;
-	
+
 	// Actions
 	updateProfile: (data: Partial<UserProfileData>) => Promise<void>;
 	refreshProfile: () => Promise<void>;
 	refreshLikedContent: () => Promise<void>;
-	
+
 	// Error handling
 	error: string | null;
 	clearError: () => void;
@@ -53,16 +61,22 @@ interface ProfileProviderProps {
 	initialData?: any;
 }
 
-export const ProfileProvider = ({ children, session, initialData }: ProfileProviderProps) => {
+export const ProfileProvider = ({
+	children,
+	session,
+	initialData,
+}: ProfileProviderProps) => {
 	const [userProfile, setUserProfile] = useState<UserProfileData | null>(
-		initialData?.profile || null
+		initialData?.profile || null,
 	);
-	const [profileUser, setProfileUser] = useState(initialData?.user || session?.user);
+	const [profileUser, setProfileUser] = useState(
+		initialData?.user || session?.user,
+	);
 	const [likedContent, setLikedContent] = useState<LikedContentOverview | null>(
-		initialData?.likedContent || null
+		initialData?.likedContent || null,
 	);
 	const [metadata, setMetadata] = useState<ProfileMetadata | null>(
-		initialData?.metadata || null
+		initialData?.metadata || null,
 	);
 	const [isLoading, setIsLoading] = useState(!initialData);
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -76,7 +90,7 @@ export const ProfileProvider = ({ children, session, initialData }: ProfileProvi
 			setError(null);
 
 			const response = await fetch(
-				`/api/user/profile/complete?content=${includeContent}`
+				`/api/user/profile/complete?content=${includeContent}`,
 			);
 
 			if (!response.ok) {
@@ -84,10 +98,10 @@ export const ProfileProvider = ({ children, session, initialData }: ProfileProvi
 			}
 
 			const data = await response.json();
-			
+
 			setUserProfile(data.profile);
 			setProfileUser(data.user);
-			
+
 			if (includeContent && data.likedContent) {
 				setLikedContent(data.likedContent);
 				setMetadata(data.metadata || null);
@@ -100,37 +114,44 @@ export const ProfileProvider = ({ children, session, initialData }: ProfileProvi
 		}
 	}, []);
 
-	const updateProfile = useCallback(async (data: Partial<UserProfileData>) => {
-		try {
-			setIsUpdating(true);
-			setError(null);
+	const updateProfile = useCallback(
+		async (data: Partial<UserProfileData>) => {
+			try {
+				setIsUpdating(true);
+				setError(null);
 
-			const response = await fetch("/api/user/profile", {
-				method: "PUT",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(data),
-			});
+				const response = await fetch("/api/user/profile", {
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(data),
+				});
 
-			if (!response.ok) {
-				const errorData = await response.json();
-				throw new Error(errorData.error || "Failed to update profile");
+				if (!response.ok) {
+					const errorData = await response.json();
+					throw new Error(errorData.error || "Failed to update profile");
+				}
+
+				// Optimistically update local state
+				if (data.description !== undefined) {
+					setUserProfile((prev) =>
+						prev ? { ...prev, description: data.description } : null,
+					);
+				}
+
+				// Refresh profile data from server
+				await fetchCompleteProfile(false);
+			} catch (err) {
+				console.error("Error updating profile:", err);
+				setError(
+					err instanceof Error ? err.message : "Failed to update profile",
+				);
+				throw err; // Re-throw to allow component error handling
+			} finally {
+				setIsUpdating(false);
 			}
-
-			// Optimistically update local state
-			if (data.description !== undefined) {
-				setUserProfile(prev => prev ? { ...prev, description: data.description } : null);
-			}
-			
-			// Refresh profile data from server
-			await fetchCompleteProfile(false);
-		} catch (err) {
-			console.error("Error updating profile:", err);
-			setError(err instanceof Error ? err.message : "Failed to update profile");
-			throw err; // Re-throw to allow component error handling
-		} finally {
-			setIsUpdating(false);
-		}
-	}, [fetchCompleteProfile]);
+		},
+		[fetchCompleteProfile],
+	);
 
 	const refreshProfile = useCallback(async () => {
 		await fetchCompleteProfile(false);
@@ -148,36 +169,37 @@ export const ProfileProvider = ({ children, session, initialData }: ProfileProvi
 	}, [session?.user?.id, userProfile, fetchCompleteProfile]);
 
 	// Memoize context value to prevent unnecessary re-renders
-	const value = useMemo<ProfileContextData>(() => ({
-		userProfile,
-		profileUser,
-		likedContent,
-		metadata,
-		isLoading,
-		isUpdating,
-		updateProfile,
-		refreshProfile,
-		refreshLikedContent,
-		error,
-		clearError,
-	}), [
-		userProfile,
-		profileUser,
-		likedContent,
-		metadata,
-		isLoading,
-		isUpdating,
-		updateProfile,
-		refreshProfile,
-		refreshLikedContent,
-		error,
-		clearError,
-	]);
+	const value = useMemo<ProfileContextData>(
+		() => ({
+			userProfile,
+			profileUser,
+			likedContent,
+			metadata,
+			isLoading,
+			isUpdating,
+			updateProfile,
+			refreshProfile,
+			refreshLikedContent,
+			error,
+			clearError,
+		}),
+		[
+			userProfile,
+			profileUser,
+			likedContent,
+			metadata,
+			isLoading,
+			isUpdating,
+			updateProfile,
+			refreshProfile,
+			refreshLikedContent,
+			error,
+			clearError,
+		],
+	);
 
 	return (
-		<ProfileContext.Provider value={value}>
-			{children}
-		</ProfileContext.Provider>
+		<ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>
 	);
 };
 

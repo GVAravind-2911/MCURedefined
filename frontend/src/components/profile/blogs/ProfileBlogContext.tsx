@@ -1,7 +1,13 @@
 "use client";
 
 import type React from "react";
-import { createContext, useContext, useState, useMemo, type ReactNode } from "react";
+import {
+	createContext,
+	useContext,
+	useState,
+	useMemo,
+	type ReactNode,
+} from "react";
 import type { BlogList } from "@/types/BlogTypes";
 
 interface ProfileBlogContextType {
@@ -32,20 +38,19 @@ export const BlogProvider = ({
 	const [totalPages, setTotalPages] = useState(initialTotalPages);
 
 	// Memoize context value to prevent unnecessary re-renders
-	const value = useMemo(() => ({
-		blogs,
-		totalPages,
-		tags: initialTags,
-		authors: initialAuthors,
-		setBlogs,
-		setTotalPages,
-	}), [blogs, totalPages, initialTags, initialAuthors]);
-
-	return (
-		<BlogContext.Provider value={value}>
-			{children}
-		</BlogContext.Provider>
+	const value = useMemo(
+		() => ({
+			blogs,
+			totalPages,
+			tags: initialTags,
+			authors: initialAuthors,
+			setBlogs,
+			setTotalPages,
+		}),
+		[blogs, totalPages, initialTags, initialAuthors],
 	);
+
+	return <BlogContext.Provider value={value}>{children}</BlogContext.Provider>;
 };
 
 export const useBlogContext = () => {

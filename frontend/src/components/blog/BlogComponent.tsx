@@ -96,7 +96,10 @@ const BlogsComponent: React.FC<BlogComponentProps> = ({
 	}, [currentPage, totalPages, isSearchFocused, handlePageChange]);
 
 	return (
-		<div className="flex flex-col w-[95%] sm:w-[90%] max-w-[1200px] mx-auto py-4 sm:py-6 md:py-8" ref={containerRef}>
+		<div
+			className="flex flex-col w-full mx-auto py-2 sm:py-4"
+			ref={containerRef}
+		>
 			<BlogFilters
 				searchQuery={searchQuery}
 				setSearchQuery={setSearchQuery} // Add this line

@@ -1,6 +1,6 @@
 /**
  * Backend API configuration
- * 
+ *
  * This file provides consistent access to backend URLs for both
  * server-side and client-side code.
  */

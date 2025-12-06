@@ -6,7 +6,7 @@ import { eq, desc } from "drizzle-orm";
 // Get edit history for a topic
 export async function GET(
 	req: NextRequest,
-	{ params }: { params: Promise<{ id: string }> }
+	{ params }: { params: Promise<{ id: string }> },
 ) {
 	try {
 		const { id } = await params;
@@ -19,10 +19,7 @@ export async function GET(
 			.limit(1);
 
 		if (!topic) {
-			return NextResponse.json(
-				{ error: "Topic not found" },
-				{ status: 404 }
-			);
+			return NextResponse.json({ error: "Topic not found" }, { status: 404 });
 		}
 
 		// Get edit history
@@ -43,7 +40,7 @@ export async function GET(
 		console.error("Error fetching topic edit history:", error);
 		return NextResponse.json(
 			{ error: "Failed to fetch edit history" },
-			{ status: 500 }
+			{ status: 500 },
 		);
 	}
 }

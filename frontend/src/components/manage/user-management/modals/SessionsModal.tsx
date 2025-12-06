@@ -33,12 +33,17 @@ export default memo(function SessionsModal({
 				) : (
 					<>
 						{sessions.map((session) => (
-							<div key={session.id} className="flex items-start justify-between gap-4 p-4 bg-black/30 border border-white/10 rounded-[10px] mb-3 last:mb-0">
+							<div
+								key={session.id}
+								className="flex items-start justify-between gap-4 p-4 bg-black/30 border border-white/10 rounded-[10px] mb-3 last:mb-0"
+							>
 								<div className="flex flex-col gap-1 flex-1 min-w-0">
 									<span className="text-[0.9rem] text-white wrap-break-word">
 										{session.userAgent?.substring(0, 50) || "Unknown Device"}...
 									</span>
-									<span className="text-[0.8rem] text-white/40">IP: {session.ipAddress || "Unknown"}</span>
+									<span className="text-[0.8rem] text-white/40">
+										IP: {session.ipAddress || "Unknown"}
+									</span>
 									<span className="text-[0.8rem] text-white/40">
 										Created: {formatDate(session.createdAt)}
 									</span>
