@@ -92,45 +92,47 @@ export default function ProjectsGrid({ projects }: ProjectsGridProps) {
 							</span>
 						</div>
 
-						{/* Projects grid */}
-						<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-5">
-							{projectsByPhase[phase].map((project) => (
-								<Link
-									href={`/release-slate/${project.id}`}
-									className="group relative bg-white/2 rounded-xl overflow-hidden border border-white/5 transition-all duration-300 no-underline flex flex-col hover:-translate-y-1 hover:border-[#ec1d24]/30 hover:shadow-xl hover:shadow-[#ec1d24]/10"
-									key={project.id}
-								>
-									{/* Poster container */}
-									<div className="relative w-full overflow-hidden">
-										<Image
-											src={formatPosterPath(project.posterpath, project.phase)}
-											alt={`${project.name} - Phase ${project.phase}`}
-											className="w-full aspect-2/3 object-cover transition-transform duration-500 group-hover:scale-110"
-											width={200}
-											height={300}
-											style={{ objectFit: "cover" }}
-										/>
-										{/* Hover overlay */}
-										<div className="absolute inset-0 bg-linear-to-t from-black via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-										{/* Phase badge */}
-										<div className="absolute top-2 right-2 bg-[#ec1d24]/90 backdrop-blur-sm text-white py-1 px-2.5 rounded-lg font-[BentonSansBold] text-xs shadow-lg">
-											Phase {project.phase}
+						{/* Projects horizontal scroll */}
+						<div className="overflow-x-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pb-4 -mx-4 px-4">
+							<div className="flex gap-4 w-max">
+								{projectsByPhase[phase].map((project) => (
+									<Link
+										href={`/release-slate/${project.id}`}
+										className="group relative bg-white/2 rounded-xl overflow-hidden border border-white/5 transition-all duration-300 no-underline flex flex-col hover:-translate-y-1 hover:border-[#ec1d24]/30 hover:shadow-xl hover:shadow-[#ec1d24]/10 shrink-0 w-[140px] sm:w-40 md:w-[180px]"
+										key={project.id}
+									>
+										{/* Poster container */}
+										<div className="relative w-full overflow-hidden">
+											<Image
+												src={formatPosterPath(project.posterpath, project.phase)}
+												alt={`${project.name} - Phase ${project.phase}`}
+												className="w-full aspect-2/3 object-cover transition-transform duration-500 group-hover:scale-110"
+												width={180}
+												height={270}
+												style={{ objectFit: "cover" }}
+											/>
+											{/* Hover overlay */}
+											<div className="absolute inset-0 bg-linear-to-t from-black via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+											{/* Phase badge */}
+											<div className="absolute top-2 right-2 bg-[#ec1d24]/90 backdrop-blur-sm text-white py-1 px-2.5 rounded-lg font-[BentonSansBold] text-xs shadow-lg">
+												Phase {project.phase}
+											</div>
+											{/* View indicator on hover */}
+											<div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+												<span className="text-xs font-[BentonSansBold] text-white">
+													View Details
+												</span>
+											</div>
 										</div>
-										{/* View indicator on hover */}
-										<div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
-											<span className="text-xs font-[BentonSansBold] text-white">
-												View Details
-											</span>
+										{/* Project info */}
+										<div className="p-3 text-center">
+											<h3 className="text-white font-[BentonSansBold] text-sm leading-tight transition-colors duration-300 group-hover:text-[#ec1d24] line-clamp-2">
+												{project.name}
+											</h3>
 										</div>
-									</div>
-									{/* Project info */}
-									<div className="p-3 sm:p-4 text-center">
-										<h3 className="text-white font-[BentonSansBold] text-sm sm:text-base leading-tight transition-colors duration-300 group-hover:text-[#ec1d24] line-clamp-2">
-											{project.name}
-										</h3>
-									</div>
-								</Link>
-							))}
+									</Link>
+								))}
+							</div>
 						</div>
 					</div>
 				))

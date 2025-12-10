@@ -210,6 +210,24 @@ export default function ProfileContent({
 		}
 	}, [initialMetadata]);
 
+	// Fetch full data when tab changes (initial content only has preview)
+	useEffect(() => {
+		// Only fetch if we have initial content (meaning component is ready)
+		// and we don't already have enough items for the current tab
+		const currentContent = content[activeTab];
+		const total = currentContent?.total || 0;
+		const items = activeTab === "projects" 
+			? currentContent?.projects?.length || 0
+			: activeTab === "reviews"
+				? currentContent?.reviews?.length || 0
+				: currentContent?.blogs?.length || 0;
+		
+		// If we have fewer items than total, fetch the full data
+		if (total > items && !loading[activeTab]) {
+			fetchTabData(activeTab);
+		}
+	}, [activeTab]);
+
 	return (
 		<div className="w-full">
 			<div className="flex items-center font-[BentonSansBold] text-white mb-6">

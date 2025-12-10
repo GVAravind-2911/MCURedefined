@@ -15,6 +15,15 @@ import {
 	NO_CACHE_HEADERS,
 } from "@/lib/config/backend";
 import axios from "axios";
+import {
+	Settings,
+	Star,
+	Newspaper,
+	PenTool,
+	Edit3,
+	FileText,
+	Sparkles,
+} from "lucide-react";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -76,35 +85,109 @@ export default async function ManageListPage({
 
 	const { blogs, total_pages, tags, authors } = result;
 
+	// Choose icons based on content type
+	const isReviews = config.type === "reviews";
+	const PrimaryIcon = isReviews ? Star : Newspaper;
+	const SecondaryIcon = Settings;
+	const TertiaryIcon = isReviews ? FileText : Sparkles;
+
 	return (
-		<div className="flex flex-col w-full max-w-full items-center">
-			<div className="relative w-full max-w-[1400px] h-[280px] bg-linear-to-r from-[#ec1d24]/80 to-black/80 bg-cover bg-center mb-8 flex items-center justify-center overflow-hidden rounded-lg">
-				<div className="absolute inset-0 bg-black/40" />
-				<div className="relative z-2 text-center px-4 max-w-[800px]">
-					<h1 className="font-[BentonSansBold] text-[clamp(28px,5vw,48px)] text-white mb-4 uppercase tracking-[1px] [text-shadow:2px_2px_4px_rgba(0,0,0,0.5)] after:content-[''] after:block after:w-[100px] after:h-1 after:bg-[#ec1d24] after:mx-auto after:mt-3">
-						{config.heroTitle}
-					</h1>
-					<p className="font-[BentonSansRegular] text-[clamp(16px,2vw,18px)] text-white/80 max-w-[600px] mx-auto leading-relaxed">
-						{config.heroDescription}
-					</p>
+		<div className="flex flex-col w-full min-h-screen">
+			{/* Hero Section */}
+			<div className="relative w-full" data-hero-section>
+				{/* Hero Background */}
+				<div className="relative w-full overflow-hidden">
+					{/* Gradient Background */}
+					<div className="absolute inset-0 bg-linear-to-br from-[#ec1d24]/30 via-black/95 to-black" />
+					<div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,var(--tw-gradient-stops))] from-[#ec1d24]/15 via-transparent to-transparent" />
+
+					{/* Animated Grid Pattern */}
+					<div
+						className="absolute inset-0 opacity-[0.05]"
+						style={{
+							backgroundImage:
+								"linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
+							backgroundSize: "40px 40px",
+						}}
+					/>
+
+					{/* Decorative Floating Icons - Right Side Cluster */}
+					<div className="absolute right-[5%] sm:right-[8%] md:right-[12%] top-[15%] hidden sm:flex flex-col items-end gap-3 sm:gap-4">
+						{/* Primary icon - larger, more prominent */}
+						<div className="relative">
+							<div className="absolute inset-0 bg-[#ec1d24]/20 blur-xl rounded-full animate-pulse" />
+							<PrimaryIcon className="relative w-14 h-14 sm:w-20 sm:h-20 md:w-28 md:h-28 text-[#ec1d24]/20 animate-pulse" />
+						</div>
+						{/* Secondary icons - smaller, staggered */}
+						<div className="flex items-center gap-2 sm:gap-3 -mt-2 mr-4 sm:mr-8">
+							<SecondaryIcon className="w-6 h-6 sm:w-10 sm:h-10 md:w-12 md:h-12 text-white/15 animate-pulse [animation-delay:300ms]" />
+							<TertiaryIcon className="w-5 h-5 sm:w-8 sm:h-8 md:w-10 md:h-10 text-[#ec1d24]/15 animate-pulse [animation-delay:600ms]" />
+						</div>
+					</div>
+
+					{/* Subtle accent icons - scattered for depth */}
+					<div className="absolute top-[20%] right-[35%] sm:right-[40%] hidden md:block opacity-[0.08] animate-pulse [animation-delay:400ms]">
+						<PenTool className="w-8 h-8 lg:w-12 lg:h-12 text-white" />
+					</div>
+					<div className="absolute bottom-[25%] right-[25%] hidden lg:block opacity-[0.06] animate-pulse [animation-delay:800ms]">
+						<Edit3 className="w-10 h-10 text-[#ec1d24]" />
+					</div>
+
+					{/* Content Container */}
+					<div className="relative z-10 px-4 sm:px-6 md:px-8 lg:px-12 py-6 sm:py-8">
+						<div className="max-w-[1400px] mx-auto w-full">
+							{/* Breadcrumb */}
+							<div className="flex items-center gap-2 mb-2 text-sm text-white/50">
+								<span>Home</span>
+								<span>/</span>
+								<span>Manage</span>
+								<span>/</span>
+								<span className="text-[#ec1d24]">
+									{isReviews ? "Reviews" : "Blogs"}
+								</span>
+							</div>
+
+							{/* Title Row with Badge */}
+							<div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-2">
+								<h1 className="text-2xl sm:text-3xl md:text-4xl text-white font-[BentonSansBold] leading-tight">
+									{config.heroTitle}
+								</h1>
+								<div className="flex items-center gap-2 px-3 py-1.5 bg-[#ec1d24] rounded-full">
+									<Settings className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
+									<span className="text-xs sm:text-sm font-[BentonSansBold] text-white">
+										Admin
+									</span>
+								</div>
+							</div>
+
+							{/* Description */}
+							<p className="text-sm sm:text-base text-white/60 font-[BentonSansRegular] max-w-xl leading-relaxed">
+								{config.heroDescription}
+							</p>
+						</div>
+					</div>
 				</div>
 			</div>
-			<BlogProvider
-				initialBlogs={blogs as BlogList[]}
-				initialTotalPages={total_pages || 1}
-				initialTags={tags || []}
-				initialAuthors={authors || []}
-			>
-				<AdminBlogComponent
-					path={config.apiPath}
-					basePath="manage"
+
+			{/* Main Content */}
+			<div className="flex-1 w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8">
+				<BlogProvider
 					initialBlogs={blogs as BlogList[]}
-					totalPages={total_pages || 1}
-					apiUrl={getProxyUrl(config.apiPath)}
+					initialTotalPages={total_pages || 1}
 					initialTags={tags || []}
 					initialAuthors={authors || []}
-				/>
-			</BlogProvider>
+				>
+					<AdminBlogComponent
+						path={config.apiPath}
+						basePath="manage"
+						initialBlogs={blogs as BlogList[]}
+						totalPages={total_pages || 1}
+						apiUrl={getProxyUrl(config.apiPath)}
+						initialTags={tags || []}
+						initialAuthors={authors || []}
+					/>
+				</BlogProvider>
+			</div>
 		</div>
 	);
 }

@@ -7,6 +7,7 @@ import { authClient } from "@/lib/auth/auth-client";
 import LoadingSpinner from "@/components/main/LoadingSpinner";
 import TopicPost, { isTopicDeleted } from "@/components/forum/TopicPost";
 import TopicComments from "@/components/forum/TopicComments";
+import { ArrowLeft, MessageSquare, AlertTriangle } from "lucide-react";
 
 const EditHistoryModal = dynamic(
 	() => import("@/components/forum/EditHistoryModal"),
@@ -198,23 +199,46 @@ export default function ForumTopicPage(): React.ReactElement {
 	};
 
 	if (loading) {
-		return <LoadingSpinner />;
+		return (
+			<div className="flex flex-col w-full min-h-screen">
+				<div className="flex-1 flex items-center justify-center">
+					<LoadingSpinner />
+				</div>
+			</div>
+		);
 	}
 
 	if (error || !topic) {
 		return (
-			<div className="min-h-screen bg-[linear-gradient(135deg,#0a0a0a_0%,#1a1a1a_50%,#0a0a0a_100%)] text-white py-8">
-				<div className="max-w-[1000px] mx-auto px-4">
+			<div className="flex flex-col w-full min-h-screen">
+				<div className="flex-1 w-full max-w-[1000px] mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8">
 					<BackToForumButton onClick={() => router.push("/forum")} />
-					<div className="text-center py-16 px-8 bg-[rgba(40,40,40,0.3)] border border-white/10 rounded-lg backdrop-blur-[10px]">
-						<h3 className="text-[#ec1d24] mb-4 font-[BentonSansBold] text-2xl">
-							{error || "Topic not found"}
-						</h3>
-						<p className="text-white/70 mb-8 text-lg leading-relaxed">
-							{error === "Topic not found"
-								? "This topic may have been deleted or moved."
-								: "Something went wrong while loading the topic."}
-						</p>
+					<div className="flex justify-center items-center min-h-[300px] sm:min-h-[400px]">
+						<div className="text-center max-w-md px-6 py-10 bg-white/2 backdrop-blur-sm border border-white/8 rounded-2xl">
+							{/* Icon */}
+							<div className="relative w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-6">
+								<div className="absolute inset-0 bg-[#ec1d24]/10 blur-xl rounded-full" />
+								<div className="relative w-full h-full rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+									<AlertTriangle className="w-10 h-10 sm:w-12 sm:h-12 text-white/25" />
+								</div>
+							</div>
+							<h3 className="font-[BentonSansBold] text-xl sm:text-2xl mb-3 text-white">
+								{error || "Topic not found"}
+							</h3>
+							<p className="font-[BentonSansRegular] mb-8 text-white/50 text-sm sm:text-base leading-relaxed">
+								{error === "Topic not found"
+									? "This topic may have been deleted or moved."
+									: "Something went wrong while loading the topic."}
+							</p>
+							<button
+								onClick={() => router.push("/forum")}
+								className="inline-flex items-center gap-2.5 bg-linear-to-br from-[#ec1d24] to-[#c91820] text-white py-3 px-6 rounded-xl cursor-pointer font-[BentonSansBold] text-sm sm:text-base transition-all duration-300 hover:shadow-lg hover:shadow-[#ec1d24]/25 hover:-translate-y-0.5 active:translate-y-0"
+								type="button"
+							>
+								<MessageSquare className="w-4 h-4" />
+								Return to Forum
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -222,8 +246,8 @@ export default function ForumTopicPage(): React.ReactElement {
 	}
 
 	return (
-		<div className="min-h-screen bg-[linear-gradient(135deg,#0a0a0a_0%,#1a1a1a_50%,#0a0a0a_100%)] text-white py-8">
-			<div className="max-w-[1000px] mx-auto px-4">
+		<div className="flex flex-col w-full min-h-screen">
+			<div className="flex-1 w-full max-w-[1000px] mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8">
 				<BackToForumButton onClick={() => router.push("/forum")} />
 
 				<TopicPost
@@ -264,10 +288,12 @@ function BackToForumButton({
 }: { onClick: () => void }): React.ReactElement {
 	return (
 		<button
-			className="bg-[rgba(236,29,36,0.1)] border border-[rgba(236,29,36,0.3)] text-[#ec1d24] py-3 px-6 rounded-lg cursor-pointer transition-all duration-300 ease-in-out flex items-center gap-2 font-[BentonSansRegular] text-[0.95rem] font-medium mb-8 backdrop-blur-[5px] hover:bg-[rgba(236,29,36,0.2)] hover:border-[#ec1d24] hover:text-white hover:-translate-x-1"
+			className="inline-flex items-center gap-2 mb-6 py-2.5 px-4 bg-white/5 border border-white/15 rounded-xl text-white/70 text-sm transition-all duration-300 hover:bg-[#ec1d24]/10 hover:border-[#ec1d24]/30 hover:text-[#ec1d24] group"
 			onClick={onClick}
+			type="button"
 		>
-			← Back to Forum
+			<ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+			<span className="font-[BentonSansRegular]">Back to Forum</span>
 		</button>
 	);
 }

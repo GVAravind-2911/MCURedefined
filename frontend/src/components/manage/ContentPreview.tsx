@@ -261,32 +261,6 @@ export default function ContentPreview({
 		<>
 			{/* Hero Section with Thumbnail */}
 			<div className="relative w-full">
-				{/* Back Button - Liquid Glass */}
-				<button
-					type="button"
-					onClick={handleEdit}
-					className={`fixed top-24 left-4 z-50 flex items-center gap-2 px-4 py-2.5
-						bg-linear-to-br from-white/10 via-white/5 to-transparent
-						backdrop-blur-xl backdrop-saturate-150
-						rounded-xl
-						border border-white/20
-						shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.1)]
-						text-white/90 hover:text-white
-						text-sm font-[BentonSansRegular]
-						transition-[box-shadow,border-color,color] duration-300 
-						hover:shadow-[0_8px_40px_rgba(236,29,36,0.15),inset_0_1px_0_rgba(255,255,255,0.15)] 
-						hover:border-white/30
-						group
-						${backButtonOpacity === 0 ? "pointer-events-none" : ""}`}
-					style={{
-						opacity: backButtonOpacity,
-						transform: `translateX(${(1 - backButtonOpacity) * -16}px)`,
-					}}
-				>
-					<ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-					<span className="hidden sm:inline">Back to Edit</span>
-				</button>
-
 				{/* Hero Image */}
 				<div className="relative w-full h-[40vh] sm:h-[50vh] md:h-[60vh] lg:h-[70vh] overflow-hidden">
 					<Image

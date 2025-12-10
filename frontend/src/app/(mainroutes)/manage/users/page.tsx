@@ -47,14 +47,6 @@ export default async function ManageUsersPage(): Promise<React.ReactElement> {
 					<div className="absolute bottom-[25%] right-[25%] hidden lg:block opacity-[0.06] animate-pulse [animation-delay:800ms]">
 						<Lock className="w-10 h-10 text-[#ec1d24]" />
 					</div>
-
-					{/* Badge */}
-					<div className="absolute top-20 right-4 sm:top-24 sm:right-8 flex items-center gap-2 px-4 py-2 bg-[#ec1d24]/90 backdrop-blur-sm rounded-full shadow-lg shadow-[#ec1d24]/20">
-						<Shield className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-						<span className="text-sm sm:text-base font-[BentonSansBold] text-white">
-							Admin
-						</span>
-					</div>
 				</div>
 
 				{/* Title Overlay */}
@@ -67,10 +59,18 @@ export default async function ManageUsersPage(): Promise<React.ReactElement> {
 							<span className="text-[#ec1d24]">User Management</span>
 						</div>
 
-						{/* Title */}
-						<h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white font-[BentonSansBold] leading-tight mb-3 sm:mb-4 drop-shadow-lg">
-							User Management
-						</h1>
+						{/* Title Row with Badge */}
+						<div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+							<h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white font-[BentonSansBold] leading-tight drop-shadow-lg">
+								User Management
+							</h1>
+							<div className="flex items-center gap-2 px-3 py-1.5 bg-[#ec1d24] rounded-full">
+								<Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
+								<span className="text-xs sm:text-sm font-[BentonSansBold] text-white">
+									Admin
+								</span>
+							</div>
+						</div>
 
 						{/* Description */}
 						<p className="text-base sm:text-lg text-white/70 font-[BentonSansRegular] max-w-2xl">

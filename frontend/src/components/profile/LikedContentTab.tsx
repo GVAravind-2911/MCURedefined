@@ -27,12 +27,10 @@ const LikedContentTab = ({ session }: LikedContentTabProps) => {
 	const { likedContent, metadata, isLoading, refreshLikedContent, error } =
 		useProfile();
 
-	// Load liked content if not already loaded
+	// Always refresh liked content when tab is mounted to get latest data
 	useEffect(() => {
-		if (!likedContent && !isLoading) {
-			refreshLikedContent();
-		}
-	}, [likedContent, isLoading, refreshLikedContent]);
+		refreshLikedContent();
+	}, [refreshLikedContent]);
 
 	return (
 		<>

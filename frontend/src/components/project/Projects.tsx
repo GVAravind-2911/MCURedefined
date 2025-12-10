@@ -5,15 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useMemo } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
-import {
-	Calendar,
-	Film,
-	Clapperboard,
-	Tv,
-	Sparkles,
-	Search,
-	Filter,
-} from "lucide-react";
+import { Calendar, Film, Tv, Search, Filter, Clapperboard, Clock } from "lucide-react";
 
 const formatPosterPath = (path: string, phase: number): string => {
 	// Extract filename from static/img/posters/name.extension
@@ -100,23 +92,23 @@ export default function ProjectsPage({ projects }: ProjectsPageProps) {
 			{/* Hero Section */}
 			<div className="relative w-full" data-hero-section>
 				{/* Hero Background */}
-				<div className="relative w-full h-[30vh] sm:h-[35vh] md:h-[40vh] overflow-hidden">
+				<div className="relative w-full overflow-hidden">
 					{/* Gradient Background */}
-					<div className="absolute inset-0 bg-linear-to-br from-[#ec1d24]/30 via-black/90 to-black" />
-					<div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,var(--tw-gradient-stops))] from-[#ec1d24]/20 via-transparent to-transparent" />
+					<div className="absolute inset-0 bg-linear-to-br from-[#ec1d24]/30 via-black/95 to-black" />
+					<div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,var(--tw-gradient-stops))] from-[#ec1d24]/15 via-transparent to-transparent" />
 
 					{/* Animated Grid Pattern */}
 					<div
-						className="absolute inset-0 opacity-10"
+						className="absolute inset-0 opacity-[0.05]"
 						style={{
 							backgroundImage:
 								"linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-							backgroundSize: "50px 50px",
+							backgroundSize: "40px 40px",
 						}}
 					/>
 
 					{/* Decorative Floating Icons - Right Side Cluster */}
-					<div className="absolute right-[5%] sm:right-[8%] md:right-[12%] top-[15%] flex flex-col items-end gap-3 sm:gap-4">
+					<div className="absolute right-[5%] sm:right-[8%] md:right-[12%] top-[15%] hidden sm:flex flex-col items-end gap-3 sm:gap-4">
 						{/* Primary icon - larger, more prominent */}
 						<div className="relative">
 							<div className="absolute inset-0 bg-[#ec1d24]/20 blur-xl rounded-full animate-pulse" />
@@ -134,47 +126,47 @@ export default function ProjectsPage({ projects }: ProjectsPageProps) {
 						<Clapperboard className="w-8 h-8 lg:w-12 lg:h-12 text-white" />
 					</div>
 					<div className="absolute bottom-[25%] right-[25%] hidden lg:block opacity-[0.06] animate-pulse [animation-delay:800ms]">
-						<Sparkles className="w-10 h-10 text-[#ec1d24]" />
+						<Clock className="w-10 h-10 text-[#ec1d24]" />
 					</div>
 
-					{/* Badge */}
-					<div className="absolute top-20 right-4 sm:top-24 sm:right-8 flex items-center gap-2 px-4 py-2 bg-[#ec1d24]/90 backdrop-blur-sm rounded-full shadow-lg shadow-[#ec1d24]/20">
-						<Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-						<span className="text-sm sm:text-base font-[BentonSansBold] text-white">
-							Release Slate
-						</span>
-					</div>
-				</div>
+					{/* Content Container */}
+					<div className="relative z-10 px-4 sm:px-6 md:px-8 lg:px-12 py-6 sm:py-8">
+						<div className="max-w-[1400px] mx-auto w-full">
+							{/* Breadcrumb */}
+							<div className="flex items-center gap-2 mb-2 text-sm text-white/50">
+								<Link href="/" className="hover:text-white transition-colors">
+									Home
+								</Link>
+								<span>/</span>
+								<span className="text-[#ec1d24]">Release Slate</span>
+							</div>
 
-				{/* Title Overlay */}
-				<div className="absolute bottom-0 left-0 right-0 px-4 sm:px-6 md:px-8 lg:px-12 pb-8 sm:pb-12">
-					<div className="max-w-[1400px] mx-auto">
-						{/* Breadcrumb */}
-						<div className="flex items-center gap-2 mb-4 text-sm text-white/50">
-							<Link href="/" className="hover:text-white transition-colors">
-								Home
-							</Link>
-							<span>/</span>
-							<span className="text-[#ec1d24]">Release Slate</span>
+							{/* Title Row with Badge */}
+							<div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-2">
+								<h1 className="text-2xl sm:text-3xl md:text-4xl text-white font-[BentonSansBold] leading-tight">
+									MCU Timeline
+								</h1>
+								<div className="flex items-center gap-2 px-3 py-1.5 bg-[#ec1d24] rounded-full">
+									<Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
+									<span className="text-xs sm:text-sm font-[BentonSansBold] text-white">
+										Release Slate
+									</span>
+								</div>
+							</div>
+
+							{/* Description */}
+							<p className="text-sm sm:text-base text-white/60 font-[BentonSansRegular] max-w-xl leading-relaxed">
+								Explore the Marvel Cinematic Universe films and shows across
+								different phases. From the genesis of Iron Man to the latest
+								adventures in the multiverse saga.
+							</p>
 						</div>
-
-						{/* Title */}
-						<h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white font-[BentonSansBold] leading-tight mb-3 sm:mb-4 drop-shadow-lg">
-							MCU Timeline
-						</h1>
-
-						{/* Description */}
-						<p className="text-base sm:text-lg text-white/70 font-[BentonSansRegular] max-w-2xl">
-							Explore the Marvel Cinematic Universe films and shows across
-							different phases. From the genesis of Iron Man to the latest
-							adventures in the multiverse saga.
-						</p>
 					</div>
 				</div>
 			</div>
 
 			{/* Main Content */}
-			<div className="flex-1 w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 py-8 sm:py-12">
+			<div className="flex-1 w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8">
 				{/* Search and Filters Section */}
 				<div className="mb-8 sm:mb-10">
 					{/* Filters Header */}

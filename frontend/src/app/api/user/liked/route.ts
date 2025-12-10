@@ -33,7 +33,10 @@ export async function GET(req: Request) {
 		const data = resp.data;
 		return new Response(JSON.stringify(data), {
 			status: 200,
-			headers: { "Content-Type": "application/json" },
+			headers: { 
+				"Content-Type": "application/json",
+				"Cache-Control": "no-store, no-cache, must-revalidate",
+			},
 		});
 	} catch (error) {
 		console.error("Error fetching liked items:", error);

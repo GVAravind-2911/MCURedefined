@@ -407,7 +407,7 @@ function Header({ session }: HeaderProps): ReactNode {
 
 				{/* Menu Panel */}
 				<div
-					className={`absolute top-0 right-0 h-full w-full max-w-xs bg-[#0a0a0a] border-l border-white/10 shadow-2xl transition-transform duration-300 ease-out overflow-y-auto ${
+					className={`absolute top-0 right-0 h-full w-full max-w-xs bg-[#0a0a0a] border-l border-white/10 shadow-2xl transition-transform duration-300 ease-out flex flex-col ${
 						isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
 					}`}
 				>
@@ -458,7 +458,7 @@ function Header({ session }: HeaderProps): ReactNode {
 					)}
 
 					{/* Navigation Links */}
-					<nav className="px-2 py-4">
+					<nav className="px-2 py-4 flex-1 overflow-y-auto">
 						<div className="space-y-1">
 							{navLinks.map((link) => (
 								<Link
@@ -515,7 +515,7 @@ function Header({ session }: HeaderProps): ReactNode {
 					</nav>
 
 					{/* Bottom Actions */}
-					<div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10 bg-[#0a0a0a]">
+					<div className="shrink-0 p-4 border-t border-white/10 bg-[#0a0a0a]">
 						{session ? (
 							<button
 								onClick={() => {

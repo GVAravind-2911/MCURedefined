@@ -228,12 +228,6 @@ export async function PUT(
 			);
 		}
 
-		// If the topic has an image, delete it when editing (images cannot be edited)
-		if (existingTopic.imageKey) {
-			console.log("Deleting topic image on edit:", existingTopic.imageKey);
-			await deleteTopicImage(existingTopic.imageKey);
-		}
-
 		// Save edit history before updating
 		await db.insert(forumTopicEditHistory).values({
 			id: uuidv4(),
@@ -243,15 +237,13 @@ export async function PUT(
 			editNumber: currentEditCount + 1,
 		});
 
-		// Update the topic (clear image fields since image was deleted)
+		// Update the topic (preserve existing image)
 		await db
 			.update(forumTopic)
 			.set({
 				title: title.trim(),
 				content: content.trim(),
 				editCount: currentEditCount + 1,
-				imageUrl: null,
-				imageKey: null,
 				updatedAt: new Date(),
 			})
 			.where(eq(forumTopic.id, id));

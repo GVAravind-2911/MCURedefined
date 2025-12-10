@@ -3,6 +3,19 @@
 import React from "react";
 import Image from "next/image";
 import { formatRelativeTime } from "@/lib/dateUtils";
+import {
+	User,
+	Calendar,
+	Heart,
+	Edit3,
+	Trash2,
+	History,
+	Pin,
+	Lock,
+	X,
+	Save,
+	AlertTriangle,
+} from "lucide-react";
 
 interface ForumTopic {
 	id: string;
@@ -85,13 +98,13 @@ export default function TopicPost({
 
 	return (
 		<div
-			className={`bg-[rgba(40,40,40,0.3)] border rounded-lg mb-8 overflow-hidden backdrop-blur-[10px] relative before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-[3px] before:bg-[linear-gradient(90deg,transparent,#ec1d24,transparent)] ${
+			className={`bg-white/2 backdrop-blur-sm border rounded-2xl mb-8 overflow-hidden transition-all duration-300 ${
 				isDeleted
-					? "bg-[rgba(220,53,69,0.05)] border-[rgba(220,53,69,0.2)] before:bg-[#dc3545]"
-					: "border-white/10"
+					? "bg-[rgba(220,53,69,0.05)] border-[rgba(220,53,69,0.2)]"
+					: "border-white/8"
 			}`}
 		>
-			<div className="p-8">
+			<div className="p-5 sm:p-6 md:p-8">
 				{isDeleted ? (
 					<DeletedTopicView topic={topic} />
 				) : (
@@ -240,13 +253,7 @@ function ActiveTopicView({
 				</div>
 			)}
 
-			{/* Image will be removed warning when editing */}
-			{isEditing && topic.imageUrl && (
-				<div className="bg-[rgba(255,165,0,0.15)] border border-[rgba(255,165,0,0.3)] text-[#ffa500] py-3 px-4 rounded-lg my-4 text-sm">
-					⚠️ The attached image will be removed when you save your edit. Images
-					cannot be edited.
-				</div>
-			)}
+
 
 			{/* Topic footer with voting and actions */}
 			<TopicFooter
@@ -266,42 +273,61 @@ function ActiveTopicView({
 
 function TopicHeader({ topic }: { topic: ForumTopic }): React.ReactElement {
 	return (
-		<div className="flex items-center gap-3 mb-4 text-[0.95rem] text-white/80">
-			<div className="flex items-center gap-2 flex-1">
+		<div className="flex flex-wrap items-center gap-3 mb-4">
+			{/* Author info */}
+			<div className="flex items-center gap-2">
 				{topic.userImage ? (
 					<Image
 						src={topic.userImage}
 						alt={topic.username}
-						width={24}
-						height={24}
-						className="w-6 h-6 rounded-full"
+						width={32}
+						height={32}
+						className="w-8 h-8 rounded-full object-cover border border-[#ec1d24]/30"
 					/>
 				) : (
-					<div className="w-6 h-6 rounded-full bg-[linear-gradient(135deg,#ec1d24,#ff7f50)] flex items-center justify-center text-white font-[BentonSansBold] text-[0.8rem] border-2 border-[rgba(236,29,36,0.3)]">
-						{getUserInitials(topic.username)}
+					<div className="w-8 h-8 rounded-full bg-[#ec1d24]/10 flex items-center justify-center">
+						<User className="w-4 h-4 text-[#ec1d24]" />
 					</div>
 				)}
-				<span className="font-[BentonSansBold] text-[#ec1d24] text-[0.9rem]">
+				<span className="font-[BentonSansBold] text-[#ec1d24] text-sm">
 					{topic.username}
 				</span>
 			</div>
-			<span>{formatRelativeTime(topic.createdAt)}</span>
+
+			<span className="hidden sm:block w-px h-4 bg-white/15" />
+
+			{/* Date */}
+			<div className="flex items-center gap-1.5 text-white/50">
+				<Calendar className="w-3.5 h-3.5" />
+				<span className="text-sm font-[BentonSansRegular]">
+					{formatRelativeTime(topic.createdAt)}
+				</span>
+			</div>
+
 			{topic.updatedAt !== topic.createdAt && (
 				<>
-					<span>•</span>
-					<span>edited {formatRelativeTime(topic.updatedAt)}</span>
+					<span className="hidden sm:block w-px h-4 bg-white/15" />
+					<div className="flex items-center gap-1.5 text-white/40">
+						<Edit3 className="w-3.5 h-3.5" />
+						<span className="text-xs font-[BentonSansRegular]">
+							edited {formatRelativeTime(topic.updatedAt)}
+						</span>
+					</div>
 				</>
 			)}
+
 			{/* Status badges */}
-			<div className="flex items-center gap-2">
+			<div className="flex items-center gap-2 ml-auto">
 				{topic.pinned && (
-					<span className="text-[0.8rem] py-1 px-2 rounded bg-[rgba(255,193,7,0.2)] text-[#ffc107]">
-						📌 Pinned
+					<span className="inline-flex items-center gap-1 bg-[#fbbf24]/10 text-[#fbbf24] text-xs py-1 px-2.5 rounded-full border border-[#fbbf24]/20 font-[BentonSansBold]">
+						<Pin className="w-3 h-3" />
+						Pinned
 					</span>
 				)}
 				{topic.locked && (
-					<span className="text-[0.8rem] py-1 px-2 rounded bg-[rgba(220,53,69,0.2)] text-[#dc3545]">
-						🔒 Locked
+					<span className="inline-flex items-center gap-1 bg-white/10 text-white/70 text-xs py-1 px-2.5 rounded-full border border-white/20 font-[BentonSansBold]">
+						<Lock className="w-3 h-3" />
+						Locked
 					</span>
 				)}
 			</div>
@@ -331,33 +357,38 @@ function TopicEditForm({
 	return (
 		<div className="mb-4">
 			<textarea
-				className="w-full min-h-[150px] bg-white/5 border border-white/20 rounded-lg p-4 text-white/90 font-[BentonSansRegular] text-base leading-relaxed resize-y transition-all duration-200 focus:outline-none focus:border-[#ec1d24]"
+				className="w-full min-h-[150px] bg-linear-to-r from-white/5 to-white/2 border border-white/15 rounded-xl p-4 text-white/90 font-[BentonSansRegular] text-base leading-relaxed resize-y transition-all duration-300 focus:outline-none focus:border-[#ec1d24]/60 focus:ring-2 focus:ring-[#ec1d24]/25 focus:bg-white/8"
 				value={editContent}
 				onChange={(e) => onEditContentChange(e.target.value)}
 				placeholder="Topic content"
 				maxLength={10000}
 			/>
 			{editError && (
-				<div className="text-[#dc3545] text-sm mt-2 p-2 bg-[rgba(220,53,69,0.1)] rounded">
+				<div className="flex items-center gap-2 text-[#dc3545] text-sm mt-3 p-3 bg-[rgba(220,53,69,0.1)] rounded-lg border border-[#dc3545]/20">
+					<AlertTriangle className="w-4 h-4 shrink-0" />
 					{editError}
 				</div>
 			)}
-			<div className="flex items-center gap-3 mt-4">
+			<div className="flex flex-wrap items-center gap-3 mt-4">
 				<button
-					className="bg-[linear-gradient(135deg,#ec1d24,#d01c22)] border-none text-white py-2 px-6 rounded-md cursor-pointer font-[BentonSansRegular] text-sm transition-all duration-200 hover:not-disabled:-translate-y-0.5 hover:not-disabled:shadow-[0_4px_12px_rgba(236,29,36,0.3)] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+					className="inline-flex items-center gap-2 bg-linear-to-br from-[#ec1d24] to-[#c91820] text-white py-2.5 px-5 rounded-xl font-[BentonSansBold] text-sm transition-all duration-300 hover:enabled:shadow-lg hover:enabled:shadow-[#ec1d24]/25 hover:enabled:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
 					onClick={onSaveEdit}
 					disabled={isSaving}
+					type="button"
 				>
+					<Save className="w-4 h-4" />
 					{isSaving ? "Saving..." : "Save Changes"}
 				</button>
 				<button
-					className="bg-white/10 border border-white/20 text-white/80 py-2 px-6 rounded-md cursor-pointer font-[BentonSansRegular] text-sm transition-all duration-200 hover:not-disabled:bg-white/15 hover:not-disabled:border-white/30 disabled:opacity-50 disabled:cursor-not-allowed"
+					className="inline-flex items-center gap-2 bg-white/5 border border-white/15 text-white/70 py-2.5 px-5 rounded-xl font-[BentonSansRegular] text-sm transition-all duration-300 hover:enabled:bg-white/10 hover:enabled:border-white/25 hover:enabled:text-white disabled:opacity-50 disabled:cursor-not-allowed"
 					onClick={onCancelEdit}
 					disabled={isSaving}
+					type="button"
 				>
+					<X className="w-4 h-4" />
 					Cancel
 				</button>
-				<span className="text-white/50 text-sm ml-auto">
+				<span className="text-white/50 text-sm ml-auto font-[BentonSansRegular]">
 					{5 - editCount} edits remaining
 				</span>
 			</div>
@@ -391,58 +422,71 @@ function TopicFooter({
 	const isDeleted = isTopicDeleted(topic);
 
 	return (
-		<div className="flex items-center gap-4 pt-3 border-t border-white/10 text-sm">
-			<div className="flex items-center gap-2">
+		<div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-4 border-t border-white/8">
+			{/* Like button */}
+			<button
+				className={`flex items-center gap-2 py-2 px-4 rounded-xl transition-all duration-300 ${
+					topic.userHasLiked
+						? "bg-[#ec1d24]/15 text-[#ec1d24] border border-[#ec1d24]/30"
+						: "bg-white/5 text-white/60 border border-white/10 hover:enabled:bg-[#ec1d24]/10 hover:enabled:text-[#ec1d24] hover:enabled:border-[#ec1d24]/20"
+				} disabled:opacity-50 disabled:cursor-not-allowed`}
+				onClick={onLikeToggle}
+				disabled={!hasSession || isDeleted}
+				title={
+					isDeleted
+						? "Cannot like deleted topics"
+						: hasSession
+							? "Like this topic"
+							: "Sign in to like"
+				}
+				type="button"
+			>
+				<Heart
+					className={`w-4 h-4 ${topic.userHasLiked ? "fill-current" : ""}`}
+				/>
+				<span className="text-sm font-[BentonSansRegular]">
+					{topic.likeCount}
+				</span>
+			</button>
+
+			{/* Edit history button */}
+			{(topic.editCount || 0) > 0 && (
 				<button
-					className={`bg-[rgba(236,29,36,0.05)] border border-[rgba(236,29,36,0.3)] text-white/80 py-2 px-4 rounded-lg cursor-pointer transition-all duration-300 ease-in-out flex items-center gap-2 text-[0.95rem] font-medium hover:bg-[rgba(236,29,36,0.15)] hover:border-[#ec1d24] hover:text-white hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none ${
-						topic.userHasLiked
-							? "bg-[linear-gradient(135deg,#ec1d24,#d01c22)] border-[#ec1d24] text-white shadow-[0_4px_15px_rgba(236,29,36,0.3)]"
-							: ""
-					}`}
-					onClick={onLikeToggle}
-					disabled={!hasSession || isDeleted}
-					title={
-						isDeleted
-							? "Cannot like deleted topics"
-							: hasSession
-								? "Like this topic"
-								: "Sign in to like"
-					}
+					className="flex items-center gap-2 py-2 px-3 bg-white/5 border border-white/10 text-white/60 rounded-xl text-sm transition-all duration-300 hover:bg-white/10 hover:border-white/20 hover:text-white/80"
+					onClick={onShowEditHistory}
+					title="View edit history"
+					type="button"
 				>
-					<span>{topic.userHasLiked ? "❤️" : "🤍"}</span>
-					<span>{topic.likeCount}</span>
+					<History className="w-4 h-4" />
+					<span className="font-[BentonSansRegular]">
+						{topic.editCount} edit{(topic.editCount || 0) > 1 ? "s" : ""}
+					</span>
 				</button>
-				{/* Edit history button */}
-				{(topic.editCount || 0) > 0 && (
-					<button
-						className="bg-none border border-white/20 text-white/60 py-1.5 px-3 rounded-md cursor-pointer text-sm transition-all duration-200 flex items-center gap-1 hover:bg-white/5 hover:border-white/30 hover:text-white/80"
-						onClick={onShowEditHistory}
-						title="View edit history"
-					>
-						📝 {topic.editCount} edit{(topic.editCount || 0) > 1 ? "s" : ""}
-					</button>
-				)}
-			</div>
+			)}
 
 			{/* Topic actions for author */}
 			{isAuthor && !isDeleted && !isEditing && (
 				<div className="flex items-center gap-2 ml-auto">
 					{topic.canEdit && (
 						<button
-							className="bg-[rgba(236,29,36,0.1)] border border-[rgba(236,29,36,0.4)] text-[#ec1d24] py-1.5 px-4 rounded-md cursor-pointer transition-all duration-200 flex items-center gap-1.5 text-sm font-[BentonSansRegular] hover:bg-[rgba(236,29,36,0.2)] hover:border-[#ec1d24] hover:text-white hover:-translate-y-0.5"
+							className="flex items-center gap-2 py-2 px-4 bg-[#ec1d24]/10 border border-[#ec1d24]/30 text-[#ec1d24] rounded-xl text-sm font-[BentonSansRegular] transition-all duration-300 hover:bg-[#ec1d24]/20 hover:border-[#ec1d24]/50 hover:-translate-y-0.5"
 							onClick={onEditClick}
 							title="Edit this topic"
+							type="button"
 						>
-							✏️ Edit
+							<Edit3 className="w-4 h-4" />
+							Edit
 						</button>
 					)}
 					<button
-						className="bg-[rgba(220,53,69,0.1)] border border-[rgba(220,53,69,0.4)] text-[#dc3545] py-1.5 px-4 rounded-md cursor-pointer transition-all duration-200 flex items-center gap-1.5 text-sm font-[BentonSansRegular] hover:not-disabled:bg-[rgba(220,53,69,0.2)] hover:not-disabled:border-[#dc3545] hover:not-disabled:text-white hover:not-disabled:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+						className="flex items-center gap-2 py-2 px-4 bg-[#dc3545]/10 border border-[#dc3545]/30 text-[#dc3545] rounded-xl text-sm font-[BentonSansRegular] transition-all duration-300 hover:enabled:bg-[#dc3545]/20 hover:enabled:border-[#dc3545]/50 hover:enabled:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
 						onClick={onDeleteClick}
 						disabled={isDeleting}
 						title="Delete this topic"
+						type="button"
 					>
-						{isDeleting ? "🔄" : "🗑️"} {isDeleting ? "Deleting..." : "Delete"}
+						<Trash2 className="w-4 h-4" />
+						{isDeleting ? "Deleting..." : "Delete"}
 					</button>
 				</div>
 			)}

@@ -102,7 +102,7 @@ const BlockWrapper: React.FC<BlockWrapperProps> = ({
 					className={`w-7 h-7 rounded-full border-2 border-dashed flex items-center justify-center text-lg font-light transition-all duration-300 ${
 						showAddBlock
 							? "bg-[rgba(236,29,36,0.2)] border-[#ec1d24] text-[#ec1d24] rotate-45"
-							: "bg-white/5 border-white/20 text-white/50 opacity-0 group-hover/block:opacity-100 hover:border-[#ec1d24] hover:text-[#ec1d24] hover:bg-[rgba(236,29,36,0.1)]"
+							: "bg-white/5 border-white/20 text-white/50 opacity-100 md:opacity-0 md:group-hover/block:opacity-100 hover:border-[#ec1d24] hover:text-[#ec1d24] hover:bg-[rgba(236,29,36,0.1)]"
 					}`}
 					aria-label={showAddBlock ? "Close add menu" : "Add new block"}
 					aria-expanded={showAddBlock}
